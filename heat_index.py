@@ -4,6 +4,17 @@ from requests.adapters import HTTPAdapter
 import ssl
 from dotenv import load_dotenv
 import os
+import time
+import json
+import logging
+
+# Determine the root directory of the script
+root_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Configure logging to append to log.txt in the root directory
+log_file = os.path.join(root_dir, 'log.txt')
+logging.basicConfig(filename=log_file, level=logging.INFO, 
+                    format='%(asctime)s - %(levelname)s - %(message)s', filemode='a')
 
 # Load environment variables from a .env file
 def configure():
@@ -27,23 +38,44 @@ def calculate_heat_index(temperature_c, humidity):
     heat_index_c = (heat_index_f - 32) * 5/9
     return heat_index_c
 
-# Fetch weather data from the API
-def get_weather(lat, lon, api_url):
-    try:
-        response = requests.get(api_url.format(lat=lat, lon=lon))
-        response.raise_for_status()
-        data = response.json()
-        temperature = data['main']['temp']
-        humidity = data['main']['humidity']
-        return temperature, humidity
-    except requests.exceptions.RequestException as e:
-        print(f"Exception occurred while fetching data: {e}")
-        return None, None
+# Fetch weather data from the APIs with retry logic
+def get_weather(lat, lon, api_urls, retries=3, delay=5):
+    for api_url in api_urls:
+        success = False
+        for attempt in range(retries):
+            try:
+                response = requests.get(api_url.format(lat=lat, lon=lon))
+                response.raise_for_status()
+                data = response.json()
+                if 'main' in data:
+                    temperature = data['main']['temp']
+                    humidity = data['main']['humidity']
+                elif 'current' in data:
+                    temperature = data['current']['temp_c']
+                    humidity = data['current']['humidity']
+                elif 'hourly' in data:
+                    temperature = data['hourly']['temperature_2m'][0]
+                    humidity = data['hourly']['relative_humidity_2m'][0]
+                else:
+                    continue
+                success = True
+                return temperature, humidity
+            except requests.exceptions.RequestException as e:
+                sanitized_message = str(e).replace(api_url, "[REDACTED URL]")
+                logging.error(f"Exception occurred while fetching data from API: {sanitized_message}")
+                if attempt < retries - 1:
+                    logging.info(f"Retrying in {delay} seconds...")
+                    time.sleep(delay)
+                else:
+                    logging.error("Max retries reached. Moving to the next API.")
+        if success:
+            break
+    return None, None
 
 # Build an index of city coordinates from a CSV file
 def build_index(csv_file=None):
     if csv_file is None:
-        csv_file = 'C:/Users/brand/OneDrive - Lyceum of the Philippines University/Projects/INET-READY/ph_coords/ncr.csv'
+        csv_file = os.path.join(os.path.dirname(__file__), 'ph_coords', 'ncr.csv')
     index = {}
     try:
         with open(csv_file, mode='r') as file:
@@ -55,7 +87,7 @@ def build_index(csv_file=None):
                 lon = float(row[2].strip())
                 index[city] = (lat, lon)
     except Exception as e:
-        print(f"Exception occurred while reading the CSV file: {e}")
+        logging.error(f"Exception occurred while reading the CSV file: {e}")
     return index
 
 # Get coordinates for a given city and province from the index
@@ -65,8 +97,14 @@ def get_coordinates(city, province, index):
         lat, lon = index[city_lower]
         return lat, lon
     else:
-        print(f"No coordinates found for city '{city}' in province '{province}'.")
+        logging.warning(f"No coordinates found for city '{city}' in province '{province}'.")
         return None
+
+# Load API URLs from a JSON file
+def load_api_urls(json_file=os.path.join(os.path.dirname(__file__), 'api_urls.json')):
+    with open(json_file, 'r') as file:
+        data = json.load(file)
+        return data
 
 # Main function to run the program
 def main():
@@ -74,44 +112,49 @@ def main():
 
     index = build_index()
     cities = list(index.keys())
+    province_name = "Metro Manila"
 
-    print("Select a city by number:")
-    for i, city in enumerate(cities, start=1):
-        print(f"{i}. {city.title()}")
-
-    try:
-        choice = int(input("Enter the number of the city: "))
-        if 1 <= choice <= len(cities):
-            city_name = cities[choice - 1]
-        else:
-            print("Invalid choice. Exiting.")
-            return
-    except ValueError:
-        print("Invalid input. Exiting.")
+    first_api_key = os.getenv('8d1e78cf8cf1cebde3880054184c98d6fa6bebbd')
+    second_api_key = os.getenv('5b1f43e3032c79a417144ec27d00a1b80a20bb7')
+    if not first_api_key or not second_api_key:
+        logging.error("API keys not found. Please set environment variables.")
         return
 
-    province_name = "Metro Manila"
-    coordinates = get_coordinates(city_name, province_name, index)
+    api_urls = load_api_urls()
+    api_urls_combined = (
+        [url.format(api_key=first_api_key, lat="{lat}", lon="{lon}") for url in api_urls['8d1e78cf8cf1cebde3880054184c98d6fa6bebbd']] +
+        [url.format(api_key=second_api_key, lat="{lat}", lon="{lon}") for url in api_urls['5b1f43e3032c79a417144ec27d00a1b80a20bb7']] +
+        api_urls['83db893235619e973fe241e51f0f59f9c31299ec']
+    )
 
-    if coordinates:
-        lat, lon = coordinates
-        api_key = os.getenv('OWM_API_KEY')
-        if not api_key:
-            print("API key not found. Please set the OWM_API_KEY environment variable.")
-            return
+    current_api_index = 0
 
-        api_url = f"http://api.openweathermap.org/data/2.5/weather?lat={{lat}}&lon={{lon}}&appid={api_key}&units=metric"
-        temperature, humidity = get_weather(lat, lon, api_url)
+    # Write data to CSV in the root directory
+    csv_file_path = os.path.join(root_dir, 'heat_index_data.csv')
+    with open(csv_file_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["City", "Temperature", "Humidity", "Heat Index"])
 
-        if temperature is not None and humidity is not None:
-            heat_index = calculate_heat_index(temperature, humidity)
-            print(f"Current temperature in {city_name.title()}, {province_name}: {temperature}°C")
-            print(f"Current humidity in {city_name.title()}, {province_name}: {humidity}%")
-            print(f"Current heat index in {city_name.title()}, {province_name}: {heat_index:.2f}°C")
-        else:
-            print("Failed to retrieve temperature or humidity data.")
-    else:
-        print(f"No coordinates found for city '{city_name}' in province '{province_name}' or an error occurred.")
+        for city_name in cities:
+            coordinates = get_coordinates(city_name, province_name, index)
+            if coordinates:
+                lat, lon = coordinates
+                while True:
+                    temperature, humidity = get_weather(lat, lon, [api_urls_combined[current_api_index]])
+
+                    if temperature is not None and humidity is not None:
+                        heat_index = calculate_heat_index(temperature, humidity)
+                        writer.writerow([city_name.title(), temperature, humidity, heat_index])
+                        logging.info(f"Data for {city_name.title()} written to CSV.")
+                        break
+                    else:
+                        logging.warning(f"Failed to retrieve temperature or humidity data for {city_name.title()} using API index {current_api_index}.")
+                        current_api_index = (current_api_index + 1) % len(api_urls_combined)
+                        if current_api_index == 0:
+                            logging.error("All APIs failed for this city. Moving to the next city.")
+                            break
+            else:
+                logging.warning(f"No coordinates found for city '{city_name}' in province '{province_name}' or an error occurred.")
 
 if __name__ == "__main__":
     main()
