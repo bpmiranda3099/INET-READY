@@ -7,6 +7,8 @@ import os
 import time
 import json
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from functools import lru_cache
 
 # Determine the root directory of the script
 root_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,8 +41,9 @@ def calculate_heat_index(temperature_c, humidity):
     return heat_index_c
 
 # Fetch weather data from the APIs with retry logic
-def get_weather(lat, lon, api_urls, retries=3, delay=5):
-    for api_url in api_urls:
+@lru_cache(maxsize=128)
+def get_weather(lat, lon, api_urls_tuple, retries=3, delay=5):
+    for api_url in api_urls_tuple:
         success = False
         for attempt in range(retries):
             try:
@@ -106,8 +109,32 @@ def load_api_urls(json_file=os.path.join(os.path.dirname(__file__), 'api_urls.js
         data = json.load(file)
         return data
 
+# Fetch weather data for a city and write to CSV
+def process_city(city_name, province_name, index, api_urls_combined, writer):
+    coordinates = get_coordinates(city_name, province_name, index)
+    if coordinates:
+        lat, lon = coordinates
+        current_api_index = 0
+        while True:
+            temperature, humidity = get_weather(lat, lon, tuple([api_urls_combined[current_api_index]]))
+
+            if temperature is not None and humidity is not None:
+                heat_index = calculate_heat_index(temperature, humidity)
+                writer.writerow([city_name.title(), temperature, humidity, heat_index])
+                logging.info(f"Data for {city_name.title()} written to CSV.")
+                break
+            else:
+                logging.warning(f"Failed to retrieve temperature or humidity data for {city_name.title()} using API index {current_api_index}.")
+                current_api_index = (current_api_index + 1) % len(api_urls_combined)
+                if current_api_index == 0:
+                    logging.error("All APIs failed for this city. Moving to the next city.")
+                    break
+    else:
+        logging.warning(f"No coordinates found for city '{city_name}' in province '{province_name}' or an error occurred.")
+
 # Main function to run the program
 def main():
+    start_time = time.time()  # Start the timer
     configure()
 
     index = build_index()
@@ -127,34 +154,20 @@ def main():
         api_urls['83db893235619e973fe241e51f0f59f9c31299ec']
     )
 
-    current_api_index = 0
-
     # Write data to CSV in the root directory
     csv_file_path = os.path.join(root_dir, 'heat_index_data.csv')
     with open(csv_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["City", "Temperature", "Humidity", "Heat Index"])
 
-        for city_name in cities:
-            coordinates = get_coordinates(city_name, province_name, index)
-            if coordinates:
-                lat, lon = coordinates
-                while True:
-                    temperature, humidity = get_weather(lat, lon, [api_urls_combined[current_api_index]])
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(process_city, city_name, province_name, index, api_urls_combined, writer) for city_name in cities]
+            for future in as_completed(futures):
+                future.result()
 
-                    if temperature is not None and humidity is not None:
-                        heat_index = calculate_heat_index(temperature, humidity)
-                        writer.writerow([city_name.title(), temperature, humidity, heat_index])
-                        logging.info(f"Data for {city_name.title()} written to CSV.")
-                        break
-                    else:
-                        logging.warning(f"Failed to retrieve temperature or humidity data for {city_name.title()} using API index {current_api_index}.")
-                        current_api_index = (current_api_index + 1) % len(api_urls_combined)
-                        if current_api_index == 0:
-                            logging.error("All APIs failed for this city. Moving to the next city.")
-                            break
-            else:
-                logging.warning(f"No coordinates found for city '{city_name}' in province '{province_name}' or an error occurred.")
+    end_time = time.time()  # End the timer
+    elapsed_time = end_time - start_time
+    logging.info(f"Total time taken for the process to complete: {elapsed_time:.2f} seconds")
 
 if __name__ == "__main__":
     main()
