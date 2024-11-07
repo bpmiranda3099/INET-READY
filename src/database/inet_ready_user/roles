@@ -1,0 +1,17 @@
+-- Create roles as users
+CREATE USER 'super_admin'@'localhost';
+CREATE USER 'admin'@'localhost';
+
+-- Grant privileges to roles
+GRANT ALL PRIVILEGES ON inet_ready_user.* TO 'super_admin'@'localhost';
+
+-- Grant specific privileges to admin
+GRANT SELECT, INSERT, UPDATE ON inet_ready_user.User TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_user.UserProfile TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_user.UserDevice TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_user.UserPreferences TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_user.UserActivityLog TO 'admin'@'localhost';
+
+-- Assign roles to users
+GRANT 'super_admin' TO 'super_admin'@'localhost';
+GRANT 'admin' TO 'admin'@'localhost';

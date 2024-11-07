@@ -1,0 +1,2 @@
+-- INET-READY Electronic Health Record database.
+CREATE DATABASE inet_ready_ehr;

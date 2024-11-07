@@ -1,0 +1,20 @@
+-- Create roles as users
+CREATE USER 'super_admin'@'localhost';
+CREATE USER 'admin'@'localhost';
+
+-- Grant privileges to roles
+GRANT ALL PRIVILEGES ON inet_ready_ehr.* TO super_admin;
+
+-- Grant specific privileges to admin
+GRANT SELECT, INSERT, UPDATE ON inet_ready_ehr.User TO admin;
+GRANT SELECT, INSERT, UPDATE ON inet_ready_ehr.Demographics TO admin;
+GRANT SELECT, INSERT, UPDATE ON inet_ready_ehr.Biometrics TO admin;
+GRANT SELECT, INSERT, UPDATE ON inet_ready_ehr.MedicalConditions TO admin;
+GRANT SELECT, INSERT, UPDATE ON inet_ready_ehr.Medications TO admin;
+GRANT SELECT, INSERT, UPDATE ON inet_ready_ehr.FluidIntake TO admin;
+GRANT SELECT, INSERT, UPDATE ON inet_ready_ehr.HeatConditions TO admin;
+GRANT SELECT, INSERT, UPDATE ON inet_ready_ehr.Activity TO admin;
+
+-- Assign roles to users
+GRANT super_admin TO 'super_admin'@'localhost';
+GRANT admin TO 'admin'@'localhost';
