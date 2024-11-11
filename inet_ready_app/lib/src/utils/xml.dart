@@ -1,13 +1,18 @@
 import 'package:xml/xml.dart' as xml;
 
 Map<String, dynamic> data = {
+  'user_id': null,
   'name': null,
   'username': null,
-  'age': null,
-  'gender': null,
-  'height': null,
-  'weight': null,
   'location': null,
+  'demographics': {
+    'age': null,
+    'gender': null,
+  },
+  'biometrics': {
+    'height': null,
+    'weight': null,
+  },
   'medical_conditions': {
     'cardiovascular_disease': null,
     'diabetes': null,
@@ -17,8 +22,6 @@ Map<String, dynamic> data = {
     'neurological_disorders': null,
     'other_condition': null,
   },
-  'previous_heat_issues': null,
-  'heat_issues_details': null,
   'medications': {
     'diuretics': null,
     'blood_pressure_medications': null,
@@ -27,9 +30,6 @@ Map<String, dynamic> data = {
     'antipsychotics': null,
     'other_medication': null,
   },
-  'outdoor_activity': null,
-  'activity_level': null,
-  'activity_duration': null,
   'fluid_intake': {
     'water_amount': null,
     'electrolyte_drinks_amount': null,
@@ -51,6 +51,13 @@ Map<String, dynamic> data = {
     'heat_syncope': null,
     'heat_edema': null,
     'heat_exhaustion': null,
+  },
+  'activity': {
+    'previous_heat_issues': null,
+    'heat_issues_details': null,
+    'outdoor_activity': null,
+    'activity_level': null,
+    'activity_duration': null,
   },
 };
 

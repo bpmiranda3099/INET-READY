@@ -1,0 +1,31 @@
+-- Insert into User table
+INSERT INTO User (user_id, name, username, location) VALUES ('21aa6f76-9e07-11ef-b354-54e1adccf4f3', 'Juan Dela Cruz', 'juandelacruz', 'Manila, Philippines');
+
+-- Assuming the user_id is the last inserted UUID
+SET @user_id = (SELECT user_id FROM User WHERE username = 'juandelacruz');
+
+-- Insert into Demographics table
+INSERT INTO Demographics (user_id, age, gender) VALUES (@user_id, 28, 'Male');
+
+-- Insert into Biometrics table
+INSERT INTO Biometrics (user_id, height, weight) VALUES (@user_id, 170, 68);
+
+-- Insert into MedicalConditions table
+INSERT INTO MedicalConditions (user_id, cardiovascular_disease, diabetes, respiratory_issues, heat_sensitivity, kidney_disease, neurological_disorders, other_condition) 
+VALUES (@user_id, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, 'None');
+
+-- Insert into Medications table
+INSERT INTO Medications (user_id, diuretics, blood_pressure_medications, antihistamines, antidepressants, antipsychotics, other_medication) 
+VALUES (@user_id, FALSE, FALSE, TRUE, FALSE, FALSE, 'None');
+
+-- Insert into Activity table
+INSERT INTO Activity (user_id, previous_heat_issues, heat_issues_details, outdoor_activity, activity_level, activity_duration) 
+VALUES (@user_id, TRUE, 'Experienced mild heat stroke last summer', TRUE, 'Moderate', '90');
+
+-- Insert into FluidIntake table
+INSERT INTO FluidIntake (user_id, water_amount, electrolyte_drinks_amount, coconut_water_amount, fruit_juice_amount, iced_tea_amount, soda_amount, milk_tea_amount, coffee_amount, herbal_tea_amount, other_fluid, other_fluid_amount) 
+VALUES (@user_id, 2500, 600, 300, 200, 0, 0, 0, 100, 0, 'None', 0);
+
+-- Insert into HeatConditions table
+INSERT INTO HeatConditions (user_id, mild_dehydration, heat_rash, heat_stroke, muscle_fatigue, heat_syncope, heat_edema, heat_exhaustion) 
+VALUES (@user_id, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE);

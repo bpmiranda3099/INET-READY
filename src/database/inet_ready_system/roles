@@ -1,0 +1,15 @@
+-- Create roles as users
+CREATE USER 'super_admin'@'localhost';
+CREATE USER 'admin'@'localhost';
+
+-- Grant privileges to roles
+GRANT ALL PRIVILEGES ON WeatherData.* TO 'super_admin'@'localhost';
+GRANT ALL PRIVILEGES ON WeatherDataHistory.* TO 'super_admin'@'localhost';
+
+-- Grant specific privileges to admin
+GRANT SELECT, INSERT, UPDATE ON inet_ready_system.WeatherData TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_system.WeatherDataHistory TO 'admin'@'localhost';
+
+-- Assign roles to users
+GRANT 'super_admin' TO 'super_admin'@'localhost';
+GRANT 'admin' TO 'admin'@'localhost';

@@ -1,0 +1,21 @@
+-- Insert into User table
+INSERT INTO User (name, username, email, password) VALUES ('Juan Dela Cruz', 'juandelacruz', 'juan.delacruz@example.com', 'securepassword123');
+
+-- Get the last inserted user_id
+SET @user_id = (SELECT user_id FROM User WHERE username = 'juandelacruz');
+
+-- Insert into UserProfile table
+INSERT INTO UserProfile (user_id, phone_number, date_of_birth, gender, address, city, state, country, postal_code, profile_picture, bio) 
+VALUES (@user_id, '+639171234567', '1993-05-15', 'Male', '1234 Mabini St.', 'Manila', 'Metro Manila', 'Philippines', '1000', NULL, 'Software developer and tech enthusiast.');
+
+-- Insert into UserDevice table
+INSERT INTO UserDevice (user_id, device_id, device_type, device_model, os_version, app_version) 
+VALUES (@user_id, 'device12345', 'Android', 'Samsung Galaxy S21', '11.0', '1.0.0');
+
+-- Insert into UserPreferences table
+INSERT INTO UserPreferences (user_id, language, timezone, notification_enabled) 
+VALUES (@user_id, 'English', 'Asia/Manila', TRUE);
+
+-- Insert into UserActivityLog table
+INSERT INTO UserActivityLog (user_id, activity_type, activity_details) 
+VALUES (@user_id, 'Login', 'User logged in from IP address 192.168.1.1');

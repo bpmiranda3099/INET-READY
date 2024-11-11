@@ -5,7 +5,6 @@ from datetime import datetime
 from pytz import timezone
 import csv
 import os
-import threading
 from functools import lru_cache
 
 # Set timezone to Asia/Manila for Philippine time
