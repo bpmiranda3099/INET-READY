@@ -1,11 +1,11 @@
-import csv
-import requests
-from requests.adapters import HTTPAdapter
-import ssl
-from dotenv import load_dotenv
 import os
 import time
+import csv
 import json
+import ssl
+import requests
+from requests.adapters import HTTPAdapter
+from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import lru_cache
 import mysql.connector
@@ -17,7 +17,7 @@ import logging
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Configure logging to append to heat_index_system.log in the specified directory
-log_file = os.path.join(root_dir, 'src', 'database', 'inet_ready_system', 'system_logs', 'heat_index_system.log')
+log_file = os.path.join(root_dir, 'logs', 'heat_index_system.log')
 logger.add(log_file, level="INFO", format="{time} - {level} - {message}", rotation="10 MB", retention="10 days")
 # Remove default console handler
 logger.remove()
@@ -337,7 +337,7 @@ def main():
     )
 
     # Write data to CSV in the root directory
-    csv_file_path = os.path.join(root_dir, 'heat_index_data.csv')
+    csv_file_path = os.path.join(root_dir, 'data', 'heat_index_data.csv')
     with open(csv_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["City", "Temperature", "Humidity", "Heat Index"])

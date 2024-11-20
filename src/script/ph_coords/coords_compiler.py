@@ -11,7 +11,6 @@ query = """
 area["ISO3166-2"="PH-CAV"];
 (
     node(area)[place~"city|town"];
-    node["name"="Naic"];
 );
 out body;
 """

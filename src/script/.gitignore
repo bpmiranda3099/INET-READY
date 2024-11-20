@@ -1,0 +1,7 @@
+.env
+heat_index_data.csv
+schedule_times.csv
+api_urls.json
+data
+logs
+charts
