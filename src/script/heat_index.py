@@ -12,6 +12,7 @@ import mysql.connector
 import mysql.connector.pooling
 from loguru import logger
 import logging
+from datetime import datetime
 
 # Determine the root directory of the script
 root_dir = os.path.dirname(os.path.abspath(__file__))
@@ -337,7 +338,9 @@ def main():
     )
 
     # Write data to CSV in the root directory
-    csv_file_path = os.path.join(root_dir, 'data', 'heat_index_data.csv')
+    date_today = datetime.now().strftime('%Y-%m-%d')
+    csv_file_path = os.path.join(root_dir, 'data', 'heat_index_data', f'{date_today}_heat_index_data.csv')
+    os.makedirs(os.path.dirname(csv_file_path), exist_ok=True)
     with open(csv_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["City", "Temperature", "Humidity", "Heat Index"])
