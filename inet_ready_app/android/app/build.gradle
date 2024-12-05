@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.inet_ready_app"
+    namespace = "com.inet_ready_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

@@ -1,0 +1,60 @@
+2024-12-05 21:02:45,506 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,507 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,508 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,508 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,509 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,510 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,511 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,511 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,512 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,512 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,512 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,513 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,513 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,513 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,515 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,516 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,516 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,517 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,517 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,519 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,519 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,520 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,521 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,522 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,523 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,524 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,525 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,526 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,526 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 21:02:45,527 - INFO - Scheduler started. It will run `heat_index.py` at specified times in Manila timezone.
+2024-12-05 21:02:45,530 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,531 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,531 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,532 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,533 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,534 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,535 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,536 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,537 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,538 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,538 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,539 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,539 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,542 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,543 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,544 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,546 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,548 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,549 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,550 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,552 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,553 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,553 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,554 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,555 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,558 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,559 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,560 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,560 - INFO - Added job "_lru_cache_wrapper" to job store "default"
+2024-12-05 21:02:45,561 - INFO - Scheduler started

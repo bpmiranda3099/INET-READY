@@ -1,4 +1,4 @@
-package com.example.inet_ready_app
+package com.inet_ready_app;
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,0 +1,35 @@
+START TRANSACTION;
+
+-- Insert dummy data into Admin table
+INSERT INTO Admin (admin_id, admin_role, name, username, email, password, salt) VALUES
+('fa4d8a8d-535b-4ad3-b602-89f10a6015b3', 'admin', 'John Doe', 'johndoe', 'johndoe@example.com', 'hashedpassword123', 'salt123'),
+('c54d7839-71c5-4d09-b8f6-6df768c1180f', 'superadmin', 'Jane Smith', 'janesmith', 'janesmith@example.com', 'hashedpassword456', 'salt456'),
+('a6f7b4d1-7318-4f43-b1b0-9801a7f6b94f', 'admin', 'Emily Johnson', 'emilyjohnson', 'emily@example.com', 'hashedpassword789', 'salt789'),
+('eac2c9fd-3ed5-4a3b-b5ae-0bcabbaf1b9b', 'admin', 'Michael Brown', 'michaelbrown', 'michael@example.com', 'hashedpassword101', 'salt101'),
+('1d3fa26d-4dbd-4e28-a383-8b0a39bb50b0', 'superadmin', 'David Lee', 'davidlee', 'davidlee@example.com', 'hashedpassword202', 'salt202');
+
+-- Insert dummy data into AdminActivityLog table (without log_id)
+INSERT INTO AdminActivityLog (admin_id, activity_type, activity_timestamp, activity_details) VALUES
+('fa4d8a8d-535b-4ad3-b602-89f10a6015b3', 'Login', '2024-12-01 08:00:00', 'Admin John Doe logged in'),
+('c54d7839-71c5-4d09-b8f6-6df768c1180f', 'Logout', '2024-12-01 08:15:00', 'Superadmin Jane Smith logged out'),
+('a6f7b4d1-7318-4f43-b1b0-9801a7f6b94f', 'Update Profile', '2024-12-01 09:30:00', 'Admin Emily Johnson updated her profile details'),
+('eac2c9fd-3ed5-4a3b-b5ae-0bcabbaf1b9b', 'Login', '2024-12-01 10:00:00', 'Admin Michael Brown logged in'),
+('1d3fa26d-4dbd-4e28-a383-8b0a39bb50b0', 'Logout', '2024-12-01 11:00:00', 'Superadmin David Lee logged out');
+
+-- Insert dummy data into AdminFeedback table
+INSERT INTO AdminFeedback (feedback_id, admin_id, title, category, feedback_message, date_added, time_added) VALUES
+('a6d55f69-713b-471f-bb44-fd45d29a7f02', 'fa4d8a8d-535b-4ad3-b602-89f10a6015b3', 'Bug Report: Login Error', 'Bug', 'There is an issue with logging in via the mobile app. The system times out after a few attempts.', '2024-12-01', '08:30:00'),
+('b5f28c7d-173d-4064-9f4c-f1a9f245926f', 'c54d7839-71c5-4d09-b8f6-6df768c1180f', 'Feature Request: Dark Mode', 'Feature Request', 'Requesting a dark mode option for better accessibility during night-time use.', '2024-12-01', '09:00:00'),
+('c8f90b79-982e-4e8f-9147-e1c0362deaf1', 'a6f7b4d1-7318-4f43-b1b0-9801a7f6b94f', 'General Inquiry: App Performance', 'General Inquiry', 'The app seems to be running slower than usual on Android devices, can we look into optimizing it?', '2024-12-01', '09:45:00'),
+('d89a8c3a-9b35-47e7-b9cf-e935b98f41ae', 'eac2c9fd-3ed5-4a3b-b5ae-0bcabbaf1b9b', 'Bug Report: Push Notifications', 'Bug', 'Push notifications are not being received despite being enabled in settings.', '2024-12-01', '10:30:00'),
+('e94f4f75-7eae-4d47-b057-909e7e9da9f1', '1d3fa26d-4dbd-4e28-a383-8b0a39bb50b0', 'Feature Request: User Analytics', 'Feature Request', 'We need to have user analytics integrated into the admin dashboard to better track user activities.', '2024-12-01', '11:15:00');
+
+-- Insert dummy data into ResolvedAdminFeedback table
+INSERT INTO ResolvedAdminFeedback (feedback_id, admin_id, title, category, feedback_message, date_added, time_added, resolved_datetime) VALUES
+('a6d55f69-713b-471f-bb44-fd45d29a7f02', 'fa4d8a8d-535b-4ad3-b602-89f10a6015b3', 'Bug Report: Login Error', 'Bug', 'There is an issue with logging in via the mobile app. The system times out after a few attempts.', '2024-12-01', '08:30:00', '2024-12-01 09:00:00'),
+('b5f28c7d-173d-4064-9f4c-f1a9f245926f', 'c54d7839-71c5-4d09-b8f6-6df768c1180f', 'Feature Request: Dark Mode', 'Feature Request', 'Requesting a dark mode option for better accessibility during night-time use.', '2024-12-01', '09:00:00', '2024-12-01 09:30:00'),
+('c8f90b79-982e-4e8f-9147-e1c0362deaf1', 'a6f7b4d1-7318-4f43-b1b0-9801a7f6b94f', 'General Inquiry: App Performance', 'General Inquiry', 'The app seems to be running slower than usual on Android devices, can we look into optimizing it?', '2024-12-01', '09:45:00', '2024-12-01 10:00:00'),
+('d89a8c3a-9b35-47e7-b9cf-e935b98f41ae', 'eac2c9fd-3ed5-4a3b-b5ae-0bcabbaf1b9b', 'Bug Report: Push Notifications', 'Bug', 'Push notifications are not being received despite being enabled in settings.', '2024-12-01', '10:30:00', '2024-12-01 11:00:00'),
+('e94f4f75-7eae-4d47-b057-909e7e9da9f1', '1d3fa26d-4dbd-4e28-a383-8b0a39bb50b0', 'Feature Request: User Analytics', 'Feature Request', 'We need to have user analytics integrated into the admin dashboard to better track user activities.', '2024-12-01', '11:15:00', '2024-12-01 11:45:00');
+
+COMMIT;

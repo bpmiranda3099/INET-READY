@@ -3,12 +3,15 @@ CREATE USER 'super_admin'@'localhost';
 CREATE USER 'admin'@'localhost';
 
 -- Grant privileges to roles
-GRANT ALL PRIVILEGES ON WeatherData.* TO 'super_admin'@'localhost';
-GRANT ALL PRIVILEGES ON WeatherDataHistory.* TO 'super_admin'@'localhost';
+GRANT ALL PRIVILEGES ON inet_ready_system.* TO super_admin;
 
 -- Grant specific privileges to admin
-GRANT SELECT, INSERT, UPDATE ON inet_ready_system.WeatherData TO 'admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE ON inet_ready_system.WeatherDataHistory TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_system.weatherdata TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_system.weatherdatahistory TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_system.weatherdataforecast TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_system.weatherdataforecasthistory TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_system.predictedhimetrics TO 'admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON inet_ready_system.predictedhimetricshistory TO 'admin'@'localhost';
 
 -- Assign roles to users
 GRANT 'super_admin' TO 'super_admin'@'localhost';

@@ -181,14 +181,19 @@ def update_database(weather_data, conn_pool, retries=3, delay=5):
             # Update the weatherdata table with new data
             for data in weather_data:
                 city, temperature, humidity, heat_index = data
+                date_added = datetime.now().date()
+                time_added = datetime.now().time()
+
                 cursor.execute("""
-                    INSERT INTO weatherdata (city, temperature, humidity, heat_index)
-                    VALUES (%s, %s, %s, %s)
+                    INSERT INTO weatherdata (city, temperature, humidity, heat_index, date_added, time_added)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     ON DUPLICATE KEY UPDATE
                         temperature = VALUES(temperature),
                         humidity = VALUES(humidity),
-                        heat_index = VALUES(heat_index)
-                """, (city, temperature, humidity, heat_index))
+                        heat_index = VALUES(heat_index),
+                        date_added = VALUES(date_added),
+                        time_added = VALUES(time_added)
+                """, (city, temperature, humidity, heat_index, date_added, time_added))
             
             conn.commit()
             logger.info("Database updated for batch of cities.")
@@ -245,20 +250,23 @@ def insert_weather_data(city, temperature, humidity, heat_index):
         """
         cursor.execute(insert_history_query, existing_data)
 
-        # Update WeatherData table with new data
+        date_added = datetime.now().date()
+        time_added = datetime.now().time()
+
+        # Update WeatherData table with new data including date_added and time_added
         update_query = """
-        UPDATE WeatherData
-        SET temperature = %s, humidity = %s, heat_index = %s
-        WHERE city = %s
+            UPDATE WeatherData
+            SET temperature = %s, humidity = %s, heat_index = %s, date_added = %s, time_added = %s
+            WHERE city = %s
         """
-        cursor.execute(update_query, (temperature, humidity, heat_index, city))
-    else:
-        # Insert new data into WeatherData table
+        cursor.execute(update_query, (temperature, humidity, heat_index, date_added, time_added, city))
+
+        # If no update was made, insert new data into WeatherData table with date_added and time_added
         insert_query = """
-        INSERT INTO WeatherData (city, temperature, humidity, heat_index)
-        VALUES (%s, %s, %s, %s)
+            INSERT INTO WeatherData (city, temperature, humidity, heat_index, date_added, time_added)
+            VALUES (%s, %s, %s, %s, %s, %s)
         """
-        cursor.execute(insert_query, (city, temperature, humidity, heat_index))
+        cursor.execute(insert_query, (city, temperature, humidity, heat_index, date_added, time_added))
 
     # Retrieve the current values from the weatherdata table
     select_query = """
@@ -276,14 +284,13 @@ def insert_weather_data(city, temperature, humidity, heat_index):
     """
     cursor.execute(insert_query_history, previous_values)
 
-    # Update the weatherdata table with the new values
+    # Update the weatherdata table with the new values including date_added and time_added
     update_query = """
         UPDATE weatherdata
-        SET temperature = %s, humidity = %s, heat_index = %s
+        SET temperature = %s, humidity = %s, heat_index = %s, date_added = %s, time_added = %s
         WHERE city = %s
     """
-    cursor.execute(update_query, (temperature, humidity, heat_index, city))
-
+    cursor.execute(update_query, (temperature, humidity, heat_index, date_added, time_added, city))
     # Commit the transaction
     connection.commit()
 
