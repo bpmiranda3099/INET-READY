@@ -21,3 +21,7 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Firebase
+/src/lib/firebase/config.js
+/static/firebase-messaging-sw.js
