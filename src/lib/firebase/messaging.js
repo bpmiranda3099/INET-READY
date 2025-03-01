@@ -1,54 +1,70 @@
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import app from './app';
 
+// Default empty exports for SSR compatibility
 let messaging = null;
+export let requestFCMToken = async () => null;
+export let onMessageListener = () => () => {};
 
-// Initialize Firebase Messaging if in browser
+// Only import and initialize Firebase messaging in browser context
 if (typeof window !== "undefined") {
-  messaging = getMessaging(app);
-}
-
-// Function to request permission and get FCM token
-export const requestFCMToken = async () => {
-  try {
-    if (!messaging) {
-      console.warn("Firebase Messaging is not available in this environment.");
-      return null;
-    }
-
-    // Request permission for notifications
-    const permission = await Notification.requestPermission();
+  // Dynamically import Firebase messaging
+  import('firebase/messaging').then(async (firebaseMessaging) => {
+    const { getMessaging, getToken, onMessage, isSupported } = firebaseMessaging;
     
-    if (permission === "granted") {
-      // Get the token
-      const token = await getToken(messaging, {
-        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
-      });
-      
-      console.log("FCM Token:", token);
-      return token;
-    } else {
-      console.log("Notification permission denied");
-      return null;
+    try {
+      // Check if browser supports Firebase Messaging
+      if (await isSupported()) {
+        messaging = getMessaging(app);
+        console.log("Firebase Messaging initialized");
+        
+        // Override the placeholder functions with real implementations
+        
+        // Request notification permission and FCM token
+        requestFCMToken = async () => {
+          try {
+            // Check if permission is already granted
+            const permission = await Notification.requestPermission();
+            
+            if (permission === "granted") {
+              // This is the VAPID key from your Firebase project settings
+              const vapidKey = "YOUR_VAPID_KEY"; // Get this from Firebase Console
+              
+              try {
+                const token = await getToken(messaging, { vapidKey });
+                if (token) {
+                  console.log("FCM Token:", token);
+                  return token;
+                } else {
+                  console.log("No registration token available.");
+                  return null;
+                }
+              } catch (error) {
+                console.error("Error getting FCM token:", error);
+                return null;
+              }
+            } else {
+              console.log("Notification permission denied");
+              return null;
+            }
+          } catch (error) {
+            console.error("Error requesting FCM token:", error);
+            return null;
+          }
+        };
+        
+        // Listen for messages while the app is in the foreground
+        onMessageListener = (callback) => {
+          return onMessage(messaging, (payload) => {
+            callback(payload);
+          });
+        };
+      }
+    } catch (error) {
+      console.log("Firebase Messaging not supported:", error);
     }
-  } catch (error) {
-    console.error("Error getting FCM token:", error);
-    return null;
-  }
-};
-
-// Handle foreground messages
-export const onMessageListener = () => {
-  return new Promise((resolve) => {
-    if (!messaging) {
-      console.warn("Firebase Messaging is not available in this environment.");
-      return;
-    }
-    
-    onMessage(messaging, (payload) => {
-      resolve(payload);
-    });
+  }).catch(error => {
+    console.error("Error loading Firebase Messaging:", error);
   });
-};
+}
 
 export default messaging;

@@ -10,8 +10,17 @@ import auth, {
   loginWithEmailAndPassword, 
   logoutUser, 
   getCurrentUser,
-  signInWithGoogle
+  sendPasswordReset,
+  signInWithGoogle,
+  sendVerificationEmail,
+  isEmailVerified
 } from './firebase/auth';
+import medicalService, {
+  hasMedicalRecord,
+  saveMedicalData,
+  updateMedicalData,
+  getMedicalData
+} from './firebase/medical';
 
 // Re-export everything
 export {
@@ -28,5 +37,13 @@ export {
   loginWithEmailAndPassword,
   logoutUser,
   getCurrentUser,
-  signInWithGoogle
+  sendPasswordReset,
+  signInWithGoogle,
+  sendVerificationEmail,
+  isEmailVerified,
+  medicalService,
+  hasMedicalRecord,
+  saveMedicalData,
+  updateMedicalData,
+  getMedicalData
 };

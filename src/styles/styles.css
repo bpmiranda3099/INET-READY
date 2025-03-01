@@ -197,7 +197,7 @@ main {
 }
 
 .auth-container {
-  max-width: 400px;
+  max-width: 800px;
   margin: var(--spacing-xl) auto;
   padding: var(--spacing-xl);
   border-radius: var(--border-radius);
@@ -324,6 +324,164 @@ input {
   margin-right: var(--spacing-xs);
   width: 18px;
   height: 18px;
+}
+
+/* ===========================
+   ENHANCED FORM COMPONENTS
+   =========================== */
+
+/* Password visibility toggle */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 65px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Input validation styles */
+input.invalid {
+  border-color: var(--danger-color);
+  background-color: rgba(244, 67, 54, 0.05);
+}
+
+.field-error {
+  color: var(--danger-color);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.field-info {
+  color: var(--text-lighter);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+/* Checkbox styles */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Add these styles to fix checkbox alignment issues */
+
+/* Checkbox and form options styles */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-xs);
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  background-color: var(--background-light);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+/* Password strength indicator styles */
+.password-strength-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.password-strength-bar {
+  flex-grow: 1;
+  height: 0.5rem;
+  background-color: #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.password-strength-indicator {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.password-strength-text {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+/* Spinner animation for loading states */
+.spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--primary-color);
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Terms checkbox with proper spacing */
+.terms-checkbox {
+  line-height: 1.4;
+}
+
+.terms-checkbox a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.terms-checkbox a:hover {
+  text-decoration: underline;
 }
 
 /* ===========================
@@ -558,5 +716,386 @@ input {
     page-break-inside: avoid;
     box-shadow: none;
     border: 1px solid #ddd;
+  }
+}
+
+/* Add these styles for the medical form and profile components */
+
+/* Medical Form Styles */
+.medical-form {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.form-intro {
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.form-section {
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md);
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-section h3 {
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: var(--spacing-sm);
+  color: var(--primary-color);
+}
+
+.section-helper {
+  font-size: 0.9rem;
+  color: var(--text-lighter);
+  margin-bottom: var(--spacing-md);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.fluid-intake-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+}
+
+.required {
+  color: var(--danger-color);
+}
+
+textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+.cancel-btn {
+  flex: 1;
+  padding: var(--spacing-sm);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: white;
+  color: var(--text-color);
+  font-weight: bold;
+  cursor: pointer;
+  min-height: 48px;
+}
+
+.cancel-btn:hover {
+  background-color: var(--background-light);
+}
+
+.success {
+  color: #4caf50;
+  background-color: #e8f5e9;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Medical Profile Styles */
+.medical-profile {
+  margin-top: var(--spacing-lg);
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.profile-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.edit-btn {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.edit-btn:hover {
+  background-color: rgba(66, 133, 244, 0.1);
+}
+
+.retry-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  margin-top: var(--spacing-sm);
+}
+
+.data-section {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.data-section h4 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  font-size: 1.1rem;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-xs);
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.data-label {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.data-value {
+  font-size: 1rem;
+}
+
+.condition-list ul {
+  list-style-type: disc;
+  margin-left: var(--spacing-lg);
+  padding: 0;
+}
+
+.condition-list li {
+  margin-bottom: var(--spacing-xs);
+}
+
+.empty-medical-profile {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-medical-profile h3 {
+  margin-top: 0;
+  color: var(--text-color);
+}
+
+.empty-medical-profile p {
+  color: var(--text-light);
+  margin-bottom: var(--spacing-lg);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--text-light);
+}
+
+/* Responsive Styles for Medical Form */
+@media (min-width: 576px) {
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .checkbox-group {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .fluid-intake-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .fluid-intake-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .checkbox-group {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .data-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .medical-form {
+    max-width: 900px;
+  }
+  
+  .fluid-intake-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Add these styles to support the improved medical form elements */
+
+/* Slider Styles */
+.range-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #ddd;
+  outline: none;
+  transition: background 0.15s ease-in-out;
+  margin: var(--spacing-xs) 0;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+  transition: background 0.15s ease-in-out;
+}
+
+.range-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s ease-in-out;
+}
+
+.range-slider::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+}
+
+.range-slider:hover::-webkit-slider-thumb {
+  background: var(--primary-dark);
+}
+
+.range-slider:hover::-moz-range-thumb {
+  background: var(--primary-dark);
+}
+
+/* Fieldset Styles */
+fieldset.condition-group {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+fieldset.condition-group legend {
+  padding: 0 var(--spacing-xs);
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+/* Add these styles to enhance the medical profile fluid visualizations */
+
+.fluid-intake-summary {
+  padding: 1rem;
+  background-color: rgba(245, 245, 245, 0.5);
+  border-radius: var(--border-radius);
+}
+
+.total-intake {
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.total-value {
+  color: var(--primary-color);
+}
+
+.fluid-bar {
+  height: 20px;
+  background: linear-gradient(90deg, rgba(66,133,244,0.8) 0%, rgba(66,133,244,1) 100%);
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.other-fluid-bar {
+  background: linear-gradient(90deg, rgba(142,68,173,0.8) 0%, rgba(142,68,173,1) 100%);
+}
+
+/* Style for the insight banners */
+.insight-banner {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Add more responsive styles for data visualization */
+@media (min-width: 768px) {
+  .fluid-bar-container {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
   }
 }

@@ -3,18 +3,35 @@
 	import { requestFCMToken, testFirestoreConnection } from '$lib/firebase';
 	import { goto } from '$app/navigation';
 
+	let fcmError = false;
+	let firestoreConnected = false;
+
 	onMount(async () => {
+		// Register service worker
 		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker
-				.register('/firebase-messaging-sw.js')
-				.then((reg) => console.log('Service Worker Registered:', reg))
-				.catch((err) => console.error('Service Worker Registration Failed:', err));
+			try {
+				const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+				console.log('Service Worker Registered:', reg);
+			} catch (err) {
+				console.error('Service Worker Registration Failed:', err);
+			}
 		}
 
-		await requestFCMToken();
+		// Request FCM token (with error handling)
+		try {
+			const token = await requestFCMToken();
+			fcmError = !token;
+		} catch (error) {
+			console.error("FCM token request failed:", error);
+			fcmError = true;
+		}
 		
 		// Test Firestore connection
-		await testFirestoreConnection();
+		try {
+			firestoreConnected = await testFirestoreConnection();
+		} catch (error) {
+			console.error("Firestore connection test failed:", error);
+		}
 	});
 
 	function navigateToApp() {
