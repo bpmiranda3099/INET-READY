@@ -46,4 +46,4 @@ jobs:
       # Step 6: Clean up credentials file
       - name: Clean up credentials
         if: always()
-        run: rm -f firebase_service_account.json # Match the file name here
+        run: rm -f firebase_service_account.json
