@@ -25,27 +25,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Debug base64 decoding
-      - name: Debug base64 decoding
+      # Step 4: Debug and decode Firebase credentials from GitHub Secrets
+      - name: Debug and decode Firebase credentials
         run: |
+          # Optional: Check the length of the base64 string
           echo "Base64 string length: $(echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" | wc -c)"
-          echo "Decoded output:"
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" | tr -d '\n' | base64 -d
 
-      # Step 5: Set up Firebase credentials from GitHub Secrets
-      - name: Set up Firebase credentials
-        run: |
+          # Decode the base64 string and save to a file
           echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" | tr -d '\n' | base64 -d > ./firebase_service_account.json
+
           # Verify the JSON is valid
           cat ./firebase_service_account.json | python -m json.tool || echo "Warning: Invalid JSON format in credentials file"
 
-      # Step 6: Run the weather update script
+      # Step 5: Run the weather update script
       - name: Run weather update script
         env:
           FIREBASE_SERVICE_ACCOUNT: ./firebase_service_account.json # Use correct file path
         run: python src/scripts/hourly_heat_index_api.py
 
-      # Step 7: Clean up credentials file
+      # Step 6: Clean up credentials file
       - name: Clean up credentials
         if: always()
         run: rm -f firebase_service_account.json # Match the file name here
