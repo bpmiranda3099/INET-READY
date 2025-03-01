@@ -154,9 +154,9 @@ def update_historical_weather_data():
                         daily_temperature_2m_max = daily.Variables(0).ValuesAsNumpy()
                         daily_temperature_2m_min = daily.Variables(1).ValuesAsNumpy()
                         daily_apparent_temperature_max = daily.Variables(2).ValuesAsNumpy()
-                        daily_apparent_temperature_min = daily.Variables(3).ValuesAsNumpy()  # Updated from mean to min
-                        daily_wind_speed_10m_max = daily.Variables(4).ValuesAsNumpy()  # Index adjusted
-                        daily_shortwave_radiation_sum = daily.Variables(5).ValuesAsNumpy()  # Index adjusted
+                        daily_apparent_temperature_min = daily.Variables(3).ValuesAsNumpy()  
+                        daily_wind_speed_10m_max = daily.Variables(4).ValuesAsNumpy() 
+                        daily_shortwave_radiation_sum = daily.Variables(5).ValuesAsNumpy() 
 
                         daily_data = {
                             "date": pd.date_range(
@@ -170,16 +170,15 @@ def update_historical_weather_data():
                         daily_data["temperature_2m_max"] = daily_temperature_2m_max
                         daily_data["temperature_2m_min"] = daily_temperature_2m_min
                         daily_data["apparent_temperature_max"] = daily_apparent_temperature_max
-                        daily_data["apparent_temperature_mean"] = daily_apparent_temperature_min  # Using min as mean
-                        daily_data["wind_speed_10m_max"] = daily_wind_speed_10m_max  # Consistent naming
+                        daily_data["apparent_temperature_mean"] = daily_apparent_temperature_min  
+                        daily_data["wind_speed_10m_max"] = daily_wind_speed_10m_max 
                         daily_data["shortwave_radiation_sum"] = daily_shortwave_radiation_sum
-                        daily_data["rain_sum"] = 0  # Since rain_sum is not in the new API parameters, adding a placeholder
 
                         daily_dataframe = pd.DataFrame(data=daily_data)
 
                         def validate_row(row):
                             # Ensure all required fields are present and not None
-                            required_fields = ['city', 'date', 'temperature_2m_max', 'temperature_2m_min', 'apparent_temperature_max', 'apparent_temperature_mean', 'rain_sum', 'wind_speed_10m_max', 'shortwave_radiation_sum']
+                            required_fields = ['city', 'date', 'temperature_2m_max', 'temperature_2m_min', 'apparent_temperature_max', 'apparent_temperature_mean', 'wind_speed_10m_max', 'shortwave_radiation_sum']
                             for field in required_fields:
                                 if pd.isna(row[field]):
                                     return False
@@ -189,7 +188,7 @@ def update_historical_weather_data():
                             if validate_row(row):
                                 row['date'] = get_recent_date()
                                 heat_index = calculate_heat_index(row['temperature_2m_max'], row['apparent_temperature_mean'])
-                                new_row = [row['city'], row['date'], row['temperature_2m_max'], row['temperature_2m_min'], row['apparent_temperature_max'], row['apparent_temperature_mean'], row['rain_sum'], row['wind_speed_10m_max'], row['shortwave_radiation_sum'], heat_index]
+                                new_row = [row['city'], row['date'], row['temperature_2m_max'], row['temperature_2m_min'], row['apparent_temperature_max'], row['apparent_temperature_mean'], row['wind_speed_10m_max'], row['shortwave_radiation_sum'], heat_index]
                                 city_name = new_row[0]
                                 if city_name not in existing_rows_by_city:
                                     existing_rows_by_city[city_name] = []
@@ -200,7 +199,7 @@ def update_historical_weather_data():
                     logger.error(f'Error processing city data: {city_data}: {e}')
 
         header = ['City', 'Date', 'Temperature Max', 'Temperature Min', 'Apparent Temperature Max',
-                  'Apparent Temperature Mean', 'Precipitation', 'Wind Speed', 'Solar Radiation',
+                  'Apparent Temperature Mean', 'Wind Speed', 'Solar Radiation',
                   'Heat Index']
         write_all_rows(output_file, header, existing_rows_by_city)
 
