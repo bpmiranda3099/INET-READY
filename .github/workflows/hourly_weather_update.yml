@@ -4,35 +4,40 @@ on:
   schedule:
     # Run every hour at the 0 minute mark
     - cron: '0 * * * *'
-  workflow_dispatch:
-    # Allow manual triggering
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
   update-weather-data:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout repository
       - uses: actions/checkout@v3
 
+      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.13'
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install firebase-admin requests loguru
           # Install any other dependencies needed by hourly_heat_index.py
 
-      - name: Decode Firebase credentials
+      # Step 4: Set up Firebase credentials from GitHub Secrets
+      - name: Set up Firebase credentials
         run: |
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > serviceAccountKey.json
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > ./firebase_service_account.json
 
+      # Step 5: Run the weather update script
       - name: Run weather update script
         env:
-          FIREBASE_SERVICE_ACCOUNT: ./serviceAccountKey.json
-        run: python Scripts/hourly_heat_index_api.py
+          FIREBASE_SERVICE_ACCOUNT: ./firebase_service_account.json # Use correct file path
+        run: python src/scripts/hourly_heat_index_api.py
 
+      # Step 6: Clean up credentials file
       - name: Clean up credentials
         if: always()
-        run: rm -f serviceAccountKey.json
+        run: rm -f firebase_service_account.json # Match the file name here
