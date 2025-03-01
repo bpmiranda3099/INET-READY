@@ -50,7 +50,6 @@ def write_data_to_csv(data, csv_file_path):
 
 def get_recent_date():
     recent_date = (datetime.today() - timedelta(days=3)).strftime("%Y-%m-%d")
-    print(f"Recent date: {recent_date}")
     return recent_date
 
 def append_rows_to_city_end(rows_by_city, row):
