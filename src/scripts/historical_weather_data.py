@@ -7,8 +7,8 @@ import requests_cache
 from retry_requests import retry
 import openmeteo_requests
 from loguru import logger
-from functools import lru_cache
 import time
+from functions.calculate_heat_index import calculate_heat_index
 
 # Define the root directory and log file path
 root_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,19 +17,6 @@ log_file_path = os.path.join(root_dir, 'logs', 'historical_weather_data.log')
 # Configure the logger to write to the log file
 logger.remove()  # Remove the default logger
 logger.add(log_file_path, rotation="10 MB")  # Add a file handler with rotation
-
-# Function to calculate heat index with LRU cache
-@lru_cache(maxsize=1024)
-def calculate_heat_index(temperature_c, humidity):
-    if pd.isna(temperature_c) or pd.isna(humidity):
-        return None
-    temperature_f = (temperature_c * 9/5) + 32
-    heat_index_f = (-42.379 + 2.04901523 * temperature_f + 10.14333127 * humidity 
-                    - 0.22475541 * temperature_f * humidity - 0.00683783 * temperature_f**2 
-                    - 0.05481717 * humidity**2 + 0.00122874 * temperature_f**2 * humidity 
-                    + 0.00085282 * temperature_f * humidity**2 - 0.00000199 * temperature_f**2 * humidity**2)
-    heat_index_c = (heat_index_f - 32) * 5/9
-    return heat_index_c
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after=-1)
@@ -46,7 +33,7 @@ def write_data_to_csv(data, csv_file_path):
         csv_writer = csv.writer(file)
         with ThreadPoolExecutor(max_workers=5) as executor:
             for row in data:
-                executor.submit(write_row_to_csv, row, csv_writer)
+                executor.submit(write_row_to_csv, row, csv_writer) 
 
 try:
     start_time = time.time()  # Start the timer
@@ -108,7 +95,7 @@ try:
                         "start_date": start_date,
                         "end_date": end_date,
                         "daily": ["temperature_2m_max", "temperature_2m_min", "apparent_temperature_max", "apparent_temperature_min", "wind_speed_10m_max", "shortwave_radiation_sum"],
-                        "temperature_unit": "fahrenheit",
+                        "temperature_unit": "celsius",
                         "timezone": "Asia/Singapore"
                     }
 
