@@ -140,6 +140,7 @@ def update_historical_weather_data():
                         "start_date": start_date,
                         "end_date": end_date,
                         "daily": ["temperature_2m_max", "temperature_2m_min", "apparent_temperature_max", "apparent_temperature_min", "wind_speed_10m_max", "shortwave_radiation_sum"],
+                        "hourly": ["relative_humidity_2m"],
                         "temperature_unit": "fahrenheit",
                         "timezone": "Asia/Singapore"
                     }
@@ -158,6 +159,10 @@ def update_historical_weather_data():
                         daily_wind_speed_10m_max = daily.Variables(4).ValuesAsNumpy() 
                         daily_shortwave_radiation_sum = daily.Variables(5).ValuesAsNumpy() 
 
+                        # Process hourly data
+                        hourly = response.Hourly()
+                        hourly_relative_humidity_2m = hourly.Variables(0).ValuesAsNumpy()
+
                         daily_data = {
                             "date": pd.date_range(
                                 start=pd.to_datetime(daily.Time(), unit="s", utc=True),
@@ -170,15 +175,33 @@ def update_historical_weather_data():
                         daily_data["temperature_2m_max"] = daily_temperature_2m_max
                         daily_data["temperature_2m_min"] = daily_temperature_2m_min
                         daily_data["apparent_temperature_max"] = daily_apparent_temperature_max
-                        daily_data["apparent_temperature_mean"] = daily_apparent_temperature_min  
+                        daily_data["apparent_temperature_min"] = daily_apparent_temperature_min  
                         daily_data["wind_speed_10m_max"] = daily_wind_speed_10m_max 
                         daily_data["shortwave_radiation_sum"] = daily_shortwave_radiation_sum
 
+                        # Process hourly data into daily averages
+                        hourly_data = {
+                            "date": pd.date_range(
+                                start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
+                                end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
+                                freq=pd.Timedelta(seconds=hourly.Interval()),
+                                inclusive="left"
+                            ),
+                            "relative_humidity_2m": hourly_relative_humidity_2m
+                        }
+                        hourly_dataframe = pd.DataFrame(data=hourly_data)
+                        hourly_dataframe['date'] = hourly_dataframe['date'].dt.date
+                        daily_humidity = hourly_dataframe.groupby('date')['relative_humidity_2m'].mean().reset_index()
+                        daily_humidity['date'] = pd.to_datetime(daily_humidity['date'])
+
                         daily_dataframe = pd.DataFrame(data=daily_data)
+                        # Calculate daily average relative humidity
+                        avg_humidity = hourly_relative_humidity_2m.mean() if len(hourly_relative_humidity_2m) > 0 else None
+                        daily_dataframe['relative_humidity_2m'] = avg_humidity
 
                         def validate_row(row):
                             # Ensure all required fields are present and not None
-                            required_fields = ['city', 'date', 'temperature_2m_max', 'temperature_2m_min', 'apparent_temperature_max', 'apparent_temperature_mean', 'wind_speed_10m_max', 'shortwave_radiation_sum']
+                            required_fields = ['city', 'date', 'temperature_2m_max', 'temperature_2m_min', 'apparent_temperature_max', 'apparent_temperature_min', 'wind_speed_10m_max', 'shortwave_radiation_sum', 'relative_humidity_2m']
                             for field in required_fields:
                                 if pd.isna(row[field]):
                                     return False
@@ -187,8 +210,8 @@ def update_historical_weather_data():
                         for index, row in daily_dataframe.iterrows():
                             if validate_row(row):
                                 row['date'] = get_recent_date()
-                                heat_index = calculate_heat_index(row['temperature_2m_max'], row['apparent_temperature_mean'])
-                                new_row = [row['city'], row['date'], row['temperature_2m_max'], row['temperature_2m_min'], row['apparent_temperature_max'], row['apparent_temperature_mean'], row['wind_speed_10m_max'], row['shortwave_radiation_sum'], heat_index]
+                                heat_index = calculate_heat_index(row['temperature_2m_max'], row['relative_humidity_2m'])
+                                new_row = [row['city'], row['date'], row['temperature_2m_max'], row['temperature_2m_min'], row['apparent_temperature_max'], row['apparent_temperature_min'], row['wind_speed_10m_max'], row['shortwave_radiation_sum'], row['relative_humidity_2m'], heat_index]
                                 city_name = new_row[0]
                                 if city_name not in existing_rows_by_city:
                                     existing_rows_by_city[city_name] = []
@@ -199,7 +222,7 @@ def update_historical_weather_data():
                     logger.error(f'Error processing city data: {city_data}: {e}')
 
         header = ['City', 'Date', 'Temperature Max', 'Temperature Min', 'Apparent Temperature Max',
-                  'Apparent Temperature Mean', 'Wind Speed', 'Solar Radiation',
+                  'Apparent Temperature Min', 'Wind Speed', 'Solar Radiation', 'Relative Humidity',
                   'Heat Index']
         write_all_rows(output_file, header, existing_rows_by_city)
 

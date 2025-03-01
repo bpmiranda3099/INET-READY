@@ -55,7 +55,7 @@ try:
     logger.info(f'Preparing output file at {output_file}')
     with open(output_file, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['City', 'Date', 'Temperature Max', 'Temperature Min', 'Apparent Temperature Max', 'Apparent Temperature Mean', 'Wind Speed', 'Solar Radiation', 'Heat Index'])
+        writer.writerow(['City', 'Date', 'Temperature Max', 'Temperature Min', 'Apparent Temperature Max', 'Apparent Temperature Min', 'Wind Speed', 'Solar Radiation', 'Relative Humidity', 'Heat Index'])
 
         all_data_to_write = []
 
@@ -95,6 +95,7 @@ try:
                         "start_date": start_date,
                         "end_date": end_date,
                         "daily": ["temperature_2m_max", "temperature_2m_min", "apparent_temperature_max", "apparent_temperature_min", "wind_speed_10m_max", "shortwave_radiation_sum"],
+                        "hourly": ["relative_humidity_2m"],
                         "temperature_unit": "celsius",
                         "timezone": "Asia/Singapore"
                     }
@@ -113,6 +114,10 @@ try:
                         daily_wind_speed_10m_max = daily.Variables(4).ValuesAsNumpy()  
                         daily_shortwave_radiation_sum = daily.Variables(5).ValuesAsNumpy()  
 
+                        # Process hourly data
+                        hourly = response.Hourly()
+                        hourly_relative_humidity_2m = hourly.Variables(0).ValuesAsNumpy()
+
                         daily_data = {
                             "date": pd.date_range(
                                 start=pd.to_datetime(daily.Time(), unit="s", utc=True),
@@ -125,15 +130,37 @@ try:
                         daily_data["temperature_2m_max"] = daily_temperature_2m_max
                         daily_data["temperature_2m_min"] = daily_temperature_2m_min
                         daily_data["apparent_temperature_max"] = daily_apparent_temperature_max
-                        daily_data["apparent_temperature_mean"] = daily_apparent_temperature_min  
+                        daily_data["apparent_temperature_min"] = daily_apparent_temperature_min  
                         daily_data["wind_speed_10m_max"] = daily_wind_speed_10m_max 
                         daily_data["shortwave_radiation_sum"] = daily_shortwave_radiation_sum
 
+                        # Process hourly data into daily averages
+                        hourly_data = {
+                            "date": pd.date_range(
+                                start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
+                                end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
+                                freq=pd.Timedelta(seconds=hourly.Interval()),
+                                inclusive="left"
+                            ),
+                            "relative_humidity_2m": hourly_relative_humidity_2m
+                        }
+                        hourly_dataframe = pd.DataFrame(data=hourly_data)
+                        hourly_dataframe['date'] = hourly_dataframe['date'].dt.date
+                        daily_humidity = hourly_dataframe.groupby('date')['relative_humidity_2m'].mean().reset_index()
+                        daily_humidity['date'] = pd.to_datetime(daily_humidity['date'])
+
                         daily_dataframe = pd.DataFrame(data=daily_data)
+                        # Convert date to match with daily humidity format
+                        daily_dataframe['date_key'] = daily_dataframe['date'].dt.date
+                        daily_humidity['date_key'] = daily_humidity['date'].dt.date
+                        # Merge daily data with humidity averages
+                        daily_dataframe = pd.merge(daily_dataframe, daily_humidity[['date_key', 'relative_humidity_2m']], 
+                                                on='date_key', how='left')
+                        daily_dataframe.drop('date_key', axis=1, inplace=True)
 
                         def validate_row(row):
                             # Ensure all required fields are present and not None
-                            required_fields = ['city', 'date', 'temperature_2m_max', 'temperature_2m_min', 'apparent_temperature_max', 'apparent_temperature_mean', 'wind_speed_10m_max', 'shortwave_radiation_sum']
+                            required_fields = ['city', 'date', 'temperature_2m_max', 'temperature_2m_min', 'apparent_temperature_max', 'apparent_temperature_min', 'wind_speed_10m_max', 'shortwave_radiation_sum', 'relative_humidity_2m']
                             for field in required_fields:
                                 if pd.isna(row[field]):
                                     return False
@@ -141,8 +168,8 @@ try:
 
                         for index, row in daily_dataframe.iterrows():
                             if validate_row(row):
-                                heat_index = calculate_heat_index(row['temperature_2m_max'], row['apparent_temperature_mean'])
-                                all_data_to_write.append([row['city'], row['date'], row['temperature_2m_max'], row['temperature_2m_min'], row['apparent_temperature_max'], row['apparent_temperature_mean'], row['wind_speed_10m_max'], row['shortwave_radiation_sum'], heat_index])
+                                heat_index = calculate_heat_index(row['temperature_2m_max'], row['apparent_temperature_min'])
+                                all_data_to_write.append([row['city'], row['date'], row['temperature_2m_max'], row['temperature_2m_min'], row['apparent_temperature_max'], row['apparent_temperature_min'], row['wind_speed_10m_max'], row['shortwave_radiation_sum'], row['relative_humidity_2m'], heat_index])
                             else:
                                 logger.warning(f'Invalid data found in row {index}')
                 except Exception as e:
