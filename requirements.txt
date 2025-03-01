@@ -3,4 +3,7 @@ requests-cache
 retry-requests
 numpy
 pandas
+firebase-admin
+requests
+loguru
 

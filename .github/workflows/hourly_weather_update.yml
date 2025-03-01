@@ -23,8 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install firebase-admin requests loguru
-          # Install any other dependencies needed by hourly_heat_index.py
+          pip install -r requirements.txt pandas
 
       # Step 4: Set up Firebase credentials from GitHub Secrets
       - name: Set up Firebase credentials
