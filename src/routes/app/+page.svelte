@@ -136,34 +136,3 @@
         </div>
     {/if}
 </div>
-
-<style>
-    .loading-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 300px;
-        text-align: center;
-        color: var(--text-light);
-    }
-    
-    .onboarding-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: var(--spacing-xl);
-    }
-    
-    .onboarding-container h1 {
-        text-align: center;
-        margin-bottom: var(--spacing-md);
-        color: var(--primary-color);
-    }
-    
-    .onboarding-message {
-        text-align: center;
-        margin-bottom: var(--spacing-xl);
-        color: var(--text-light);
-        font-size: 1.1rem;
-    }
-</style>

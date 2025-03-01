@@ -22,6 +22,14 @@
   --border-radius: 4px;
   --container-width: 1200px;
   --font-size-base: 16px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --border-color-dark: #aaa;
+  --bg-light: #f5f5f7;
+  --primary-color-light: #e3f2fd;
+  --primary-color-lighter: #bbdefb;
+  --primary-color-dark: #1976d2;
 }
 
 /* Apply a natural box layout model to all elements */
@@ -577,6 +585,42 @@ input.invalid {
   gap: var(--spacing-xs);
 }
 
+/* Dashboard tabs styles */
+.dashboard-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-lg);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-light);
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.tab-btn:hover:not(.active) {
+  color: var(--text-color);
+  border-bottom-color: var(--border-color);
+}
+
+.tab-content {
+  margin-bottom: var(--spacing-xl);
+}
+
 /* ===========================
    RESPONSIVE STYLES - SMALL MOBILE FIRST APPROACH
    =========================== */
@@ -1098,4 +1142,343 @@ fieldset.condition-group legend {
     grid-template-columns: 150px 1fr;
     align-items: center;
   }
+}
+
+/* ===========================
+   LOGIN COMPONENT
+   =========================== */
+.verification-required {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--border-radius);
+  text-align: center;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+}
+
+.resend-btn:disabled {
+  color: var(--text-lighter);
+  cursor: not-allowed;
+}
+
+/* ===========================
+   REGISTER COMPONENT
+   =========================== */
+.success-container {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.verification-message {
+  background-color: #e3f2fd;
+  border: 1px solid #bbdefb;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+  text-align: left;
+  line-height: 1.6;
+}
+
+.small-text {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: var(--spacing-md);
+}
+
+.warning {
+  color: #d32f2f;
+  font-weight: 500;
+  margin-top: var(--spacing-md);
+}
+
+/* ===========================
+   VERIFICATION STATUS
+   =========================== */
+.verification-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+  text-align: center;
+}
+
+.verification-card {
+  background-color: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.verification-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-lg);
+  color: var(--primary-color);
+}
+
+.verification-message {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: var(--spacing-lg);
+}
+
+.verification-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin: var(--spacing-xl) 0;
+}
+
+.verification-tips {
+  background-color: var(--bg-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  text-align: left;
+}
+
+.verification-tips h4 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-color);
+}
+
+.verification-tips ul {
+  margin: 0;
+  padding-left: var(--spacing-lg);
+}
+
+.verification-tips li {
+  margin-bottom: var(--spacing-xs);
+}
+
+@media (min-width: 480px) {
+  .verification-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .resend-btn, .logout-btn {
+    min-width: 200px;
+  }
+}
+
+/* ===========================
+   MEDICAL PROFILE COMPONENT
+   =========================== */
+.fluid-intake-summary {
+  margin-top: var(--spacing-md);
+}
+
+.total-intake {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.fluid-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.fluid-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.fluid-label {
+  font-weight: 500;
+}
+
+.fluid-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.fluid-bar {
+  height: 20px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  transition: width 0.3s ease;
+}
+
+.other-fluid-bar {
+  background-color: #8e44ad; /* Different color for other fluids */
+}
+
+.fluid-amount {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* Insight banner styles */
+.insight-banner {
+  display: flex;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-lg);
+  background-color: #e3f2fd;
+  border-left: 5px solid #2196f3;
+}
+
+.insight-banner.concern {
+  background-color: #ffebee;
+  border-left-color: #f44336;
+}
+
+.insight-banner.warning {
+  background-color: #fff8e1;
+  border-left-color: #ffc107;
+}
+
+.insight-banner.good {
+  background-color: #e8f5e9;
+  border-left-color: #4caf50;
+}
+
+.insight-icon {
+  font-size: 2rem;
+  margin-right: var(--spacing-md);
+  display: flex;
+  align-items: center;
+}
+
+.insight-content {
+  flex: 1;
+}
+
+.insight-content h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.insight-content p {
+  margin: 0;
+}
+
+/* ===========================
+   MEDICAL FORM COMPONENT
+   =========================== */
+.condition-group {
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.condition-group legend {
+  padding: 0 var(--spacing-xs);
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xs);
+}
+
+.other-field {
+  margin-top: var(--spacing-md);
+}
+
+.other-field input[type="text"] {
+  margin-top: var(--spacing-xs);
+  width: 100%;
+}
+
+.other-fluid {
+  margin-top: var(--spacing-xs);
+  padding-left: var(--spacing-xl);
+}
+
+.fluid-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.slider-group {
+  width: 100%;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xs);
+}
+
+.slider-value {
+  font-weight: 600;
+  color: var(--primary-color);
+  min-width: 60px;
+  text-align: right;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-lighter);
+  margin-top: 4px;
+}
+
+/* Responsive styles for medical form */
+@media (min-width: 576px) {
+  .checkbox-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .checkbox-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ===========================
+   ONBOARDING & LOADING
+   =========================== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+  color: var(--text-light);
+}
+
+.onboarding-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.onboarding-container h1 {
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+  color: var(--primary-color);
+}
+
+.onboarding-message {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  color: var(--text-light);
+  font-size: 1.1rem;
 }

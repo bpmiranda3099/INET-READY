@@ -129,39 +129,3 @@
         </div>
     {/if}
 </div>
-
-<style>
-    .dashboard-tabs {
-        display: flex;
-        border-bottom: 1px solid var(--border-color);
-        margin-bottom: var(--spacing-lg);
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .tab-btn {
-        padding: var(--spacing-sm) var(--spacing-md);
-        background: none;
-        border: none;
-        border-bottom: 3px solid transparent;
-        cursor: pointer;
-        font-weight: 500;
-        color: var(--text-light);
-        transition: all 0.3s;
-        white-space: nowrap;
-    }
-    
-    .tab-btn.active {
-        color: var(--primary-color);
-        border-bottom-color: var(--primary-color);
-    }
-    
-    .tab-btn:hover:not(.active) {
-        color: var(--text-color);
-        border-bottom-color: var(--border-color);
-    }
-    
-    .tab-content {
-        margin-bottom: var(--spacing-xl);
-    }
-</style>

@@ -325,33 +325,3 @@
         </button>
     </form>
 {/if}
-
-<style>
-    
-    .success-container {
-        text-align: center;
-        padding: var(--spacing-xl) var(--spacing-md);
-    }
-    
-    .verification-message {
-        background-color: #e3f2fd;
-        border: 1px solid #bbdefb;
-        border-radius: var(--radius-md);
-        padding: var(--spacing-lg);
-        margin: var(--spacing-lg) 0;
-        text-align: left;
-        line-height: 1.6;
-    }
-    
-    .small-text {
-        font-size: 0.9rem;
-        color: var(--text-light);
-        margin-top: var(--spacing-md);
-    }
-
-    .warning {
-        color: #d32f2f;
-        font-weight: 500;
-        margin-top: var(--spacing-md);
-    }
-</style>

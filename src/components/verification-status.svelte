@@ -1,5 +1,6 @@
 <script>
     import { sendVerificationEmail, logoutUser } from '$lib/firebase';
+    import { onDestroy } from 'svelte';
     
     export let user;
     
@@ -83,8 +84,6 @@
     }
     
     // Clean up timer on component destruction
-    import { onDestroy } from 'svelte';
-    
     onDestroy(() => {
         if (resendTimer) {
             clearInterval(resendTimer);
@@ -144,126 +143,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    .verification-container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: var(--spacing-xl) var(--spacing-md);
-        text-align: center;
-    }
-    
-    .verification-card {
-        background-color: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        padding: var(--spacing-xl);
-        margin-bottom: var(--spacing-xl);
-    }
-    
-    .verification-icon {
-        display: flex;
-        justify-content: center;
-        margin-bottom: var(--spacing-lg);
-        color: var(--primary-color);
-    }
-    
-    .verification-message {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin-bottom: var(--spacing-lg);
-    }
-    
-    .verification-actions {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-md);
-        margin: var(--spacing-xl) 0;
-    }
-    
-    .resend-btn {
-        background-color: var(--primary-color-light);
-        color: var(--primary-color-dark);
-        border: none;
-        padding: var(--spacing-md);
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    
-    .resend-btn:hover:not(:disabled) {
-        background-color: var(--primary-color-lighter);
-    }
-    
-    .resend-btn:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-    
-    .logout-btn {
-        background-color: transparent;
-        border: 1px solid var(--border-color-dark);
-        color: var(--text-color);
-        padding: var(--spacing-md);
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    
-    .logout-btn:hover {
-        background-color: var(--bg-light);
-    }
-    
-    .verification-tips {
-        background-color: var(--bg-light);
-        border-radius: var(--radius-md);
-        padding: var(--spacing-lg);
-        margin-top: var(--spacing-lg);
-        text-align: left;
-    }
-    
-    .verification-tips h4 {
-        margin-top: 0;
-        margin-bottom: var(--spacing-sm);
-        color: var(--text-color);
-    }
-    
-    .verification-tips ul {
-        margin: 0;
-        padding-left: var(--spacing-lg);
-    }
-    
-    .verification-tips li {
-        margin-bottom: var(--spacing-xs);
-    }
-    
-    .success {
-        background-color: #e8f5e9;
-        color: #2e7d32;
-        border: 1px solid #a5d6a7;
-        border-radius: var(--radius-sm);
-        padding: var(--spacing-md);
-        margin: var(--spacing-md) 0;
-    }
-    
-    .error {
-        background-color: #ffebee;
-        color: #c62828;
-        border: 1px solid #ef9a9a;
-        border-radius: var(--radius-sm);
-        padding: var(--spacing-md);
-        margin: var(--spacing-md) 0;
-    }
-    
-    @media (min-width: 480px) {
-        .verification-actions {
-            flex-direction: row;
-            justify-content: center;
-        }
-        
-        .resend-btn, .logout-btn {
-            min-width: 200px;
-        }
-    }
-</style>

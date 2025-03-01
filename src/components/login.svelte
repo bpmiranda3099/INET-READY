@@ -247,29 +247,3 @@
         <span>Sign in with Google</span>
     </button>
 </form>
-
-<style>
-    .verification-required {
-        background-color: #fff3cd;
-        border: 1px solid #ffeeba;
-        padding: var(--spacing-md);
-        margin-bottom: var(--spacing-md);
-        border-radius: var(--border-radius);
-        text-align: center;
-    }
-    
-    .resend-btn {
-        background: none;
-        border: none;
-        color: var(--primary-color);
-        font-weight: 600;
-        text-decoration: underline;
-        cursor: pointer;
-        padding: var(--spacing-xs);
-    }
-    
-    .resend-btn:disabled {
-        color: var(--text-lighter);
-        cursor: not-allowed;
-    }
-</style>
