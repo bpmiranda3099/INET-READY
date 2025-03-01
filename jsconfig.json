@@ -1,9 +1,15 @@
 {
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
-    "checkJs": false,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "module": "esnext",  // Ensure this is at least 'es2015' or later
-    "moduleResolution": "node"  // Use 'node' instead of 'bundler' for JS
+    "moduleResolution": "node",  // Use 'node' instead of 'bundler' for JS
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true
   },
   "exclude": ["node_modules", ".svelte-kit", "build"]
 }
