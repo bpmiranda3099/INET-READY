@@ -14,19 +14,25 @@ export async function saveUserCityPreferences(userId, preferences) {
         const userPrefsRef = doc(db, 'userPreferences', userId);
         const userPrefsDoc = await getDoc(userPrefsRef);
         
-        // Add weather data for cities
-        const enhancedPreferences = await enhanceWithCityData(preferences);
+        // We need to maintain the simple format for display but also store enhanced data
+        // This approach separates the display values from the enhanced data
+        const preferencesToSave = {
+            homeCity: preferences.homeCity,
+            preferredCities: preferences.preferredCities,
+            // Store enhanced data in a separate field so it doesn't interfere with the original format
+            enhancedData: await enhanceWithCityData(preferences)
+        };
         
         if (userPrefsDoc.exists()) {
             // Update existing document
             await updateDoc(userPrefsRef, {
-                cityPreferences: enhancedPreferences,
+                cityPreferences: preferencesToSave,
                 updatedAt: new Date()
             });
         } else {
             // Create new document
             await setDoc(userPrefsRef, {
-                cityPreferences: enhancedPreferences,
+                cityPreferences: preferencesToSave,
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
@@ -69,27 +75,25 @@ async function enhanceWithCityData(preferences) {
     try {
         // Fetch city data for home city
         const homeCityData = await getCityData(preferences.homeCity);
-        const enhancedPreferences = {
-            homeCity: preferences.homeCity,
+        
+        const result = {
             homeCityData: homeCityData || null,
-            preferredCities: []
+            preferredCitiesData: {}
         };
 
         // Fetch city data for each preferred city
         for (const city of preferences.preferredCities) {
             const cityData = await getCityData(city);
-            enhancedPreferences.preferredCities.push({
-                city: city,
-                cityData: cityData || null
-            });
+            if (cityData) {
+                result.preferredCitiesData[city] = cityData;
+            }
         }
 
-        return enhancedPreferences;
+        return result;
     } catch (error) {
         console.warn('Error enhancing city data:', error);
-        // Return original preferences if there was an error
-        return preferences;
+        // Return empty enhanced data if there was an error
+        return { homeCityData: null, preferredCitiesData: {} };
     }
 }
-// Removed duplicate enhanceWithCityData function declaration here
 

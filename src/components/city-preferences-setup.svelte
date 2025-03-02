@@ -1,7 +1,7 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
     import { saveUserCityPreferences } from '$lib/services/user-preferences-service';
-    import { availableCities, fetchLatestWeatherData, startWeatherDataUpdates } from '$lib/services/weather-data-service';
+    import { availableCities, fetchLatestWeatherData } from '$lib/services/weather-data-service';
     
     export let userId;
     export let onComplete = () => {}; // Callback when setup is completed
@@ -35,16 +35,6 @@
         unsubscribe();
     });
     
-    function addCity(city) {
-        if (city && !selectedCities.includes(city)) {
-            selectedCities = [...selectedCities, city];
-        }
-    }
-    
-    function removeCity(index) {
-        selectedCities = selectedCities.filter((_, i) => i !== index);
-    }
-    
     async function savePreferences() {
         if (!homeCity) {
             error = "Please select your home city";
@@ -55,9 +45,12 @@
         error = null;
         
         try {
+            // Ensure we're saving simple string values
             await saveUserCityPreferences(userId, {
-                homeCity,
-                preferredCities: selectedCities
+                homeCity: homeCity,
+                preferredCities: selectedCities.map(city => 
+                    typeof city === 'object' && city.city ? city.city : city
+                )
             });
             onComplete();
         } catch (err) {
@@ -66,6 +59,16 @@
         } finally {
             isSaving = false;
         }
+    }
+    
+    function addCity(city) {
+        if (city && !selectedCities.includes(city)) {
+            selectedCities = [...selectedCities, city];
+        }
+    }
+    
+    function removeCity(index) {
+        selectedCities = selectedCities.filter((_, i) => i !== index);
     }
     
     function skip() {

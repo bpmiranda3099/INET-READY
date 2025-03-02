@@ -40,8 +40,26 @@
         try {
             const preferences = await getUserCityPreferences(userId);
             if (preferences) {
-                homeCity = preferences.homeCity || '';
-                selectedCities = preferences.preferredCities || [];
+                // Ensure homeCity is a string
+                homeCity = typeof preferences.homeCity === 'string' 
+                    ? preferences.homeCity 
+                    : '';
+                
+                // Ensure preferredCities is an array of strings
+                if (Array.isArray(preferences.preferredCities)) {
+                    // Convert any objects to strings if needed
+                    selectedCities = preferences.preferredCities.map(city => 
+                        typeof city === 'object' && city !== null && city.city 
+                            ? city.city 
+                            : typeof city === 'string' 
+                                ? city 
+                                : ''
+                    ).filter(city => city !== ''); // Remove any empty items
+                } else {
+                    selectedCities = [];
+                }
+                
+                console.log("Loaded preferences:", { homeCity, selectedCities });
             }
         } catch (err) {
             console.error("Error loading city preferences:", err);
