@@ -19,6 +19,7 @@
     import MedicalProfile from './medicalprofile.svelte';
     import MedicalForm from './medicalform.svelte';
     import PermissionsPanel from './permissions-panel.svelte';
+    import CityPreferences from './city-preferences.svelte';
     
     export let user;
     
@@ -353,6 +354,13 @@
         >
             Medical Profile
         </button>
+        <button 
+            class="tab-btn" 
+            class:active={activeTab === 'settings'}
+            on:click={() => activeTab = 'settings'}
+        >
+            Settings
+        </button>
     </div>
     
     <!-- Tab content -->
@@ -428,6 +436,12 @@
             {:else}
                 <MedicalProfile userId={user.uid} />
             {/if}
+        </div>
+    {:else if activeTab === 'settings'}
+        <div class="tab-content">
+            <div class="settings-container">
+                <CityPreferences userId={user.uid} />
+            </div>
         </div>
     {/if}
 </div>
@@ -524,5 +538,13 @@
         border-radius: 8px;
         margin: 1rem 0;
         border-left: 3px solid #f44242;
+    }
+
+    /* Add styling for settings tab */
+    .settings-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-top: 1rem;
     }
 </style>
