@@ -422,8 +422,9 @@ def main():
         
         # Display animated loading message
         with tqdm(total=100, desc="Getting ready", leave=True, position=0) as pbar:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
             # Fix the file path format - remove the leading slash
-            file_path = 'c:/Users/vantia021/Documents/inet-ready/public/data/historical_weather_data.csv'
+            file_path = os.path.join(script_dir, '..', '..', 'public', 'data', 'historical_weather_data.csv')
             pbar.update(20)  # Show some progress
             
             # Simulate loading with animation
