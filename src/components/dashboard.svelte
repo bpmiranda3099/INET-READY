@@ -64,6 +64,17 @@
         unsubscribe();
     });
     
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            console.log("Current Latitude:", position.coords.latitude);
+            console.log("Current Longitude:", position.coords.longitude);
+        },
+        (error) => {
+            console.error("Error getting current location:", error);
+        },
+        { enableHighAccuracy: true }
+    );
+
     async function handleLogout() {
         loading = true;
         try {
