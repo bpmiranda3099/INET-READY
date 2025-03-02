@@ -407,7 +407,7 @@ def generate_forecast_json(predictions_df, overall_rating):
                 forecast_data["cities"][city].append({
                     "date": row['Date'],
                     "heat_index": float(row['Predicted Heat Index']),
-                    "units": "°F"
+                    "units": "°C"
                 })
         
         return forecast_data

@@ -236,7 +236,12 @@ def display_forecast(data, json_output=False):
         for city, forecast in data['cities'].items():
             print(f"\n{city}:")
             for day in forecast:
-                print(f"  {day['date']}: {day['heat_index']:.1f}{day['units']}")
+                # Use '°C' explicitly or fall back to units in data
+                units = day.get('units', '°C')
+                # Ensure units is '°C' even if it was '°F' or something else in the data
+                if '°' not in units:
+                    units = '°C'
+                print(f"  {day['date']}: {day['heat_index']:.1f}{units}")
     else:
         print("\nNo city forecast data available")
 
