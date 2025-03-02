@@ -29,3 +29,6 @@ retry-requests
 
 # Thermal Comfort Calculation
 pythermalcomfort
+
+# Additional Packages
+python-dateutil
