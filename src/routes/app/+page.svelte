@@ -131,7 +131,9 @@
                             <i class="bi bi-sun-fill" style="font-size: 10rem; color: #e0b76b; clip-path: inset(0 0 40% 0);"></i>
                         </div>
 						<h1 class="display-1 fw-bold mb-4" style="font-size: 3rem; margin-top: -6rem;">INET-READY</h1>
-						<p class="subtitle mb-3" style="font-size: 1.25rem;">Your Heat Check for Safe and Informed Travel</p>
+                        <div class="d-flex justify-content-center">
+                            <p class="subtitle mb-3" style="font-size: 1.25rem; margin-top: -1rem;">Your Heat Check for Safe and Informed Travel</p>
+                        </div>
 					</div>
 				</div>
 			</div>

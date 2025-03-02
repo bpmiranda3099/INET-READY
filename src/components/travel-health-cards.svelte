@@ -261,7 +261,7 @@
         
         // Top Tip 
         if (sections.topTip) {
-            formattedHtml += `<div class="top-tip"><span class="tip-label">TOP TIP</span> ${sections.topTip}</div>`;
+            formattedHtml += `<div class="top-tip"> ${sections.topTip}</div>`;
         }
         
         // Weather Brief
@@ -289,7 +289,7 @@
         
         // Quick Tips
         if (sections.quickTips.length > 0) {
-            formattedHtml += `<div class="quick-tips"><h3>Quick Tips</h3><ul class="tips-list">`;
+            formattedHtml += `<div class="quick-tips"><h3>Quick Tip</h3><ul class="tips-list">`;
             sections.quickTips.forEach(point => {
                 if (point) formattedHtml += `<li>${point}</li>`;
             });

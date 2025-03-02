@@ -139,7 +139,7 @@
 </script>
 
 <form on:submit|preventDefault={handleLogin} novalidate>
-    <h2 class="subtitle mb-3" style="color: black; font-size: 2rem; margin-top: -3rem;">Login</h2>
+    <h2 class="subtitle mb-3" style="color: black; font-size: 2rem; margin-top: -1rem;">Login</h2>
     
     {#if error}
         <div class="error">{error}</div>
@@ -244,7 +244,8 @@
             alt="Google Logo" 
             width="18" 
             height="18"
+            style="margin-bottom: 3rem;"
         />
-        <span>Sign in with Google</span>
+        <span style="margin-bottom: 3rem;">Sign in with Google</span>
     </button>
 </form>

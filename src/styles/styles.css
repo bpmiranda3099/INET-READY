@@ -6,11 +6,11 @@
   --primary-dark: #3367D6;
   --danger-color: #f44336;
   --danger-dark: #d32f2f;
-  --text-color: #FFFFFF;
-  --text-light: #FFFFFF;
+  --text-color: #333;
+  --text-light: #555;
   --text-lighter: #777;
-  --background-light: #333; /* Changed to cream color */
-  --background-cream: #333; /* Added cream background color */
+  --background-light: #FFFFFF; /* Changed to cream color */
+  --background-cream: #FFFFFF; /* Added cream background color */
   --border-color: #ddd;
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
@@ -108,10 +108,10 @@ main {
 }
 
 .hero h1 {
-  font-size: 4rem; /* Larger font size */
+  font-size: 5rem; /* Larger font size */
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-  color: #FFFFFF;
+  color: #2a2a2a;
 }
 
 .subtitle {
@@ -333,10 +333,6 @@ input {
   cursor: pointer;
   width: 100%;
   min-height: 48px;
-}
-
-.google-btn:hover {
-  background-color: #f7f7f7;
 }
 
 .google-btn:disabled {

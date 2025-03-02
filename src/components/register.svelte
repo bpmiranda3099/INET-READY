@@ -180,7 +180,7 @@
     </div>
 {:else}
     <form on:submit|preventDefault={handleRegister} novalidate>
-        <h2>Create Account</h2>
+        <h2 class="subtitle mb-3" style="color: black; font-size: 2rem; margin-top: -1rem;">Create Account</h2>
         
         {#if error}
             <div class="error">{error}</div>
@@ -294,7 +294,8 @@
         
         <button 
             type="submit" 
-            class="submit-btn" 
+            class="submit-btn subtitle mb-3" 
+            style="background-color: #dd815e; font-size: 1rem; color: white; margin-top: 1rem; text-decoration: none;"
             disabled={loading || !validateForm()}
         >
             {#if loading}
@@ -310,18 +311,19 @@
         </div>
         
         <button 
-            type="button" 
-            class="google-btn" 
-            on:click={handleGoogleSignup}
-            disabled={loading || !agreedToTerms}
-        >
-            <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/archive/c/c1/20190923152039%21Google_%22G%22_logo.svg" 
-                alt="Google Logo" 
-                width="18" 
-                height="18"
-            />
-            <span>Sign up with Google</span>
-        </button>
+        type="button" 
+        class="google-btn" 
+        on:click={handleGoogleSignup}
+        disabled={loading}
+    >
+        <img 
+            src="https://upload.wikimedia.org/wikipedia/commons/archive/c/c1/20190923152039%21Google_%22G%22_logo.svg" 
+            alt="Google Logo" 
+            width="18" 
+            height="18"
+            style="margin-bottom: 3rem;"
+        />
+        <span style="margin-bottom: 3rem;">Sign in with Google</span>
+    </button>
     </form>
 {/if}
