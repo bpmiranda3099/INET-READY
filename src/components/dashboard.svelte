@@ -16,12 +16,13 @@
     } from '../lib/services/service-worker';
     import { getUserCityPreferences } from '$lib/services/user-preferences-service';
     
-    // Fix component import capitalization to match the actual file names
+    // Components
     import MedicalProfile from './medicalprofile.svelte';
     import MedicalForm from './medicalform.svelte';
     import PermissionsPanel from './permissions-panel.svelte';
     import CityPreferences from './city-preferences.svelte';
     import CityPreferencesSetup from './city-preferences-setup.svelte';
+    import TravelHealthCards from './travel-health-cards.svelte';
     
     export let user;
     
