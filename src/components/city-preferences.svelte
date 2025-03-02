@@ -5,50 +5,41 @@
     export let userId;
     
     let homeCity = '';
-    let cityInput = '';
     let selectedCities = [];
-    let suggestedCities = [];
     let isSaving = false;
     let saved = false;
     let error = null;
-    let cityData = [];
     let loadingCities = true;
+    let caviteCities = [];
     
-    // Cavite cities list
-    const caviteCities = [
-        "Amadeo", "Imus", "General Trias", "Dasmariñas", "Bacoor", 
-        "Carmona", "Kawit", "Noveleta", "Silang", "Naic",
-        "Tanza", "Alfonso", "Indang", "Rosario", "Trece Martires",
-        "General Mariano Alvarez", "Cavite City", "Tagaytay", 
-        "Mendez", "Ternate", "Maragondon", "Magallanes"
-    ];
-    
-    // Function to load cities with their coordinates from CSV
+    // Function to load cities from CSV
     async function loadCityData() {
         try {
             const response = await fetch('/data/city_coords.csv');
             const csvText = await response.text();
             
-            // Simple CSV parsing
+            // Parse the CSV
             const rows = csvText.split('\n').slice(1); // Skip header
-            
-            const parsedData = rows
+            const cities = rows
                 .filter(row => row.trim().length > 0)
                 .map(row => {
-                    const [city, lat, lng] = row.split(',');
-                    return {
-                        name: city.trim(),
-                        latitude: parseFloat(lat),
-                        longitude: parseFloat(lng)
-                    };
+                    const [city] = row.split(',');
+                    return city.trim();
                 });
                 
-            cityData = parsedData;
-            return parsedData;
+            caviteCities = cities;
+            return cities;
         } catch (err) {
             console.error("Error loading city data:", err);
-            // Fallback to just names if CSV loading fails
-            return caviteCities.map(city => ({ name: city }));
+            // Fallback to hardcoded list
+            caviteCities = [
+                "Amadeo", "Imus", "General Trias", "Dasmariñas", "Bacoor", 
+                "Carmona", "Kawit", "Noveleta", "Silang", "Naic",
+                "Tanza", "Alfonso", "Indang", "Rosario", "Trece Martires",
+                "General Mariano Alvarez", "Cavite City", "Tagaytay", 
+                "Mendez", "Ternate", "Maragondon", "Magallanes"
+            ];
+            return caviteCities;
         } finally {
             loadingCities = false;
         }
@@ -71,38 +62,9 @@
         }
     });
     
-    function handleCityInput() {
-        if (!cityInput.trim()) {
-            suggestedCities = [];
-            return;
-        }
-        
-        const input = cityInput.toLowerCase();
-        
-        // Use city data if available, otherwise fallback to just city names
-        if (cityData.length > 0) {
-            suggestedCities = cityData
-                .filter(city => 
-                    city.name.toLowerCase().includes(input) && 
-                    !selectedCities.includes(city.name) &&
-                    city.name.toLowerCase() !== homeCity.toLowerCase())
-                .map(city => city.name)
-                .slice(0, 8); // Show more suggestions for better UX
-        } else {
-            suggestedCities = caviteCities
-                .filter(city => 
-                    city.toLowerCase().includes(input) && 
-                    !selectedCities.includes(city) &&
-                    city.toLowerCase() !== homeCity.toLowerCase())
-                .slice(0, 8);
-        }
-    }
-    
-    function selectCity(city) {
-        if (!selectedCities.includes(city)) {
+    function addCity(city) {
+        if (city && !selectedCities.includes(city)) {
             selectedCities = [...selectedCities, city];
-            cityInput = '';
-            suggestedCities = [];
         }
     }
     
@@ -110,13 +72,12 @@
         selectedCities = selectedCities.filter((_, i) => i !== index);
     }
     
-    function selectHomeCity(city) {
-        homeCity = city;
-        cityInput = '';
-        suggestedCities = [];
-    }
-    
     async function savePreferences() {
+        if (!homeCity) {
+            error = "Please select your home city";
+            return;
+        }
+        
         isSaving = true;
         error = null;
         saved = false;
@@ -127,6 +88,7 @@
                 preferredCities: selectedCities
             });
             saved = true;
+            setTimeout(() => { saved = false; }, 3000);
         } catch (err) {
             console.error("Error saving city preferences:", err);
             error = "Failed to save your city preferences.";
@@ -155,83 +117,49 @@
         <h4>Home City</h4>
         <p class="section-description">Set your current city of residence in Cavite</p>
         
-        <div class="city-input-container">
-            <input 
-                type="text"
-                placeholder={loadingCities ? "Loading cities..." : "Start typing your home city..."}
-                bind:value={cityInput}
-                on:input={handleCityInput}
+        <div class="select-container">
+            <select 
+                bind:value={homeCity}
                 disabled={loadingCities}
-                class="city-input"
-            />
-            
-            {#if suggestedCities.length > 0}
-                <div class="suggestions-dropdown">
-                    {#each suggestedCities as city}
-                        <div 
-                            class="suggestion-item"
-                            role="button"
-                            tabindex="0"
-                            on:click={() => selectHomeCity(city)}
-                            on:keydown={(e) => e.key === 'Enter' && selectHomeCity(city)}
-                        >
-                            {city}
-                        </div>
-                    {/each}
-                </div>
-            {:else if cityInput && cityInput.length > 0 && !loadingCities}
-                <div class="suggestions-dropdown">
-                    <div class="suggestion-item no-results">No matching cities found</div>
-                </div>
-            {/if}
+                class="city-select"
+            >
+                <option value="">Select your home city</option>
+                {#each caviteCities as city}
+                    <option value={city}>{city}</option>
+                {/each}
+            </select>
         </div>
-        
-        {#if homeCity}
-            <div class="selected-city home-city">
-                <span>{homeCity}</span>
-                <button 
-                    class="remove-btn"
-                    on:click={() => { homeCity = ''; }}
-                    aria-label="Remove home city"
-                >
-                    ×
-                </button>
-            </div>
-        {/if}
     </div>
     
     <div class="preference-section">
         <h4>Preferred Cities</h4>
         <p class="section-description">Add cities in Cavite you frequently travel to or are interested in</p>
         
-        <div class="city-input-container">
-            <input 
-                type="text"
-                placeholder={loadingCities ? "Loading cities..." : "Search for a city to add..."}
-                bind:value={cityInput}
-                on:input={handleCityInput}
-                disabled={loadingCities}
-                class="city-input"
-            />
-            
-            {#if suggestedCities.length > 0}
-                <div class="suggestions-dropdown">
-                    {#each suggestedCities as city}
-                        <div 
-                            class="suggestion-item"
-                            role="button"
-                            tabindex="0"
-                            on:click={() => selectCity(city)}
-                            on:keydown={(e) => e.key === 'Enter' && selectCity(city)}
-                        >
-                            {city}
-                        </div>
-                    {/each}
-                </div>
-            {:else if cityInput && cityInput.length > 0 && !loadingCities}
-                <div class="suggestions-dropdown">
-                    <div class="suggestion-item no-results">No matching cities found</div>
-                </div>
+        <div class="select-container">
+            <label for="preferredCitySelect" class="sr-only">Select cities you visit</label>
+            <select 
+                id="preferredCitySelect"
+                on:change={e => {
+                    const value = e.currentTarget.value;
+                    if (value) {
+                        addCity(value);
+                        e.currentTarget.value = "";
+                    }
+                }}
+                disabled={loadingCities || caviteCities.filter(city => 
+                    city !== homeCity && !selectedCities.includes(city)
+                ).length === 0}
+                class="city-select"
+            >
+                <option value="">Add a city you visit</option>
+                {#each caviteCities.filter(city => 
+                    city !== homeCity && !selectedCities.includes(city)
+                ) as city}
+                    <option value={city}>{city}</option>
+                {/each}
+            </select>
+            {#if caviteCities.filter(city => city !== homeCity && !selectedCities.includes(city)).length === 0}
+                <p class="city-select-note">All available cities have been added</p>
             {/if}
         </div>
         
@@ -259,7 +187,7 @@
         <button 
             class="save-btn"
             on:click={savePreferences}
-            disabled={isSaving}
+            disabled={isSaving || !homeCity}
         >
             {isSaving ? 'Saving...' : 'Save Preferences'}
         </button>
@@ -284,41 +212,22 @@
         font-size: 0.9rem;
     }
     
-    .city-input-container {
-        position: relative;
+    .select-container {
         margin-bottom: 1rem;
     }
     
-    .city-input {
+    .city-select {
         width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #ccc;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
         border-radius: 4px;
+        background-color: white;
         font-size: 1rem;
     }
     
-    .suggestions-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 0 0 4px 4px;
-        z-index: 10;
-        max-height: 200px;
-        overflow-y: auto;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .suggestion-item {
-        padding: 0.5rem;
-        cursor: pointer;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .suggestion-item:hover {
+    .city-select:disabled {
         background-color: #f5f5f5;
+        cursor: not-allowed;
     }
     
     .selected-cities {
@@ -377,7 +286,7 @@
         font-weight: bold;
     }
     
-    .save-btn:hover {
+    .save-btn:hover:not(:disabled) {
         background-color: #3367d6;
     }
     
@@ -401,19 +310,23 @@
         border-radius: 4px;
         margin-bottom: 1rem;
     }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
     
-    .suggestion-item.no-results {
+    .city-select-note {
+        color: #666;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
         font-style: italic;
-        color: #888;
-        cursor: default;
-    }
-    
-    .suggestion-item.no-results:hover {
-        background-color: white;
-    }
-    
-    .city-input:disabled {
-        background-color: #f5f5f5;
-        cursor: not-allowed;
     }
 </style>

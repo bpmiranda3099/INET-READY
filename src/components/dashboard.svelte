@@ -14,12 +14,14 @@
         serviceWorkerRegistered, 
         serviceWorkerError 
     } from '../lib/services/service-worker';
+    import { getUserCityPreferences } from '$lib/services/user-preferences-service';
     
     // Fix component import capitalization to match the actual file names
     import MedicalProfile from './medicalprofile.svelte';
     import MedicalForm from './medicalform.svelte';
     import PermissionsPanel from './permissions-panel.svelte';
     import CityPreferences from './city-preferences.svelte';
+    import CityPreferencesSetup from './city-preferences-setup.svelte';
     
     export let user;
     
@@ -35,6 +37,11 @@
     let locationPermission = null;
     let showPermissionsPanel = false;
     let fcmToken = null;
+    
+    // City preferences state
+    let hasCityPreferences = false;
+    let showCityPreferencesSetup = false;
+    let checkingCityPreferences = true;
     
     // Location state
     let locationData = null;
@@ -81,60 +88,74 @@
     let unsubscribeMessages;
     onMount(() => {
         (async () => {
-        // Check existing permissions
-        notificationPermission = Notification.permission;
-        
-        // Check for geolocation permission state
-        if ("permissions" in navigator) {
-            try {
-                const status = await navigator.permissions.query({ name: 'geolocation' });
-                locationPermission = status.state;
-                // Listen for changes to permission state
-                status.onchange = () => {
+            // Check existing permissions
+            notificationPermission = Notification.permission;
+            
+            // Check for geolocation permission state
+            if ("permissions" in navigator) {
+                try {
+                    const status = await navigator.permissions.query({ name: 'geolocation' });
                     locationPermission = status.state;
-                };
-                
-                // If location permission is granted, get current position
-                if (locationPermission === 'granted') {
-                    getLocation();
+                    // Listen for changes to permission state
+                    status.onchange = () => {
+                        locationPermission = status.state;
+                    };
+                    
+                    // If location permission is granted, get current position
+                    if (locationPermission === 'granted') {
+                        getLocation();
+                    }
+                } catch (error) {
+                    console.error("Error checking geolocation permission:", error);
                 }
-            } catch (error) {
-                console.error("Error checking geolocation permission:", error);
             }
-        }
-        
-        // Register service worker if not already registered
-        if (!swRegistered) {
+            
+            // Register service worker if not already registered
+            if (!swRegistered) {
+                try {
+                    await registerServiceWorker();
+                    console.log("Service worker registration status:", swRegistered);
+                } catch (error) {
+                    console.error("Error registering service worker:", error);
+                }
+            }
+            
+            // Check if user has city preferences
             try {
-                await registerServiceWorker();
-                console.log("Service worker registration status:", swRegistered);
+                const cityPreferences = await getUserCityPreferences(user.uid);
+                hasCityPreferences = cityPreferences && cityPreferences.homeCity;
+                
+                // Show city preferences setup if user doesn't have them yet
+                // But only after permissions panel is handled
+                showCityPreferencesSetup = !hasCityPreferences;
             } catch (error) {
-                console.error("Error registering service worker:", error);
+                console.error("Error checking city preferences:", error);
+            } finally {
+                checkingCityPreferences = false;
             }
-        }
-        
-        // Determine if we should show the permissions panel
-        showPermissionsPanel = notificationPermission !== 'granted' || 
-                              locationPermission !== 'granted';
-        
-        // If notifications already granted, get FCM token
-        if (notificationPermission === 'granted') {
-            fcmToken = await requestFCMToken();
-            if (fcmToken) {
-                // Here you would typically save the token to the user's profile
-                console.log("FCM token available:", fcmToken);
+            
+            // Determine if we should show the permissions panel
+            showPermissionsPanel = notificationPermission !== 'granted' || 
+                                locationPermission !== 'granted';
+            
+            // If notifications already granted, get FCM token
+            if (notificationPermission === 'granted') {
+                fcmToken = await requestFCMToken();
+                if (fcmToken) {
+                    // Here you would typically save the token to the user's profile
+                    console.log("FCM token available:", fcmToken);
+                }
             }
-        }
-        
-        // Subscribe to foreground messages
-        const unsubscribeMessages = onMessageListener();
-        
-        // Check if user has medical record
-        if (user && user.uid) {
-            hasMedicalRecord(user.uid).then(result => {
-                medicalRecordExists = result;
-            });
-        }
+            
+            // Subscribe to foreground messages
+            const unsubscribeMessages = onMessageListener();
+            
+            // Check if user has medical record
+            if (user && user.uid) {
+                hasMedicalRecord(user.uid).then(result => {
+                    medicalRecordExists = result;
+                });
+            }
         })();
         let unsubscribeMessages = onMessageListener();
         return () => {
@@ -148,6 +169,11 @@
             unsubscribeGeocodingError();
         };
     });
+    
+    function handleCityPreferencesComplete() {
+        showCityPreferencesSetup = false;
+        hasCityPreferences = true;
+    }
     
     async function getLocation() {
         fetchingLocation = true;
@@ -321,6 +347,14 @@
             onRequestNotification={requestNotificationPermission}
             onRequestLocation={requestLocationPermission}
             onComplete={handlePermissionsComplete}
+        />
+    {/if}
+    
+    <!-- City Preferences Setup -->
+    {#if !showPermissionsPanel && showCityPreferencesSetup && !checkingCityPreferences}
+        <CityPreferencesSetup 
+            userId={user.uid}
+            onComplete={handleCityPreferencesComplete}
         />
     {/if}
     
