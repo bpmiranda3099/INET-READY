@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.13'
           cache: 'pip' # Cache pip dependencies
 
       # Step 3: Install dependencies
@@ -58,7 +58,7 @@ jobs:
 
       # Step 7: Upload forecast as artifact
       - name: Upload forecast as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: heat-index-forecast
           path: public/data/predicted_heat_index/*_heat_index_forecast.json
