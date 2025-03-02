@@ -218,4 +218,67 @@ function getAgeCategory(age) {
   return 'elderly';
 }
 
+/**
+ * Generate daily weather insights based on heat index forecast data
+ * @param {Object} forecastData Heat index forecast data
+ * @returns {Promise<string>} The generated weather insights
+ */
+export async function generateDailyWeatherInsights(forecastData) {
+  try {
+    // Create a prompt for Gemini based on the forecast data
+    const forecastDate = forecastData?.generated_on || 'recent';
+    const overallRating = forecastData?.overall_rating || {};
+    const ratingText = overallRating?.rating || 'N/A';
+    const ratingScore = overallRating?.score || 0;
+    
+    // Get data for major cities (up to 5)
+    const citiesData = [];
+    if (forecastData?.cities) {
+      for (const [city, forecasts] of Object.entries(forecastData.cities)) {
+        if (forecasts && forecasts.length > 0) {
+          // Get today's forecast or the first available
+          const todayForecast = forecasts[0];
+          citiesData.push({
+            city,
+            heat_index: todayForecast.heat_index ?? 'N/A',
+            temperature: todayForecast.temperature ?? 'N/A',
+            humidity: todayForecast.humidity ?? 'N/A'
+          });
+          
+          // Only use up to 5 cities to keep the prompt concise
+          if (citiesData.length >= 5) break;
+        }
+      }
+    }
+
+    const prompt = `
+Generate a concise daily weather insight for Philippines travelers based on today's heat index forecast.
+
+FORECAST DETAILS:
+- Date: ${forecastDate}
+- Overall heat comfort rating: ${ratingText} (${ratingScore}/100)
+- Selected city data:
+${JSON.stringify(citiesData, null, 2)}
+
+FORMAT YOUR RESPONSE EXACTLY WITH THESE SECTIONS:
+TODAY'S SUMMARY: [Brief 1-sentence overview of today's heat conditions nationwide]
+
+CITY SPOTLIGHT: [Most notable city and its specific heat index situation]
+
+TRAVEL TIP: [One practical travel tip based on today's heat forecast]
+
+HEALTH ADVICE: [One key health precaution for travelers today]
+
+Ensure your response is factual, concise, and based strictly on the provided heat index data. The entire response should be under 500 characters and formatted exactly as specified.
+`;
+
+    // Generate content using the existing model
+    const result = await model.generateContent(prompt);
+    return result.response.text().trim();
+  } catch (error) {
+    console.error("Error generating weather insights:", error);
+    return `Could not generate weather insights. Error: ${error.message || "Unknown error"}. Please try again later.`;
+  }
+}
+
 export { model };
