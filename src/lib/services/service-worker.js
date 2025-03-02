@@ -6,7 +6,7 @@ export const serviceWorkerRegistered = writable(false);
 export const serviceWorkerError = writable(null);
 
 // Service worker registration path - this points to the existing Firebase messaging SW
-const SW_PATH = '/static/firebase-messaging-sw.js';
+const SW_PATH = 'firebase-messaging-sw.js';
 
 /**
  * Registers the service worker
