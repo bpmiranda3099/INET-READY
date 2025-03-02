@@ -64,17 +64,6 @@
         unsubscribe();
     });
     
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            console.log("Current Latitude:", position.coords.latitude);
-            console.log("Current Longitude:", position.coords.longitude);
-        },
-        (error) => {
-            console.error("Error getting current location:", error);
-        },
-        { enableHighAccuracy: true }
-    );
-
     async function handleLogout() {
         loading = true;
         try {
@@ -154,10 +143,24 @@
             {loading ? 'Logging out...' : 'Logout'}
         </button>
     </div>
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            console.log("Current Latitude:", position.coords.latitude);
+            console.log("Current Longitude:", position.coords.longitude);
+        },
+        (error) => {
+            console.error("Error getting current location:", error);
+        },
+        { enableHighAccuracy: true }
+    );
     
     <div class="welcome">
         <h2>Welcome, {user.email}!</h2>
         <p>You are now connected to INET-READY.</p>
+        <p>You are currently at:</p>
+        <p>Latitude: {position?.coords.latitude}</p>
+        <p>Longitude: {position?.coords.longitude}</p>
     </div>
     
     <!-- Permissions Panel -->
