@@ -124,7 +124,17 @@
         {/if}
     {:else}
         <div class="auth-container">
-            <h1>INET-READY</h1>
+            <div class="container">
+				<div class="row justify-content-center">
+					<div class="col-md-10">
+                        <div class="d-flex justify-content-center">
+                            <i class="bi bi-sun-fill" style="font-size: 10rem; color: #e0b76b; clip-path: inset(0 0 40% 0);"></i>
+                        </div>
+						<h1 class="display-1 fw-bold mb-4" style="font-size: 3rem; margin-top: -6rem;">INET-READY</h1>
+						<p class="subtitle mb-3" style="font-size: 1.25rem;">Your Heat Check for Safe and Informed Travel</p>
+					</div>
+				</div>
+			</div>
             
             {#if !showRegister}
                 <Login />

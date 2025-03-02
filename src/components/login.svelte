@@ -139,7 +139,7 @@
 </script>
 
 <form on:submit|preventDefault={handleLogin} novalidate>
-    <h2>Login</h2>
+    <h2 class="subtitle mb-3" style="color: black; font-size: 2rem; margin-top: -3rem;">Login</h2>
     
     {#if error}
         <div class="error">{error}</div>
@@ -215,9 +215,10 @@
         </button>
     </div>
     
-    <button 
+    <button
         type="submit" 
-        class="submit-btn" 
+        class="submit-btn subtitle mb-3" 
+        style="background-color: #dd815e; font-size: 1rem; color: white; margin-top: 1rem; text-decoration: none;"
         disabled={loading || !email || !password}
     >
         {#if loading}
