@@ -325,26 +325,29 @@ def send_push_notifications(fcm, notification, data, topic=None):
             body=notification['body'],
         )
         
-        # Create proper FCM configuration for background delivery
-        fcm_options = messaging.WebpushConfig(
-            headers={
-                'TTL': '86400',  # Time to live: 1 day in seconds
-                'Urgency': 'normal',
-                'Topic': 'weather-insights'
-            },
-            notification={
-                'title': notification['title'],
-                'body': notification['body'],
-                'icon': '/app-icon.png',
-                'badge': '/favicon.png',
-                'vibrate': [100, 50, 100],
-                'tag': string_data.get('tag', 'weather-notification'),
-                'requireInteraction': True,
-                'renotify': True
-            },
-            fcm_options=messaging.WebpushFCMOptions(
-                link=string_data.get('url', '/app')
-            )
+        # Create proper FCM configuration for background delivery using proper class instances
+        webpush_notification = messaging.WebpushNotification(
+            title=notification['title'],
+            body=notification['body'],
+            icon='/app-icon.png',
+            badge='/favicon.png',
+            tag=string_data.get('tag', 'weather-notification')
+        )
+        
+        webpush_headers = {
+            'TTL': '86400',  # Time to live: 1 day in seconds
+            'Urgency': 'normal',
+            'Topic': 'weather-insights'
+        }
+        
+        webpush_fcm_options = messaging.WebpushFCMOptions(
+            link=string_data.get('url', '/app')
+        )
+        
+        webpush_config = messaging.WebpushConfig(
+            headers=webpush_headers,
+            notification=webpush_notification,
+            fcm_options=webpush_fcm_options
         )
         
         success = False
@@ -371,7 +374,7 @@ def send_push_notifications(fcm, notification, data, topic=None):
                         notification=base_notification,
                         data=string_data,
                         tokens=batch_tokens,
-                        webpush=fcm_options  # Add webpush config for background delivery
+                        webpush=webpush_config  # Add webpush config for background delivery
                     )
                     
                     try:
@@ -399,7 +402,7 @@ def send_push_notifications(fcm, notification, data, topic=None):
             notification=base_notification,
             data=string_data,
             topic=topic_to_use,
-            webpush=fcm_options  # Add webpush config for background delivery
+            webpush=webpush_config  # Add webpush config for background delivery
         )
         
         response = fcm.send(topic_message)
