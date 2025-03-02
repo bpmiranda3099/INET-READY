@@ -35,6 +35,9 @@ GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 if GEMINI_API_KEY:
     os.environ['GEMINI_API_KEY'] = GEMINI_API_KEY
 
+# Add a base URL constant at the top of the file with other constants
+BASE_URL = "https://inet-ready-5a5c1.web.app"  # Change this to your actual deployed URL
+
 def initialize_firebase():
     """
     Initialize Firebase connection
@@ -234,7 +237,7 @@ def create_push_notification(insights):
     tuple: (notification, data) for the notification
     """
     if not insights:
-        return None, None, None
+        return None, None
         
     # Extract title from the TODAY'S SUMMARY section
     title = "Daily Weather Insights"
@@ -261,13 +264,16 @@ def create_push_notification(insights):
         'body': preview
     }
     
+    # Ensure we use absolute URLs in the data
+    insights_url = f"{BASE_URL}/app/weather-insights"
+    
     # Additional data to include with the notification
     data = {
         'full_insights': insights,
         'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'type': 'daily_weather_insights',
         'tag': f"weather-{datetime.now().strftime('%Y%m%d')}",  # Unique tag for each day
-        'url': '/app/weather-insights'  # URL to open when notification is clicked
+        'url': insights_url  # Use absolute URL
     }
     
     return notification, data
@@ -325,6 +331,18 @@ def send_push_notifications(fcm, notification, data, topic=None):
             body=notification['body'],
         )
         
+        # Ensure we have a complete HTTPS URL for the link
+        link_url = string_data.get('url', f"{BASE_URL}/app")
+        
+        # Make sure the URL is absolute and starts with https://
+        if not link_url.startswith('https://'):
+            if link_url.startswith('/'):
+                # It's a relative URL, prepend the base URL
+                link_url = f"{BASE_URL}{link_url}"
+            else:
+                # Neither absolute nor relative, use default
+                link_url = f"{BASE_URL}/app"
+        
         # Create proper FCM configuration for background delivery using proper class instances
         webpush_notification = messaging.WebpushNotification(
             title=notification['title'],
@@ -341,7 +359,7 @@ def send_push_notifications(fcm, notification, data, topic=None):
         }
         
         webpush_fcm_options = messaging.WebpushFCMOptions(
-            link=string_data.get('url', '/app')
+            link=link_url  # Use the properly formatted HTTPS URL
         )
         
         webpush_config = messaging.WebpushConfig(
