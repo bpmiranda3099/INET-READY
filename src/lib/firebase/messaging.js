@@ -26,22 +26,14 @@ if (typeof window !== "undefined") {
             const permission = await Notification.requestPermission();
             
             if (permission === "granted") {
-              // Get the VAPID key 
-              // Option 1: Use the environment variable properly
+              // Replace with your actual VAPID key from Firebase Console
+              // Project Settings -> Cloud Messaging -> Web Push Certificates
               const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
               
-              // Option 2 (fallback): Use the actual Base64 VAPID key directly from Firebase Console
-              // If the env variable isn't available, use a fallback key
-              // You can get this key from Firebase Console -> Project Settings -> Cloud Messaging -> Web Push certificates
-              const fallbackVapidKey = "BH8kgEvLl8BMqiLFpV_PeSsRMplLVzrwZft_-VE7qUZL9opz41bXD_3-f13jIdKJ35XPNCBkYeUGtQ5E2jU0PyA";
-              
-              const effectiveVapidKey = vapidKey || fallbackVapidKey;
-              
               try {
-                console.log("Attempting to get FCM token with VAPID key");
-                const token = await getToken(messaging, { vapidKey: effectiveVapidKey });
+                const token = await getToken(messaging, { vapidKey });
                 if (token) {
-                  console.log("FCM Token successfully obtained:", token);
+                  console.log("FCM Token:", token);
                   return token;
                 } else {
                   console.log("No registration token available.");
@@ -49,15 +41,6 @@ if (typeof window !== "undefined") {
                 }
               } catch (error) {
                 console.error("Error getting FCM token:", error);
-                
-                // More detailed error logging to help diagnose the issue
-                if (error.code) {
-                  console.error("Error code:", error.code);
-                }
-                if (error.message) {
-                  console.error("Error message:", error.message);
-                }
-                
                 return null;
               }
             } else {
@@ -74,10 +57,7 @@ if (typeof window !== "undefined") {
         onMessageListener = (callback) => {
           return onMessage(messaging, (payload) => {
             console.log("Received foreground message:", payload);
-            if (callback && typeof callback === 'function') {
-              callback(payload);
-            }
-            return () => {}; // Return unsubscribe function
+            callback(payload);
           });
         };
       }
