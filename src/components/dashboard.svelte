@@ -1,6 +1,14 @@
 <script>
     import { onMount } from 'svelte';
     import { logoutUser, onMessageListener, hasMedicalRecord, requestFCMToken } from '$lib/firebase';
+    import { getCurrentPosition, currentLocation } from '$lib/services/location-service';
+    import { 
+        registerServiceWorker, 
+        serviceWorkerSupported, 
+        serviceWorkerRegistered, 
+        serviceWorkerError 
+    } from '$lib/services/service-worker';
+    
     // Fix component import capitalization to match the actual file names
     import MedicalProfile from './medicalprofile.svelte';
     import MedicalForm from './medicalform.svelte';
@@ -8,6 +16,7 @@
     
     export let user;
     
+    // State variables
     let notifications = [];
     let loading = false;
     let showMedicalForm = false;
@@ -20,7 +29,31 @@
     let showPermissionsPanel = false;
     let fcmToken = null;
     
-    onMount(async () => {
+    // Location state
+    let locationData = null;
+    let locationError = null;
+    let fetchingLocation = false;
+    
+    // Service Worker state
+    let swSupported;
+    let swRegistered;
+    let swError;
+    
+    // Subscribe to service worker states
+    const unsubscribeSW1 = serviceWorkerSupported.subscribe(value => swSupported = value);
+    const unsubscribeSW2 = serviceWorkerRegistered.subscribe(value => swRegistered = value);
+    const unsubscribeSW3 = serviceWorkerError.subscribe(value => swError = value);
+    
+    // Subscribe to location updates
+    const unsubscribeLocation = currentLocation.subscribe(value => {
+        if (value) {
+            locationData = value;
+        }
+    });
+    
+    let unsubscribeMessages;
+    onMount(() => {
+        (async () => {
         // Check existing permissions
         notificationPermission = Notification.permission;
         
@@ -33,8 +66,23 @@
                 status.onchange = () => {
                     locationPermission = status.state;
                 };
+                
+                // If location permission is granted, get current position
+                if (locationPermission === 'granted') {
+                    getLocation();
+                }
             } catch (error) {
                 console.error("Error checking geolocation permission:", error);
+            }
+        }
+        
+        // Register service worker if not already registered
+        if (!swRegistered) {
+            try {
+                await registerServiceWorker();
+                console.log("Service worker registration status:", swRegistered);
+            } catch (error) {
+                console.error("Error registering service worker:", error);
             }
         }
         
@@ -52,7 +100,7 @@
         }
         
         // Subscribe to foreground messages
-        const unsubscribe = onMessageListener();
+        const unsubscribeMessages = onMessageListener();
         
         // Check if user has medical record
         if (user && user.uid) {
@@ -60,9 +108,30 @@
                 medicalRecordExists = result;
             });
         }
-        
-        unsubscribe();
+        })();
+        let unsubscribeMessages = onMessageListener();
+        return () => {
+            if (unsubscribeMessages) unsubscribeMessages();
+            unsubscribeLocation();
+            unsubscribeSW1();
+            unsubscribeSW2();
+            unsubscribeSW3();
+        };
     });
+    
+    async function getLocation() {
+        fetchingLocation = true;
+        locationError = null;
+        
+        try {
+            locationData = await getCurrentPosition();
+        } catch (error) {
+            console.error("Error fetching location:", error);
+            locationError = error.message || "Could not retrieve your location";
+        } finally {
+            fetchingLocation = false;
+        }
+    }
     
     async function handleLogout() {
         loading = true;
@@ -86,6 +155,11 @@
             notificationPermission = permission;
             
             if (permission === 'granted') {
+                // Ensure service worker is registered before requesting FCM token
+                if (!swRegistered) {
+                    await registerServiceWorker();
+                }
+                
                 fcmToken = await requestFCMToken();
                 if (fcmToken) {
                     // Save FCM token to user profile
@@ -109,6 +183,14 @@
                     console.log("Latitude:", position.coords.latitude);
                     console.log("Longitude:", position.coords.longitude);
                     
+                    // Update location data
+                    locationData = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        timestamp: new Date().toISOString()
+                    };
+                    
                     // Update permission state
                     navigator.permissions.query({ name: 'geolocation' }).then(status => {
                         locationPermission = status.state;
@@ -123,6 +205,7 @@
                 },
                 (error) => {
                     console.error("Error getting location:", error);
+                    locationError = error.message || "Could not retrieve your location";
                 },
                 { enableHighAccuracy: true }
             );
@@ -147,6 +230,46 @@
     <div class="welcome">
         <h2>Welcome, {user.email}!</h2>
         <p>You are now connected to INET-READY.</p>
+        
+        <!-- Display location coordinates -->
+        {#if locationData}
+            <div class="location-info">
+                <p>
+                    <span class="location-icon">📍</span> 
+                    Your current location: 
+                    <span class="coordinates">
+                        {locationData.latitude.toFixed(6)}°, {locationData.longitude.toFixed(6)}°
+                    </span>
+                    <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
+                        {#if fetchingLocation}
+                            Updating...
+                        {:else}
+                            ↻
+                        {/if}
+                    </button>
+                </p>
+            </div>
+        {:else if locationPermission === 'granted' && !locationData}
+            <div class="location-info loading">
+                <p>
+                    <span class="location-icon">📍</span> 
+                    {fetchingLocation ? 'Getting your location...' : 'Location data not available.'}
+                    <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
+                        {fetchingLocation ? 'Loading...' : 'Get Location'}
+                    </button>
+                </p>
+            </div>
+        {:else if locationError}
+            <div class="location-info error">
+                <p>
+                    <span class="location-icon">⚠️</span> 
+                    {locationError}
+                    <button on:click={requestLocationPermission} class="refresh-btn">
+                        Try Again
+                    </button>
+                </p>
+            </div>
+        {/if}
     </div>
     
     <!-- Permissions Panel -->
@@ -158,6 +281,13 @@
             onRequestLocation={requestLocationPermission}
             onComplete={handlePermissionsComplete}
         />
+    {/if}
+    
+    <!-- Service Worker Status (for debugging, can be removed in production) -->
+    {#if swError}
+        <div class="sw-error">
+            <p>⚠️ Service Worker Error: {swError}</p>
+        </div>
     {/if}
     
     <!-- Tab navigation -->
@@ -237,6 +367,12 @@
                             <button on:click={requestLocationPermission}>Enable</button>
                         {/if}
                     </p>
+                    <p>
+                        <strong>Service Worker:</strong> 
+                        <span class={swRegistered ? 'granted' : 'not-granted'}>
+                            {swRegistered ? 'Active' : 'Inactive'}
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -271,5 +407,67 @@
         margin-left: 1rem;
         font-size: 0.8rem;
         padding: 0.2rem 0.5rem;
+    }
+    
+    /* Styling for location display */
+    .location-info {
+        background: #f8faff;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 3px solid #4285f4;
+        display: flex;
+        align-items: center;
+    }
+    
+    .location-info.error {
+        background: #fff8f8;
+        border-left-color: #f44242;
+    }
+    
+    .location-info.loading {
+        background: #f8f9fa;
+        border-left-color: #888;
+    }
+    
+    .location-icon {
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
+    
+    .coordinates {
+        font-family: monospace;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .refresh-btn {
+        background: transparent;
+        border: none;
+        color: #4285f4;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-left: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+    
+    .refresh-btn:hover {
+        background: rgba(66, 133, 244, 0.1);
+    }
+    
+    .refresh-btn:disabled {
+        color: #888;
+        cursor: not-allowed;
+    }
+    
+    /* Service worker error message */
+    .sw-error {
+        background: #fff8f8;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 3px solid #f44242;
     }
 </style>

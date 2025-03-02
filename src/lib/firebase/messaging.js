@@ -1,4 +1,5 @@
 import app from './app';
+import { registerServiceWorker, isServiceWorkerActive } from '../services/service-worker';
 
 // Default empty exports for SSR compatibility
 let messaging = null;
@@ -14,6 +15,13 @@ if (typeof window !== "undefined") {
     try {
       // Check if browser supports Firebase Messaging
       if (await isSupported()) {
+        // Make sure service worker is registered first
+        const isWorkerActive = await isServiceWorkerActive();
+        if (!isWorkerActive) {
+          console.log("Service worker not active, registering now...");
+          await registerServiceWorker();
+        }
+        
         messaging = getMessaging(app);
         console.log("Firebase Messaging initialized");
         
@@ -26,19 +34,37 @@ if (typeof window !== "undefined") {
             const permission = await Notification.requestPermission();
             
             if (permission === "granted") {
-              // Replace with your actual VAPID key from Firebase Console
-              // Project Settings -> Cloud Messaging -> Web Push Certificates
+              // Get the VAPID key from environment variables
               const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
               
+              // Make sure service worker is active before requesting token
+              const isWorkerActive = await isServiceWorkerActive();
+              if (!isWorkerActive) {
+                console.log("Service worker not active, registering now...");
+                await registerServiceWorker();
+              }
+              
               try {
+                console.log("Requesting FCM token with VAPID key...");
                 const token = await getToken(messaging, { vapidKey });
                 if (token) {
+                  console.log("FCM token successfully obtained");
                   return token;
                 } else {
+                  console.log("No registration token available.");
                   return null;
                 }
               } catch (error) {
                 console.error("Error getting FCM token:", error);
+                
+                // More detailed error logging to help diagnose the issue
+                if (error.code) {
+                  console.error("Error code:", error.code);
+                }
+                if (error.message) {
+                  console.error("Error message:", error.message);
+                }
+                
                 return null;
               }
             } else {
@@ -55,7 +81,10 @@ if (typeof window !== "undefined") {
         onMessageListener = (callback) => {
           return onMessage(messaging, (payload) => {
             console.log("Received foreground message:", payload);
-            callback(payload);
+            if (callback && typeof callback === 'function') {
+              callback(payload);
+            }
+            return () => {}; // Return unsubscribe function
           });
         };
       }
