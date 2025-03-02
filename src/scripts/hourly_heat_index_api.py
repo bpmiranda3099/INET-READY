@@ -36,12 +36,16 @@ def upload_to_firestore(results):
         firebase_admin.initialize_app(cred)
         
         db = firestore.client()
-        collection_ref = db.collection('latest_hourly_heat_index')
+        latest_collection_ref = db.collection('latest_hourly_heat_index')
+        history_collection_ref = db.collection('hourly_heat_index_history')
         
-        # Store each city directly in the collection
+        timestamp = datetime.now()
+        formatted_timestamp = timestamp.strftime("%Y%m%d%H%M%S")
+        
+        # Store each city's data
         for result in results:
-            # Use the city name as the document ID
-            city_doc = collection_ref.document(result['city'])
+            # 1. Update the latest data collection (overwrites previous)
+            city_doc = latest_collection_ref.document(result['city'])
             city_doc.set({
                 "city": result['city'],
                 "temperature": result['temperature'],
@@ -49,16 +53,32 @@ def upload_to_firestore(results):
                 "heat_index": result['heat_index'],
                 "inet_level": result['inet_level'],
                 "date_added": result['date_added'],
-                "time_added": result['time_added']
+                "time_added": result['time_added'],
+                "timestamp": firestore.SERVER_TIMESTAMP
             })
-            logger.info(f"Added data for {result['city']}")
+            
+            # 2. Add to historical collection with unique document ID
+            history_doc_id = f"{result['city']}_{formatted_timestamp}"
+            history_doc = history_collection_ref.document(history_doc_id)
+            history_doc.set({
+                "city": result['city'],
+                "temperature": result['temperature'],
+                "humidity": result['humidity'],
+                "heat_index": result['heat_index'],
+                "inet_level": result['inet_level'],
+                "date_added": result['date_added'],
+                "time_added": result['time_added'],
+                "timestamp": firestore.SERVER_TIMESTAMP
+            })
+            
+            logger.info(f"Added data for {result['city']} (Document ID: {history_doc_id})")
         
         logger.info(f"Successfully uploaded {len(results)} city records to Firestore")
         
         # Clean up Firebase connection
         firebase_admin.delete_app(firebase_admin.get_app())
         
-        return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        return formatted_timestamp
     except Exception as e:
         if "database (default) does not exist" in str(e):
             logger.error(f"Firebase Firestore database doesn't exist! You need to create it in the Firebase console: https://console.firebase.google.com/project/{cred.project_id}/firestore")
