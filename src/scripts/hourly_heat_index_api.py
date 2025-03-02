@@ -45,22 +45,23 @@ def upload_to_firestore(results):
         current_time = datetime.now().strftime("%H:%M:%S")
         current_time_id = current_time.replace(':', '-')
         
-        # Create references to the hierarchical structure:
-        # hourly_weather_data (collection) -> date (doc) -> times (collection) -> time (doc) -> cities (collection)
+        # Create references to the simplified hierarchical structure:
+        # Structure: hourly_weather_data (collection) -> date (doc) -> current_time_id (collection) -> city (doc)
         date_doc_ref = weather_collection_ref.document(current_date)
-        time_doc_ref = date_doc_ref.collection('times').document(current_time_id)
+        time_collection_ref = date_doc_ref.collection(current_time_id)
         
-        # Store time metadata
-        time_doc_ref.set({
+        # Add a metadata document in the time collection
+        metadata_ref = time_collection_ref.document('_metadata')
+        metadata_ref.set({
             "time": current_time,
             "timestamp": firestore.SERVER_TIMESTAMP,
             "cities_updated": [result['city'] for result in results]
         })
         
-        # Store each city directly in the collection
+        # Store each city directly in the time collection
         for result in results:
-            # Add to cities subcollection under the specific time document
-            city_ref = time_doc_ref.collection('cities').document(result['city'])
+            # Add cities directly to the time collection
+            city_ref = time_collection_ref.document(result['city'])
             city_ref.set({
                 "city": result['city'],
                 "temperature": result['temperature'],
