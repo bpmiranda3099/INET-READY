@@ -165,32 +165,102 @@
     }
     
     /**
-     * Format the advice text with Markdown-like styling
+     * Format the advice text with improved, more structured formatting
      */
     function formatAdviceText(text) {
         if (!text) return '';
         
-        return text
-            // Handle headings
-            .replace(/^###\s+(.*)$/gm, '<h3>$1</h3>')
-            .replace(/^##\s+(.*)$/gm, '<h2>$1</h2>')
-            .replace(/^#\s+(.*)$/gm, '<h1>$1</h1>')
-            // Handle bullet points
-            .replace(/^\s*[*\-]\s+(.*)$/gm, '<li>$1</li>')
-            // Replace double line breaks with paragraph tags
-            .replace(/\n\n/g, '</p><p>')
-            // Cleanup lists
-            .replace(/<\/li>\n<li>/g, '</li><li>')
-            .replace(/<li>(.*?)<\/li>/gs, function(match) {
-                return '<ul>' + match + '</ul>';
-            })
-            .replace(/<\/ul>\s*<ul>/g, '')
-            // Bold text
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/__(.*?)__/g, '<strong>$1</strong>')
-            // Italic text
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/_(.*?)_/g, '<em>$1</em>');
+        // Split the text into sections
+        const sections = {
+            topTip: '',
+            weatherBrief: '',
+            healthReminders: [],
+            watchFor: [],
+            quickTips: [],
+            disclaimer: ''
+        };
+        
+        // Extract sections using regex patterns
+        const topTipMatch = text.match(/TOP TIP:?\s*(.*?)(?:\n|$)/i);
+        if (topTipMatch && topTipMatch[1]) sections.topTip = topTipMatch[1].trim();
+        
+        const weatherBriefMatch = text.match(/WEATHER BRIEF:?\s*(.*?)(?:\n\n|\n(?=[A-Z]))/is);
+        if (weatherBriefMatch && weatherBriefMatch[1]) sections.weatherBrief = weatherBriefMatch[1].trim();
+        
+        // Extract Health Reminders
+        const healthRemindersMatch = text.match(/HEALTH REMINDERS:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z]))/i);
+        if (healthRemindersMatch && healthRemindersMatch[1]) {
+            const points = healthRemindersMatch[1].split(/\n\s*[\d]+[\.\)]\s*/)
+                .map(p => p.trim())
+                .filter(p => p.length > 0);
+            sections.healthReminders = points;
+        }
+        
+        // Extract Watch For
+        const watchForMatch = text.match(/WATCH FOR:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z]))/i);
+        if (watchForMatch && watchForMatch[1]) {
+            const points = watchForMatch[1].split(/\n\s*[•\-\*]\s*/)
+                .map(p => p.trim())
+                .filter(p => p.length > 0);
+            sections.watchFor = points;
+        }
+        
+        // Extract Quick Tips
+        const quickTipsMatch = text.match(/QUICK TIPS:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z])|$)/i);
+        if (quickTipsMatch && quickTipsMatch[1]) {
+            const points = quickTipsMatch[1].split(/\n\s*[•\-\*]\s*/)
+                .map(p => p.trim())
+                .filter(p => p.length > 0);
+            sections.quickTips = points;
+        }
+        
+        // Extract disclaimer - usually the last paragraph
+        const disclaimerMatch = text.match(/(?:_|remember)(.*?)\.?$/is);
+        if (disclaimerMatch && disclaimerMatch[1]) {
+            sections.disclaimer = disclaimerMatch[1].trim();
+        }
+
+        // Now build the HTML with the structured sections
+        let formattedHtml = '';
+        
+        // Top Tip 
+        if (sections.topTip) {
+            formattedHtml += `<div class="top-tip"><span class="tip-label">TOP TIP</span> ${sections.topTip}</div>`;
+        }
+        
+        // Weather Brief
+        if (sections.weatherBrief) {
+            formattedHtml += `<div class="weather-brief"><h3>Weather</h3><p>${sections.weatherBrief}</p></div>`;
+        }
+        
+        // Health Reminders
+        if (sections.healthReminders.length > 0) {
+            formattedHtml += `<div class="health-reminders"><h3>Health Reminders</h3><ol>`;
+            sections.healthReminders.forEach(point => {
+                if (point) formattedHtml += `<li>${point}</li>`;
+            });
+            formattedHtml += `</ol></div>`;
+        }
+        
+        // Watch For
+        if (sections.watchFor.length > 0) {
+            formattedHtml += `<div class="watch-for"><h3>Watch For</h3><ul class="warning-list">`;
+            sections.watchFor.forEach(point => {
+                if (point) formattedHtml += `<li>${point}</li>`;
+            });
+            formattedHtml += `</ul></div>`;
+        }
+        
+        // Quick Tips
+        if (sections.quickTips.length > 0) {
+            formattedHtml += `<div class="quick-tips"><h3>Quick Tips</h3><ul class="tips-list">`;
+            sections.quickTips.forEach(point => {
+                if (point) formattedHtml += `<li>${point}</li>`;
+            });
+            formattedHtml += `</ul></div>`;
+        }
+        
+        return formattedHtml;
     }
 </script>
 
@@ -247,17 +317,12 @@
                     bind:this={cardElement}
                 >
                     <div class="card-header">
-                        <h3>Travel Health Advice</h3>
+                        <h3>Travel Health Tips</h3>
                         <div class="route">
                             <span class="city origin">{advice.fromCity}</span>
                             <span class="arrow">→</span>
                             <span class="city destination">{advice.toCity}</span>
                         </div>
-                        {#if advice.timestamp}
-                            <div class="update-time">
-                                Updated: {new Date(advice.timestamp).toLocaleString()}
-                            </div>
-                        {/if}
                     </div>
                     
                     <div class="card-body">
@@ -268,10 +333,13 @@
                     
                     <div class="card-footer">
                         <div class="disclaimer">
-                            This advice is for general informational purposes only and is not a substitute for 
-                            professional medical advice. Always consult with a healthcare professional for 
-                            specific health concerns.
+                            Always consult a healthcare professional for personalized medical advice.
                         </div>
+                        {#if advice.timestamp}
+                            <div class="update-time">
+                                Updated: {new Date(advice.timestamp).toLocaleString()}
+                            </div>
+                        {/if}
                     </div>
                 </div>
             {/if}
@@ -431,50 +499,117 @@
     }
     
     .card-body {
-        padding: 1.5rem;
+        padding: 1rem;
     }
     
     .advice-content {
         color: #333;
-        line-height: 1.6;
+        line-height: 1.5;
     }
     
-    .advice-content h2 {
-        color: #4285f4;
-        margin: 1.5rem 0 0.75rem;
-        font-size: 1.2rem;
-    }
-    
-    /* Since we're using <h3> tags in formatAdviceText, we need to keep this selector */
-    .advice-content :global(h3) {
-        color: #202124;
-        margin: 1.25rem 0 0.5rem;
+    /* Redesigned section styles */
+    .top-tip {
+        background-color: #e3f2fd;
+        padding: 0.8rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
         font-size: 1.1rem;
+        font-weight: 500;
+        color: #1565c0;
     }
     
-    .advice-content p {
-        margin: 0.75rem 0;
+    .tip-label {
+        background: #1565c0;
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        margin-right: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: bold;
     }
     
-    .advice-content ul {
-        margin: 0.5rem 0 1rem 0;
+    .advice-content h3 {
+        color: #333;
+        font-size: 1rem;
+        margin: 1rem 0 0.5rem 0;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.3rem;
+    }
+    
+    .weather-brief {
+        margin-bottom: 1rem;
+    }
+    
+    .weather-brief p {
+        margin: 0.5rem 0;
+    }
+    
+    .health-reminders ol {
         padding-left: 1.5rem;
+        margin: 0.5rem 0;
     }
     
-    .advice-content li {
+    .health-reminders li {
         margin-bottom: 0.5rem;
     }
     
+    .warning-list, .tips-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0.5rem 0;
+    }
+    
+    .warning-list li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .warning-list li:before {
+        content: "⚠️";
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 0.9rem;
+    }
+    
+    .tips-list li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .tips-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0.2rem;
+        top: -1px;
+        font-weight: bold;
+        color: #4caf50;
+    }
+    
+    /* Card footer styling */
     .card-footer {
         background: #f8f9fa;
-        padding: 1rem;
+        padding: 0.75rem 1rem;
         border-top: 1px solid #eee;
+        font-size: 0.8rem;
+        color: #666;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
     
     .disclaimer {
-        font-size: 0.8rem;
-        color: #666;
         font-style: italic;
+        flex: 1;
+    }
+    
+    .update-time {
+        color: #888;
+        font-size: 0.75rem;
     }
     
     /* Make responsive for mobile */
@@ -498,6 +633,21 @@
         /* Update this selector to use :global since it's generated HTML */
         .advice-content :global(h3) {
             font-size: 1rem;
+        }
+        
+        .top-tip {
+            font-size: 1rem;
+            padding: 0.6rem;
+        }
+        
+        .card-body {
+            padding: 0.75rem;
+        }
+        
+        .card-footer {
+            padding: 0.6rem 0.75rem;
+            flex-direction: column;
+            align-items: flex-start;
         }
     }
 </style>

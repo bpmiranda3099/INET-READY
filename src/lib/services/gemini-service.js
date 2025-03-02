@@ -12,9 +12,9 @@ export const geminiStatus = writable({
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-// Comprehensive system instructions for health advice
+// Comprehensive system instructions for health advice with improved formatting guidance
 const SYSTEM_INSTRUCTION = `
-You are a health advisor providing travel health recommendations between cities in the Philippines.
+You are a friendly health advisor providing practical, easy-to-read travel health tips between cities in the Philippines.
 
 LEGAL COMPLIANCE:
 - Strictly comply with Philippines Data Privacy Act (Republic Act No. 10173) and its implementing rules
@@ -24,22 +24,24 @@ LEGAL COMPLIANCE:
 - Follow Department of Health (DOH) Administrative Orders for health information processing
 - Adhere to National Privacy Commission (NPC) Philippines guidelines
 
-RESPONSE GUIDELINES:
-- Provide clear, evidence-based travel health advice
-- Consider both origin and destination cities' current weather conditions
-- Factor in user's medical conditions when providing recommendations
-- Always include general disclaimers about seeking professional medical advice
-- Format advice in easily readable bullet points with clear headings
-- Include contextual information about relevant environmental factors
-- Never claim to provide medical diagnosis or treatment
-- Use professional, compassionate language
-- Focus on preventive measures and best practices
-- Be specific to Philippines context and local health considerations
+RESPONSE FORMAT REQUIREMENTS:
+Always structure your response using these exact sections in this order:
+1. "TOP TIP" - A single, most important tip specific to the journey (max 15 words)
+2. "WEATHER BRIEF" - 1-2 sentences about key weather differences
+3. "HEALTH REMINDERS" - 3-5 short, numbered bullet points considering medical conditions
+4. "WATCH FOR" - 2-3 short bullet points about warning signs
+5. "QUICK TIPS" - 2-3 practical travel tips
+
+TONE AND STYLE:
+- Be conversational and friendly, like a caring friend giving advice
+- Use simple, straightforward language (8th-grade reading level)
+- Be concise - each section should be scannable in seconds
+- Use active voice and direct instructions
+- Be specific to the Philippines context
 
 LIMITATIONS:
-- Clearly indicate you're providing general advice, not personalized medical treatment
-- Never claim diagnostics capabilities or replace medical professionals
-- Include disclaimer about consulting healthcare providers for specific concerns
+- Always end with a brief disclaimer about seeking professional medical advice
+- Don't provide specific diagnosis or treatment recommendations
 `;
 
 // Create the model with system instructions
@@ -84,25 +86,37 @@ export async function checkGeminiAvailability() {
  */
 export async function generateTravelHealthAdvice({ fromCity, toCity, medicalData, weatherData }) {
   try {
-    // Construct a detailed prompt based on the parameters
+    // Construct a detailed prompt based on the parameters with improved structure guidance
     const prompt = `
-    I need health advice for travel from ${fromCity} to ${toCity} in the Philippines.
-    
-    Current weather conditions:
-    - Origin (${fromCity}): ${weatherData?.fromCity ? `Temperature: ${weatherData.fromCity.temperature}°C, Humidity: ${weatherData.fromCity.humidity}%, Heat Index: ${weatherData.fromCity.heat_index}°C` : "Weather data not available"}
-    - Destination (${toCity}): ${weatherData?.toCity ? `Temperature: ${weatherData.toCity.temperature}°C, Humidity: ${weatherData.toCity.humidity}%, Heat Index: ${weatherData.toCity.heat_index}°C` : "Weather data not available"}
-    
-    Medical profile:
-    ${formatMedicalData(medicalData)}
-    
-    Please provide:
-    1. Health risks based on the weather difference and travel between these locations
-    2. Precautions to take before and during travel considering the medical conditions
-    3. Signs to watch for that might indicate health problems during travel
-    4. General wellness tips for travel in this region
-    
-    Format the response with clear headings and bullet points.
-    `;
+Generate a helpful health tip card for a person traveling from ${fromCity} to ${toCity} in the Philippines.
+
+CURRENT WEATHER SUMMARY:
+- Origin (${fromCity}): ${weatherData?.fromCity ? `${weatherData.fromCity.temperature}°C, ${weatherData.fromCity.humidity}% humidity, Heat Index: ${weatherData.fromCity.heat_index}°C` : "Weather data not available"}
+- Destination (${toCity}): ${weatherData?.toCity ? `${weatherData.toCity.temperature}°C, ${weatherData.toCity.humidity}% humidity, Heat Index: ${weatherData.toCity.heat_index}°C` : "Weather data not available"}
+
+TRAVELER PROFILE:
+${formatMedicalData(medicalData)}
+
+FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
+TOP TIP: [Single most important health advice for this specific journey]
+
+WEATHER BRIEF: [Brief note about key weather differences and impacts]
+
+HEALTH REMINDERS:
+1. [Specific health reminder]
+2. [Specific health reminder]
+3. [Specific health reminder]
+
+WATCH FOR:
+• [Warning sign]
+• [Warning sign]
+
+QUICK TIPS:
+• [Practical tip]
+• [Practical tip]
+
+_Remember to consult a healthcare professional for personalized medical advice._
+`;
 
     console.log("Generating advice with prompt:", prompt);
     
@@ -126,12 +140,12 @@ function formatMedicalData(medicalData) {
   const { age, gender, conditions = [], medications = [], allergies = [] } = medicalData;
   
   return `
-  - Age: ${age || 'Not specified'}
-  - Gender: ${gender || 'Not specified'}
-  - Medical conditions: ${conditions.length > 0 ? conditions.join(', ') : 'None'}
-  - Medications: ${medications.length > 0 ? medications.join(', ') : 'None'}
-  - Allergies: ${allergies.length > 0 ? allergies.join(', ') : 'None'}
-  `;
+- Age: ${age || 'Not specified'}
+- Gender: ${gender || 'Not specified'}
+- Medical conditions: ${conditions.length > 0 ? conditions.join(', ') : 'None'}
+- Medications: ${medications.length > 0 ? medications.join(', ') : 'None'}
+- Allergies: ${allergies.length > 0 ? allergies.join(', ') : 'None'}
+`;
 }
 
 export { model };
