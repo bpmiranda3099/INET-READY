@@ -9,9 +9,8 @@ export const geminiStatus = writable({
 });
 
 // Initialize Gemini API with system instructions for health advice
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const VITE_API_KEY = process.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(API_KEY || VITE_API_KEY);
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Enhanced system instructions with stronger focus on medical data considerations
 const SYSTEM_INSTRUCTION = `
