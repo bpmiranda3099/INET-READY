@@ -3,6 +3,12 @@
     import { logoutUser, onMessageListener, hasMedicalRecord, requestFCMToken } from '$lib/firebase';
     import { getCurrentPosition, currentLocation } from '$lib/services/location-service';
     import { 
+        getLocationNameFromCoordinates,
+        locationName,
+        geocodingLoading,
+        geocodingError
+    } from '$lib/services/geocoding-service';
+    import { 
         registerServiceWorker, 
         serviceWorkerSupported, 
         serviceWorkerRegistered, 
@@ -33,6 +39,9 @@
     let locationData = null;
     let locationError = null;
     let fetchingLocation = false;
+    let currentLocationName = null;
+    let fetchingLocationName = false;
+    let locationNameError = null;
     
     // Service Worker state
     let swSupported;
@@ -48,7 +57,24 @@
     const unsubscribeLocation = currentLocation.subscribe(value => {
         if (value) {
             locationData = value;
+            // Get the location name when coordinates change
+            getLocationNameFromCoordinates(value.latitude, value.longitude);
         }
+    });
+    
+    // Subscribe to location name updates
+    const unsubscribeLocationName = locationName.subscribe(value => {
+        currentLocationName = value;
+    });
+    
+    // Subscribe to geocoding loading state
+    const unsubscribeGeocodingLoading = geocodingLoading.subscribe(value => {
+        fetchingLocationName = value;
+    });
+    
+    // Subscribe to geocoding error state
+    const unsubscribeGeocodingError = geocodingError.subscribe(value => {
+        locationNameError = value;
     });
     
     let unsubscribeMessages;
@@ -116,6 +142,9 @@
             unsubscribeSW1();
             unsubscribeSW2();
             unsubscribeSW3();
+            unsubscribeLocationName();
+            unsubscribeGeocodingLoading();
+            unsubscribeGeocodingError();
         };
     });
     
@@ -125,6 +154,11 @@
         
         try {
             locationData = await getCurrentPosition();
+            
+            // Get the location name after getting coordinates
+            if (locationData) {
+                await getLocationNameFromCoordinates(locationData.latitude, locationData.longitude);
+            }
         } catch (error) {
             console.error("Error fetching location:", error);
             locationError = error.message || "Could not retrieve your location";
@@ -231,12 +265,18 @@
         <h2>Welcome, {user.email}!</h2>
         <p>You are now connected to INET-READY.</p>
         
-        <!-- Display location coordinates -->
+        <!-- Display location coordinates and location name -->
         {#if locationData}
             <div class="location-info">
                 <p>
                     <span class="location-icon">📍</span> 
-                    Your current location: 
+                    {#if currentLocationName}
+                        <span class="location-name">{currentLocationName}</span>
+                    {:else if fetchingLocationName}
+                        <span class="location-name loading">Determining location name...</span>
+                    {:else if locationNameError}
+                        <span class="location-name error">{locationNameError}</span>
+                    {/if}
                     <span class="coordinates">
                         {locationData.latitude.toFixed(6)}°, {locationData.longitude.toFixed(6)}°
                     </span>
@@ -433,6 +473,21 @@
     .location-icon {
         font-size: 1.2rem;
         margin-right: 0.5rem;
+    }
+    
+    .location-name {
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+    
+    .location-name.loading {
+        color: #888;
+        font-style: italic;
+    }
+    
+    .location-name.error {
+        color: #f44242;
+        font-style: italic;
     }
     
     .coordinates {
