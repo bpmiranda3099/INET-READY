@@ -24,8 +24,8 @@ class HeatIndexAlertService:
         self.spike_threshold_percent = 15  # 15% increase is considered a spike
         self.drop_threshold_percent = -10  # 10% decrease is considered a significant drop
         
-        # Configure time window for comparison (in hours)
-        self.comparison_window_hours = 24  # Compare with data from 24 hours ago if available
+        # No longer using comparison window hours since we're comparing with previous entry
+        # self.comparison_window_hours = 24  # Compare with data from 24 hours ago if available
     
     def initialize_firebase(self):
         """Initialize Firebase connection"""
@@ -100,90 +100,83 @@ class HeatIndexAlertService:
             logger.error(f"Error getting latest data: {e}")
             return {}
     
-    def get_comparison_data(self, hours_ago=24):
-        """Get heat index data from a specified time ago for comparison"""
+    def get_comparison_data(self):
+        """
+        Get the immediately previous heat index data entry for comparison
+        Returns dictionary of city data from the entry right before the most recent one
+        """
         try:
-            # Calculate the target date/time
-            now = datetime.now()
-            target_time = now - timedelta(hours=hours_ago)
-            target_date = target_time.strftime("%Y-%m-%d")
+            # First, identify the most recent entry (date and time)
+            weather_ref = self.db.collection('hourly_weather_data')
+            date_docs = weather_ref.order_by('date', direction=firestore.Query.DESCENDING).limit(2).stream()
             
-            # First try to get data from exactly the target date
+            dates = []
+            for date_doc in date_docs:
+                dates.append(date_doc.id)
+            
+            if not dates:
+                logger.error("No dates found in hourly_weather_data")
+                return {}
+            
+            # Get the latest date's time collections
+            latest_date = dates[0]
+            latest_date_ref = weather_ref.document(latest_date)
+            time_collections = latest_date_ref.collections()
+            time_ids = [time_col.id for time_col in time_collections if time_col.id != '_metadata']
+            
+            if not time_ids:
+                logger.error(f"No time collections found for date {latest_date}")
+                return {}
+            
+            # Sort time collections to find the latest and second latest
+            sorted_times = sorted(time_ids)
+            
+            # If we have at least 2 time entries on the latest date
+            if len(sorted_times) >= 2:
+                latest_time = sorted_times[-1]
+                prev_time = sorted_times[-2]
+                prev_date = latest_date
+                logger.info(f"Found previous entry on same date: {prev_date} {prev_time}")
+            
+            # If we have only 1 time entry on the latest date, need to look at previous date
+            elif len(dates) > 1:
+                prev_date = dates[1]
+                prev_date_ref = weather_ref.document(prev_date)
+                prev_time_collections = prev_date_ref.collections()
+                prev_time_ids = [time_col.id for time_col in prev_time_collections if time_col.id != '_metadata']
+                
+                if not prev_time_ids:
+                    logger.error(f"No time collections found for previous date {prev_date}")
+                    return {}
+                    
+                # Get the latest time from the previous date
+                prev_time = sorted(prev_time_ids)[-1]
+                logger.info(f"Found previous entry on previous date: {prev_date} {prev_time}")
+            else:
+                logger.error("Not enough historical data for comparison")
+                return {}
+            
+            # Now fetch the city data from the previous entry
             comparison_data = {}
+            city_docs = self.db.collection('hourly_weather_data').document(prev_date).collection(prev_time).stream()
             
-            # Try to get data from the target date
-            date_ref = self.db.collection('hourly_weather_data').document(target_date)
-            date_doc = date_ref.get()
+            for doc in city_docs:
+                if doc.id != '_metadata':
+                    city_data = doc.to_dict()
+                    city_name = city_data.get('city')
+                    
+                    if city_name:
+                        comparison_data[city_name] = {
+                            'city': city_name,
+                            'heat_index': city_data.get('heat_index'),
+                            'inet_level': city_data.get('inet_level'),
+                            'temperature': city_data.get('temperature'),
+                            'humidity': city_data.get('humidity'),
+                            'time_added': city_data.get('time_added'),
+                            'date_added': city_data.get('date_added')
+                        }
             
-            if date_doc.exists:
-                # Get all time collections for this date
-                time_collections = date_ref.collections()
-                time_ids = [time_col.id for time_col in time_collections if time_col.id != '_metadata']
-                
-                if time_ids:
-                    # Find the closest time to our target
-                    target_time_str = target_time.strftime("%H-%M-%S")
-                    closest_time = self._find_closest_time(time_ids, target_time_str)
-                    
-                    # Get city data from this time
-                    city_docs = date_ref.collection(closest_time).stream()
-                    
-                    for doc in city_docs:
-                        if doc.id != '_metadata':
-                            city_data = doc.to_dict()
-                            city_name = city_data.get('city')
-                            
-                            if city_name:
-                                comparison_data[city_name] = {
-                                    'city': city_name,
-                                    'heat_index': city_data.get('heat_index'),
-                                    'inet_level': city_data.get('inet_level'),
-                                    'temperature': city_data.get('temperature'),
-                                    'humidity': city_data.get('humidity'),
-                                    'time_added': city_data.get('time_added'),
-                                    'date_added': city_data.get('date_added')
-                                }
-                    
-                    logger.info(f"Loaded comparison data from {target_date} {closest_time} for {len(comparison_data)} cities")
-            
-            # If no data was found, try to get data from the previous day
-            if not comparison_data:
-                # Get the most recent data before today
-                date_docs = self.db.collection('hourly_weather_data').where('date', '<', datetime.now().strftime("%Y-%m-%d")).order_by('date', direction=firestore.Query.DESCENDING).limit(1).stream()
-                
-                for date_doc in date_docs:
-                    previous_date = date_doc.id
-                    
-                    # Get the latest time collection for this date
-                    time_collections = self.db.collection('hourly_weather_data').document(previous_date).collections()
-                    time_ids = [time_col.id for time_col in time_collections if time_col.id != '_metadata']
-                    
-                    if time_ids:
-                        # Get the most recent time
-                        most_recent_time = sorted(time_ids)[-1]
-                        
-                        # Get city data from the most recent time
-                        city_docs = self.db.collection('hourly_weather_data').document(previous_date).collection(most_recent_time).stream()
-                        
-                        for doc in city_docs:
-                            if doc.id != '_metadata':
-                                city_data = doc.to_dict()
-                                city_name = city_data.get('city')
-                                
-                                if city_name:
-                                    comparison_data[city_name] = {
-                                        'city': city_name,
-                                        'heat_index': city_data.get('heat_index'),
-                                        'inet_level': city_data.get('inet_level'),
-                                        'temperature': city_data.get('temperature'),
-                                        'humidity': city_data.get('humidity'),
-                                        'time_added': city_data.get('time_added'),
-                                        'date_added': city_data.get('date_added')
-                                    }
-                        
-                        logger.info(f"Loaded comparison data from {previous_date} {most_recent_time} for {len(comparison_data)} cities (fallback)")
-                        break
-            
+            logger.info(f"Loaded comparison data from {prev_date} {prev_time} for {len(comparison_data)} cities")
             return comparison_data
             
         except Exception as e:
@@ -432,8 +425,8 @@ class HeatIndexAlertService:
                 logger.error("No latest data found. Exiting.")
                 return False
                 
-            # Get comparison data (from 24 hours ago if available)
-            comparison_data = self.get_comparison_data(hours_ago=self.comparison_window_hours)
+            # Get immediately previous entry data for comparison
+            comparison_data = self.get_comparison_data()
             if not comparison_data:
                 logger.error("No comparison data found. Exiting.")
                 return False
