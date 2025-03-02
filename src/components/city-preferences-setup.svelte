@@ -1,6 +1,7 @@
 <script>
-    import { onMount } from 'svelte';
-    import { saveUserCityPreferences, getUserCityPreferences } from '$lib/services/user-preferences-service';
+    import { onMount, onDestroy } from 'svelte';
+    import { saveUserCityPreferences } from '$lib/services/user-preferences-service';
+    import { availableCities, fetchLatestWeatherData, startWeatherDataUpdates } from '$lib/services/weather-data-service';
     
     export let userId;
     export let onComplete = () => {}; // Callback when setup is completed
@@ -10,35 +11,28 @@
     let isSaving = false;
     let error = null;
     let loadingCities = true;
-    let caviteCities = [];
+    let cityList = [];
     
-    onMount(async () => {
-        try {
-            // Load the city data
-            const response = await fetch('/data/city_coords.csv');
-            const csvText = await response.text();
-            
-            // Parse the CSV
-            const rows = csvText.split('\n').slice(1); // Skip header
-            caviteCities = rows
-                .filter(row => row.trim().length > 0)
-                .map(row => {
-                    const [city] = row.split(',');
-                    return city.trim();
-                });
-        } catch (err) {
-            console.error("Error loading city data:", err);
-            // Use hardcoded list if CSV fails
-            caviteCities = [
-                "Amadeo", "Imus", "General Trias", "Dasmariñas", "Bacoor", 
-                "Carmona", "Kawit", "Noveleta", "Silang", "Naic",
-                "Tanza", "Alfonso", "Indang", "Rosario", "Trece Martires",
-                "General Mariano Alvarez", "Cavite City", "Tagaytay", 
-                "Mendez", "Ternate", "Maragondon", "Magallanes"
-            ];
-        } finally {
+    // Subscribe to the availableCities store
+    const unsubscribe = availableCities.subscribe(cities => {
+        cityList = cities;
+        if (cities.length > 0) {
             loadingCities = false;
         }
+    });
+    
+    onMount(async () => {
+        // Fetch weather data to get city list
+        try {
+            await fetchLatestWeatherData();
+        } catch (err) {
+            console.error("Error loading city data:", err);
+            error = "Failed to load cities. You can still set preferences later.";
+        }
+    });
+    
+    onDestroy(() => {
+        unsubscribe();
     });
     
     function addCity(city) {
@@ -83,7 +77,7 @@
     <div class="setup-card">
         <div class="setup-header">
             <h2>Set Your City Preferences</h2>
-            <p>Help us provide location-specific services by setting your home city and preferred cities in Cavite.</p>
+            <p>Help us provide location-specific heat stress alerts by setting your home city and cities you frequently visit.</p>
         </div>
         
         {#if error}
@@ -93,69 +87,70 @@
         {/if}
         
         <div class="setup-content">
-            <div class="setup-section">
-                <h3>Where do you live?</h3>
-                <select 
-                    bind:value={homeCity}
-                    disabled={loadingCities}
-                    class="city-select"
-                >
-                    <option value="">Select your home city</option>
-                    {#each caviteCities as city}
-                        <option value={city}>{city}</option>
-                    {/each}
-                </select>
-            </div>
-            
-            <div class="setup-section">
-                <h3>Cities you visit regularly (optional)</h3>
-                <div class="city-select-container">
-                    <label for="visitedCitySelect" class="sr-only">Select cities you visit</label>
+            {#if loadingCities}
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading cities from weather monitoring system...</p>
+                </div>
+            {:else}
+                <div class="setup-section">
+                    <h3>Where do you live?</h3>
                     <select 
-                        id="visitedCitySelect"
-                        on:change={e => {
-                            const value = e.currentTarget.value;
-                            if (value) {
-                                addCity(value);
-                                e.currentTarget.value = "";
-                            }
-                        }}
-                        disabled={loadingCities || caviteCities.filter(city => 
-                            city !== homeCity && !selectedCities.includes(city)
-                        ).length === 0}
+                        bind:value={homeCity}
                         class="city-select"
                     >
-                        <option value="">Add a city you visit</option>
-                        {#each caviteCities.filter(city => 
-                            city !== homeCity && !selectedCities.includes(city)
-                        ) as city}
+                        <option value="">Select your home city</option>
+                        {#each cityList as city}
                             <option value={city}>{city}</option>
                         {/each}
                     </select>
-                    {#if caviteCities.filter(city => city !== homeCity && !selectedCities.includes(city)).length === 0}
-                        <p class="city-select-note">All available cities have been added</p>
-                    {/if}
                 </div>
                 
-                <div class="selected-cities">
-                    {#if selectedCities.length === 0}
-                        <p class="empty-message">No preferred cities added</p>
-                    {:else}
-                        {#each selectedCities as city, index}
-                            <div class="selected-city">
-                                <span>{city}</span>
-                                <button 
-                                    class="remove-btn"
-                                    on:click={() => removeCity(index)}
-                                    aria-label="Remove preferred city"
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        {/each}
-                    {/if}
+                <div class="setup-section">
+                    <h3>Cities you visit regularly (optional)</h3>
+                    <div class="city-select-container">
+                        <select 
+                            on:change={e => {
+                                const value = e.currentTarget.value;
+                                if (value) {
+                                    addCity(value);
+                                    e.currentTarget.value = "";
+                                }
+                            }}
+                            disabled={cityList.filter(city => 
+                                city !== homeCity && !selectedCities.includes(city)
+                            ).length === 0}
+                            class="city-select"
+                        >
+                            <option value="">Add a city you visit</option>
+                            {#each cityList.filter(city => 
+                                city !== homeCity && !selectedCities.includes(city)
+                            ) as city}
+                                <option value={city}>{city}</option>
+                            {/each}
+                        </select>
+                    </div>
+                    
+                    <div class="selected-cities">
+                        {#if selectedCities.length === 0}
+                            <p class="empty-message">No preferred cities added</p>
+                        {:else}
+                            {#each selectedCities as city, index}
+                                <div class="selected-city">
+                                    <span>{city}</span>
+                                    <button 
+                                        class="remove-btn"
+                                        on:click={() => removeCity(index)}
+                                        aria-label="Remove preferred city"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            {/each}
+                        {/if}
+                    </div>
                 </div>
-            </div>
+            {/if}
         </div>
         
         <div class="actions">
@@ -168,7 +163,7 @@
             <button 
                 class="save-btn"
                 on:click={savePreferences}
-                disabled={isSaving || loadingCities}
+                disabled={isSaving || loadingCities || !homeCity}
             >
                 {isSaving ? 'Saving...' : 'Save Preferences'}
             </button>
@@ -177,24 +172,31 @@
 </div>
 
 <style>
-    .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border-width: 0;
+    .loading-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
     }
     
-    .city-select-note {
-        font-size: 0.8rem;
-        color: #666;
-        margin-top: 0.25rem;
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(0,0,0,0.1);
+        border-top-color: #4285f4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
     }
     
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    
+    /* Keep existing styles */
     .setup-container {
         position: fixed;
         top: 0;

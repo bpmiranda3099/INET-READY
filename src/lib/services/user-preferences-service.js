@@ -1,5 +1,6 @@
 import { db } from '$lib/firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { getCityData } from './weather-data-service';
 
 /**
  * Save user city preferences to Firestore
@@ -13,19 +14,19 @@ export async function saveUserCityPreferences(userId, preferences) {
         const userPrefsRef = doc(db, 'userPreferences', userId);
         const userPrefsDoc = await getDoc(userPrefsRef);
         
-        // Try to add coordinates for each city
-        const prefsWithCoords = await addCityCoordinates(preferences);
+        // Add weather data for cities
+        const enhancedPreferences = await enhanceWithCityData(preferences);
         
         if (userPrefsDoc.exists()) {
             // Update existing document
             await updateDoc(userPrefsRef, {
-                cityPreferences: prefsWithCoords,
+                cityPreferences: enhancedPreferences,
                 updatedAt: new Date()
             });
         } else {
             // Create new document
             await setDoc(userPrefsRef, {
-                cityPreferences: prefsWithCoords,
+                cityPreferences: enhancedPreferences,
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
@@ -64,50 +65,33 @@ export async function getUserCityPreferences(userId) {
  * @param {object} preferences - City preferences object
  * @returns {Promise<object>} - Preferences with coordinates added
  */
-async function addCityCoordinates(preferences) {
+async function enhanceWithCityData(preferences) {
     try {
-        // Try to load city coordinates from CSV file
-        const response = await fetch('/data/city_coords.csv');
-        const csvText = await response.text();
-        
-        // Simple CSV parsing
-        const rows = csvText.split('\n').slice(1); // Skip header
-        const cityCoords = {};
-        
-        rows.forEach(row => {
-            if (row.trim()) {
-                const [city, lat, lng] = row.split(',');
-                cityCoords[city.trim()] = {
-                    latitude: parseFloat(lat),
-                    longitude: parseFloat(lng)
-                };
-            }
-        });
-        
-        // Add coordinates to home city
-        const result = { 
+        // Fetch city data for home city
+        const homeCityData = await getCityData(preferences.homeCity);
+        const enhancedPreferences = {
             homeCity: preferences.homeCity,
-            preferredCities: [...preferences.preferredCities]
+            homeCityData: homeCityData || null,
+            preferredCities: []
         };
-        
-        if (preferences.homeCity && cityCoords[preferences.homeCity]) {
-            result.homeCityCoordinates = cityCoords[preferences.homeCity];
-        }
-        
-        // Add coordinates for preferred cities
-        if (preferences.preferredCities && preferences.preferredCities.length) {
-            result.preferredCityCoordinates = {};
-            preferences.preferredCities.forEach(city => {
-                if (cityCoords[city]) {
-                    result.preferredCityCoordinates[city] = cityCoords[city];
-                }
+
+        // Fetch city data for each preferred city
+        for (const city of preferences.preferredCities) {
+            const cityData = await getCityData(city);
+            enhancedPreferences.preferredCities.push({
+                city: city,
+                cityData: cityData || null
             });
         }
-        
-        return result;
+
+        return enhancedPreferences;
     } catch (error) {
-        console.warn('Error adding city coordinates:', error);
+        console.warn('Error enhancing city data:', error);
         // Return original preferences if there was an error
         return preferences;
     }
 }
+function enhanceWithCityData(preferences) {
+    throw new Error('Function not implemented.');
+}
+
