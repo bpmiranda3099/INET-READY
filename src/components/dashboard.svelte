@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { logoutUser, onMessageListener, hasMedicalRecord, requestFCMToken } from '$lib/firebase';
+    import { logoutUser, onMessageListener, hasMedicalRecord, requestFCMToken, getMedicalData } from '$lib/firebase';
     import { getCurrentPosition, currentLocation } from '$lib/services/location-service';
     import { 
         getLocationNameFromCoordinates,
@@ -33,16 +33,18 @@
     let medicalRecordExists = false;
     let activeTab = 'notifications';
     
+    // City preferences state
+    let hasCityPreferences = false;
+    let showCityPreferencesSetup = false;
+    let checkingCityPreferences = true;
+    let homeCity = '';
+    let preferredCities = [];
+    
     // Permission states
     let notificationPermission = null;
     let locationPermission = null;
     let showPermissionsPanel = false;
     let fcmToken = null;
-    
-    // City preferences state
-    let hasCityPreferences = false;
-    let showCityPreferencesSetup = false;
-    let checkingCityPreferences = true;
     
     // Location state
     let locationData = null;
@@ -124,7 +126,25 @@
             // Check if user has city preferences
             try {
                 const cityPreferences = await getUserCityPreferences(user.uid);
-                hasCityPreferences = cityPreferences && cityPreferences.homeCity;
+                if (cityPreferences && cityPreferences.homeCity) {
+                    hasCityPreferences = true;
+                    homeCity = cityPreferences.homeCity;
+                    
+                    // Ensure preferredCities is an array of strings
+                    if (Array.isArray(cityPreferences.preferredCities)) {
+                        preferredCities = cityPreferences.preferredCities.map(city => 
+                            typeof city === 'object' && city !== null && city.city 
+                                ? city.city 
+                                : typeof city === 'string' 
+                                    ? city 
+                                    : ''
+                        ).filter(city => city !== ''); // Remove any empty items
+                    }
+                    
+                    console.log("Loaded preferences:", { homeCity, preferredCities });
+                } else {
+                    hasCityPreferences = false;
+                }
                 
                 // Show city preferences setup if user doesn't have them yet
                 // But only after permissions panel is handled
@@ -366,6 +386,20 @@
         </div>
     {/if}
     
+    <!-- Travel Health Cards - Only show if user has city preferences -->
+    {#if hasCityPreferences && preferredCities.length > 0}
+        <div class="travel-health-advice-section">
+            <h3>Travel Health Advice</h3>
+            <TravelHealthCards 
+                userId={user.uid}
+                homeCity={homeCity}
+                preferredCities={preferredCities}
+                useCurrentLocation={true}
+                currentLocation={currentLocationName}
+            />
+        </div>
+    {/if}
+    
     <!-- Tab navigation -->
     <div class="dashboard-tabs">
         <button 
@@ -581,5 +615,20 @@
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         margin-top: 1rem;
+    }
+
+    /* Add styling for travel health advice section */
+    .travel-health-advice-section {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .travel-health-advice-section h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        color: #333;
     }
 </style>

@@ -1,5 +1,5 @@
 import { db } from '$lib/firebase';
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 import { generateTravelHealthAdvice } from './gemini-service';
 import { getCityData } from './weather-data-service';
 
@@ -190,17 +190,5 @@ export async function clearHealthAdviceCache(userId) {
         console.error("Error clearing health advice cache:", error);
         return false;
     }
-}
-
-async function deleteDoc(ref) {
-    try {
-        await ref.delete();
-    } catch (error) {
-        console.error("Error deleting document:", error);
-        throw error;
-    }
-}
-function deleteDoc(ref) {
-    throw new Error('Function not implemented.');
 }
 

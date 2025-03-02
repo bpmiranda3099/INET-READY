@@ -445,7 +445,8 @@
         font-size: 1.2rem;
     }
     
-    .advice-content h3 {
+    /* Since we're using <h3> tags in formatAdviceText, we need to keep this selector */
+    .advice-content :global(h3) {
         color: #202124;
         margin: 1.25rem 0 0.5rem;
         font-size: 1.1rem;
@@ -494,7 +495,8 @@
             font-size: 1.1rem;
         }
         
-        .advice-content h3 {
+        /* Update this selector to use :global since it's generated HTML */
+        .advice-content :global(h3) {
             font-size: 1rem;
         }
     }
