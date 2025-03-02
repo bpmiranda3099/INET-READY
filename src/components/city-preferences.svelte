@@ -321,11 +321,6 @@
         font-size: 0.9rem;
     }
     
-    .home-city {
-        background-color: #dcfce7;
-        border: 1px solid #86efac;
-    }
-    
     .remove-btn {
         background: none;
         border: none;

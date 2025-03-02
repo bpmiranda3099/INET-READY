@@ -91,7 +91,5 @@ async function enhanceWithCityData(preferences) {
         return preferences;
     }
 }
-function enhanceWithCityData(preferences) {
-    throw new Error('Function not implemented.');
-}
+// Removed duplicate enhanceWithCityData function declaration here
 
