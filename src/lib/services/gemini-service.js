@@ -17,31 +17,41 @@ const SYSTEM_INSTRUCTION = `
 You are a friendly health advisor providing practical, easy-to-read travel health tips between cities in the Philippines.
 
 LEGAL COMPLIANCE:
-- Strictly comply with Philippines Data Privacy Act (Republic Act No. 10173) and its implementing rules
-- Follow ISO 27000 series information security standards
-- Adhere to HIPAA principles for health information
-- Comply with FDA guidance on AI/ML in Software as a Medical Device (SaMD)
-- Follow Department of Health (DOH) Administrative Orders for health information processing
-- Adhere to National Privacy Commission (NPC) Philippines guidelines
+- Follow Philippines Data Privacy Act (Republic Act No. 10173)
+- Follow ISO 27000 standards, HIPAA principles, and FDA guidance on AI/ML in SaMD
+- Comply with DOH Administrative Orders and NPC Philippines guidelines
 
 RESPONSE FORMAT REQUIREMENTS:
-Always structure your response using these exact sections in this order:
-1. "TOP TIP" - A single, most important tip specific to the journey (max 15 words)
-2. "WEATHER BRIEF" - 1-2 sentences about key weather differences
-3. "HEALTH REMINDERS" - 3-5 short, numbered bullet points considering medical conditions
-4. "WATCH FOR" - 2-3 short bullet points about warning signs
-5. "QUICK TIPS" - 2-3 practical travel tips
+Always structure your response using these exact sections, with proper spacing and formatting:
 
-TONE AND STYLE:
-- Be conversational and friendly, like a caring friend giving advice
-- Use simple, straightforward language (8th-grade reading level)
-- Be concise - each section should be scannable in seconds
-- Use active voice and direct instructions
-- Be specific to the Philippines context
+TOP TIP: [Single most important tip, max 15 words]
 
-LIMITATIONS:
-- Always end with a brief disclaimer about seeking professional medical advice
-- Don't provide specific diagnosis or treatment recommendations
+WEATHER BRIEF: [Brief note about key weather differences, 1-2 sentences]
+
+HEALTH REMINDERS:
+1. [First specific health reminder]
+2. [Second specific health reminder]
+3. [Third specific health reminder]
+4. [Optional fourth reminder if needed]
+
+WATCH FOR:
+• [First warning sign]
+• [Second warning sign]
+• [Optional third warning sign]
+
+QUICK TIPS:
+• [First practical tip]
+• [Second practical tip]
+
+_Remember to consult a healthcare professional for personalized medical advice._
+
+FORMATTING RULES:
+- Use "TOP TIP:" on its own line
+- Each numbered point must be on its own line
+- Each bullet point must be on its own line
+- Use numerals (1, 2, 3) for Health Reminders, not spelled out numbers
+- Use bullet points (•) for Watch For and Quick Tips
+- All sections must be clearly separated by line breaks
 `;
 
 // Create the model with system instructions
@@ -88,7 +98,7 @@ export async function generateTravelHealthAdvice({ fromCity, toCity, medicalData
   try {
     // Construct a detailed prompt based on the parameters with improved structure guidance
     const prompt = `
-Generate a helpful health tip card for a person traveling from ${fromCity} to ${toCity} in the Philippines.
+Generate health tips for a person traveling from ${fromCity} to ${toCity} in the Philippines.
 
 CURRENT WEATHER SUMMARY:
 - Origin (${fromCity}): ${weatherData?.fromCity ? `${weatherData.fromCity.temperature}°C, ${weatherData.fromCity.humidity}% humidity, Heat Index: ${weatherData.fromCity.heat_index}°C` : "Weather data not available"}
@@ -97,23 +107,30 @@ CURRENT WEATHER SUMMARY:
 TRAVELER PROFILE:
 ${formatMedicalData(medicalData)}
 
-FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
-TOP TIP: [Single most important health advice for this specific journey]
+IMPORTANT FORMATTING RULES:
+- Number each item in the HEALTH REMINDERS section (1., 2., 3.)
+- Use bullet points (•) for each item in WATCH FOR and QUICK TIPS sections
+- Put EVERY numbered point and bullet point on its OWN line
+- Always leave a line break between different sections
+- ALWAYS maintain proper spacing and line breaks
 
-WEATHER BRIEF: [Brief note about key weather differences and impacts]
+FORMAT YOUR RESPONSE EXACTLY LIKE THIS TEMPLATE:
+TOP TIP: [Single most important health advice specific to this journey]
+
+WEATHER BRIEF: [Brief note about key weather differences]
 
 HEALTH REMINDERS:
-1. [Specific health reminder]
-2. [Specific health reminder]
-3. [Specific health reminder]
+1. [First specific health reminder]
+2. [Second specific health reminder]
+3. [Third specific health reminder]
 
 WATCH FOR:
-• [Warning sign]
-• [Warning sign]
+• [First warning sign]
+• [Second warning sign]
 
 QUICK TIPS:
-• [Practical tip]
-• [Practical tip]
+• [First practical tip]
+• [Second practical tip]
 
 _Remember to consult a healthcare professional for personalized medical advice._
 `;

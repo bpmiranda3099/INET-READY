@@ -3,28 +3,39 @@
     export let showSample = true;
 
     const sampleAdvice = `
-TOP TIP: Stay hydrated and take frequent breaks when traveling in high heat index conditions.
+TOP TIP: Stay hydrated and take frequent breaks in higher temperatures.
 
-WEATHER BRIEF: Tagaytay has cooler temperatures (around 24°C) compared to Manila's warmer climate (32°C). The 8°C difference can affect how your body regulates temperature.
+WEATHER BRIEF: Mendez is slightly cooler and more humid than Dasmariñas. Be prepared for a potential temperature drop.
 
 HEALTH REMINDERS:
-1. Adjust your blood pressure medication timing if you're traveling through higher elevations
-2. Carry an umbrella for sun protection, especially important with your skin sensitivity
-3. Pack extra antihistamines as pollen levels differ between coastal and highland areas
+1. Drink plenty of water throughout your journey.
+2. Wear light-colored, loose-fitting clothing to stay cool.
+3. Apply sunscreen with a high SPF, especially if you'll be outdoors.
+4. Bring insect repellent, especially if you plan on hiking.
 
 WATCH FOR:
-• Headache with dizziness may indicate altitude adjustment issues
-• Increased thirst and dry skin can signal dehydration beginning
+• Signs of heat exhaustion (dizziness, headache, nausea).
+• Any unusual insect bites or stings.
 
 QUICK TIPS:
-• Schedule rest stops every 1-2 hours during your journey
-• Bring a refillable water bottle with electrolyte packets
+• Pack a reusable water bottle.
+• Use a hat and sunglasses for sun protection.
 
 _Remember to consult a healthcare professional for personalized medical advice._
 `;
 
     function formatAdviceText(text) {
         if (!text) return '';
+        
+        // Initial cleaning - normalize line endings and ensure proper breaks
+        // Fix common issues with joined bullet points and numbered lists
+        text = text
+            // Ensure line breaks before section headings
+            .replace(/([^\n])(WEATHER BRIEF|HEALTH REMINDERS|WATCH FOR|QUICK TIPS)/g, '$1\n\n$2')
+            // Fix numbered list items that appear on the same line
+            .replace(/(\d+\.?\)?\s+[^.\n]+\.)(\s*)(\d+\.?\)?\s+)/g, '$1\n$3')
+            // Fix bullet points that appear on the same line
+            .replace(/([.!?])(\s*)(•|\*|\-)\s+/g, '$1\n$3 ');
         
         // Split the text into sections
         const sections = {
@@ -36,38 +47,64 @@ _Remember to consult a healthcare professional for personalized medical advice._
             disclaimer: ''
         };
         
-        // Extract sections using regex patterns
+        // Extract the top tip
         const topTipMatch = text.match(/TOP TIP:?\s*(.*?)(?:\n|$)/i);
         if (topTipMatch && topTipMatch[1]) sections.topTip = topTipMatch[1].trim();
         
-        const weatherBriefMatch = text.match(/WEATHER BRIEF:?\s*(.*?)(?:\n\n|\n(?=[A-Z]))/is);
+        // Extract the weather brief section
+        const weatherBriefMatch = text.match(/WEATHER BRIEF:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z][A-Z])|\n?HEALTH REMINDERS)/i);
         if (weatherBriefMatch && weatherBriefMatch[1]) sections.weatherBrief = weatherBriefMatch[1].trim();
         
-        // Extract Health Reminders
-        const healthRemindersMatch = text.match(/HEALTH REMINDERS:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z]))/i);
-        if (healthRemindersMatch && healthRemindersMatch[1]) {
-            const points = healthRemindersMatch[1].split(/\n\s*[\d]+[\.\)]\s*/)
-                .map(p => p.trim())
-                .filter(p => p.length > 0);
-            sections.healthReminders = points;
+        // Extract health reminders with improved regex
+        const healthRemindersSection = text.match(/HEALTH REMINDERS:?\s*([\s\S]*?)(?:\n\n|\n?WATCH FOR)/i);
+        if (healthRemindersSection && healthRemindersSection[1]) {
+            // Find all numbered points using regex
+            const numberedItems = healthRemindersSection[1].match(/\n?\s*\d+\.?\)?\s+(.*?)(?=\n\s*\d+\.?\)?\s+|\n\n|\n?WATCH FOR|$)/gis);
+            if (numberedItems) {
+                // Process each match to extract just the content
+                sections.healthReminders = numberedItems.map(item => {
+                    const content = item.replace(/\n?\s*\d+\.?\)?\s+/, '').trim();
+                    return content;
+                }).filter(item => item.length > 0);
+            }
         }
         
-        // Extract Watch For
-        const watchForMatch = text.match(/WATCH FOR:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z]))/i);
-        if (watchForMatch && watchForMatch[1]) {
-            const points = watchForMatch[1].split(/\n\s*[•\-\*]\s*/)
-                .map(p => p.trim())
-                .filter(p => p.length > 0);
-            sections.watchFor = points;
+        // Extract Watch For items with improved regex
+        const watchForSection = text.match(/WATCH FOR:?\s*([\s\S]*?)(?:\n\n|\n?QUICK TIPS|$)/i);
+        if (watchForSection && watchForSection[1]) {
+            // Split by bullet points, accounting for possible formatting issues
+            const bulletItems = watchForSection[1].split(/\n\s*[•\-\*]\s+/).slice(1);
+            if (bulletItems.length > 0) {
+                // Clean each bullet point
+                sections.watchFor = bulletItems.map(item => 
+                    item.trim().replace(/\n([^•\-\*])/g, ' $1') // Join lines that aren't new bullets
+                ).filter(item => item.length > 0);
+            } else {
+                // Fallback - try to extract content some other way
+                const content = watchForSection[1].trim().replace(/^[•\-\*]\s+/gm, '');
+                if (content) {
+                    sections.watchFor = [content]; 
+                }
+            }
         }
         
-        // Extract Quick Tips
-        const quickTipsMatch = text.match(/QUICK TIPS:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z])|$)/i);
-        if (quickTipsMatch && quickTipsMatch[1]) {
-            const points = quickTipsMatch[1].split(/\n\s*[•\-\*]\s*/)
-                .map(p => p.trim())
-                .filter(p => p.length > 0);
-            sections.quickTips = points;
+        // Extract Quick Tips items with improved regex
+        const quickTipsSection = text.match(/QUICK TIPS:?\s*([\s\S]*?)(?:\n\n|_|$)/i);
+        if (quickTipsSection && quickTipsSection[1]) {
+            // Split by bullet points, accounting for possible formatting issues
+            const bulletItems = quickTipsSection[1].split(/\n\s*[•\-\*]\s+/).slice(1);
+            if (bulletItems.length > 0) {
+                // Clean each bullet point
+                sections.quickTips = bulletItems.map(item => 
+                    item.trim().replace(/\n([^•\-\*])/g, ' $1') // Join lines that aren't new bullets
+                ).filter(item => item.length > 0);
+            } else {
+                // Fallback - try to extract content some other way
+                const content = quickTipsSection[1].trim().replace(/^[•\-\*]\s+/gm, '');
+                if (content) {
+                    sections.quickTips = [content];
+                }
+            }
         }
         
         // Extract disclaimer - usually the last paragraph
