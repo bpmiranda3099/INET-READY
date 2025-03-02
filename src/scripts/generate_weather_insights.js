@@ -14,6 +14,37 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
+ * Parse ISO date strings in the forecast data back to Date objects 
+ * This reverses what the Python script did for JSON serialization
+ */
+function parseISODates(obj) {
+  if (obj === null || obj === undefined) return obj;
+  
+  if (typeof obj === 'string') {
+    // Check if string is an ISO date
+    const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
+    if (iso8601Regex.test(obj)) {
+      return new Date(obj);
+    }
+    return obj;
+  }
+  
+  if (typeof obj === 'object') {
+    if (Array.isArray(obj)) {
+      return obj.map(parseISODates);
+    }
+    
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = parseISODates(value);
+    }
+    return result;
+  }
+  
+  return obj;
+}
+
+/**
  * Process forecast data and generate insights using Gemini
  */
 async function processForecasts() {
@@ -30,7 +61,10 @@ async function processForecasts() {
     const outputFile = process.argv[3];
 
     // Read the forecast data from the input file
-    const forecastData = JSON.parse(await fs.readFile(inputFile, 'utf-8'));
+    let forecastData = JSON.parse(await fs.readFile(inputFile, 'utf-8'));
+    
+    // Parse any ISO date strings back to Date objects
+    forecastData = parseISODates(forecastData);
 
     // Generate insights using the gemini-service
     const insights = await generateDailyWeatherInsights(forecastData);

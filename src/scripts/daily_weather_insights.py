@@ -139,6 +139,29 @@ def get_latest_heat_index_forecast(db):
         print(f"Error retrieving forecast data: {e}")
         return None
 
+def convert_firebase_timestamps(obj):
+    """
+    Recursively convert Firebase timestamp objects to ISO format strings
+    to make the data JSON serializable
+    
+    Parameters:
+    obj: Any Python object or data structure with potential Firebase timestamps
+    
+    Returns:
+    Object with all Firebase timestamps converted to strings
+    """
+    if hasattr(obj, "timestamp") and callable(getattr(obj, "timestamp")):
+        # Convert Firebase DatetimeWithNanoseconds to string
+        return obj.isoformat()
+    
+    elif isinstance(obj, dict):
+        return {k: convert_firebase_timestamps(v) for k, v in obj.items()}
+    
+    elif isinstance(obj, list):
+        return [convert_firebase_timestamps(item) for item in obj]
+    
+    return obj
+
 def call_gemini_via_node_bridge(forecast_data):
     """
     Call the Gemini API to generate insights from forecast data via Node.js bridge
@@ -150,9 +173,12 @@ def call_gemini_via_node_bridge(forecast_data):
     str: Generated insights or None if failed
     """
     try:
+        # Convert Firebase timestamp objects before serializing to JSON
+        serializable_data = convert_firebase_timestamps(forecast_data)
+        
         # Create a temporary file for the forecast data
         with tempfile.NamedTemporaryFile(suffix='.json', mode='w', delete=False) as temp_input:
-            json.dump(forecast_data, temp_input)
+            json.dump(serializable_data, temp_input)
             temp_input_path = temp_input.name
             
         # Create a temporary file for the output
