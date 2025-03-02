@@ -1,9 +1,31 @@
-openmeteo-requests
-requests-cache
-retry-requests
+# Machine Learning
+scikit-learn
+xgboost
+
+# Data Processing
 numpy
 pandas
-firebase-admin
-requests
+
+# Logging
 loguru
 
+# Progress Bar
+tqdm
+
+# Firebase
+firebase-admin
+
+# Visualization
+matplotlib
+seaborn
+
+# Weather Data
+openmeteo-requests
+
+# HTTP Requests
+requests
+requests-cache
+retry-requests
+
+# Thermal Comfort Calculation
+pythermalcomfort
