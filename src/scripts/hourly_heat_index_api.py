@@ -37,37 +37,30 @@ def upload_to_firestore(results):
         
         db = firestore.client()
         
-        # Collection for latest data (overwrites previous entries)
-        latest_collection_ref = db.collection('latest_hourly_heat_index')
+        # Single collection for historical weather data
+        weather_collection_ref = db.collection('hourly_weather_data')
         
-        # Collection for historical data (preserves all entries)
-        history_collection_ref = db.collection('hourly_heat_index_history')
-        
-        # Get current date for document ID
+        # Get current date and time for document IDs
         current_date = datetime.now().strftime("%Y-%m-%d")
         current_time = datetime.now().strftime("%H:%M:%S")
+        current_time_id = current_time.replace(':', '-')
         
-        # Create a document for this batch of readings under the current date
-        history_batch_ref = history_collection_ref.document(current_date)
+        # Create references to the hierarchical structure:
+        # hourly_weather_data (collection) -> date (doc) -> times (collection) -> time (doc) -> cities (collection)
+        date_doc_ref = weather_collection_ref.document(current_date)
+        time_doc_ref = date_doc_ref.collection('times').document(current_time_id)
+        
+        # Store time metadata
+        time_doc_ref.set({
+            "time": current_time,
+            "timestamp": firestore.SERVER_TIMESTAMP,
+            "cities_updated": [result['city'] for result in results]
+        })
         
         # Store each city directly in the collection
         for result in results:
-            # 1. Update the latest data (overwrites previous data)
-            city_doc = latest_collection_ref.document(result['city'])
-            city_doc.set({
-                "city": result['city'],
-                "temperature": result['temperature'],
-                "humidity": result['humidity'],
-                "heat_index": result['heat_index'],
-                "inet_level": result['inet_level'],
-                "date_added": result['date_added'],
-                "time_added": result['time_added'],
-                "timestamp": firestore.SERVER_TIMESTAMP
-            })
-            
-            # 2. Add to historical collection (preserves all readings)
-            # Store cities in a subcollection with timestamps as document IDs
-            city_ref = history_batch_ref.collection('cities').document(f"{result['city']}_{current_time.replace(':', '-')}")
+            # Add to cities subcollection under the specific time document
+            city_ref = time_doc_ref.collection('cities').document(result['city'])
             city_ref.set({
                 "city": result['city'],
                 "temperature": result['temperature'],
@@ -81,11 +74,12 @@ def upload_to_firestore(results):
             
             logger.info(f"Added data for {result['city']}")
         
-        # Update the parent document with metadata
-        history_batch_ref.set({
+        # Update the parent date document with metadata
+        date_doc_ref.set({
             "date": current_date,
+            "last_updated": current_time,
             "timestamp": firestore.SERVER_TIMESTAMP,
-            "cities_updated": [result['city'] for result in results]
+            "update_count": firestore.Increment(1)  # Track how many updates happened on this date
         }, merge=True)
         
         logger.info(f"Successfully uploaded {len(results)} city records to Firestore")
@@ -93,7 +87,7 @@ def upload_to_firestore(results):
         # Clean up Firebase connection
         firebase_admin.delete_app(firebase_admin.get_app())
         
-        return f"{current_date}_{current_time.replace(':', '-')}"
+        return f"{current_date}_{current_time_id}"
     except Exception as e:
         if "database (default) does not exist" in str(e):
             logger.error(f"Firebase Firestore database doesn't exist! You need to create it in the Firebase console: https://console.firebase.google.com/project/{cred.project_id}/firestore")
