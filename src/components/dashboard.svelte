@@ -7,7 +7,7 @@
         serviceWorkerSupported, 
         serviceWorkerRegistered, 
         serviceWorkerError 
-    } from '$lib/services/service-worker';
+    } from '../lib/services/service-worker';
     
     // Fix component import capitalization to match the actual file names
     import MedicalProfile from './medicalprofile.svelte';
