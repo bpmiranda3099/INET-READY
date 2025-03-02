@@ -26,8 +26,9 @@ if (typeof window !== "undefined") {
             const permission = await Notification.requestPermission();
             
             if (permission === "granted") {
-              // This is the VAPID key from your Firebase project settings
-              const vapidKey = "YOUR_VAPID_KEY"; // Get this from Firebase Console
+              // Replace with your actual VAPID key from Firebase Console
+              // Project Settings -> Cloud Messaging -> Web Push Certificates
+              const vapidKey = "VITE_FIREBASE_VAPID_KEY";
               
               try {
                 const token = await getToken(messaging, { vapidKey });
@@ -55,6 +56,7 @@ if (typeof window !== "undefined") {
         // Listen for messages while the app is in the foreground
         onMessageListener = (callback) => {
           return onMessage(messaging, (payload) => {
+            console.log("Received foreground message:", payload);
             callback(payload);
           });
         };
