@@ -33,10 +33,8 @@ if (typeof window !== "undefined") {
               try {
                 const token = await getToken(messaging, { vapidKey });
                 if (token) {
-                  console.log("FCM Token:", token);
                   return token;
                 } else {
-                  console.log("No registration token available.");
                   return null;
                 }
               } catch (error) {
