@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { logoutUser, onMessageListener, hasMedicalRecord, requestFCMToken } from '$lib/firebase';
+    import { getCurrentPosition, currentLocation } from '$lib/services/location-service';
     // Fix component import capitalization to match the actual file names
     import MedicalProfile from './medicalprofile.svelte';
     import MedicalForm from './medicalform.svelte';
@@ -20,7 +21,22 @@
     let showPermissionsPanel = false;
     let fcmToken = null;
     
-    onMount(async () => {
+    // Location state
+    let locationData = null;
+    let locationError = null;
+    let fetchingLocation = false;
+    
+    // Subscribe to location updates
+    const unsubscribeLocation = currentLocation.subscribe(value => {
+        if (value) {
+            locationData = value;
+        }
+    });
+
+    let unsubscribe;
+
+    onMount(() => {
+        (async () => {
         // Check existing permissions
         notificationPermission = Notification.permission;
         
@@ -32,7 +48,14 @@
                 // Listen for changes to permission state
                 status.onchange = () => {
                     locationPermission = status.state;
+                    unsubscribe();
+                    unsubscribeLocation();
                 };
+                
+                // If location permission is granted, get current position
+                if (locationPermission === 'granted') {
+                    getLocation();
+                }
             } catch (error) {
                 console.error("Error checking geolocation permission:", error);
             }
@@ -50,9 +73,7 @@
                 console.log("FCM token available:", fcmToken);
             }
         }
-        
-        // Subscribe to foreground messages
-        const unsubscribe = onMessageListener();
+        unsubscribe = onMessageListener();
         
         // Check if user has medical record
         if (user && user.uid) {
@@ -61,8 +82,26 @@
             });
         }
         
-        unsubscribe();
+        });
+        return () => {
+            unsubscribe();
+            unsubscribeLocation();
+        };
     });
+    
+    async function getLocation() {
+        fetchingLocation = true;
+        locationError = null;
+        
+        try {
+            locationData = await getCurrentPosition();
+        } catch (error) {
+            console.error("Error fetching location:", error);
+            locationError = error.message || "Could not retrieve your location";
+        } finally {
+            fetchingLocation = false;
+        }
+    }
     
     async function handleLogout() {
         loading = true;
@@ -109,6 +148,14 @@
                     console.log("Latitude:", position.coords.latitude);
                     console.log("Longitude:", position.coords.longitude);
                     
+                    // Update location data
+                    locationData = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        timestamp: new Date().toISOString()
+                    };
+                    
                     // Update permission state
                     navigator.permissions.query({ name: 'geolocation' }).then(status => {
                         locationPermission = status.state;
@@ -123,6 +170,7 @@
                 },
                 (error) => {
                     console.error("Error getting location:", error);
+                    locationError = error.message || "Could not retrieve your location";
                 },
                 { enableHighAccuracy: true }
             );
@@ -143,24 +191,50 @@
             {loading ? 'Logging out...' : 'Logout'}
         </button>
     </div>
-
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            console.log("Current Latitude:", position.coords.latitude);
-            console.log("Current Longitude:", position.coords.longitude);
-        },
-        (error) => {
-            console.error("Error getting current location:", error);
-        },
-        { enableHighAccuracy: true }
-    );
     
     <div class="welcome">
         <h2>Welcome, {user.email}!</h2>
         <p>You are now connected to INET-READY.</p>
-        <p>You are currently at:</p>
-        <p>Latitude: {position?.coords.latitude}</p>
-        <p>Longitude: {position?.coords.longitude}</p>
+        
+        <!-- Display location coordinates -->
+        {#if locationData}
+            <div class="location-info">
+                <p>
+                    <span class="location-icon">📍</span> 
+                    Your current location: 
+                    <span class="coordinates">
+                        {locationData.latitude.toFixed(6)}°, {locationData.longitude.toFixed(6)}°
+                    </span>
+                    <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
+                        {#if fetchingLocation}
+                            Updating...
+                        {:else}
+                            ↻
+                        {/if}
+                    </button>
+                </p>
+            </div>
+        {:else if locationPermission === 'granted' && !locationData}
+            <div class="location-info loading">
+                <p>
+                    <span class="location-icon">📍</span> 
+                    {fetchingLocation ? 'Getting your location...' : 'Location data not available.'}
+                    <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
+                        {fetchingLocation ? 'Loading...' : 'Get Location'}
+                    </button>
+                </p>
+            </div>
+        {:else if locationError}
+            <div class="location-info error">
+                <p>
+                    <span class="location-icon">⚠️</span> 
+                    {locationError}
+                    <button on:click={requestLocationPermission} class="refresh-btn">
+                        Try Again
+                    </button>
+                </p>
+            </div>
+        {/if}
     </div>
     
     <!-- Permissions Panel -->
@@ -285,5 +359,58 @@
         margin-left: 1rem;
         font-size: 0.8rem;
         padding: 0.2rem 0.5rem;
+    }
+    
+    /* Styling for location display */
+    .location-info {
+        background: #f8faff;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 3px solid #4285f4;
+        display: flex;
+        align-items: center;
+    }
+    
+    .location-info.error {
+        background: #fff8f8;
+        border-left-color: #f44242;
+    }
+    
+    .location-info.loading {
+        background: #f8f9fa;
+        border-left-color: #888;
+    }
+    
+    .location-icon {
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
+    
+    .coordinates {
+        font-family: monospace;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .refresh-btn {
+        background: transparent;
+        border: none;
+        color: #4285f4;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-left: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+    
+    .refresh-btn:hover {
+        background: rgba(66, 133, 244, 0.1);
+    }
+    
+    .refresh-btn:disabled {
+        color: #888;
+        cursor: not-allowed;
     }
 </style>
