@@ -12,36 +12,44 @@ export const geminiStatus = writable({
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-// Comprehensive system instructions for health advice with improved formatting guidance
+// Enhanced system instructions with stronger focus on medical data considerations
 const SYSTEM_INSTRUCTION = `
-You are a friendly health advisor providing practical, easy-to-read travel health tips between cities in the Philippines.
+You are a friendly health advisor providing practical, personalized travel health tips between cities in the Philippines.
 
 LEGAL COMPLIANCE:
 - Follow Philippines Data Privacy Act (Republic Act No. 10173)
 - Follow ISO 27000 standards, HIPAA principles, and FDA guidance on AI/ML in SaMD
 - Comply with DOH Administrative Orders and NPC Philippines guidelines
 
+MEDICAL DATA CONSIDERATION REQUIREMENTS:
+- Each piece of advice MUST be tailored to the traveler's specific medical profile
+- For each medical condition mentioned, provide at least one specific recommendation
+- Consider medication needs and timing when suggesting travel plans
+- Consider how weather differences might impact existing health conditions
+- For allergies, include specific precautions related to the destination
+- Address age-appropriate concerns in your recommendations
+- If no medical data is provided, give more general advice but mention this limitation
+
 RESPONSE FORMAT REQUIREMENTS:
 Always structure your response using these exact sections, with proper spacing and formatting:
 
-TOP TIP: [Single most important tip, max 15 words]
+TOP TIP: [Single most important health advice specific to this journey and the person's medical profile]
 
-WEATHER BRIEF: [Brief note about key weather differences, 1-2 sentences]
+WEATHER BRIEF: [Brief note about key weather differences and how they might affect the person's specific health conditions]
 
 HEALTH REMINDERS:
-1. [First specific health reminder]
-2. [Second specific health reminder]
-3. [Third specific health reminder]
-4. [Optional fourth reminder if needed]
+1. [First specific health reminder tailored to medical conditions]
+2. [Second specific health reminder considering medications]
+3. [Third specific health reminder addressing potential health risks]
+4. [Optional fourth reminder related to allergies or specific concerns]
 
 WATCH FOR:
-• [First warning sign]
-• [Second warning sign]
-• [Optional third warning sign]
+• [First warning sign specific to the person's health conditions]
+• [Second warning sign related to weather/travel impacts]
 
 QUICK TIPS:
-• [First practical tip]
-• [Second practical tip]
+• [First practical tip considering medical needs]
+• [Second practical tip for health management during travel]
 
 _Remember to consult a healthcare professional for personalized medical advice._
 
@@ -96,41 +104,47 @@ export async function checkGeminiAvailability() {
  */
 export async function generateTravelHealthAdvice({ fromCity, toCity, medicalData, weatherData }) {
   try {
-    // Construct a detailed prompt based on the parameters with improved structure guidance
+    // Enhanced prompt with specific instructions about considering medical data
     const prompt = `
-Generate health tips for a person traveling from ${fromCity} to ${toCity} in the Philippines.
+Generate personalized health tips for a person traveling from ${fromCity} to ${toCity} in the Philippines.
 
 CURRENT WEATHER SUMMARY:
 - Origin (${fromCity}): ${weatherData?.fromCity ? `${weatherData.fromCity.temperature}°C, ${weatherData.fromCity.humidity}% humidity, Heat Index: ${weatherData.fromCity.heat_index}°C` : "Weather data not available"}
 - Destination (${toCity}): ${weatherData?.toCity ? `${weatherData.toCity.temperature}°C, ${weatherData.toCity.humidity}% humidity, Heat Index: ${weatherData.toCity.heat_index}°C` : "Weather data not available"}
 
-TRAVELER PROFILE:
+TRAVELER MEDICAL PROFILE (IMPORTANT - TAILOR ADVICE TO THESE SPECIFIC CONDITIONS):
 ${formatMedicalData(medicalData)}
 
-IMPORTANT FORMATTING RULES:
+PERSONALIZATION REQUIREMENTS:
+1. For each medical condition listed, provide at least one specific recommendation
+2. If medications are mentioned, include advice on medication management during travel
+3. Consider how the weather difference might affect their specific health conditions
+4. If they have allergies, include advice on managing these during travel
+5. Tailor advice to their age and gender where relevant
+
+FORMATTING RULES:
 - Number each item in the HEALTH REMINDERS section (1., 2., 3.)
 - Use bullet points (•) for each item in WATCH FOR and QUICK TIPS sections
 - Put EVERY numbered point and bullet point on its OWN line
 - Always leave a line break between different sections
-- ALWAYS maintain proper spacing and line breaks
 
 FORMAT YOUR RESPONSE EXACTLY LIKE THIS TEMPLATE:
-TOP TIP: [Single most important health advice specific to this journey]
+TOP TIP: [Single most important health advice specific to this journey and their medical profile]
 
-WEATHER BRIEF: [Brief note about key weather differences]
+WEATHER BRIEF: [Brief note about key weather differences and how they might affect their specific health conditions]
 
 HEALTH REMINDERS:
-1. [First specific health reminder]
-2. [Second specific health reminder]
-3. [Third specific health reminder]
+1. [First specific health reminder tailored to their medical conditions]
+2. [Second specific health reminder considering their medications]
+3. [Third specific health reminder addressing their potential health risks]
 
 WATCH FOR:
-• [First warning sign]
-• [Second warning sign]
+• [First warning sign specific to their health conditions]
+• [Second warning sign related to weather/travel impacts]
 
 QUICK TIPS:
-• [First practical tip]
-• [Second practical tip]
+• [First practical tip considering their specific medical needs]
+• [Second practical tip for managing their health during travel]
 
 _Remember to consult a healthcare professional for personalized medical advice._
 `;
@@ -147,22 +161,61 @@ _Remember to consult a healthcare professional for personalized medical advice._
 }
 
 /**
- * Format medical data for the prompt
+ * Format medical data for the prompt with enhanced structure
  * @param {Object} medicalData User's medical data
  * @returns {string} Formatted medical data
  */
 function formatMedicalData(medicalData) {
-  if (!medicalData) return "No medical information provided.";
+  if (!medicalData) return "No medical information provided. Please provide general travel health advice.";
   
   const { age, gender, conditions = [], medications = [], allergies = [] } = medicalData;
   
-  return `
-- Age: ${age || 'Not specified'}
+  let formattedData = `
+- Age: ${age || 'Not specified'} ${age ? `(${getAgeCategory(age)})` : ''}
 - Gender: ${gender || 'Not specified'}
-- Medical conditions: ${conditions.length > 0 ? conditions.join(', ') : 'None'}
-- Medications: ${medications.length > 0 ? medications.join(', ') : 'None'}
-- Allergies: ${allergies.length > 0 ? allergies.join(', ') : 'None'}
 `;
+
+  // Add medical conditions with emphasis if present
+  if (conditions.length > 0) {
+    formattedData += `- MEDICAL CONDITIONS (IMPORTANT): ${conditions.join(', ')}\n`;
+  } else {
+    formattedData += `- Medical conditions: None reported\n`;
+  }
+  
+  // Add medications with emphasis if present
+  if (medications.length > 0) {
+    formattedData += `- MEDICATIONS (CONSIDER THESE): ${medications.join(', ')}\n`;
+  } else {
+    formattedData += `- Medications: None reported\n`;
+  }
+  
+  // Add allergies with emphasis if present
+  if (allergies.length > 0) {
+    formattedData += `- ALLERGIES (ADDRESS THESE): ${allergies.join(', ')}`;
+  } else {
+    formattedData += `- Allergies: None reported`;
+  }
+  
+  return formattedData;
+}
+
+/**
+ * Helper function to categorize age for more tailored advice
+ * @param {number} age User's age
+ * @returns {string} Age category
+ */
+function getAgeCategory(age) {
+  if (!age) return '';
+  
+  const ageNum = parseInt(age.toString());
+  if (isNaN(ageNum)) return '';
+  
+  if (ageNum <= 12) return 'child';
+  if (ageNum <= 17) return 'adolescent';
+  if (ageNum <= 39) return 'young adult';
+  if (ageNum <= 59) return 'middle-aged adult';
+  if (ageNum <= 74) return 'older adult';
+  return 'elderly';
 }
 
 export { model };
