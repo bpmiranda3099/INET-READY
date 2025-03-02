@@ -27,7 +27,7 @@ if (typeof window !== "undefined") {
         
         // Override the placeholder functions with real implementations
         
-        // Request notification permission and FCM token
+        // Request notification permission and FCM token with push subscription
         requestFCMToken = async () => {
           try {
             // Check if permission is already granted
@@ -46,7 +46,29 @@ if (typeof window !== "undefined") {
               
               try {
                 console.log("Requesting FCM token with VAPID key...");
-                const token = await getToken(messaging, { vapidKey });
+                
+                // Request a push subscription for the service worker
+                const swRegistration = await navigator.serviceWorker.ready;
+                
+                // Get existing subscription first
+                let subscription = await swRegistration.pushManager.getSubscription();
+                
+                // If no subscription exists, create one
+                if (!subscription) {
+                  const vapidPublicKey = urlBase64ToUint8Array(vapidKey);
+                  subscription = await swRegistration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: vapidPublicKey
+                  });
+                  console.log("Created new push subscription");
+                }
+                
+                // Now get the FCM token
+                const token = await getToken(messaging, { 
+                  vapidKey,
+                  serviceWorkerRegistration: swRegistration
+                });
+                
                 if (token) {
                   console.log("FCM token successfully obtained");
                   return token;
@@ -94,6 +116,22 @@ if (typeof window !== "undefined") {
   }).catch(error => {
     console.error("Error loading Firebase Messaging:", error);
   });
+}
+
+// Helper function to convert base64 VAPID key to Uint8Array for push subscription
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }
 
 export default messaging;

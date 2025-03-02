@@ -50,7 +50,11 @@ messaging.onBackgroundMessage((payload) => {
         action: 'view',
         title: 'View'
       }
-    ]
+    ],
+    // Make sure notification persists in notification tray
+    requireInteraction: true,
+    // Add a timestamp for the notification (important for ordering)
+    timestamp: Date.now()
   };
 
   // Show notification to user
@@ -134,13 +138,26 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// Handle push messages (alternative to onBackgroundMessage)
+// Handle push messages (this is CRITICAL for background notifications)
 self.addEventListener('push', (event) => {
   console.log('[firebase-messaging-sw.js] Push event received:', event);
   
-  // If the event doesn't contain data, use onBackgroundMessage handler
+  // If the event doesn't contain data, use default message
   if (!event.data) {
-    console.log('[firebase-messaging-sw.js] No data in push event');
+    console.log('[firebase-messaging-sw.js] No data in push event, showing default notification');
+    
+    // Show a default notification
+    const title = "INET-READY Weather Update";
+    const options = {
+      body: "New weather information is available.",
+      icon: '/app-icon.png',
+      badge: '/favicon.png'
+    };
+    
+    event.waitUntil(
+      self.registration.showNotification(title, options)
+    );
+    
     return;
   }
   
@@ -155,7 +172,8 @@ self.addEventListener('push', (event) => {
       body: payload.notification?.body || 'New update available.',
       icon: '/app-icon.png',
       badge: '/favicon.png',
-      data: payload.data || {}
+      data: payload.data || {},
+      requireInteraction: true
     };
     
     event.waitUntil(
@@ -163,10 +181,18 @@ self.addEventListener('push', (event) => {
     );
   } catch (error) {
     console.error('[firebase-messaging-sw.js] Error handling push event:', error);
+    
+    // Show a fallback notification even if there's an error
+    event.waitUntil(
+      self.registration.showNotification('INET-READY Update', {
+        body: 'New information is available.',
+        icon: '/app-icon.png'
+      })
+    );
   }
 });
 
-// For debugging
+// For testing registration and heartbeat
 self.addEventListener('message', (event) => {
   console.log('[firebase-messaging-sw.js] Message received from client:', event.data);
   

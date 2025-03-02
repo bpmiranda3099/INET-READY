@@ -231,7 +231,7 @@ def create_push_notification(insights):
     insights (str): Generated insights from Gemini
     
     Returns:
-    tuple: (title, body, data) for the notification
+    tuple: (notification, data) for the notification
     """
     if not insights:
         return None, None, None
@@ -265,7 +265,9 @@ def create_push_notification(insights):
     data = {
         'full_insights': insights,
         'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        'type': 'daily_weather_insights'
+        'type': 'daily_weather_insights',
+        'tag': f"weather-{datetime.now().strftime('%Y%m%d')}",  # Unique tag for each day
+        'url': '/app/weather-insights'  # URL to open when notification is clicked
     }
     
     return notification, data
@@ -323,58 +325,88 @@ def send_push_notifications(fcm, notification, data, topic=None):
             body=notification['body'],
         )
         
-        if topic:
-            # Send to topic (existing functionality)
-            message = messaging.Message(
-                notification=base_notification,
-                data=string_data,
-                topic=topic,
+        # Create proper FCM configuration for background delivery
+        fcm_options = messaging.WebpushConfig(
+            headers={
+                'TTL': '86400',  # Time to live: 1 day in seconds
+                'Urgency': 'normal',
+                'Topic': 'weather-insights'
+            },
+            notification={
+                'title': notification['title'],
+                'body': notification['body'],
+                'icon': '/app-icon.png',
+                'badge': '/favicon.png',
+                'vibrate': [100, 50, 100],
+                'tag': string_data.get('tag', 'weather-notification'),
+                'requireInteraction': True,
+                'renotify': True
+            },
+            fcm_options=messaging.WebpushFCMOptions(
+                link=string_data.get('url', '/app')
             )
-            response = fcm.send(message)
-            print(f"Successfully sent notification to topic '{topic}': {response}")
-            return True
-        else:
-            # Send to all users individually
+        )
+        
+        success = False
+        
+        # First try to send to individual users if no specific topic is requested
+        if not topic:
             # Get Firestore instance using existing connection
             db = firestore.client()
             
             # Get all user tokens
             tokens = get_all_user_fcm_tokens(db)
             
-            if not tokens:
-                print("No FCM tokens found. No notifications sent.")
-                # Also send to default topic as fallback if no tokens found
-                return send_push_notifications(fcm, notification, data, DEFAULT_FCM_TOPIC)
-            
-            # Send notifications in batches (FCM allows up to 500 in a batch)
-            batch_size = 500
-            success_count = 0
-            failure_count = 0
-            
-            for i in range(0, len(tokens), batch_size):
-                batch_tokens = tokens[i:i+batch_size]
+            if tokens:
+                # Send notifications in batches (FCM allows up to 500 in a batch)
+                batch_size = 500
+                success_count = 0
+                failure_count = 0
                 
-                # Create a multicast message
-                multicast_message = messaging.MulticastMessage(
-                    notification=base_notification,
-                    data=string_data,
-                    tokens=batch_tokens,
-                )
+                for i in range(0, len(tokens), batch_size):
+                    batch_tokens = tokens[i:i+batch_size]
+                    
+                    # Create a multicast message
+                    multicast_message = messaging.MulticastMessage(
+                        notification=base_notification,
+                        data=string_data,
+                        tokens=batch_tokens,
+                        webpush=fcm_options  # Add webpush config for background delivery
+                    )
+                    
+                    try:
+                        batch_response = fcm.send_multicast(multicast_message)
+                        success_count += batch_response.success_count
+                        failure_count += batch_response.failure_count
+                        print(f"Batch {i//batch_size + 1}: Sent {batch_response.success_count} successfully, {batch_response.failure_count} failed")
+                    except Exception as batch_error:
+                        print(f"Error sending batch {i//batch_size + 1}: {batch_error}")
+                        failure_count += len(batch_tokens)
                 
-                try:
-                    batch_response = fcm.send_multicast(multicast_message)
-                    success_count += batch_response.success_count
-                    failure_count += batch_response.failure_count
-                    print(f"Batch {i//batch_size + 1}: Sent {batch_response.success_count} successfully, {batch_response.failure_count} failed")
-                except Exception as batch_error:
-                    print(f"Error sending batch {i//batch_size + 1}: {batch_error}")
-                    failure_count += len(batch_tokens)
-            
-            # Log overall results
-            print(f"Notification sending complete: {success_count} successful, {failure_count} failed")
-            
-            # Consider successful if at least one notification was delivered
-            return success_count > 0
+                # Log overall results
+                print(f"Notification sending complete: {success_count} successful, {failure_count} failed")
+                
+                # Mark as successful if at least one notification was delivered
+                if success_count > 0:
+                    success = True
+            else:
+                print("No FCM tokens found. Will fall back to topic notification.")
+        
+        # Always send to topic (either as specified or default)
+        topic_to_use = topic or DEFAULT_FCM_TOPIC
+        
+        topic_message = messaging.Message(
+            notification=base_notification,
+            data=string_data,
+            topic=topic_to_use,
+            webpush=fcm_options  # Add webpush config for background delivery
+        )
+        
+        response = fcm.send(topic_message)
+        print(f"Successfully sent notification to topic '{topic_to_use}': {response}")
+        success = True
+        
+        return success
             
     except Exception as e:
         print(f"Error sending push notifications: {e}")
