@@ -31,9 +31,9 @@ FIREBASE_CREDENTIALS_PATH = os.environ.get('FIREBASE_SERVICE_ACCOUNT', os.path.j
 ))
 
 # For environment variables needed by Node.js
-GEMINI_API_KEY = os.environ.get('VITE_GEMINI_API_KEY')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 if GEMINI_API_KEY:
-    os.environ['VITE_GEMINI_API_KEY'] = GEMINI_API_KEY
+    os.environ['GEMINI_API_KEY'] = GEMINI_API_KEY
 
 def initialize_firebase():
     """
