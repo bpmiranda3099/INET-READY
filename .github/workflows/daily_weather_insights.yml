@@ -54,6 +54,7 @@ jobs:
           VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           cd src/scripts
+          # Run without --topic parameter to send to all users individually
           python daily_weather_insights.py
 
       # Step 7: Upload insights as artifact

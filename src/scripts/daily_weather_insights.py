@@ -270,15 +270,45 @@ def create_push_notification(insights):
     
     return notification, data
 
-def send_push_notifications(fcm, notification, data, topic=DEFAULT_FCM_TOPIC):
+def get_all_user_fcm_tokens(db):
     """
-    Send push notifications to users subscribed to a topic
+    Get all user FCM tokens from Firestore
+    
+    Parameters:
+    db (firestore.Client): Firestore database client
+    
+    Returns:
+    list: List of FCM tokens or empty list if none found
+    """
+    try:
+        # Get the users collection - adjust the collection path as needed for your database structure
+        users_ref = db.collection('users')
+        user_docs = users_ref.stream()
+        
+        # Extract FCM tokens from user documents
+        tokens = []
+        for user_doc in user_docs:
+            user_data = user_doc.to_dict()
+            # Check for FCM token in different possible fields
+            token = user_data.get('fcmToken') or user_data.get('fcm_token') or user_data.get('messagingToken')
+            if token and isinstance(token, str) and len(token) > 20:  # Basic validation for token format
+                tokens.append(token)
+        
+        print(f"Found {len(tokens)} FCM tokens for notification")
+        return tokens
+    except Exception as e:
+        print(f"Error retrieving user FCM tokens: {e}")
+        return []
+
+def send_push_notifications(fcm, notification, data, topic=None):
+    """
+    Send push notifications to users
     
     Parameters:
     fcm (messaging): Firebase Cloud Messaging client
     notification (dict): Notification content
     data (dict): Additional data to send
-    topic (str): Topic to send to
+    topic (str, optional): Topic to send to. If None, sends to all users.
     
     Returns:
     bool: True if successful, False otherwise
@@ -287,22 +317,67 @@ def send_push_notifications(fcm, notification, data, topic=DEFAULT_FCM_TOPIC):
         # Convert all data values to strings as required by FCM
         string_data = {k: str(v) for k, v in data.items()}
         
-        # Create message
-        message = messaging.Message(
-            notification=messaging.Notification(
-                title=notification['title'],
-                body=notification['body'],
-            ),
-            data=string_data,
-            topic=topic,
+        # Create base notification
+        base_notification = messaging.Notification(
+            title=notification['title'],
+            body=notification['body'],
         )
         
-        # Send message
-        response = fcm.send(message)
-        print(f"Successfully sent notification: {response}")
-        return True
+        if topic:
+            # Send to topic (existing functionality)
+            message = messaging.Message(
+                notification=base_notification,
+                data=string_data,
+                topic=topic,
+            )
+            response = fcm.send(message)
+            print(f"Successfully sent notification to topic '{topic}': {response}")
+            return True
+        else:
+            # Send to all users individually
+            # Get Firestore instance using existing connection
+            db = firestore.client()
+            
+            # Get all user tokens
+            tokens = get_all_user_fcm_tokens(db)
+            
+            if not tokens:
+                print("No FCM tokens found. No notifications sent.")
+                # Also send to default topic as fallback if no tokens found
+                return send_push_notifications(fcm, notification, data, DEFAULT_FCM_TOPIC)
+            
+            # Send notifications in batches (FCM allows up to 500 in a batch)
+            batch_size = 500
+            success_count = 0
+            failure_count = 0
+            
+            for i in range(0, len(tokens), batch_size):
+                batch_tokens = tokens[i:i+batch_size]
+                
+                # Create a multicast message
+                multicast_message = messaging.MulticastMessage(
+                    notification=base_notification,
+                    data=string_data,
+                    tokens=batch_tokens,
+                )
+                
+                try:
+                    batch_response = fcm.send_multicast(multicast_message)
+                    success_count += batch_response.success_count
+                    failure_count += batch_response.failure_count
+                    print(f"Batch {i//batch_size + 1}: Sent {batch_response.success_count} successfully, {batch_response.failure_count} failed")
+                except Exception as batch_error:
+                    print(f"Error sending batch {i//batch_size + 1}: {batch_error}")
+                    failure_count += len(batch_tokens)
+            
+            # Log overall results
+            print(f"Notification sending complete: {success_count} successful, {failure_count} failed")
+            
+            # Consider successful if at least one notification was delivered
+            return success_count > 0
+            
     except Exception as e:
-        print(f"Error sending push notification: {e}")
+        print(f"Error sending push notifications: {e}")
         return False
 
 def store_insights_in_firestore(db, insights):
@@ -353,8 +428,8 @@ def main():
     )
     parser.add_argument('--dry-run', action='store_true', 
                       help='Generate insights without sending notifications')
-    parser.add_argument('--topic', default=DEFAULT_FCM_TOPIC,
-                      help=f'FCM topic to send notifications to (default: {DEFAULT_FCM_TOPIC})')
+    parser.add_argument('--topic', 
+                      help=f'FCM topic to send notifications to (default: send to all users)')
     args = parser.parse_args()
     
     # Check if Node.js is installed
@@ -392,10 +467,14 @@ def main():
     
     # Send push notification if not in dry-run mode
     if not args.dry_run:
+        # If topic is specified, send to topic, otherwise send to all users
         if send_push_notifications(fcm, notification, data, args.topic):
-            print(f"Successfully sent push notification to topic: {args.topic}")
+            if args.topic:
+                print(f"Successfully sent push notification to topic: {args.topic}")
+            else:
+                print("Successfully sent push notifications to users")
         else:
-            print("Failed to send push notification")
+            print("Failed to send push notifications")
             return 1
     else:
         print("Dry run mode: notification not sent")
