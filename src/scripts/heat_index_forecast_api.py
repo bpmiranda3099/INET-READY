@@ -25,12 +25,12 @@ except ImportError:
     print("Error: Could not import prediction module")
     sys.exit(1)
 
-# Path to Firebase credentials file
-FIREBASE_CREDENTIALS_PATH = os.path.join(
+# Get Firebase credentials path from environment variable or use default
+FIREBASE_CREDENTIALS_PATH = os.environ.get('FIREBASE_SERVICE_ACCOUNT', os.path.join(
     os.path.dirname(os.path.dirname(script_dir)),  # Go up to project root
     'config', 
     'firebase-credentials.json'
-)
+))
 
 # ======= Firebase Functions =======
 
@@ -44,10 +44,30 @@ def initialize_firebase():
     try:
         if not os.path.exists(FIREBASE_CREDENTIALS_PATH):
             print(f"Firebase credentials file not found at {FIREBASE_CREDENTIALS_PATH}")
-            return None
             
-        # Initialize Firebase Admin SDK
-        cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+            # Check for common CI paths when running in GitHub Actions
+            ci_paths = [
+                './firebase_service_account.json',  # Root level in GitHub Actions
+                '../firebase_service_account.json',  # One level up
+                '../../firebase_service_account.json',  # Two levels up
+            ]
+            
+            found_path = None
+            for path in ci_paths:
+                if os.path.exists(path):
+                    found_path = path
+                    break
+                    
+            if found_path:
+                print(f"Found Firebase credentials at alternate path: {found_path}")
+                cred = credentials.Certificate(found_path)
+            else:
+                print("Could not locate Firebase credentials file")
+                return None
+        else:
+            # Use the original path
+            cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+            
         if not firebase_admin._apps:  # Check if already initialized
             firebase_admin.initialize_app(cred)
         
