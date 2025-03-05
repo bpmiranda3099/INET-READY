@@ -31,3 +31,6 @@ vite.config.ts.timestamp-*
 /Lib
 /Scripts
 /src/scripts/logs
+
+# Github
+/.github
