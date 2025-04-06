@@ -28,14 +28,17 @@ _Remember to consult a healthcare professional for personalized medical advice._
         if (!text) return '';
         
         // Initial cleaning - normalize line endings and ensure proper breaks
-        // Fix common issues with joined bullet points and numbered lists
         text = text
+            // Replace multiple consecutive newlines with two newlines
+            .replace(/\n{3,}/g, '\n\n')
             // Ensure line breaks before section headings
-            .replace(/([^\n])(WEATHER BRIEF|HEALTH REMINDERS|WATCH FOR|QUICK TIPS)/g, '$1\n\n$2')
+            .replace(/([^\n])(TOP TIP|WEATHER BRIEF|HEALTH REMINDERS|WATCH FOR|QUICK TIPS)/g, '$1\n\n$2')
             // Fix numbered list items that appear on the same line
             .replace(/(\d+\.?\)?\s+[^.\n]+\.)(\s*)(\d+\.?\)?\s+)/g, '$1\n$3')
             // Fix bullet points that appear on the same line
-            .replace(/([.!?])(\s*)(•|\*|\-)\s+/g, '$1\n$3 ');
+            .replace(/([.!?])(\s*)(•|\*|\-)\s+/g, '$1\n$3 ')
+            // Add newline before bullet points if they don't have one
+            .replace(/([^\n])(•|\*|\-)\s+/g, '$1\n$2 ');
         
         // Split the text into sections
         const sections = {
@@ -47,68 +50,111 @@ _Remember to consult a healthcare professional for personalized medical advice._
             disclaimer: ''
         };
         
-        // Extract the top tip
-        const topTipMatch = text.match(/TOP TIP:?\s*(.*?)(?:\n|$)/i);
+        // Extract the top tip (case insensitive)
+        const topTipMatch = text.match(/TOP TIP:?\s*(.*?)(?:\n\n|\n(?=[A-Z][A-Z])|\n?$)/is);
         if (topTipMatch && topTipMatch[1]) sections.topTip = topTipMatch[1].trim();
         
-        // Extract the weather brief section
-        const weatherBriefMatch = text.match(/WEATHER BRIEF:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z][A-Z])|\n?HEALTH REMINDERS)/i);
-        if (weatherBriefMatch && weatherBriefMatch[1]) sections.weatherBrief = weatherBriefMatch[1].trim();
+        // Extract the weather brief section (case insensitive)
+        const weatherBriefMatch = text.match(/WEATHER BRIEF:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z][A-Z])|\n?HEALTH REMINDERS)/is);
+        if (weatherBriefMatch && weatherBriefMatch[1]) {
+            // Process multi-line weather briefs and preserve paragraphs
+            sections.weatherBrief = weatherBriefMatch[1]
+                .trim()
+                .split(/\n\n+/)
+                .map(para => para.trim().replace(/\n/g, ' '))
+                .join('</p><p>');
+        }
         
-        // Extract health reminders with improved regex
-        const healthRemindersSection = text.match(/HEALTH REMINDERS:?\s*([\s\S]*?)(?:\n\n|\n?WATCH FOR)/i);
+        // Extract health reminders with improved regex (case insensitive)
+        const healthRemindersSection = text.match(/HEALTH REMINDERS:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z][A-Z])|\n?WATCH FOR|$)/is);
         if (healthRemindersSection && healthRemindersSection[1]) {
-            // Find all numbered points using regex
-            const numberedItems = healthRemindersSection[1].match(/\n?\s*\d+\.?\)?\s+(.*?)(?=\n\s*\d+\.?\)?\s+|\n\n|\n?WATCH FOR|$)/gis);
-            if (numberedItems) {
-                // Process each match to extract just the content
-                sections.healthReminders = numberedItems.map(item => {
-                    const content = item.replace(/\n?\s*\d+\.?\)?\s+/, '').trim();
-                    return content;
+            // Try to find numbered items first
+            const numberedItems = Array.from(
+                healthRemindersSection[1].matchAll(/\n?\s*(\d+)\.?\)?\s+(.*?)(?=\n\s*\d+\.?\)?\s+|\n\n|\n?WATCH FOR|$)/gis)
+            );
+            
+            if (numberedItems && numberedItems.length > 0) {
+                // Process each numbered match
+                sections.healthReminders = numberedItems.map(match => {
+                    return match[2].trim().replace(/\n/g, ' ');
                 }).filter(item => item.length > 0);
+            } else {
+                // Fallback to bullet points if no numbers found
+                const bulletItems = healthRemindersSection[1]
+                    .split(/\n\s*[•\*\-]\s+/)
+                    .map(item => item.trim())
+                    .filter(item => item.length > 0);
+                    
+                if (bulletItems.length > 0) {
+                    sections.healthReminders = bulletItems;
+                } else {
+                    // Last resort: just use the whole text as a single item
+                    const content = healthRemindersSection[1].trim();
+                    if (content) sections.healthReminders = [content];
+                }
             }
         }
         
-        // Extract Watch For items with improved regex
-        const watchForSection = text.match(/WATCH FOR:?\s*([\s\S]*?)(?:\n\n|\n?QUICK TIPS|$)/i);
+        // Extract Watch For items (case insensitive)
+        const watchForSection = text.match(/WATCH FOR:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z][A-Z])|\n?QUICK TIPS|$)/is);
         if (watchForSection && watchForSection[1]) {
-            // Split by bullet points, accounting for possible formatting issues
-            const bulletItems = watchForSection[1].split(/\n\s*[•\-\*]\s+/).slice(1);
+            // Try to find bullet points
+            const bulletItems = watchForSection[1]
+                .split(/\n\s*[•\*\-]\s+/)
+                .slice(1) // Skip the first empty item
+                .map(item => item.trim().replace(/\n([^•\*\-])/g, ' $1')) // Join multi-line items
+                .filter(item => item.length > 0);
+                
             if (bulletItems.length > 0) {
-                // Clean each bullet point
-                sections.watchFor = bulletItems.map(item => 
-                    item.trim().replace(/\n([^•\-\*])/g, ' $1') // Join lines that aren't new bullets
-                ).filter(item => item.length > 0);
+                sections.watchFor = bulletItems;
             } else {
-                // Fallback - try to extract content some other way
-                const content = watchForSection[1].trim().replace(/^[•\-\*]\s+/gm, '');
-                if (content) {
-                    sections.watchFor = [content]; 
+                // If no bullet points, split by line breaks
+                const lines = watchForSection[1]
+                    .split(/\n+/)
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
+                    
+                if (lines.length > 0) {
+                    sections.watchFor = lines;
+                } else {
+                    // Last resort
+                    const content = watchForSection[1].trim();
+                    if (content) sections.watchFor = [content];
                 }
             }
         }
         
-        // Extract Quick Tips items with improved regex
-        const quickTipsSection = text.match(/QUICK TIPS:?\s*([\s\S]*?)(?:\n\n|_|$)/i);
+        // Extract Quick Tips items (case insensitive)
+        const quickTipsSection = text.match(/QUICK TIPS:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z][A-Z])|\n?_|$)/is);
         if (quickTipsSection && quickTipsSection[1]) {
-            // Split by bullet points, accounting for possible formatting issues
-            const bulletItems = quickTipsSection[1].split(/\n\s*[•\-\*]\s+/).slice(1);
+            // Try to find bullet points
+            const bulletItems = quickTipsSection[1]
+                .split(/\n\s*[•\*\-]\s+/)
+                .slice(1) // Skip the first empty item
+                .map(item => item.trim().replace(/\n([^•\*\-])/g, ' $1')) // Join multi-line items
+                .filter(item => item.length > 0);
+                
             if (bulletItems.length > 0) {
-                // Clean each bullet point
-                sections.quickTips = bulletItems.map(item => 
-                    item.trim().replace(/\n([^•\-\*])/g, ' $1') // Join lines that aren't new bullets
-                ).filter(item => item.length > 0);
+                sections.quickTips = bulletItems;
             } else {
-                // Fallback - try to extract content some other way
-                const content = quickTipsSection[1].trim().replace(/^[•\-\*]\s+/gm, '');
-                if (content) {
-                    sections.quickTips = [content];
+                // If no bullet points, split by line breaks
+                const lines = quickTipsSection[1]
+                    .split(/\n+/)
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
+                    
+                if (lines.length > 0) {
+                    sections.quickTips = lines;
+                } else {
+                    // Last resort
+                    const content = quickTipsSection[1].trim();
+                    if (content) sections.quickTips = [content];
                 }
             }
         }
         
-        // Extract disclaimer - usually the last paragraph
-        const disclaimerMatch = text.match(/(?:_|remember)(.*?)\.?$/is);
+        // Extract disclaimer - usually the last paragraph or anything with "remember" or starting with _
+        const disclaimerMatch = text.match(/(?:_|remember|note:|disclaimer:)(.*?)(?:$|\.?$)/is);
         if (disclaimerMatch && disclaimerMatch[1]) {
             sections.disclaimer = disclaimerMatch[1].trim();
         }
@@ -123,34 +169,52 @@ _Remember to consult a healthcare professional for personalized medical advice._
         
         // Weather Brief
         if (sections.weatherBrief) {
-            formattedHtml += `<div class="weather-brief"><h3>Weather</h3><p>${sections.weatherBrief}</p></div>`;
+            formattedHtml += `<div class="tile weather-brief">
+                <div class="tile-header">WEATHER BRIEF</div>
+                <div class="tile-content"><p>${sections.weatherBrief}</p></div>
+            </div>`;
         }
         
         // Health Reminders
         if (sections.healthReminders.length > 0) {
-            formattedHtml += `<div class="health-reminders"><h3>Health Reminders</h3><ol>`;
+            formattedHtml += `<div class="tile health-reminders">
+                <div class="tile-header">HEALTH REMINDERS</div>
+                <div class="tile-content">
+                    <ol>`;
             sections.healthReminders.forEach(point => {
                 if (point) formattedHtml += `<li>${point}</li>`;
             });
-            formattedHtml += `</ol></div>`;
+            formattedHtml += `</ol>
+                </div>
+            </div>`;
         }
         
         // Watch For
         if (sections.watchFor.length > 0) {
-            formattedHtml += `<div class="watch-for"><h3>Watch For</h3><ul class="warning-list">`;
+            formattedHtml += `<div class="tile watch-for">
+                <div class="tile-header">WATCH FOR</div>
+                <div class="tile-content">
+                    <ul class="warning-list">`;
             sections.watchFor.forEach(point => {
                 if (point) formattedHtml += `<li>${point}</li>`;
             });
-            formattedHtml += `</ul></div>`;
+            formattedHtml += `</ul>
+                </div>
+            </div>`;
         }
         
         // Quick Tips
         if (sections.quickTips.length > 0) {
-            formattedHtml += `<div class="quick-tips"><h3>Quick Tips</h3><ul class="tips-list">`;
+            formattedHtml += `<div class="tile quick-tips">
+                <div class="tile-header">QUICK TIPS</div>
+                <div class="tile-content">
+                    <ul class="tips-list">`;
             sections.quickTips.forEach(point => {
                 if (point) formattedHtml += `<li>${point}</li>`;
             });
-            formattedHtml += `</ul></div>`;
+            formattedHtml += `</ul>
+                </div>
+            </div>`;
         }
         
         return formattedHtml;
@@ -208,7 +272,7 @@ _Remember to consult a healthcare professional for personalized medical advice._
     }
     
     .card-header {
-        background: #4285f4;
+        background: #dd815e; /* Updated to orange theme */
         color: white;
         padding: 1rem;
         border-radius: 8px 8px 0 0;
@@ -231,11 +295,11 @@ _Remember to consult a healthcare professional for personalized medical advice._
     }
     
     .origin {
-        color: #e8f0fe;
+        color: #fff; /* Full white for better readability */
     }
     
     .destination {
-        color: #e8f0fe;
+        color: #fff; /* Full white for better readability */
     }
     
     .arrow {
@@ -253,17 +317,18 @@ _Remember to consult a healthcare professional for personalized medical advice._
     }
     
     .top-tip {
-        background-color: #e3f2fd;
+        background-color: #f8f0ec; /* Light orange background */
         padding: 0.8rem;
         border-radius: 8px;
         margin-bottom: 1rem;
         font-size: 1.1rem;
         font-weight: 500;
-        color: #1565c0;
+        color: #b35d3a; /* Darker orange for text */
+        border-left: 4px solid #dd815e;
     }
     
     .tip-label {
-        background: #1565c0;
+        background: #dd815e; /* Orange theme */
         color: white;
         padding: 0.2rem 0.5rem;
         border-radius: 4px;
@@ -273,10 +338,10 @@ _Remember to consult a healthcare professional for personalized medical advice._
     }
     
     .advice-content h3 {
-        color: #333;
+        color: #b35d3a; /* Darker orange for headers */
         font-size: 1rem;
         margin: 1rem 0 0.5rem 0;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid #f8f0ec; /* Light orange border */
         padding-bottom: 0.3rem;
     }
     
@@ -329,13 +394,13 @@ _Remember to consult a healthcare professional for personalized medical advice._
         left: 0.2rem;
         top: -1px;
         font-weight: bold;
-        color: #4caf50;
+        color: #dd815e; /* Updated to orange theme */
     }
     
     .card-footer {
         background: #f8f9fa;
         padding: 0.75rem 1rem;
-        border-top: 1px solid #eee;
+        border-top: 1px solid #f8f0ec; /* Light orange border */
         font-size: 0.8rem;
         color: #666;
         display: flex;
@@ -361,20 +426,78 @@ _Remember to consult a healthcare professional for personalized medical advice._
         justify-content: space-between;
         align-items: center;
         padding: 0.5rem;
-        background-color: #fffde7;
+        background-color: #f8f0ec; /* Light orange background */
         border-radius: 4px;
         font-size: 0.9rem;
     }
     
     .sample-notice button {
-        background: transparent;
-        border: 1px solid #ccc;
+        background: #dd815e; /* Orange theme */
+        color: white;
+        border: none;
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
         cursor: pointer;
     }
     
     .sample-notice button:hover {
-        background-color: #f5f5f5;
+        background-color: #c26744; /* Darker orange on hover */
+    }
+
+    .tile {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .tile-header {
+        background-color: #3273dc;
+        color: white;
+        padding: 10px 15px;
+        font-weight: bold;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+    }
+
+    .tile-content {
+        padding: 15px;
+    }
+
+    .weather-brief .tile-header {
+        background-color: #3273dc; /* Blue for weather */
+    }
+
+    .health-reminders .tile-header {
+        background-color: #48c774; /* Green for health */
+    }
+
+    .watch-for .tile-header {
+        background-color: #ff3860; /* Red for warnings */
+    }
+
+    .quick-tips .tile-header {
+        background-color: #ffdd57; /* Yellow for tips */
+        color: #363636;
+    }
+
+    .health-reminders ol,
+    .watch-for ul,
+    .quick-tips ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .health-reminders li,
+    .watch-for li,
+    .quick-tips li {
+        margin-bottom: 8px;
+    }
+
+    .health-reminders li:last-child,
+    .watch-for li:last-child,
+    .quick-tips li:last-child {
+        margin-bottom: 0;
     }
 </style>

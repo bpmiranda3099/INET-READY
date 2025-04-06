@@ -31,7 +31,7 @@
     let loading = false;
     let showMedicalForm = false;
     let medicalRecordExists = false;
-    let activeTab = 'notifications';
+    let activeTab = 'dashboard'; // Changed default to dashboard
     
     // City preferences state
     let hasCityPreferences = false;
@@ -299,67 +299,35 @@
     function handlePermissionsComplete() {
         showPermissionsPanel = false;
     }
+
+    // Function to get the section title based on active tab
+    function getSectionTitle(tab) {
+        switch (tab) {
+            case 'dashboard':
+                return 'Dashboard';
+            case 'notifications':
+                return 'Notifications';
+            case 'account':
+                return 'Account';
+            case 'medical':
+                return 'Medical Profile';
+            case 'settings':
+                return 'Settings';
+            default:
+                return 'Dashboard';
+        }
+    }
 </script>
 
 <div class="dashboard">
-    <div class="header">
-        <h1>Dashboard</h1>
-        <button on:click={handleLogout} class="logout-btn" disabled={loading}>
-            {loading ? 'Logging out...' : 'Logout'}
-        </button>
+    <!-- App Bar -->
+    <div class="app-bar">
+        <div class="app-bar-content">
+            <small class="app-title">INET-READY</small>
+            <h2 class="section-title">{getSectionTitle(activeTab)}</h2>
+        </div>
     </div>
-    
-    <div class="welcome">
-        <h2>Welcome, {user.email}!</h2>
-        <p>You are now connected to INET-READY.</p>
-        
-        <!-- Display location coordinates and location name -->
-        {#if locationData}
-            <div class="location-info">
-                <p>
-                    <span class="location-icon">📍</span> 
-                    {#if currentLocationName}
-                        <span class="location-name">{currentLocationName}</span>
-                    {:else if fetchingLocationName}
-                        <span class="location-name loading">Determining location name...</span>
-                    {:else if locationNameError}
-                        <span class="location-name error">{locationNameError}</span>
-                    {/if}
-                    <span class="coordinates">
-                        {locationData.latitude.toFixed(6)}°, {locationData.longitude.toFixed(6)}°
-                    </span>
-                    <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
-                        {#if fetchingLocation}
-                            Updating...
-                        {:else}
-                            ↻
-                        {/if}
-                    </button>
-                </p>
-            </div>
-        {:else if locationPermission === 'granted' && !locationData}
-            <div class="location-info loading">
-                <p>
-                    <span class="location-icon">📍</span> 
-                    {fetchingLocation ? 'Getting your location...' : 'Location data not available.'}
-                    <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
-                        {fetchingLocation ? 'Loading...' : 'Get Location'}
-                    </button>
-                </p>
-            </div>
-        {:else if locationError}
-            <div class="location-info error">
-                <p>
-                    <span class="location-icon">⚠️</span> 
-                    {locationError}
-                    <button on:click={requestLocationPermission} class="refresh-btn">
-                        Try Again
-                    </button>
-                </p>
-            </div>
-        {/if}
-    </div>
-    
+
     <!-- Permissions Panel -->
     {#if showPermissionsPanel}
         <PermissionsPanel 
@@ -386,137 +354,357 @@
         </div>
     {/if}
     
-    <!-- Travel Health Cards - Only show if user has city preferences -->
-    {#if hasCityPreferences && preferredCities.length > 0}
-        <div class="travel-health-advice-section">
-            <h3>Travel Health Advice</h3>
-            <TravelHealthCards 
-                userId={user.uid}
-                homeCity={homeCity}
-                preferredCities={preferredCities}
-                useCurrentLocation={true}
-                currentLocation={currentLocationName}
-            />
-        </div>
-    {/if}
-    
-    <!-- Tab navigation -->
-    <div class="dashboard-tabs">
-        <button 
-            class="tab-btn" 
-            class:active={activeTab === 'notifications'}
-            on:click={() => activeTab = 'notifications'}
-        >
-            Notifications
-        </button>
-        <button 
-            class="tab-btn" 
-            class:active={activeTab === 'account'}
-            on:click={() => activeTab = 'account'}
-        >
-            Account
-        </button>
-        <button 
-            class="tab-btn" 
-            class:active={activeTab === 'medical'}
-            on:click={() => activeTab = 'medical'}
-        >
-            Medical Profile
-        </button>
-        <button 
-            class="tab-btn" 
-            class:active={activeTab === 'settings'}
-            on:click={() => activeTab = 'settings'}
-        >
-            Settings
-        </button>
-    </div>
-    
-    <!-- Tab content -->
-    {#if activeTab === 'notifications'}
-        <div class="tab-content">
-            <div class="card">
-                <h3>Notifications</h3>
-                {#if notifications.length === 0}
-                    <p class="empty-state">No notifications yet</p>
-                {:else}
-                    <div class="notifications-list">
-                        {#each notifications as notification}
-                            <div class="notification">
-                                <h4>{notification.title}</h4>
-                                <p>{notification.body}</p>
-                                <small>{new Date(notification.timestamp).toLocaleString()}</small>
-                            </div>
-                        {/each}
+    <!-- Main Content Area -->
+    <div class="content-area">
+        {#if activeTab === 'dashboard'}
+            <div class="dashboard-section">
+                <!-- Remove the heading since it's now in the app bar -->
+                <div class="welcome">
+                    <h2>Welcome, {user.email}!</h2>
+                    <p>You are now connected to INET-READY.</p>
+                    
+                    <!-- Display location coordinates and location name -->
+                    {#if locationData}
+                        <div class="location-info">
+                            <p>
+                                <span class="location-icon">📍</span> 
+                                {#if currentLocationName}
+                                    <span class="location-name">{currentLocationName}</span>
+                                {:else if fetchingLocationName}
+                                    <span class="location-name loading">Determining location name...</span>
+                                {:else if locationNameError}
+                                    <span class="location-name error">{locationNameError}</span>
+                                {/if}
+                                <span class="coordinates">
+                                    {locationData.latitude.toFixed(6)}°, {locationData.longitude.toFixed(6)}°
+                                </span>
+                                <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
+                                    {#if fetchingLocation}
+                                        Updating...
+                                    {:else}
+                                        ↻
+                                    {/if}
+                                </button>
+                            </p>
+                        </div>
+                    {:else if locationPermission === 'granted' && !locationData}
+                        <div class="location-info loading">
+                            <p>
+                                <span class="location-icon">📍</span> 
+                                {fetchingLocation ? 'Getting your location...' : 'Location data not available.'}
+                                <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
+                                    {fetchingLocation ? 'Loading...' : 'Get Location'}
+                                </button>
+                            </p>
+                        </div>
+                    {:else if locationError}
+                        <div class="location-info error">
+                            <p>
+                                <span class="location-icon">⚠️</span> 
+                                {locationError}
+                                <button on:click={requestLocationPermission} class="refresh-btn">
+                                    Try Again
+                                </button>
+                            </p>
+                        </div>
+                    {/if}
+                </div>
+                
+                <!-- Travel Health Cards - Only show if user has city preferences -->
+                {#if hasCityPreferences && preferredCities.length > 0}
+                    <div class="travel-health-advice-section">
+                        <h3>Travel Health Advice</h3>
+                        <TravelHealthCards 
+                            userId={user.uid}
+                            homeCity={homeCity}
+                            preferredCities={preferredCities}
+                            useCurrentLocation={true}
+                            currentLocation={currentLocationName}
+                        />
                     </div>
                 {/if}
             </div>
-        </div>
-    {:else if activeTab === 'account'}
-        <div class="tab-content">
-            <div class="card">
-                <h3>Account Information</h3>
-                <div class="account-info">
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>User ID:</strong> {user.uid}</p>
-                    <p><strong>Email Verified:</strong> {user.emailVerified ? 'Yes' : 'No'}</p>
-                    <p><strong>Account Created:</strong> {user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleString() : 'Unknown'}</p>
-                </div>
-                
-                <!-- Permissions Status -->
-                <div class="permissions-status">
-                    <h4>App Permissions</h4>
-                    <p>
-                        <strong>Notifications:</strong> 
-                        <span class={notificationPermission === 'granted' ? 'granted' : 'not-granted'}>
-                            {notificationPermission === 'granted' ? 'Enabled' : 'Disabled'}
-                        </span>
-                        {#if notificationPermission !== 'granted'}
-                            <button on:click={requestNotificationPermission}>Enable</button>
-                        {/if}
-                    </p>
-                    <p>
-                        <strong>Location:</strong> 
-                        <span class={locationPermission === 'granted' ? 'granted' : 'not-granted'}>
-                            {locationPermission === 'granted' ? 'Enabled' : 'Disabled'}
-                        </span>
-                        {#if locationPermission !== 'granted'}
-                            <button on:click={requestLocationPermission}>Enable</button>
-                        {/if}
-                    </p>
-                    <p>
-                        <strong>Service Worker:</strong> 
-                        <span class={swRegistered ? 'granted' : 'not-granted'}>
-                            {swRegistered ? 'Active' : 'Inactive'}
-                        </span>
-                    </p>
+        {:else if activeTab === 'notifications'}
+            <div class="notifications-section">
+                <!-- Remove the heading since it's now in the app bar -->
+                <div class="card">
+                    {#if notifications.length === 0}
+                        <p class="empty-state">No notifications yet</p>
+                    {:else}
+                        <div class="notifications-list">
+                            {#each notifications as notification}
+                                <div class="notification">
+                                    <h4>{notification.title}</h4>
+                                    <p>{notification.body}</p>
+                                    <small>{new Date(notification.timestamp).toLocaleString()}</small>
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
                 </div>
             </div>
-        </div>
-    {:else if activeTab === 'medical'}
-        <div class="tab-content">
-            {#if showMedicalForm}
-                <MedicalForm 
-                    userId={user.uid} 
-                    isEditing={medicalRecordExists} 
-                    on:completed={handleMedicalFormCompleted} 
-                    on:cancel={() => showMedicalForm = false}
-                />
-            {:else}
-                <MedicalProfile userId={user.uid} />
-            {/if}
-        </div>
-    {:else if activeTab === 'settings'}
-        <div class="tab-content">
-            <div class="settings-container">
-                <CityPreferences userId={user.uid} />
+        {:else if activeTab === 'account'}
+            <div class="account-section">
+                <!-- Remove the heading since it's now in the app bar -->
+                <div class="card">
+                    <div class="account-info">
+                        <p><strong>Email:</strong> {user.email}</p>
+                        <p><strong>User ID:</strong> {user.uid}</p>
+                        <p><strong>Email Verified:</strong> {user.emailVerified ? 'Yes' : 'No'}</p>
+                        <p><strong>Account Created:</strong> {user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleString() : 'Unknown'}</p>
+                    </div>
+                    
+                    <!-- Permissions Status -->
+                    <div class="permissions-status">
+                        <h4>App Permissions</h4>
+                        <p>
+                            <strong>Notifications:</strong> 
+                            <span class={notificationPermission === 'granted' ? 'granted' : 'not-granted'}>
+                                {notificationPermission === 'granted' ? 'Enabled' : 'Disabled'}
+                            </span>
+                            {#if notificationPermission !== 'granted'}
+                                <button on:click={requestNotificationPermission}>Enable</button>
+                            {/if}
+                        </p>
+                        <p>
+                            <strong>Location:</strong> 
+                            <span class={locationPermission === 'granted' ? 'granted' : 'not-granted'}>
+                                {locationPermission === 'granted' ? 'Enabled' : 'Disabled'}
+                            </span>
+                            {#if locationPermission !== 'granted'}
+                                <button on:click={requestLocationPermission}>Enable</button>
+                            {/if}
+                        </p>
+                        <p>
+                            <strong>Service Worker:</strong> 
+                            <span class={swRegistered ? 'granted' : 'not-granted'}>
+                                {swRegistered ? 'Active' : 'Inactive'}
+                            </span>
+                        </p>
+                    </div>
+                    
+                    <!-- Logout Button -->
+                    <div class="logout-container">
+                        <button on:click={handleLogout} class="logout-btn" disabled={loading}>
+                            {loading ? 'Logging out...' : 'Logout'}
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-    {/if}
+        {:else if activeTab === 'medical'}
+            <div class="medical-section">
+                <!-- Remove the heading since it's now in the app bar -->
+                {#if showMedicalForm}
+                    <MedicalForm 
+                        userId={user.uid} 
+                        isEditing={medicalRecordExists} 
+                        on:completed={handleMedicalFormCompleted} 
+                        on:cancel={() => showMedicalForm = false}
+                    />
+                {:else}
+                    <MedicalProfile userId={user.uid} />
+                {/if}
+            </div>
+        {:else if activeTab === 'settings'}
+            <div class="settings-section">
+                <!-- Remove the heading since it's now in the app bar -->
+                <div class="settings-container">
+                    <CityPreferences userId={user.uid} />
+                </div>
+            </div>
+        {/if}
+    </div>
+    
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <button 
+            class="nav-item" 
+            class:active={activeTab === 'dashboard'}
+            on:click={() => activeTab = 'dashboard'}
+        >
+            <i class="bi bi-house"></i>
+            <span>Dashboard</span>
+        </button>
+        <button 
+            class="nav-item" 
+            class:active={activeTab === 'notifications'}
+            on:click={() => activeTab = 'notifications'}
+        >
+            <i class="bi bi-bell"></i>
+            <span>Notifications</span>
+        </button>
+        <button 
+            class="nav-item" 
+            class:active={activeTab === 'account'}
+            on:click={() => activeTab = 'account'}
+        >
+            <i class="bi bi-person"></i>
+            <span>Account</span>
+        </button>
+        <button 
+            class="nav-item" 
+            class:active={activeTab === 'medical'}
+            on:click={() => activeTab = 'medical'}
+        >
+            <i class="bi bi-heart-pulse"></i>
+            <span>Medical</span>
+        </button>
+        <button 
+            class="nav-item" 
+            class:active={activeTab === 'settings'}
+            on:click={() => activeTab = 'settings'}
+        >
+            <i class="bi bi-gear"></i>
+            <span>Settings</span>
+        </button>
+    </div>
 </div>
 
 <style>
-    /* Add styling for permission indicators */
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding-bottom: 70px; /* Space for bottom nav */
+        padding-top: 80px; /* Space for app bar */
+        position: relative;
+    }
+    
+    /* App bar styles */
+    .app-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background-color: #dd815e; /* Orange main color */
+        color: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+    }
+    
+    .app-bar-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .app-title {
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        opacity: 0.8;
+        margin: 0;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .content-area {
+        flex: 1;
+        padding: 1rem;
+        padding-bottom: 2rem;
+        overflow-y: auto;
+    }
+    
+    /* Bottom navigation styles */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background-color: white;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        z-index: 1000;
+    }
+    
+    .nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0;
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    
+    .nav-item i {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .nav-item.active {
+        color: white;
+        background-color: #dd815e; /* Orange main color */
+    }
+    
+    .nav-item:not(.active):hover {
+        color: #dd815e; /* Orange hover color */
+    }
+    
+    /* Card styles */
+    .card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
+    
+    /* Section styling */
+    .dashboard-section, 
+    .notifications-section, 
+    .account-section, 
+    .medical-section, 
+    .settings-section {
+        padding-bottom: 1rem;
+    }
+    
+    /* Logout button styling */
+    .logout-container {
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .logout-btn {
+        background-color: #dd815e; /* Orange main color */
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.2s;
+        width: auto;
+        min-height: 40px;
+    }
+    
+    .logout-btn:hover {
+        background-color: #c26744;
+    }
+    
+    .logout-btn:disabled {
+        background-color: #e5aa95;
+        cursor: not-allowed;
+    }
+    
+    /* Permission indicators */
     .permissions-status .granted {
         color: green;
         font-weight: bold;
@@ -530,15 +718,54 @@
         margin-left: 1rem;
         font-size: 0.8rem;
         padding: 0.2rem 0.5rem;
+        background: #dd815e;
+        color: white;
+        border: none;
+        border-radius: 4px;
     }
     
-    /* Styling for location display */
+    /* Notifications styling */
+    .notifications-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .notification {
+        padding: 0.75rem;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        border-left: 4px solid #dd815e;
+    }
+    
+    .notification h4 {
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .notification p {
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .notification small {
+        color: #888;
+    }
+    
+    .empty-state {
+        color: #888;
+        text-align: center;
+        padding: 2rem 0;
+        font-style: italic;
+    }
+    
+    /* Location display styling */
     .location-info {
         background: #f8faff;
         padding: 0.5rem 1rem;
         border-radius: 8px;
         margin: 1rem 0;
-        border-left: 3px solid #4285f4;
+        border-left: 3px solid #dd815e;
         display: flex;
         align-items: center;
     }
@@ -582,7 +809,7 @@
     .refresh-btn {
         background: transparent;
         border: none;
-        color: #4285f4;
+        color: #dd815e;
         cursor: pointer;
         font-size: 1rem;
         margin-left: 0.5rem;
@@ -592,7 +819,7 @@
     }
     
     .refresh-btn:hover {
-        background: rgba(66, 133, 244, 0.1);
+        background: rgba(221, 129, 94, 0.1);
     }
     
     .refresh-btn:disabled {
@@ -609,15 +836,15 @@
         border-left: 3px solid #f44242;
     }
 
-    /* Add styling for settings tab */
+    /* Settings container styling */
     .settings-container {
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-top: 1rem;
+        overflow: hidden;
     }
 
-    /* Add styling for travel health advice section */
+    /* Travel health advice section */
     .travel-health-advice-section {
         margin: 1.5rem 0;
         padding: 1rem;
@@ -630,5 +857,31 @@
         margin-top: 0;
         margin-bottom: 1rem;
         color: #333;
+    }
+    
+    @media (min-width: 768px) {
+        .bottom-nav {
+            height: 80px;
+        }
+        
+        .nav-item {
+            font-size: 0.85rem;
+        }
+        
+        .nav-item i {
+            font-size: 1.5rem;
+        }
+        
+        .dashboard {
+            padding-bottom: 80px;
+        }
+        
+        .app-title {
+            font-size: 0.8rem;
+        }
+        
+        .section-title {
+            font-size: 1.7rem;
+        }
     }
 </style>
