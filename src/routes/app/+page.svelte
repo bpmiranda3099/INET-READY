@@ -13,6 +13,7 @@
     import Dashboard from '../../components/dashboard.svelte';
     import MedicalForm from '../../components/medicalform.svelte';
     import VerificationStatusComponent from '../../components/verification-status.svelte';
+    import WelcomeModal from '../../components/welcome-modal.svelte';
 
     let user = null;
     let showRegister = false;
@@ -118,9 +119,9 @@
                     userId={user.uid} 
                     on:completed={handleMedicalFormCompleted}
                 />
-            </div>
-        {:else}
+            </div>        {:else}
             <Dashboard {user} />
+            <WelcomeModal {user} showAlways={false} />
         {/if}
     {:else}
         <div class="auth-container">

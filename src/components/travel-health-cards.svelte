@@ -1,8 +1,5 @@
 <script>
     import { onMount, onDestroy, afterUpdate } from 'svelte';
-    import { getHealthAdvice } from '$lib/services/health-advice-cache';
-    import { getMedicalData } from '$lib/firebase';
-    import { checkGeminiAvailability, geminiStatus } from '$lib/services/gemini-service';
     import { availableCities } from '$lib/services/weather-data-service';
     import { fade, fly, slide } from 'svelte/transition';
     import { spring } from 'svelte/motion';
@@ -13,8 +10,8 @@
     export let useCurrentLocation = true;
     export let currentLocation = null; // Current location city name if available
     
-    let healthAdvice = [];
-    let loading = true;
+    let travelCards = [];
+    let loading = false;
     let error = null;
     let currentCard = 0;
     let totalCards = 0;
@@ -22,11 +19,9 @@
     let touchEndX = 0;
     let touchStartY = 0;
     let touchEndY = 0;
-    let geminiAvailable = false;
     let cityList = [];
-    let medicalData = null;
     let cardsGenerated = false;
-    let cardHeight = 400; // Default height
+    let cardHeight = 500; // Default height for the new tile layout
     let cardsContainerElement;
     let cardElements = [];
     let resizeObserver;
@@ -46,13 +41,7 @@
     $: currentCardHeight = (currentCard >= 0 && contentHeights[currentCard]) 
         ? contentHeights[currentCard] 
         : cardHeight;
-    
-    // Subscribe to Gemini status
-    const unsubscribeGemini = geminiStatus.subscribe(status => {
-        geminiAvailable = status.isAvailable;
-    });
-    
-    // Subscribe to available cities
+      // Subscribe to available cities
     const unsubscribeCities = availableCities.subscribe(cities => {
         cityList = cities;
     });
@@ -72,26 +61,19 @@
                     
                     // If this is the current card, update container height
                     if (targetIndex === currentCard) {
-                        cardHeight = Math.max(entry.contentRect.height, 400);
+                        cardHeight = Math.max(entry.contentRect.height, 500);
                     }
                 }
             }
         });
         
         try {
-            // Check if Gemini API is available
-            await checkGeminiAvailability();
+            // Generate travel cards
+            await generateTravelCards();
             
-            // Get user's medical data
-            medicalData = await getMedicalData(userId);
-            
-            // Generate health advice cards
-            await generateHealthAdviceCards();
-            
-            cardsGenerated = true;
-        } catch (err) {
-            console.error("Error initializing health cards:", err);
-            error = "Failed to load health advice. Please try again later.";
+            cardsGenerated = true;        } catch (err) {
+            console.error("Error initializing travel cards:", err);
+            error = "Failed to load travel cards. Please try again later.";
         } finally {
             loading = false;
         }
@@ -120,7 +102,6 @@
     });
     
     onDestroy(() => {
-        unsubscribeGemini();
         unsubscribeCities();
         window.removeEventListener('keydown', handleKeydown);
         
@@ -128,15 +109,14 @@
             resizeObserver.disconnect();
         }
     });
-    
-    /**
-     * Generate health advice cards for each preferred city
+      /**
+     * Generate travel cards for each preferred city
      */
-    async function generateHealthAdviceCards() {
+    async function generateTravelCards() {
         try {
             loading = true;
             error = null;
-            healthAdvice = [];
+            travelCards = [];
             
             // Origin city is current location if available and useCurrentLocation is true,
             // otherwise use home city
@@ -155,26 +135,37 @@
                 return;
             }
             
-            // Generate advice for each city pair
-            const advicePromises = destinations.map(toCity => 
-                getHealthAdvice({
-                    userId,
-                    fromCity,
-                    toCity,
-                    medicalData
-                })
-            );
+            // Generate basic travel cards for each city pair
+            travelCards = destinations.map(toCity => ({
+                fromCity,
+                toCity,
+                timestamp: new Date(),
+                // Creating empty data structures for the 4 tile rows
+                rowOne: {
+                    // Row 1 (15% height) tiles - can be populated later
+                    tiles: []
+                },
+                rowTwo: {
+                    // Row 2 (15% height) tiles - can be populated later
+                    tiles: []
+                },
+                rowThree: {
+                    // Row 3 (30% height) tiles - can be populated later
+                    tiles: []
+                },
+                rowFour: {
+                    // Row 4 (40% height) tiles - can be populated later
+                    tiles: []
+                }
+            }));
             
-            // Wait for all advice to be generated
-            const results = await Promise.all(advicePromises);
-            healthAdvice = results.filter(Boolean); // Remove any null results
-            totalCards = healthAdvice.length;
+            totalCards = travelCards.length;
             
             // Reset to the first card
             currentCard = 0;
         } catch (err) {
-            console.error("Error generating health advice cards:", err);
-            error = "Failed to generate health advice. Please try again later.";
+            console.error("Error generating travel cards:", err);
+            error = "Failed to generate travel cards. Please try again later.";
         } finally {
             loading = false;
         }
@@ -366,148 +357,11 @@
         return event.type.includes('touch') 
             ? event.touches[0].clientX 
             : event.clientX;
-    }
-
-    /**
-     * Format the advice text with improved, more robust formatting that handles line break issues
-     */
-    function formatAdviceText(text) {
-        if (!text) return '';
-        
-        // Initial cleaning - normalize line endings and ensure proper breaks
-        // Fix common issues with joined bullet points and numbered lists
-        text = text
-            // Ensure line breaks before section headings
-            .replace(/([^\n])(WEATHER BRIEF|HEALTH REMINDERS|WATCH FOR|QUICK TIPS)/g, '$1\n\n$2')
-            // Fix numbered list items that appear on the same line
-            .replace(/(\d+\.?\)?\s+[^.\n]+\.)(\s*)(\d+\.?\)?\s+)/g, '$1\n$3')
-            // Fix bullet points that appear on the same line
-            .replace(/([.!?])(\s*)(•|\*|\-)\s+/g, '$1\n$3 ');
-        
-        // Split the text into sections
-        const sections = {
-            topTip: '',
-            weatherBrief: '',
-            healthReminders: [],
-            watchFor: [],
-            quickTips: [],
-            disclaimer: ''
-        };
-        
-        // Extract the top tip
-        const topTipMatch = text.match(/TOP TIP:?\s*(.*?)(?:\n|$)/i);
-        if (topTipMatch && topTipMatch[1]) sections.topTip = topTipMatch[1].trim();
-        
-        // Extract the weather brief section
-        const weatherBriefMatch = text.match(/WEATHER BRIEF:?\s*([\s\S]*?)(?:\n\n|\n(?=[A-Z][A-Z])|\n?HEALTH REMINDERS)/i);
-        if (weatherBriefMatch && weatherBriefMatch[1]) sections.weatherBrief = weatherBriefMatch[1].trim();
-        
-        // Extract health reminders with improved regex
-        const healthRemindersSection = text.match(/HEALTH REMINDERS:?\s*([\s\S]*?)(?:\n\n|\n?WATCH FOR)/i);
-        if (healthRemindersSection && healthRemindersSection[1]) {
-            // Find all numbered points using regex
-            const numberedItems = healthRemindersSection[1].match(/\n?\s*\d+\.?\)?\s+(.*?)(?=\n\s*\d+\.?\)?\s+|\n\n|\n?WATCH FOR|$)/gis);
-            if (numberedItems) {
-                // Process each match to extract just the content
-                sections.healthReminders = numberedItems.map(item => {
-                    const content = item.replace(/\n?\s*\d+\.?\)?\s+/, '').trim();
-                    return content;
-                }).filter(item => item.length > 0);
-            }
-        }
-        
-        // Extract Watch For items with improved regex
-        const watchForSection = text.match(/WATCH FOR:?\s*([\s\S]*?)(?:\n\n|\n?QUICK TIPS|$)/i);
-        if (watchForSection && watchForSection[1]) {
-            // Split by bullet points, accounting for possible formatting issues
-            const bulletItems = watchForSection[1].split(/\n\s*[•\-\*]\s+/).slice(1);
-            if (bulletItems.length > 0) {
-                // Clean each bullet point
-                sections.watchFor = bulletItems.map(item => 
-                    item.trim().replace(/\n([^•\-\*])/g, ' $1') // Join lines that aren't new bullets
-                ).filter(item => item.length > 0);
-            } else {
-                // Fallback - try to extract content some other way
-                const content = watchForSection[1].trim().replace(/^[•\-\*]\s+/gm, '');
-                if (content) {
-                    sections.watchFor = [content]; 
-                }
-            }
-        }
-        
-        // Extract Quick Tips items with improved regex
-        const quickTipsSection = text.match(/QUICK TIPS:?\s*([\s\S]*?)(?:\n\n|_|$)/i);
-        if (quickTipsSection && quickTipsSection[1]) {
-            // Split by bullet points, accounting for possible formatting issues
-            const bulletItems = quickTipsSection[1].split(/\n\s*[•\-\*]\s+/).slice(1);
-            if (bulletItems.length > 0) {
-                // Clean each bullet point
-                sections.quickTips = bulletItems.map(item => 
-                    item.trim().replace(/\n([^•\-\*])/g, ' $1') // Join lines that aren't new bullets
-                ).filter(item => item.length > 0);
-            } else {
-                // Fallback - try to extract content some other way
-                const content = quickTipsSection[1].trim().replace(/^[•\-\*]\s+/gm, '');
-                if (content) {
-                    sections.quickTips = [content];
-                }
-            }
-        }
-        
-        // Extract disclaimer - usually the last paragraph
-        const disclaimerMatch = text.match(/(?:_|remember)(.*?)\.?$/is);
-        if (disclaimerMatch && disclaimerMatch[1]) {
-            sections.disclaimer = disclaimerMatch[1].trim();
-        }
-
-        // Now build the HTML with the structured sections
-        let formattedHtml = '';
-        
-        // Top Tip 
-        if (sections.topTip) {
-            formattedHtml += `<div class="top-tip"> ${sections.topTip}</div>`;
-        }
-        
-        // Weather Brief
-        if (sections.weatherBrief) {
-            formattedHtml += `<div class="weather-brief"><h3>Weather</h3><p>${sections.weatherBrief}</p></div>`;
-        }
-        
-        // Health Reminders
-        if (sections.healthReminders.length > 0) {
-            formattedHtml += `<div class="health-reminders"><h3>Health Reminders</h3><ol>`;
-            sections.healthReminders.forEach(point => {
-                if (point) formattedHtml += `<li>${point}</li>`;
-            });
-            formattedHtml += `</ol></div>`;
-        }
-        
-        // Watch For
-        if (sections.watchFor.length > 0) {
-            formattedHtml += `<div class="watch-for"><h3>Watch For</h3><ul class="warning-list">`;
-            sections.watchFor.forEach(point => {
-                if (point) formattedHtml += `<li>${point}</li>`;
-            });
-            formattedHtml += `</ul></div>`;
-        }
-        
-        // Quick Tips
-        if (sections.quickTips.length > 0) {
-            formattedHtml += `<div class="quick-tips"><h3>Quick Tip</h3><ul class="tips-list">`;
-            sections.quickTips.forEach(point => {
-                if (point) formattedHtml += `<li>${point}</li>`;
-            });
-            formattedHtml += `</ul></div>`;
-        }
-        
-        return formattedHtml;
-    }
-
-    // Calculate the transform for each card based on progress value
+    }    // No formatting function needed for now since we're using a simple tile layout    // Calculate the transform for each card based on progress value
     $: transformCards = () => {
-        if (!healthAdvice || healthAdvice.length === 0) return [];
+        if (!travelCards || travelCards.length === 0) return [];
         
-        return healthAdvice.map((_, i) => {
+        return travelCards.map((_, i) => {
             const diff = i - $progress;
             let transform = `translateX(${100 * diff}%)`;
             let opacity = 1;
@@ -531,16 +385,16 @@
 {#if loading && !cardsGenerated}
     <div class="loading-container">
         <div class="loading-spinner"></div>
-        <p>Generating health advice for your travel...</p>
+        <p>Loading travel cards...</p>
     </div>
 {:else if error}
     <div class="error-container">
         <p class="error-message">{error}</p>
-        <button on:click={generateHealthAdviceCards} class="retry-button">Try Again</button>
+        <button on:click={generateTravelCards} class="retry-button">Try Again</button>
     </div>
-{:else if healthAdvice.length === 0}
+{:else if travelCards.length === 0}
     <div class="no-advice-container">
-        <p>No travel health advice available. Please add preferred cities in your settings.</p>
+        <p>No travel cards available. Please add preferred cities in your settings.</p>
     </div>
 {:else}
     <div 
@@ -555,9 +409,9 @@
             on:touchend={handleTouchEnd}
             style="height: {cardHeight + 20}px; transition: height 0.3s ease-out;"
         >
-            {#each healthAdvice as advice, i}
+            {#each travelCards as card, i}
                 <div 
-                    class="health-advice-card"
+                    class="travel-card"
                     class:active={currentCard === i}
                     style="transform: {cardTransforms[i].transform}; 
                            opacity: {cardTransforms[i].opacity};
@@ -567,26 +421,79 @@
                     <div class="card-header">
                         <div class="card-title-destination">
                             <div class="route">
-                                <span class="city origin">{advice.fromCity}</span>
+                                <span class="city origin">{card.fromCity}</span>
                                 <span class="arrow">→</span>
-                                <span class="city destination">{advice.toCity}</span>
+                                <span class="city destination">{card.toCity}</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="card-body">
-                        <div class="advice-content">
-                            {@html formatAdviceText(advice.adviceText)}
+                        <!-- Row 1 - 15% height -->
+                        <div class="tile-row row-one">
+                            {#if card.rowOne.tiles.length === 0}
+                                <div class="tile empty-tile">
+                                    <div class="tile-placeholder">Row 1 Content</div>
+                                </div>
+                            {:else}
+                                {#each card.rowOne.tiles as tile}
+                                    <div class="tile">
+                                        <!-- Tile content will be filled later -->
+                                    </div>
+                                {/each}
+                            {/if}
+                        </div>
+                        
+                        <!-- Row 2 - 15% height -->
+                        <div class="tile-row row-two">
+                            {#if card.rowTwo.tiles.length === 0}
+                                <div class="tile empty-tile">
+                                    <div class="tile-placeholder">Row 2 Content</div>
+                                </div>
+                            {:else}
+                                {#each card.rowTwo.tiles as tile}
+                                    <div class="tile">
+                                        <!-- Tile content will be filled later -->
+                                    </div>
+                                {/each}
+                            {/if}
+                        </div>
+                        
+                        <!-- Row 3 - 30% height -->
+                        <div class="tile-row row-three">
+                            {#if card.rowThree.tiles.length === 0}
+                                <div class="tile empty-tile">
+                                    <div class="tile-placeholder">Row 3 Content</div>
+                                </div>
+                            {:else}
+                                {#each card.rowThree.tiles as tile}
+                                    <div class="tile">
+                                        <!-- Tile content will be filled later -->
+                                    </div>
+                                {/each}
+                            {/if}
+                        </div>
+                        
+                        <!-- Row 4 - 40% height -->
+                        <div class="tile-row row-four">
+                            {#if card.rowFour.tiles.length === 0}
+                                <div class="tile empty-tile">
+                                    <div class="tile-placeholder">Row 4 Content</div>
+                                </div>
+                            {:else}
+                                {#each card.rowFour.tiles as tile}
+                                    <div class="tile">
+                                        <!-- Tile content will be filled later -->
+                                    </div>
+                                {/each}
+                            {/if}
                         </div>
                     </div>
                     
                     <div class="card-footer">
-                        <div class="disclaimer">
-                            Always consult a healthcare professional for personalized medical advice.
-                        </div>
-                        {#if advice.timestamp}
+                        {#if card.timestamp}
                             <div class="update-time">
-                                Updated: {new Date(advice.timestamp).toLocaleString()}
+                                Updated: {new Date(card.timestamp).toLocaleString()}
                             </div>
                         {/if}
                     </div>
@@ -699,8 +606,7 @@
         -webkit-user-select: none;
         -webkit-touch-callout: none;
     }
-    
-    .health-advice-card {
+      .travel-card {
         position: absolute;
         top: 0;
         left: 0;
@@ -715,14 +621,14 @@
         overflow-y: visible; /* Allow card to expand to its full height */
     }
     
-    .health-advice-card.active {
+    .travel-card.active {
         z-index: 10;
     }
     
     .card-header {
         background: #dd815e;
         color: white;
-        padding: 1.2rem;
+        padding: 1rem;
         border-radius: 16px 16px 0 0;
         position: relative;
         overflow: hidden;
@@ -777,15 +683,70 @@
         font-size: 1.2rem;
         opacity: 0.8;
     }
-    
-    .card-body {
-        padding: 1.5rem;
+      .card-body {
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 80px); /* Adjust for header and footer height */
     }
     
-    .advice-content {
-        color: #444;
-        line-height: 1.6;
-        font-size: 0.95rem;
+    /* Windows 10 Start Menu style tile rows */
+    .tile-row {
+        display: flex;
+        gap: 0.75rem;
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Height distribution as specified: 15%, 15%, 30%, 40% */
+    .row-one {
+        height: 15%;
+        min-height: 60px;
+    }
+    
+    .row-two {
+        height: 15%;
+        min-height: 60px;
+    }
+    
+    .row-three {
+        height: 30%;
+        min-height: 120px;
+    }
+    
+    .row-four {
+        height: 40%;
+        min-height: 160px;
+        margin-bottom: 0;
+    }
+    
+    .tile {
+        flex: 1;
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .tile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .empty-tile {
+        background-color: #f9f9f9;
+        border: 2px dashed #e0e0e0;
+    }
+    
+    .tile-placeholder {
+        color: #aaa;
+        font-size: 0.9rem;
+        text-align: center;
+        padding: 1rem;
     }
     
     /* Redesigned section styles with modern flat design */
@@ -926,8 +887,7 @@
         color: #999;
         font-size: 0.75rem;
     }
-    
-    /* Navigation dots */
+      /* Navigation dots */
     .navigation-dots {
         display: flex;
         justify-content: center;
@@ -937,17 +897,21 @@
         bottom: 0;
         left: 0;
         right: 0;
+        height: 20px; /* Fixed height for the navigation dots container */
+        padding: 6px 0; /* Add padding to prevent layout shifts */
     }
     
     .dot {
         width: 8px;
         height: 8px;
+        min-width: 8px; /* Prevent width compression */
+        min-height: 8px; /* Prevent height compression */
         border-radius: 50%;
         background-color: rgba(221, 129, 94, 0.3);
         border: none;
         padding: 0;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: background-color 0.2s ease; /* Only transition color, not dimensions */
     }
     
     .dot.active {

@@ -85,10 +85,13 @@ button {
    MAIN LANDING PAGE
    =========================== */
 main {
-  max-width: var(--container-width);
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  padding: 0;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero {
@@ -100,11 +103,13 @@ main {
   margin: 0; /* Removed margin */
   padding: 3rem var(--spacing-md);
   background-color: var(--background-cream); /* Added cream background */
+  width: 100%;
 }
 
 .hero-content {
-  max-width: 800px;
+  max-width: 100%;
   width: 100%;
+  padding: 0 var(--spacing-md);
 }
 
 .hero h1 {
@@ -215,14 +220,14 @@ main {
    AUTH PAGES
    =========================== */
 .container {
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
   padding: var(--spacing-xl);
   width: 100%;
 }
 
 .auth-container {
-  max-width: 800px;
+  max-width: 100%;
   margin: var(--spacing-xl) auto;
   padding: var(--spacing-xl);
   border-radius: var(--border-radius);
@@ -1755,3 +1760,409 @@ fieldset.condition-group legend {
     padding: var(--spacing-lg);
   }
 }
+
+/* Condition Cards */
+.condition-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.condition-card {
+  background-color: #f9f9f9;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+
+.condition-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.condition-icon-container {
+  width: 32px;
+  height: 32px;
+  background: rgba(221, 129, 94, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.condition-icon {
+  font-size: 1.2rem;
+}
+
+.condition-name {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Category Header */
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.category-name {
+  font-weight: 600;
+  color: #444;
+}
+
+.category-count {
+  font-size: 0.9rem;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+}
+
+.medications-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.medication-card {
+  background-color: #f9f9f9;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+
+.medication-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.medication-icon-container {
+  width: 32px;
+  height: 32px;
+  background: rgba(221, 129, 94, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medication-icon {
+  font-size: 1.2rem;
+}
+
+.medication-name {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Heat Condition Cards */
+.heat-conditions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.heat-condition-card {
+  background-color: #f9f9f9;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+
+.heat-condition-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.heat-icon {
+  background: rgba(255, 105, 51, 0.1);
+}
+
+.heat-condition-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.condition-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.condition-tip {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Activity Level Visualization */
+.activity-level-container {
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.activity-visual {
+  position: relative;
+  padding: 1rem;
+}
+
+.activity-bars {
+  position: relative;
+  height: 40px; /* Increased height */
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: visible; /* Changed to visible */
+}
+
+.activity-bar-label {
+  position: absolute;
+  top: -1.8rem; /* Adjusted top position */
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.activity-bar-label:nth-child(1) { left: 0; }
+.activity-bar-label:nth-child(2) { left: 20%; }
+.activity-bar-label:nth-child(3) { left: 40%; }
+.activity-bar-label:nth-child(4) { left: 60%; }
+.activity-bar-label:nth-child(5) { left: 80%; }
+
+.activity-level-marker {
+  position: absolute;
+  top: 100%; /* Changed to 100% */
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.5rem; /* Added margin top */
+}
+
+.marker-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #dd815e;
+  border-radius: 50%;
+  margin-bottom: 0.25rem;
+}
+
+.marker-label {
+  font-size: 0.8rem;
+  color: #333;
+  white-space: nowrap;
+}
+
+.activity-progress-bar {
+  height: 100%;
+  background-color: #dd815e;
+  border-radius: 10px 0 0 10px;
+  transition: width 0.3s ease;
+}
+
+.duration-tag {
+  margin-top: 1rem; /* Increased margin top */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.duration-icon {
+  font-size: 1rem;
+}
+.activity-level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.activity-level-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.activity-level-value {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.activity-bars {
+  position: relative;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.activity-bar-label {
+  position: absolute;
+  top: -1.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.activity-bar-label:nth-child(1) { left: 0; }
+.activity-bar-label:nth-child(2) { left: 20%; }
+.activity-bar-label:nth-child(3) { left: 40%; }
+.activity-bar-label:nth-child(4) { left: 60%; }
+.activity-bar-label:nth-child(5) { left: 80%; }
+
+.activity-level-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.marker-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #dd815e;
+  border-radius: 50%;
+}
+
+.activity-progress-bar {
+  height: 100%;
+  background-color: #dd815e;
+  border-radius: 10px 0 0 10px;
+  transition: width 0.3s ease;
+}
+
+.duration-tag {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.duration-icon {
+  font-size: 1rem;
+}
+
+/* Heat Issues Container */
+.heat-issues-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.issue-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.issue-icon {
+  font-size: 1.2rem;
+}
+
+.issue-title {
+  font-weight: 500;
+  color: #333;
+}
+
+.issue-status {
+  font-size: 0.9rem;
+  color: #666;
+  margin-left: auto;
+}
+
+.issue-details {
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+
+.issue-details p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #444;
+  padding: 0.5rem;
+}
+
+.demographics-biometrics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+.biometrics-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.stat-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.stat-row:not(:last-child)::after {
+  content: "|";
+  margin-left: 0.5rem;
+  color: #ccc;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.stat-value {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #333;
+}
+
+.stat-unit {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.heat-warning {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.heat-warning.insight-banner.concern {
+  background-color: #fff0f0;
+  border-left: 4px solid #dc4a4a;
+}
+
+.large-icon {
+  font-size: 3rem;
+}
+
+

@@ -122,23 +122,7 @@
     }
 </script>
 
-<div class="city-preferences">
-    <h3>City Preferences</h3>
-    
-    <div class="data-source-info">
-        <span>Data source: Live weather monitoring system</span>
-        {#if lastUpdated}
-            <span>Last updated: {lastUpdated.toLocaleString()}</span>
-        {/if}
-        <button 
-            class="refresh-button" 
-            on:click={refreshCityList}
-            disabled={loadingCities}
-            aria-label="Refresh city list"
-        >
-            {loadingCities ? '↻ Refreshing...' : '↻ Refresh'}
-        </button>
-    </div>
+<div class="city-preferences section-container">
     
     {#if error}
         <div class="error-message">
@@ -152,79 +136,120 @@
         </div>
     {/if}
     
-    <div class="preference-section">
-        <h4>Home City</h4>
-        <p class="section-description">Set your current city of residence in Cavite</p>
+    <!-- Home City Section -->
+    <div class="preference-content">
+        <div class="preference-header">
+            <div class="preference-icon">
+                <i class="bi bi-house-heart"></i>
+            </div>
+            <div class="preference-title">
+                <h4>Home City</h4>
+                <p class="section-description">Set your current city of residence in Cavite</p>
+            </div>
+        </div>
         
         <div class="select-container">
-            <select 
-                bind:value={homeCity}
-                disabled={loadingCities || cityList.length === 0}
-                class="city-select"
-            >
-                <option value="">Select your home city</option>
-                {#each cityList as city}
-                    <option value={city}>{city}</option>
-                {/each}
-            </select>
+            <div class="select-wrapper">
+                <select 
+                    bind:value={homeCity}
+                    disabled={loadingCities || cityList.length === 0}
+                    class="city-select"
+                >
+                    <option value="">Select your home city</option>
+                    {#each cityList as city}
+                        <option value={city}>{city}</option>
+                    {/each}
+                </select>
+                <div class="select-icon">
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+            </div>
             
             {#if loadingCities}
-                <div class="loading-indicator">Loading cities...</div>
+                <div class="loading-indicator">
+                    <div class="loading-spinner-small"></div>
+                    Loading cities...
+                </div>
             {:else if cityList.length === 0}
                 <div class="no-cities-message">
+                    <i class="bi bi-exclamation-triangle"></i>
                     No cities available. Please try refreshing.
                 </div>
             {/if}
         </div>
     </div>
     
-    <div class="preference-section">
-        <h4>Preferred Cities</h4>
-        <p class="section-description">Add cities in Cavite you frequently travel to or are interested in</p>
+    <!-- Horizontal rule divider -->
+    <hr class="preference-divider">
+    
+    <!-- Preferred Cities Section -->
+    <div class="preference-content">
+        <div class="preference-header">
+            <div class="preference-icon">
+                <i class="bi bi-pin-map"></i>
+            </div>
+            <div class="preference-title">
+                <h4>Preferred Cities</h4>
+                <p class="section-description">Add cities in Cavite you frequently travel to or are interested in</p>
+            </div>
+        </div>
         
         <div class="select-container">
-            <select 
-                on:change={e => {
-                    const value = e.currentTarget.value;
-                    if (value) {
-                        addCity(value);
-                        e.currentTarget.value = "";
-                    }
-                }}
-                disabled={loadingCities || cityList.filter(city => 
-                    city !== homeCity && !selectedCities.includes(city)
-                ).length === 0}
-                class="city-select"
-            >
-                <option value="">Add a city you visit</option>
-                {#each cityList.filter(city => 
-                    city !== homeCity && !selectedCities.includes(city)
-                ) as city}
-                    <option value={city}>{city}</option>
-                {/each}
-            </select>
+            <div class="select-wrapper">
+                <select 
+                    on:change={e => {
+                        const value = e.currentTarget.value;
+                        if (value) {
+                            addCity(value);
+                            e.currentTarget.value = "";
+                        }
+                    }}
+                    disabled={loadingCities || cityList.filter(city => 
+                        city !== homeCity && !selectedCities.includes(city)
+                    ).length === 0}
+                    class="city-select"
+                >
+                    <option value="">Add a city you visit</option>
+                    {#each cityList.filter(city => 
+                        city !== homeCity && !selectedCities.includes(city)
+                    ) as city}
+                        <option value={city}>{city}</option>
+                    {/each}
+                </select>
+                <div class="select-icon">
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+            </div>
             
             {#if cityList.filter(city => city !== homeCity && !selectedCities.includes(city)).length === 0 && cityList.length > 0}
-                <p class="city-select-note">All available cities have been added</p>
+                <p class="city-select-note"><i class="bi bi-info-circle"></i> All available cities have been added</p>
             {/if}
         </div>
         
         <div class="selected-cities">
             {#if selectedCities.length === 0}
-                <p class="empty-message">No preferred cities added yet</p>
+                <div class="empty-state">
+                    <div class="empty-icon">🏙️</div>
+                    <p class="empty-message">No preferred cities added yet</p>
+                    <p class="empty-hint">Add cities you frequently visit to receive travel health insights</p>
+                </div>
             {:else}
-                {#each selectedCities as city, index}
-                    <div class="selected-city">
-                        <span>{city}</span>
-                        <button 
-                            class="remove-btn"
-                            on:click={() => removeCity(index)}
-                            aria-label="Remove preferred city"
-                        >
-                            ×
-                        </button>
-                    </div>
-                {/each}
+                <div class="cities-grid">
+                    {#each selectedCities as city, index}                    <div class="city-card">
+                            <div class="city-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                            <div class="city-info">
+                                <span class="city-name">{city}</span>
+                            </div>
+                            <button 
+                                class="remove-btn"
+                                on:click={() => removeCity(index)}
+                                aria-label="Remove preferred city"
+                            >
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    {/each}
+                </div>
             {/if}
         </div>
     </div>
@@ -240,54 +265,135 @@
     </div>
 </div>
 
-<style>
-    .city-preferences {
+<style>    .city-preferences {
         padding: 1rem;
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    .data-source-info {
+    .preferences-header {
         display: flex;
-        flex-wrap: wrap;
+        justify-content: space-between;
         align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+    }
+      .preference-content {
+        padding: 1.25rem 1rem;
+        position: relative;
+    }
+    
+    .preference-divider {
+        border: 0;
+        height: 1px;
+        background-color: #eee;
+        background-image: linear-gradient(90deg, transparent, #dd815e, transparent);
+        margin: 1rem 0;
+    }
+    
+    .preference-header {
+        display: flex;
+        margin-bottom: 1.25rem;
+        align-items: center;
+    }
+    
+    .preference-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(221, 129, 94, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: #dd815e;
+        font-size: 1.4rem;
+    }
+    
+    .preference-title h4 {
+        margin: 0 0 0.25rem 0;
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    
+    .section-description {
         color: #666;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.4;
     }
     
-    .refresh-button {
-        background-color: transparent;
+    .select-container {
+        margin-bottom: 1.25rem;
+    }
+    
+    .select-wrapper {
+        position: relative;
+    }
+    
+    .city-select {
+        width: 100%;
+        padding: 0.85rem 1rem;
         border: 1px solid #ddd;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.85rem;
-        color: #4285f4;
-        display: inline-flex;
-        align-items: center;
-        margin-left: auto;
+        border-radius: 8px;
+        background-color: white;
+        font-size: 1rem;
+        appearance: none;
+        color: #333;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        transition: all 0.2s;
     }
     
-    .refresh-button:hover:not(:disabled) {
+    .city-select:focus {
+        outline: none;
+        border-color: #dd815e;
+        box-shadow: 0 0 0 3px rgba(221, 129, 94, 0.15);
+    }
+    
+    .city-select:disabled {
         background-color: #f5f5f5;
+        cursor: not-allowed;
+        color: #999;
     }
     
-    .refresh-button:disabled {
-        color: #999;
-        cursor: not-allowed;
+    .select-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+        pointer-events: none;
+    }
+    
+    .loading-spinner-small {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(221, 129, 94, 0.3);
+        border-top-color: #dd815e;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
     
     .loading-indicator {
+        display: flex;
+        align-items: center;
         font-size: 0.85rem;
         color: #666;
         margin-top: 0.5rem;
-        font-style: italic;
     }
     
     .no-cities-message {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         padding: 0.5rem;
         color: #d32f2f;
         background-color: #ffebee;
@@ -295,68 +401,93 @@
         margin-top: 0.5rem;
     }
     
-    /* Rest of the existing styles */
-    .preference-section {
-        margin-bottom: 1.5rem;
-    }
-    
-    .section-description {
-        color: #666;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-    
-    .select-container {
-        margin-bottom: 1rem;
-    }
-    
-    .city-select {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: white;
-        font-size: 1rem;
-    }
-    
-    .city-select:disabled {
-        background-color: #f5f5f5;
-        cursor: not-allowed;
-    }
-    
     .selected-cities {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
+        margin-top: 1rem;
     }
     
-    .selected-city {
-        display: inline-flex;
+    .cities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .city-card {
+        display: flex;
         align-items: center;
-        background-color: #e0f2fe;
-        border-radius: 16px;
-        padding: 0.3rem 0.8rem;
-        font-size: 0.9rem;
+        background-color: #f0f7ff;
+        border-left: 3px solid #dd815e;
+        border-radius: 8px;
+        padding: 0.8rem;
+        position: relative;
+        transition: all 0.2s;
+    }
+    
+    .city-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }    .city-icon {
+        color: #e41e3f;
+        font-size: 1.2rem;
+        margin-right: 0.75rem;
+    }
+    
+    .city-info {
+        flex: 1;
+    }
+    
+    .city-name {
+        font-weight: 500;
+        color: #333;
     }
     
     .remove-btn {
         background: none;
         border: none;
-        color: #888;
+        color: #999;
         cursor: pointer;
-        font-size: 1.2rem;
-        margin-left: 0.3rem;
-        padding: 0 0.2rem;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
     }
     
     .remove-btn:hover {
+        background-color: rgba(244, 67, 54, 0.1);
         color: #f44336;
     }
     
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem;
+        text-align: center;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px dashed #ddd;
+    }
+    
+    .empty-icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+        color: #999;
+    }
+    
     .empty-message {
+        color: #555;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .empty-hint {
         color: #888;
-        font-style: italic;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        max-width: 250px;
     }
     
     .actions {
@@ -364,23 +495,29 @@
         display: flex;
         justify-content: flex-end;
     }
-    
-    .save-btn {
-        background-color: #4285f4;
+      .save-btn {
+        background-color: #dd815e;
         color: white;
         border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
         cursor: pointer;
         font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
     }
     
     .save-btn:hover:not(:disabled) {
-        background-color: #3367d6;
+        background-color: #c26744;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     
     .save-btn:disabled {
-        background-color: #b0c0d9;
+        background-color: #e5aa95;
         cursor: not-allowed;
     }
     
@@ -401,6 +538,9 @@
     }
 
     .city-select-note {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         color: #666;
         font-size: 0.85rem;
         margin-top: 0.25rem;
