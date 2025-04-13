@@ -1,7 +1,8 @@
-<script>
-    import { onMount, onDestroy } from 'svelte';
+<script>    import { onMount, onDestroy } from 'svelte';
     import { saveUserCityPreferences, getUserCityPreferences } from '$lib/services/user-preferences-service';
     import { availableCities, fetchLatestWeatherData, startWeatherDataUpdates } from '$lib/services/weather-data-service';
+    import { showNotification } from '$lib/services/notification-service';
+    import ToastContainer from './toast-container.svelte';
     
     export let userId;
     
@@ -80,25 +81,44 @@
     function removeCity(index) {
         selectedCities = selectedCities.filter((_, i) => i !== index);
     }
-    
-    async function refreshCityList() {
+      async function refreshCityList() {
         loadingCities = true;
         error = null;
         
         try {
             const result = await fetchLatestWeatherData();
             lastUpdated = result.lastUpdated;
+            
+            // Show toast notification for successful refresh
+            showNotification(
+                `City list refreshed successfully. Last updated: ${lastUpdated.toLocaleString()}`,
+                'success',
+                5000,
+                'Cities Updated'
+            );
         } catch (err) {
             console.error("Error refreshing city list:", err);
             error = "Failed to refresh city list.";
+            
+            // Show toast notification for error
+            showNotification(
+                "Failed to refresh city list. Please try again.",
+                'error',
+                8000,
+                'Refresh Failed'
+            );
         } finally {
             loadingCities = false;
         }
-    }
-    
-    async function savePreferences() {
+    }    async function savePreferences() {
         if (!homeCity) {
-            error = "Please select your home city";
+            // Show toast notification instead of setting error
+            showNotification(
+                "Please select your home city",
+                'warning',
+                5000,
+                'Missing Information'
+            );
             return;
         }
         
@@ -111,11 +131,29 @@
                 homeCity,
                 preferredCities: selectedCities
             });
-            saved = true;
-            setTimeout(() => { saved = false; }, 3000);
+            
+            // Show success toast notification
+            showNotification(
+                `Your city preferences have been saved. Home city: ${homeCity}, Preferred cities: ${selectedCities.length}`,
+                'success',
+                5000,
+                'Preferences Saved'
+            );
+            
+            saved = true; // Set saved to true for local UI feedback
+            setTimeout(() => saved = false, 3000); // Hide success message after 3 seconds
         } catch (err) {
             console.error("Error saving city preferences:", err);
-            error = "Failed to save your city preferences.";
+            
+            // Show error toast notification
+            showNotification(
+                "Failed to save your city preferences. Please try again.",
+                'error',
+                8000,
+                'Save Error'
+            );
+            
+            error = "Failed to save your city preferences. Please try again.";
         } finally {
             isSaving = false;
         }
@@ -123,18 +161,7 @@
 </script>
 
 <div class="city-preferences section-container">
-    
-    {#if error}
-        <div class="error-message">
-            <p>{error}</p>
-        </div>
-    {/if}
-    
-    {#if saved}
-        <div class="success-message">
-            <p>Your city preferences have been saved.</p>
-        </div>
-    {/if}
+      <!-- Toast notifications will be used instead of these static messages -->
     
     <!-- Home City Section -->
     <div class="preference-content">

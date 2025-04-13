@@ -1,5 +1,4 @@
-<script>
-    import { onMount } from 'svelte';
+<script>    import { onMount } from 'svelte';
     import { logoutUser, onMessageListener, hasMedicalRecord, requestFCMToken, getMedicalData } from '$lib/firebase';
     import { getCurrentPosition, currentLocation } from '$lib/services/location-service';
     import { 
@@ -15,6 +14,7 @@
         serviceWorkerError 
     } from '../lib/services/service-worker';
     import { getUserCityPreferences } from '$lib/services/user-preferences-service';
+    import { getNotificationHistory, markNotificationAsRead, clearNotificationHistory } from '$lib/services/notification-service';
     
     // Components
     import MedicalProfile from './medicalprofile.svelte';
@@ -24,14 +24,14 @@
     import CityPreferencesSetup from './city-preferences-setup.svelte';
     import TravelHealthCards from './travel-health-cards.svelte';
     
-    export let user;
-      // State variables
+    export let user;    // State variables
     let notifications = [];
     let loading = false;
     let showMedicalForm = false;
     let medicalRecordExists = false;
     let activeTab = 'dashboard'; // Changed default to dashboard
     let showWelcomeMessage = true; // Control whether to show welcome message on startup
+    let unreadNotifications = 0;
     
     // City preferences state
     let hasCityPreferences = false;
@@ -96,6 +96,10 @@
         if (hideWelcome === 'true') {
             showWelcomeMessage = false;
         }
+        
+        // Load notifications from localStorage
+        notifications = getNotificationHistory();
+        unreadNotifications = notifications.filter(n => !n.read).length;
         
         (async () => {
             // Check existing permissions
@@ -327,9 +331,7 @@
         } finally {
             loadingCities = false;
         }
-    }
-
-    // Function to get the section title based on active tab
+    }    // Function to get the section title based on active tab
     function getSectionTitle(tab) {
         switch (tab) {
             case 'dashboard':
@@ -344,6 +346,17 @@
                 return 'Settings';
             default:
                 return 'Dashboard';
+        }
+    }
+    
+    // Function to get the icon for a notification type
+    function getNotificationIcon(type) {
+        switch(type) {
+            case 'success': return 'bi-check-circle-fill';
+            case 'warning': return 'bi-exclamation-triangle-fill';
+            case 'error': return 'bi-exclamation-circle-fill';
+            case 'info': return 'bi-info-circle-fill';
+            default: return 'bi-bell-fill';
         }
     }
 </script>
@@ -397,26 +410,61 @@
                         currentLocation={currentLocationName}
                     />
                 {/if}
-            </div>
-        {:else if activeTab === 'notifications'}
+            </div>        {:else if activeTab === 'notifications'}
             <div class="notifications-section">
-                <!-- Remove the heading since it's now in the app bar -->
+                <div class="notification-actions">
+                    <button 
+                        class="action-btn"
+                        on:click={() => {
+                            clearNotificationHistory();
+                            notifications = [];
+                            unreadNotifications = 0;
+                        }}
+                        disabled={notifications.length === 0}
+                    >
+                        <i class="bi bi-trash"></i> Clear All
+                    </button>
+                </div>
+                
                 <div class="card">
                     {#if notifications.length === 0}
-                        <p class="empty-state">No notifications yet</p>
+                        <div class="empty-state">
+                            <div class="empty-icon"><i class="bi bi-bell"></i></div>
+                            <p class="empty-message">No notifications yet</p>
+                            <p class="empty-hint">Notifications will appear here when we have updates for you</p>
+                        </div>
                     {:else}
                         <div class="notifications-list">
                             {#each notifications as notification}
-                                <div class="notification">
-                                    <h4>{notification.title}</h4>
-                                    <p>{notification.body}</p>
-                                    <small>{new Date(notification.timestamp).toLocaleString()}</small>
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <div 
+                                    class="notification {notification.type} {notification.read ? 'read' : 'unread'}"
+                                    on:click={() => {
+                                        if (!notification.read) {
+                                            markNotificationAsRead(notification.id);
+                                            notification.read = true;
+                                            unreadNotifications = Math.max(0, unreadNotifications - 1);
+                                            notifications = notifications; // trigger reactivity
+                                        }
+                                    }}
+                                >
+                                    <div class="notification-icon">
+                                        <i class="bi {getNotificationIcon(notification.type)}"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <h4>{notification.title || 'Notification'}</h4>
+                                        <p>{notification.message}</p>
+                                        <small>{new Date(notification.timestamp).toLocaleString()}</small>
+                                    </div>
+                                    {#if !notification.read}
+                                        <div class="unread-badge"></div>
+                                    {/if}
                                 </div>
                             {/each}
                         </div>
                     {/if}
                 </div>
-            </div>        {:else if activeTab === 'account'}
+            </div>{:else if activeTab === 'account'}
             <div class="account-section">
                 <!-- Account Information -->
                 <div class="section-container">
