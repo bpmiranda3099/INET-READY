@@ -387,24 +387,15 @@
     <div class="content-area">
         {#if activeTab === 'dashboard'}
             <div class="dashboard-section">
-                <!-- Remove the heading since it's now in the app bar -->
-                <div class="welcome">
-                    <h2>Welcome, {user.email}!</h2>
-                    <p>You are now connected to INET-READY.</p>
-                </div>
-                
-                <!-- Travel Health Cards - Only show if user has city preferences -->
+                  <!-- Travel Health Cards - Only show if user has city preferences -->
                 {#if hasCityPreferences && preferredCities.length > 0}
-                    <div class="travel-health-advice-section">
-                        <h3>Travel Health Advice</h3>
-                        <TravelHealthCards 
-                            userId={user.uid}
-                            homeCity={homeCity}
-                            preferredCities={preferredCities}
-                            useCurrentLocation={true}
-                            currentLocation={currentLocationName}
-                        />
-                    </div>
+                    <TravelHealthCards 
+                        userId={user.uid}
+                        homeCity={homeCity}
+                        preferredCities={preferredCities}
+                        useCurrentLocation={true}
+                        currentLocation={currentLocationName}
+                    />
                 {/if}
             </div>
         {:else if activeTab === 'notifications'}
@@ -433,11 +424,56 @@
                         <h3>Account Information</h3>
                     </div>
                     <div class="section-body">
-                        <div class="account-info">
-                            <p><strong>Email:</strong> {user.email}</p>
-                            <p><strong>User ID:</strong> {user.uid}</p>
-                            <p><strong>Email Verified:</strong> {user.emailVerified ? 'Yes' : 'No'}</p>
-                            <p><strong>Account Created:</strong> {user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleString() : 'Unknown'}</p>
+                        <div class="preference-content">
+                            <!-- Email Info -->
+                            <div class="preference-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-envelope"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Email Address</span>
+                                    <span class="setting-description">{user.email}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- User ID Info -->
+                            <div class="preference-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-person-badge"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">User ID</span>
+                                    <span class="setting-description">{user.uid}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Email Verification Status -->
+                            <div class="preference-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-patch-check"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Email Verification</span>
+                                    <span class="setting-description">
+                                        {#if user.emailVerified}
+                                            <span class="status-badge verified">Verified</span>
+                                        {:else}
+                                            <span class="status-badge unverified">Not Verified</span>
+                                        {/if}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Account Created Date -->
+                            <div class="preference-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-calendar-date"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Account Created</span>
+                                    <span class="setting-description">{user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleString() : 'Unknown'}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -448,56 +484,108 @@
                         <h3>Location Information</h3>
                     </div>
                     <div class="section-body">
-                        {#if locationData}
-                            <div class="location-info">
-                                <p>
-                                    <span class="location-icon">📍</span> 
-                                    {#if currentLocationName}
-                                        <span class="location-name">{currentLocationName}</span>
-                                    {:else if fetchingLocationName}
-                                        <span class="location-name loading">Determining location name...</span>
-                                    {:else if locationNameError}
-                                        <span class="location-name error">{locationNameError}</span>
-                                    {/if}
-                                    <span class="coordinates">
-                                        {locationData.latitude.toFixed(6)}°, {locationData.longitude.toFixed(6)}°
-                                    </span>
-                                    <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
-                                        {#if fetchingLocation}
-                                            Updating...
-                                        {:else}
-                                            ↻
-                                        {/if}
-                                    </button>
-                                </p>
-                            </div>
-                        {:else if locationPermission === 'granted' && !locationData}
-                            <div class="location-info loading">
-                                <p>
-                                    <span class="location-icon">📍</span> 
-                                    {fetchingLocation ? 'Getting your location...' : 'Location data not available.'}
-                                    <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation}>
-                                        {fetchingLocation ? 'Loading...' : 'Get Location'}
-                                    </button>
-                                </p>
-                            </div>
-                        {:else if locationError}
-                            <div class="location-info error">
-                                <p>
-                                    <span class="location-icon">⚠️</span> 
-                                    Error: {locationError}
-                                    <button on:click={getLocation} class="refresh-btn">Try Again</button>
-                                </p>
-                            </div>
-                        {:else}
-                            <div class="location-info not-enabled">
-                                <p>
-                                    <span class="location-icon">🔒</span>
-                                    Location services not enabled.
-                                    <button on:click={requestLocationPermission} class="refresh-btn">Enable</button>
-                                </p>
-                            </div>
-                        {/if}
+                        <div class="preference-content">
+                            {#if locationData}
+                                <!-- Current Location -->
+                                <div class="preference-header">
+                                    <div class="preference-icon">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </div>
+                                    <div class="preference-title">
+                                        <span class="setting-label">Current Location</span>
+                                        <span class="setting-description">
+                                            {#if currentLocationName}
+                                                {currentLocationName}
+                                            {:else if fetchingLocationName}
+                                                <span class="loading-text">Determining location name...</span>
+                                            {:else if locationNameError}
+                                                <span class="error-text">{locationNameError}</span>
+                                            {:else}
+                                                Unknown location
+                                            {/if}
+                                        </span>
+                                    </div>
+                                    <div class="setting-action">
+                                        <button on:click={getLocation} class="icon-button" disabled={fetchingLocation} aria-label="Refresh location">
+                                            {#if fetchingLocation}
+                                                <div class="button-spinner"></div>
+                                            {:else}
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                            {/if}
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Coordinates -->
+                                <div class="preference-header">
+                                    <div class="preference-icon">
+                                        <i class="bi bi-pin-map-fill"></i>
+                                    </div>
+                                    <div class="preference-title">
+                                        <span class="setting-label">Coordinates</span>
+                                        <span class="setting-description coordinates-text">
+                                            {locationData.latitude.toFixed(6)}°, {locationData.longitude.toFixed(6)}°
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Last Updated -->
+                                <div class="preference-header">
+                                    <div class="preference-icon">
+                                        <i class="bi bi-clock-history"></i>
+                                    </div>
+                                    <div class="preference-title">
+                                        <span class="setting-label">Last Updated</span>
+                                        <span class="setting-description">
+                                            {new Date(locationData.timestamp).toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
+                            {:else if locationPermission === 'granted' && !locationData}
+                                <div class="preference-header">
+                                    <div class="preference-icon">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </div>
+                                    <div class="preference-title">
+                                        <span class="setting-label">Location Data</span>
+                                        <span class="setting-description">
+                                            {fetchingLocation ? 'Getting your location...' : 'Location data not available.'}
+                                        </span>
+                                    </div>                                    <div class="setting-action">
+                                        <button on:click={getLocation} class="enable-btn" disabled={fetchingLocation}>
+                                            {fetchingLocation ? 'Loading...' : 'Get Location'}
+                                        </button>
+                                    </div>
+                                </div>
+                            {:else if locationError}
+                                <div class="preference-header">
+                                    <div class="preference-icon error-icon">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="preference-title">
+                                        <span class="setting-label">Error</span>
+                                        <span class="setting-description error-text">
+                                            {locationError}
+                                        </span>
+                                    </div>                                    <div class="setting-action">
+                                        <button on:click={getLocation} class="enable-btn">
+                                            Try Again
+                                        </button>
+                                    </div>
+                                </div>
+                            {:else}                                <div class="preference-header">
+                                    <div class="preference-icon">
+                                        <i class="bi bi-shield-lock"></i>
+                                    </div>
+                                    <div class="preference-title">
+                                        <span class="setting-label">Location Services</span>
+                                        <span class="setting-description">
+                                            Location services not enabled
+                                        </span>
+                                    </div>
+                                </div>
+                            {/if}
+                        </div>
                     </div>
                 </div>
                 
@@ -507,31 +595,68 @@
                         <h3>App Permissions</h3>
                     </div>
                     <div class="section-body">
-                        <div class="permissions-status">
-                            <p>
-                                <strong>Notifications:</strong> 
-                                <span class={notificationPermission === 'granted' ? 'granted' : 'not-granted'}>
-                                    {notificationPermission === 'granted' ? 'Enabled' : 'Disabled'}
-                                </span>
-                                {#if notificationPermission !== 'granted'}
-                                    <button on:click={requestNotificationPermission}>Enable</button>
-                                {/if}
-                            </p>
-                            <p>
-                                <strong>Location:</strong> 
-                                <span class={locationPermission === 'granted' ? 'granted' : 'not-granted'}>
-                                    {locationPermission === 'granted' ? 'Enabled' : 'Disabled'}
-                                </span>
-                                {#if locationPermission !== 'granted'}
-                                    <button on:click={requestLocationPermission}>Enable</button>
-                                {/if}
-                            </p>
-                            <p>
-                                <strong>Service Worker:</strong> 
-                                <span class={swRegistered ? 'granted' : 'not-granted'}>
-                                    {swRegistered ? 'Active' : 'Inactive'}
-                                </span>
-                            </p>
+                        <div class="preference-content">
+                            <!-- Notifications Permission -->
+                            <div class="preference-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-bell"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Notifications</span>
+                                    <span class="setting-description">
+                                        Allow the app to send you important health alerts
+                                    </span>
+                                </div>
+                                <div class="setting-action">
+                                    {#if notificationPermission === 'granted'}
+                                        <span class="status-badge verified">Enabled</span>
+                                    {:else}                                        <button on:click={requestNotificationPermission} class="enable-btn">
+                                            Enable
+                                        </button>
+                                    {/if}
+                                </div>
+                            </div>
+                            
+                            <!-- Location Permission -->
+                            <div class="preference-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Location Services</span>
+                                    <span class="setting-description">
+                                        Access your location to provide localized health advice
+                                    </span>
+                                </div>
+                                <div class="setting-action">
+                                    {#if locationPermission === 'granted'}
+                                        <span class="status-badge verified">Enabled</span>
+                                    {:else}                                        <button on:click={requestLocationPermission} class="enable-btn">
+                                            Enable
+                                        </button>
+                                    {/if}
+                                </div>
+                            </div>
+                            
+                            <!-- Service Worker Status -->
+                            <div class="preference-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-hdd-network"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Background Services</span>
+                                    <span class="setting-description">
+                                        Enable background processing to receive push notifications
+                                    </span>
+                                </div>
+                                <div class="setting-action">
+                                    {#if swRegistered}
+                                        <span class="status-badge verified">Active</span>
+                                    {:else}
+                                        <span class="status-badge unverified">Inactive</span>
+                                    {/if}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1212,5 +1337,45 @@
         .section-title {
             font-size: 1.7rem;
         }
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .status-badge.verified {
+        background-color: rgba(76, 175, 80, 0.15);
+        color: #2e7d32;
+    }
+    
+    .status-badge.unverified {
+        background-color: rgba(244, 67, 54, 0.15);
+        color: #c62828;
+    }
+
+    .enable-btn {
+        background-color: #dd815e;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .enable-btn:hover {
+        background-color: #c26744;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .enable-btn:active {
+        transform: translateY(0);
     }
 </style>

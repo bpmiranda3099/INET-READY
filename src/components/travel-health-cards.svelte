@@ -417,13 +417,18 @@
                            opacity: {cardTransforms[i].opacity};
                            z-index: {cardTransforms[i].zIndex};"
                     bind:this={cardElements[i]}
-                >
-                    <div class="card-header">
-                        <div class="card-title-destination">
-                            <div class="route">
-                                <span class="city origin">{card.fromCity}</span>
-                                <span class="arrow">→</span>
-                                <span class="city destination">{card.toCity}</span>
+                >                    <div class="card-header">
+                        <div class="route-display">
+                            <div class="route-container">
+                                <div class="route-shine"></div>
+                                <div class="city-circle origin-city">
+                                    <i class="bi bi-geo-fill"></i>
+                                    <span class="city-name">{card.fromCity}</span>
+                                </div>
+                                <div class="city-circle dest-city">
+                                    <i class="bi bi-flag-fill"></i>
+                                    <span class="city-name">{card.toCity}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -589,49 +594,50 @@
         color: #666;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    
-    .cards-wrapper {
+      .cards-wrapper {
         position: relative;
         width: 100%;
-        margin: 1.5rem 0;
-        padding-bottom: 2.5rem; /* Add space for navigation dots */
+        margin: 1rem 0;
+        padding-bottom: 2rem; /* Space for navigation dots */
+        overflow: hidden; /* Hide horizontal overflow */
+        max-width: 100vw; /* Ensure it doesn't exceed viewport width */
     }
     
     .cards-container {
         position: relative;
         width: 100%;
-        overflow: visible;
+        overflow: hidden; /* Prevent horizontal scroll */
         user-select: none;
         touch-action: pan-y;
         -webkit-user-select: none;
         -webkit-touch-callout: none;
-    }
-      .travel-card {
+    }      .travel-card {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         background: white;
-        border-radius: 16px;
+        border-radius: 12px; /* Reduced from 16px */
         overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Lighter shadow */
         transition: transform 0.05s ease-out, opacity 0.2s ease;
         will-change: transform, opacity;
         touch-action: pan-y;
-        overflow-y: visible; /* Allow card to expand to its full height */
+        overflow-y: hidden; /* Changed from visible to hidden to prevent overflow */
+        max-width: 100%; /* Ensure card doesn't exceed container width */
     }
     
     .travel-card.active {
         z-index: 10;
-    }
-    
-    .card-header {
+    }    .card-header {
         background: #dd815e;
         color: white;
-        padding: 1rem;
+        padding: 0.35rem 1rem;
         border-radius: 16px 16px 0 0;
         position: relative;
         overflow: hidden;
+        text-align: center;
+        background-image: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(0,0,0,0.08) 100%);
     }
     
     .card-header::after {
@@ -647,44 +653,128 @@
         z-index: 0;
     }
     
-    .card-title-destination {
+    .card-title {
+        margin: 0 0 1.2rem 0;
+        font-size: 1.4rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
         position: relative;
         z-index: 1;
     }
-    
-    .card-header h3 {
-        margin: 0 0 0.8rem 0;
-        font-size: 1.4rem;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-    }
-    
-    .route {
+      .route-display {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        margin: 0.3rem 0 0.2rem;
+    }.route-cities {
         display: flex;
         align-items: center;
-        margin-bottom: 0.5rem;
-        font-size: 1.1rem;
+        justify-content: space-between;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50px;
+        padding: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+        overflow: hidden;
     }
     
-    .city {
+    .city-circle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        position: relative;
+        z-index: 2;
+        padding: 3rem;
+    }
+    
+    .origin-city {
+        color: #1e88e5;
+    }
+    
+    .dest-city {
+        color: #e53935;
+    }
+    
+    .city-icon {
+        width: 0px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.4rem;
+    }
+    
+    .origin-city .city-icon {
+        color: #1e88e5;
+    }
+    
+    .dest-city .city-icon {
+        color: #e53935;
+    }
+    
+    .city-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .route-path {
+        flex: 1;
+        position: relative;
+        height: 6px;
+        margin: 0 0.5rem;
+    }
+    
+    .route-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: rgba(255,255,255,0.7);
+        transform: translateY(-50%);
+    }
+    
+    .route-animation-pulse {
+        position: absolute;
+        top: 0;
+        left: -20px;
+        width: 80px;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            rgba(255,255,255,0) 0%, 
+            rgba(255,255,255,0.8) 50%, 
+            rgba(255,255,255,0) 100%);
+        z-index: 1;
+        animation: pulse-animation 2s infinite linear;
+    }
+    
+    @keyframes pulse-animation {
+        0% {
+            left: -40px;
+        }
+        100% {
+            left: 100%;
+        }
+    }
+    
+    .city-name {
         font-weight: 600;
-    }
-    
-    .origin {
-        color: #fff;
-    }
-    
-    .destination {
-        color: #fff;
-    }
-    
-    .arrow {
-        margin: 0 0.8rem;
-        font-size: 1.2rem;
-        opacity: 0.8;
+        font-size: 0.8rem;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        text-align: center;
+        color: white;
     }
       .card-body {
-        padding: 0.75rem;
+        padding: 0.5rem; /* Reduced padding */
         display: flex;
         flex-direction: column;
         height: calc(100% - 80px); /* Adjust for header and footer height */
@@ -693,9 +783,9 @@
     /* Windows 10 Start Menu style tile rows */
     .tile-row {
         display: flex;
-        gap: 0.75rem;
+        gap: 0.5rem; /* Reduced gap */
         width: 100%;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem; /* Reduced margin */
     }
     
     /* Height distribution as specified: 15%, 15%, 30%, 40% */
@@ -1005,5 +1095,136 @@
             flex-direction: column;
             align-items: flex-start;
         }
+    }
+    
+    .route-path {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0.5rem;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50px;
+        margin-top: 0.5rem;
+    }
+    
+    .city-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0.5rem 1rem;
+    }
+    
+    .from-block {
+        align-items: flex-start;
+    }
+    
+    .to-block {
+        align-items: flex-end;
+    }
+    
+    .route-progress {
+        flex: 1;
+        position: relative;
+        height: 4px;
+        margin: 0 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .progress-line {
+        height: 2px;
+        background-color: rgba(255,255,255,0.6);
+        width: 100%;
+        position: absolute;
+    }
+    
+    .arrow-icon {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .origin-icon, .dest-icon {
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .origin-icon {
+        color: #1e88e5;
+    }
+    
+    .dest-icon {
+        color: #e53935;
+    }
+    
+    .city-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }    .route-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50px;
+        padding: 0.4rem 0.8rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        width: 45%;
+        max-width: 45%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .route-shine {
+        position: absolute;
+        top: 0;
+        left: -200px;
+        height: 100%;
+        width: 150px;
+        background: linear-gradient(90deg, 
+            rgba(255,255,255,0) 0%, 
+            rgba(255,255,255,0.1) 50%, 
+            rgba(255,255,255,0) 100%);
+        animation: shine-animation 4s infinite ease-in-out;
+        pointer-events: none;
+    }
+    
+    @keyframes shine-animation {
+        0% { left: -150px; }
+        100% { left: 100%; }
+    }    .city-circle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .city-circle i {
+        font-size: 1rem;
+        color: white;
+        margin-bottom: 0;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    
+    .city-name {
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+        text-align: center;
+        color: white;
+        margin-top: 0;
     }
 </style>

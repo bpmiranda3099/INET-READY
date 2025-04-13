@@ -222,7 +222,6 @@ main {
 .container {
   max-width: 100%;
   margin: 0 auto;
-  padding: var(--spacing-xl);
   width: 100%;
 }
 
@@ -710,10 +709,6 @@ input.invalid {
 @media (min-width: 1200px) {
   .hero {
     min-height: 70vh;
-  }
-  
-  main {
-    padding: 0 var(--spacing-xl);
   }
 }
 

@@ -270,41 +270,57 @@ _Remember to consult a healthcare professional for personalized medical advice._
         margin: 0 auto;
         width: 100%;
     }
-    
-    .card-header {
-        background: #dd815e; /* Updated to orange theme */
+      .card-header {
+        background: #dd815e; /* Orange theme */
         color: white;
-        padding: 1rem;
+        padding: 1.5rem 1rem 2rem;
         border-radius: 8px 8px 0 0;
+        text-align: center;
+        position: relative;
+        background-image: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.1) 100%);
     }
     
     .card-header h3 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.4rem;
+        margin: 0 0 1.5rem 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
     
     .route {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        margin-bottom: 0.5rem;
-        font-size: 1.1rem;
+        justify-content: center;
+        background: rgba(255,255,255,0.15);
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        position: relative;
     }
     
     .city {
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 1.3rem;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     
     .origin {
-        color: #fff; /* Full white for better readability */
+        color: #fff;
     }
     
     .destination {
-        color: #fff; /* Full white for better readability */
+        color: #fff;
     }
     
     .arrow {
-        margin: 0 0.5rem;
-        font-size: 1.2rem;
+        margin: 0 1.2rem;
+        font-size: 1.5rem;
+        color: rgba(255,255,255,0.9);
+        position: relative;
+        top: -1px;
     }
     
     .card-body {
