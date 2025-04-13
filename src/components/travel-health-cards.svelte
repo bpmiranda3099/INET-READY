@@ -418,13 +418,13 @@
                            z-index: {cardTransforms[i].zIndex};"
                     bind:this={cardElements[i]}
                 >                    <div class="card-header">
-                        <div class="route-display">
-                            <div class="route-container">
+                        <div class="route-display">                            <div class="route-container">
                                 <div class="route-shine"></div>
                                 <div class="city-circle origin-city">
                                     <i class="bi bi-geo-fill"></i>
                                     <span class="city-name">{card.fromCity}</span>
                                 </div>
+                                <div class="traveling-text">traveling to</div>
                                 <div class="city-circle dest-city">
                                     <i class="bi bi-flag-fill"></i>
                                     <span class="city-name">{card.toCity}</span>
@@ -1179,8 +1179,8 @@
         border-radius: 50px;
         padding: 0.4rem 0.8rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        width: 45%;
-        max-width: 45%;
+        width: 100%;
+        max-width: 100%;
         position: relative;
         overflow: hidden;
     }
@@ -1226,5 +1226,15 @@
         text-align: center;
         color: white;
         margin-top: 0;
+    }
+    .traveling-text {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        position: relative;
+        font-style: italic;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        margin: 0 0.25rem;
     }
 </style>

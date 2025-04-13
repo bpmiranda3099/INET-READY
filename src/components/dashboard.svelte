@@ -830,7 +830,6 @@
     
     .content-area {
         flex: 1;
-        padding: 1rem;
         padding-bottom: 2rem;
         overflow-y: auto;
     }
@@ -888,11 +887,11 @@
     }
     
     /* Section styling */
-    .dashboard-section, 
     .notifications-section, 
     .account-section, 
     .medical-section, 
     .settings-section {
+        padding-top: 1rem;
         padding-bottom: 1rem;
     }
     
