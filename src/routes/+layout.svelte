@@ -1,8 +1,11 @@
 <script>
+  import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
   import '../styles/styles.css';
   import ToastContainer from '../components/toast-container.svelte';
   import { onMount } from 'svelte';
   import { loadNotificationsFromStorage } from '$lib/services/notification-service';
+  
+  injectSpeedInsights();
   
   onMount(() => {
     // Load saved notifications from localStorage on app start
