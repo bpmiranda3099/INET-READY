@@ -726,7 +726,7 @@
                                 disabled={loadingCities}
                                 aria-label="Refresh city list"
                             >
-                                {loadingCities ? '↻ Refreshing...' : '↻ Refresh'}
+                                {loadingCities ? '↻' : '↻'}
                             </button>
                         </div>
                     </div>                    <div class="section-body city-preferences-wrapper">
@@ -950,7 +950,7 @@
     
     .refresh-button {
         background-color: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        border: 0px transparent;
         padding: 0.2rem 0.5rem;
         border-radius: 4px;
         cursor: pointer;
@@ -984,7 +984,6 @@
     }
     
     .section-body {
-        padding: 1.5rem;
     }
     
     .logout-section {
@@ -1196,7 +1195,7 @@
     .preference-header {
         display: flex;
         align-items: center;
-        padding: 0.75rem 1rem;
+        padding: 1rem 0.75rem 0rem 0.75rem;
         position: relative;
     }
     

@@ -741,7 +741,7 @@
     }
     
     .section-body {
-        padding: 1.5rem;
+        padding: 1rem 0.75rem 1rem 0.75rem;
     }
     
     /* Fluid header info styling */
@@ -815,7 +815,6 @@
     .medical-data {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
     }
     
     .data-section {

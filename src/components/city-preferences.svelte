@@ -266,7 +266,6 @@
 </div>
 
 <style>    .city-preferences {
-        padding: 1rem;
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -279,7 +278,7 @@
         margin-bottom: 1.5rem;
     }
       .preference-content {
-        padding: 1.25rem 1rem;
+        padding: 1rem 0.75rem 0rem 0.75rem;
         position: relative;
     }
     
@@ -508,6 +507,8 @@
         justify-content: center;
         gap: 0.5rem;
         transition: all 0.2s;
+        margin-bottom: 1rem;
+        margin-right: 1rem;
     }
     
     .save-btn:hover:not(:disabled) {
