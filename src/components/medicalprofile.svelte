@@ -471,8 +471,11 @@
                     </div>
                 </div>                <div class="section-body">
                     <!-- Hydration insight banner - only show when status is concern or warning -->
-                    {#if hydrationStatus && (hydrationStatus.status === 'concern' || hydrationStatus.status === 'warning')}
-                    <div class="insight-banner" class:concern={hydrationStatus.status === 'concern'} class:warning={hydrationStatus.status === 'warning'} class:good={hydrationStatus.status === 'good'}>
+                    {#if hydrationStatus && ['concern', 'warning'].includes(hydrationStatus.status)}
+                    <div class="insight-banner" 
+                         class:concern={hydrationStatus.status === 'concern'} 
+                         class:warning={hydrationStatus.status === 'warning'} 
+                         class:good={hydrationStatus.status === 'good'}>
                         <div class="insight-icon">💧</div>
                         <div class="insight-content">
                             <h4>Hydration Insight</h4>
