@@ -152,3 +152,27 @@ if (typeof window !== 'undefined') {
     }, 1000);
   });
 }
+
+// These event listeners should be in the actual service worker file (firebase-messaging-sw.js),
+// not in this module that gets imported during SSR
+// The following code was moved to avoid "self is not defined" errors during server-side rendering
+/*
+self.addEventListener('push', event => {
+    if (event.data) {
+        const data = event.data.json();
+        self.registration.showNotification(data.title, {
+            body: data.message,
+            icon: data.icon,
+            badge: data.badge,
+            data: data.data
+        });
+    }
+});
+
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    if (event.notification.data && event.notification.data.url) {
+        clients.openWindow(event.notification.data.url);
+    }
+});
+*/

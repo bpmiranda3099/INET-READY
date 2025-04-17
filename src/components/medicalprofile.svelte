@@ -1,7 +1,7 @@
-<script>
-    import { onMount } from 'svelte';
+<script>    import { onMount } from 'svelte';
     import { getMedicalData } from '$lib/firebase';
     import MedicalForm from './medicalform.svelte';
+    import { showDailyReminderNotification } from '$lib/services/notification-service';
     
     export let userId;
     
@@ -250,14 +250,35 @@
         if (medicalData.heat_conditions.heat_exhaustion) conditions.push('Heat Exhaustion');
         
         return conditions;
-    }
-    
-    // Calculate hydration status based on profile data
+    }    // Calculate hydration status based on profile data
     $: hydrationStatus = medicalData ? getHydrationStatus() : null;
     $: totalFluidIntake = medicalData ? getTotalFluidIntake() : 0;
     $: medicalConditions = medicalData ? getActiveMedicalConditions() : [];
     $: medications = medicalData ? getActiveMedications() : [];
     $: heatConditions = medicalData ? getActiveHeatConditions() : [];
+    
+    // Generate notifications for health alerts when data changes and thresholds are met
+    $: if (medicalData && !loading) {
+        // Check hydration status for alerts
+        if (hydrationStatus && (hydrationStatus.status === 'concern' || hydrationStatus.status === 'warning')) {
+            showDailyReminderNotification(
+                'hydration-reminder',
+                hydrationStatus.message,
+                'Hydration Reminder',
+                'warning'
+            );
+        }
+        
+        // Check heat conditions for alerts
+        if (heatConditions.length > 1) {
+            showDailyReminderNotification(
+                'heat-sensitivity-reminder',
+                'You have reported multiple heat-related conditions that may increase your risk in hot environments. Take extra precautions on hot days.',
+                'Heat Sensitivity Reminder',
+                'warning'
+            );
+        }
+    }
 </script>
 
 <div class="medical-profile">
@@ -270,21 +291,15 @@
         <div class="error">
             <p>{error}</p>
             <button on:click={loadMedicalData} class="retry-btn">Try Again</button>
-        </div>
-    {:else if isEditing}
+        </div>    {:else if isEditing}
         <MedicalForm 
             {userId} 
             initialData={medicalData} 
             isEditing={true}
             on:completed={handleFormCompleted}
             on:cancel={handleFormCancel}
-        />    {:else if medicalData}
-        <div class="profile-actions">
-            <button on:click={toggleEdit} class="edit-btn">
-                Edit Profile
-            </button>
-        </div>
-          <div class="medical-data">            <!-- Demographics & Biometrics Section -->
+        />{:else if medicalData}
+          <div class="medical-data"><!-- Demographics & Biometrics Section -->
             <div class="section-container">
                 <div class="section-header">
                     <h3>Demographics & Biometrics</h3>
@@ -454,10 +469,9 @@
                         </span>
                         <span class="total-ml">{totalFluidIntake} ml</span>
                     </div>
-                </div>
-                <div class="section-body">
-                    <!-- Hydration insight banner -->
-                    {#if hydrationStatus}
+                </div>                <div class="section-body">
+                    <!-- Hydration insight banner - only show when status is concern or warning -->
+                    {#if hydrationStatus && (hydrationStatus.status === 'concern' || hydrationStatus.status === 'warning')}
                     <div class="insight-banner" class:concern={hydrationStatus.status === 'concern'} class:warning={hydrationStatus.status === 'warning'} class:good={hydrationStatus.status === 'good'}>
                         <div class="insight-icon">💧</div>
                         <div class="insight-content">
@@ -548,8 +562,7 @@
                         </span>
                     </div>
                 </div>
-                <!-- ...existing code... -->
-                <div class="section-body">
+                <!-- ...existing code... -->                <div class="section-body">
                     {#if heatConditions.length === 0}
                         <div class="empty-state">
                             <div class="empty-icon">🌡️</div>
@@ -557,6 +570,8 @@
                             <span class="heat-message">Your risk for heat-related issues is low</span>
                         </div>
                     {:else}
+                        <!-- Only show Heat Warning alert if there is more than one heat condition (higher risk) -->
+                        {#if heatConditions.length > 1}
                         <div class="heat-warning insight-banner concern">
                             <div class="warning-icon large-icon">⚠️</div>
                             <div class="warning-text insight-content">
@@ -564,6 +579,7 @@
                                 <p>You have reported heat-related conditions that may increase your risk in hot environments.</p>
                             </div>
                         </div>
+                        {/if}
                         <div class="heat-conditions-grid">
                             {#each heatConditions as condition}
                                 <div class="heat-condition-card">
@@ -782,34 +798,12 @@
         font-weight: 600;
         color: white;
     }
-    
-    /* Existing styles below this line */
+      /* Existing styles below this line */
     .profile-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
-    }
-    
-    .profile-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 1rem;
-    }
-    
-    .edit-btn {
-        background: #dd815e;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: background-color 0.2s;
-    }
-    
-    .edit-btn:hover {
-        background: #c26744;
     }
     
     .medical-data {

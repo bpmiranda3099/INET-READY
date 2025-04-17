@@ -686,7 +686,7 @@ input.invalid {
 }
 
 /* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) {
+@media (min-width: 1170px) {
   :root {
     --font-size-base: 18px;
   }
@@ -1030,7 +1030,7 @@ textarea {
 
 @media (min-width: 992px) {
   .medical-form {
-    max-width: 900px;
+    max-width: 1170px;
   }
   
   .fluid-intake-grid {
@@ -1417,7 +1417,6 @@ fieldset.condition-group legend {
 
 .other-fluid {
   margin-top: var(--spacing-xs);
-  padding-left: var(--spacing-xl);
 }
 
 .fluid-sliders {

@@ -5,11 +5,12 @@
     "checkJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",  // Ensure this is at least 'es2015' or later
-    "moduleResolution": "node",  // Use 'node' instead of 'bundler' for JS
+    "module": "esnext",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "allowArbitraryExtensions": true
   },
   "exclude": ["node_modules", ".svelte-kit", "build"]
 }

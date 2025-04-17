@@ -81,36 +81,8 @@
     function removeCity(index) {
         selectedCities = selectedCities.filter((_, i) => i !== index);
     }
-      async function refreshCityList() {
-        loadingCities = true;
-        error = null;
-        
-        try {
-            const result = await fetchLatestWeatherData();
-            lastUpdated = result.lastUpdated;
-            
-            // Show toast notification for successful refresh
-            showNotification(
-                `City list refreshed successfully. Last updated: ${lastUpdated.toLocaleString()}`,
-                'success',
-                5000,
-                'Cities Updated'
-            );
-        } catch (err) {
-            console.error("Error refreshing city list:", err);
-            error = "Failed to refresh city list.";
-            
-            // Show toast notification for error
-            showNotification(
-                "Failed to refresh city list. Please try again.",
-                'error',
-                8000,
-                'Refresh Failed'
-            );
-        } finally {
-            loadingCities = false;
-        }
-    }    async function savePreferences() {
+       
+    async function savePreferences() {
         if (!homeCity) {
             // Show toast notification instead of setting error
             showNotification(
@@ -127,30 +99,41 @@
         saved = false;
         
         try {
+            const preferences = await getUserCityPreferences(userId);
+            const homeCityChanged = preferences?.homeCity !== homeCity;
+            const citiesChanged = JSON.stringify(preferences?.preferredCities) !== JSON.stringify(selectedCities);
+            
+            // Only save if there are actual changes
+            if (!homeCityChanged && !citiesChanged) {
+                isSaving = false;
+                return;
+            }
+            
             await saveUserCityPreferences(userId, {
                 homeCity,
                 preferredCities: selectedCities
             });
-            
-            // Show success toast notification
+
+            let notificationMessage = 'City preferences saved successfully.';
+            if (homeCityChanged && citiesChanged) {
+                notificationMessage = 'Both home city and preferred cities updated successfully.';
+            } else if (homeCityChanged) {
+                notificationMessage = 'Home city updated successfully.';
+            } else if (citiesChanged) {
+                notificationMessage = 'Preferred cities updated successfully.';
+            } 
+
             showNotification(
-                `Your city preferences have been saved. Home city: ${homeCity}, Preferred cities: ${selectedCities.length}`,
-                'success',
-                5000,
-                'Preferences Saved'
+                notificationMessage,
+                'success'
             );
-            
-            saved = true; // Set saved to true for local UI feedback
-            setTimeout(() => saved = false, 3000); // Hide success message after 3 seconds
+
+            saved = true;
+            setTimeout(() => saved = false, 3000);
         } catch (err) {
-            console.error("Error saving city preferences:", err);
-            
-            // Show error toast notification
             showNotification(
                 "Failed to save your city preferences. Please try again.",
-                'error',
-                8000,
-                'Save Error'
+                'error'
             );
             
             error = "Failed to save your city preferences. Please try again.";

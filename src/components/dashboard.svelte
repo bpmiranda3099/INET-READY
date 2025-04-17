@@ -29,6 +29,8 @@
     let loading = false;
     let showMedicalForm = false;
     let medicalRecordExists = false;
+    let medicalData = null; // Add state variable for medical data
+    let loadingMedicalData = false; // Track loading state for medical data
     let activeTab = 'dashboard'; // Changed default to dashboard
     let showWelcomeMessage = true; // Control whether to show welcome message on startup
     let unreadNotifications = 0;
@@ -240,6 +242,110 @@
     function handleMedicalFormCompleted() {
         showMedicalForm = false;
         medicalRecordExists = true;
+    }    // Function to load user's medical data and open the form
+    async function openMedicalForm() {
+        loadingMedicalData = true;
+        try {
+            const { data, error: fetchError } = await getMedicalData(user.uid);
+            
+            if (data) {
+                // Ensure all required nested objects exist in the data
+                if (!data.fluid_intake) {
+                    data.fluid_intake = {};
+                }
+                if (!data.fluid_intake.other) {
+                    data.fluid_intake.other = { has_other: false, name: '', cups: 0 };
+                }
+                if (!data.medical_conditions) {
+                    data.medical_conditions = {};
+                }
+                if (!data.medical_conditions.other) {
+                    data.medical_conditions.other = { has_other: false, description: '' };
+                }
+                if (!data.medications) {
+                    data.medications = {};
+                }
+                if (!data.medications.other) {
+                    data.medications.other = { has_other: false, description: '' };
+                }
+                
+                // Convert fluid intake amounts from ml (in DB) to cups (for form)
+                // The standard ML_PER_CUP value used in the form
+                const ML_PER_CUP = 237;
+                
+                // Process standard drink types
+                const drinkTypes = [
+                    'water', 'electrolyte_drinks', 'coconut_water', 
+                    'fruit_juice', 'iced_tea', 'soda', 
+                    'milk_tea', 'coffee', 'herbal_tea'
+                ];
+                
+                // Convert ml values to cups for form display
+                for (const drinkType of drinkTypes) {
+                    const dbField = drinkType + '_amount'; // Field in database (e.g., water_amount)
+                    const formField = drinkType + '_cups'; // Field expected by form (e.g., water_cups)
+                    
+                    // If the DB field exists, convert to cups
+                    if (data.fluid_intake[dbField] !== undefined) {
+                        data.fluid_intake[formField] = Math.round((data.fluid_intake[dbField] / ML_PER_CUP) * 10) / 10;
+                    } else {
+                        // Ensure the form field exists with default value
+                        data.fluid_intake[formField] = 0;
+                    }
+                }
+                
+                // Process "other" fluid if it exists
+                if (data.fluid_intake.other_fluid && data.fluid_intake.other_fluid_amount) {
+                    data.fluid_intake.other = {
+                        has_other: true,
+                        name: data.fluid_intake.other_fluid,
+                        cups: Math.round((data.fluid_intake.other_fluid_amount / ML_PER_CUP) * 10) / 10
+                    };
+                }
+                
+                // Fix activity_duration if it's a string format
+                if (data.activity && typeof data.activity.activity_duration === 'string') {
+                    // Convert string format from database to the object format expected by the form
+                    let durationValue = 30; // Default to 30 minutes
+                    
+                    switch (data.activity.activity_duration) {
+                        case 'less_than_30_mins':
+                            durationValue = 20;
+                            break;
+                        case '30_to_60_mins':
+                            durationValue = 45;
+                            break;
+                        case '1_to_2_hours':
+                            durationValue = 90;
+                            break;
+                        case 'more_than_2_hours':
+                            durationValue = 150;
+                            break;
+                    }
+                    
+                    // Replace the string with an object having value and unit properties
+                    data.activity.activity_duration = {
+                        value: durationValue,
+                        unit: 'minutes'
+                    };
+                }
+                
+                medicalData = data;
+                showMedicalForm = true;
+            } else {
+                console.error("Error fetching medical data:", fetchError);
+                // Still open the form even if there's an error,
+                // as the user might be creating a new record
+                medicalData = null;
+                showMedicalForm = true;
+            }
+        } catch (err) {
+            console.error("Error loading medical data:", err);
+            medicalData = null;
+            showMedicalForm = true;
+        } finally {
+            loadingMedicalData = false;
+        }
     }
     
     async function requestNotificationPermission() {
@@ -359,15 +465,106 @@
             default: return 'bi-bell-fill';
         }
     }
+    
+    // New function to categorize notifications
+    function categorizeNotifications(notifications) {
+        const categories = {
+            system: {
+                name: 'System Notifications',
+                description: 'App updates, version changes, policy updates, feature introductions',
+                icon: 'bi-gear-fill',
+                color: '#3498db', // Blue
+                notifications: []
+            },
+            emergency: {
+                name: 'Emergency Notifications',
+                description: 'Heat index fluctuations and other urgent alerts',
+                icon: 'bi-exclamation-triangle-fill',
+                color: '#e74c3c', // Red
+                notifications: []
+            },
+            reminder: {
+                name: 'Reminder Notifications',
+                description: 'Regular reminders and checkup notifications',
+                icon: 'bi-clock-fill',
+                color: '#f39c12', // Amber
+                notifications: []
+            },
+            settings: {
+                name: 'Settings Notifications',
+                description: 'Changes to your preferences and settings',
+                icon: 'bi-sliders',
+                color: '#2ecc71', // Green
+                notifications: []
+            }
+        };
+        
+        // Loop through notifications and categorize them
+        notifications.forEach(notification => {
+            // Categorize by keywords in notification title and message
+            let category = 'system'; // Default category
+            
+            const text = (notification.title + ' ' + notification.message).toLowerCase();
+            
+            if (text.includes('heat index') || 
+                text.includes('emergency') || 
+                text.includes('urgent') || 
+                text.includes('alert') ||
+                text.includes('warning')) {
+                category = 'emergency';
+            } else if (text.includes('remind') || 
+                      text.includes('don\'t forget') || 
+                      text.includes('scheduled')) {
+                category = 'reminder';
+            } else if (text.includes('setting') || 
+                      text.includes('preference') || 
+                      text.includes('profile') || 
+                      text.includes('account')) {
+                category = 'settings';
+            } else if (text.includes('update') || 
+                      text.includes('version') || 
+                      text.includes('new feature') || 
+                      text.includes('policy') ||
+                      text.includes('terms')) {
+                category = 'system';
+            }
+            
+            // Add to appropriate category
+            categories[category].notifications.push(notification);
+        });
+        
+        return categories;
+    }
+
+    // Get categorized notifications
+    $: categorizedNotifications = categorizeNotifications(notifications);
 </script>
 
-<div class="dashboard">
-    <!-- App Bar -->
-    <div class="app-bar">
+<div class="dashboard">    <!-- App Bar -->    <div class="app-bar">
         <div class="app-bar-content">
             <small class="app-title">INET-READY</small>
             <h2 class="section-title">{getSectionTitle(activeTab)}</h2>
         </div>
+        <!-- Edit Medical Profile Button (only shows when on medical tab and not already editing) -->
+        {#if activeTab === 'medical' && !showMedicalForm}
+            <button class="edit-icon-btn" on:click={openMedicalForm} aria-label="Edit medical profile">
+                <i class="bi bi-pencil-square"></i>
+            </button>
+        {/if}
+        <!-- Clear All Notifications Button (only shows when on notifications tab and notifications exist) -->
+        {#if activeTab === 'notifications' && notifications.length > 0}
+            <button 
+                class="edit-icon-btn"
+                on:click={() => {
+                    clearNotificationHistory();
+                    notifications = [];
+                    unreadNotifications = 0;
+                }}
+                aria-label="Clear all notifications"
+            >
+                <i class="bi bi-trash"></i>
+            </button>
+        {/if}
     </div>
 
     <!-- Permissions Panel -->
@@ -410,60 +607,64 @@
                         currentLocation={currentLocationName}
                     />
                 {/if}
-            </div>        {:else if activeTab === 'notifications'}
-            <div class="notifications-section">
-                <div class="notification-actions">
-                    <button 
-                        class="action-btn"
-                        on:click={() => {
-                            clearNotificationHistory();
-                            notifications = [];
-                            unreadNotifications = 0;
-                        }}
-                        disabled={notifications.length === 0}
-                    >
-                        <i class="bi bi-trash"></i> Clear All
-                    </button>
-                </div>
-                
-                <div class="card">
-                    {#if notifications.length === 0}
+            </div>        {:else if activeTab === 'notifications'}            <div class="notifications-section">
+                {#if notifications.length === 0}
+                    <div class="card">
                         <div class="empty-state">
                             <div class="empty-icon"><i class="bi bi-bell"></i></div>
                             <p class="empty-message">No notifications yet</p>
                             <p class="empty-hint">Notifications will appear here when we have updates for you</p>
                         </div>
-                    {:else}
-                        <div class="notifications-list">
-                            {#each notifications as notification}
-                                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                <div 
-                                    class="notification {notification.type} {notification.read ? 'read' : 'unread'}"
-                                    on:click={() => {
-                                        if (!notification.read) {
-                                            markNotificationAsRead(notification.id);
-                                            notification.read = true;
-                                            unreadNotifications = Math.max(0, unreadNotifications - 1);
-                                            notifications = notifications; // trigger reactivity
-                                        }
-                                    }}
-                                >
-                                    <div class="notification-icon">
-                                        <i class="bi {getNotificationIcon(notification.type)}"></i>
+                    </div>
+                {:else}
+                    <!-- Categorized Notification Sections -->
+                    {#each Object.keys(categorizedNotifications) as categoryKey}
+                        {@const category = categorizedNotifications[categoryKey]}
+                        {#if category.notifications.length > 0}                            <div class="section-container notification-category">
+                                <div class="section-header" style="background-color: {category.color}; color: white;">
+                                    <h3>
+                                        <i class="bi {category.icon}"></i>
+                                        {category.name}
+                                    </h3>
+                                    <div class="category-count" style="background-color: rgba(255, 255, 255, 0.3); color: white;">
+                                        <span>{category.notifications.length}</span>
                                     </div>
-                                    <div class="notification-content">
-                                        <h4>{notification.title || 'Notification'}</h4>
-                                        <p>{notification.message}</p>
-                                        <small>{new Date(notification.timestamp).toLocaleString()}</small>
-                                    </div>
-                                    {#if !notification.read}
-                                        <div class="unread-badge"></div>
-                                    {/if}
                                 </div>
-                            {/each}
-                        </div>
-                    {/if}
-                </div>
+                                <div class="section-body">
+                                    <div class="condition-cards notifications-list">
+                                        {#each category.notifications as notification}
+                                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                            <div 
+                                                class="notification-card {notification.read ? 'read' : 'unread'}"
+                                                style="border-left: 4px solid {category.color};"
+                                                on:click={() => {
+                                                    if (!notification.read) {
+                                                        markNotificationAsRead(notification.id);
+                                                        notification.read = true;
+                                                        unreadNotifications = Math.max(0, unreadNotifications - 1);
+                                                        notifications = notifications; // trigger reactivity
+                                                    }
+                                                }}
+                                            >
+                                                <div class="notification-icon" style="color: {category.color};">
+                                                    <i class="bi {getNotificationIcon(notification.type)}"></i>
+                                                    {#if !notification.read}
+                                                        <div class="unread-indicator"></div>
+                                                    {/if}
+                                                </div>
+                                                <div class="notification-content">
+                                                    <h4 class="notification-title">{notification.title || 'Notification'}</h4>
+                                                    <p class="notification-message">{notification.message}</p>
+                                                    <small class="notification-time">{new Date(notification.timestamp).toLocaleString()}</small>
+                                                </div>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
+                    {/each}
+                {/if}
             </div>{:else if activeTab === 'account'}
             <div class="account-section">
                 <!-- Account Information -->
@@ -719,10 +920,10 @@
                 </div>
             </div>        {:else if activeTab === 'medical'}
             <div class="medical-section">
-                <!-- Main section keeps app bar header, no additional container header -->
-                {#if showMedicalForm}
+                <!-- Main section keeps app bar header, no additional container header -->                {#if showMedicalForm}
                     <MedicalForm 
                         userId={user.uid} 
+                        initialData={medicalData}
                         isEditing={medicalRecordExists} 
                         on:completed={handleMedicalFormCompleted} 
                         on:cancel={() => showMedicalForm = false}
@@ -784,32 +985,18 @@
             </div>
         {/if}
     </div>
-    
-    <!-- Bottom Navigation Bar -->
+      <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
         <button 
             class="nav-item" 
             class:active={activeTab === 'dashboard'}
-            on:click={() => activeTab = 'dashboard'}
+            on:click={() => {
+                activeTab = 'dashboard';
+                if (showMedicalForm) showMedicalForm = false;
+            }}
         >
             <i class="bi bi-house"></i>
             <span>Dashboard</span>
-        </button>
-        <button 
-            class="nav-item" 
-            class:active={activeTab === 'notifications'}
-            on:click={() => activeTab = 'notifications'}
-        >
-            <i class="bi bi-bell"></i>
-            <span>Notifications</span>
-        </button>
-        <button 
-            class="nav-item" 
-            class:active={activeTab === 'account'}
-            on:click={() => activeTab = 'account'}
-        >
-            <i class="bi bi-person"></i>
-            <span>Account</span>
         </button>
         <button 
             class="nav-item" 
@@ -819,14 +1006,43 @@
             <i class="bi bi-heart-pulse"></i>
             <span>Medical</span>
         </button>
+
+        <button 
+            class="nav-item" 
+            class:active={activeTab === 'notifications'}
+            on:click={() => {
+                activeTab = 'notifications';
+                if (showMedicalForm) showMedicalForm = false;
+            }}
+        >
+            <i class="bi bi-bell"></i>
+            <span>Notifications</span>
+        </button>
+        
         <button 
             class="nav-item" 
             class:active={activeTab === 'settings'}
-            on:click={() => activeTab = 'settings'}
+            on:click={() => {
+                activeTab = 'settings';
+                if (showMedicalForm) showMedicalForm = false;
+            }}
         >
             <i class="bi bi-gear"></i>
             <span>Settings</span>
         </button>
+        
+        <button 
+            class="nav-item" 
+            class:active={activeTab === 'account'}
+            on:click={() => {
+                activeTab = 'account';
+                if (showMedicalForm) showMedicalForm = false;
+            }}
+        >
+            <i class="bi bi-person"></i>
+            <span>Account</span>
+        </button>
+        
     </div>
 </div>
 
@@ -839,8 +1055,7 @@
         padding-top: 80px; /* Space for app bar */
         position: relative;
     }
-    
-    /* App bar styles */
+      /* App bar styles */
     .app-bar {
         position: fixed;
         top: 0;
@@ -849,7 +1064,36 @@
         height: 80px;
         background-color: #dd815e; /* Orange main color */
         color: white;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 16px;
+        z-index: 1000; 
+    }
+    
+    /* Edit icon button in app bar */
+    .edit-icon-btn {
+        background: transparent;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+    
+    .edit-icon-btn:hover {
+        background: transparent;
+        transform: scale(1.05);
+    }
+    
+    .edit-icon-btn i {
+        font-size: 1.8rem;
+        box-shadow: transparent;
         z-index: 1000;
         display: flex;
         align-items: center;
@@ -925,8 +1169,7 @@
     .nav-item:not(.active):hover {
         color: #dd815e; /* Orange hover color */
     }
-      /* Card styles */
-    .card {
+      /* Card styles */    .card {
         background: white;
         padding: 1.5rem;
         border-radius: 8px;
@@ -939,8 +1182,106 @@
     .account-section, 
     .medical-section, 
     .settings-section {
+        max-width: 1170px;
         padding-top: 1rem;
         padding-bottom: 1rem;
+    }
+    
+    /* New Notification category styles */
+    .notification-category {
+        margin-bottom: 16px;
+    }
+
+    .notification-category .section-header {
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9fa;
+        border-radius: 8px 8px 0 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .notification-category .section-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .category-count {
+        background-color: #f0f0f0;
+        border-radius: 16px;
+        padding: 2px 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #666;
+    }
+    
+    .notification-card {
+        display: flex;
+        padding: 12px 16px;
+        background-color: white;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+    }
+    
+    .notification-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .notification-card.read {
+        opacity: 0.75;
+    }
+    
+    .notification-icon {
+        margin-right: 12px;
+        font-size: 1.2rem;
+        position: relative;
+        min-width: 24px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    
+    .unread-indicator {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 8px;
+        height: 8px;
+        background-color: #e74c3c;
+        border-radius: 50%;
+    }
+    
+    .notification-content {
+        flex: 1;
+    }
+    
+    .notification-title {
+        margin: 0 0 4px 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .notification-message {
+        margin: 0 0 8px 0;
+        font-size: 0.9rem;
+        color: #555;
+        line-height: 1.4;
+    }
+    
+    .notification-time {
+        font-size: 0.75rem;
+        color: #777;
     }
     
     /* Account section containers with health card-style headers */
@@ -1423,5 +1764,108 @@
     
     .enable-btn:active {
         transform: translateY(0);
+    }
+
+    /* New Notification category styles */
+    .notification-category {
+        margin-bottom: 16px;
+    }
+
+    .notification-category .section-header {
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9fa;
+        border-radius: 8px 8px 0 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .notification-category .section-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .category-count {
+        background-color: #f0f0f0;
+        border-radius: 16px;
+        padding: 2px 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #666;
+    }
+    
+    .notification-card {
+        display: flex;
+        padding: 12px 16px;
+        background-color: white;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+    }
+    
+    .notification-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .notification-card.read {
+        opacity: 0.75;
+    }
+    
+    .notification-icon {
+        margin-right: 12px;
+        font-size: 1.2rem;
+        position: relative;
+        min-width: 24px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    
+    .unread-indicator {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 8px;
+        height: 8px;
+        background-color: #e74c3c;
+        border-radius: 50%;
+    }
+    
+    .notification-content {
+        flex: 1;
+    }
+    
+    .notification-title {
+        margin: 0 0 4px 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .notification-message {
+        margin: 0 0 8px 0;
+        font-size: 0.9rem;
+        color: #555;
+        line-height: 1.4;
+    }
+    
+    .notification-time {
+        font-size: 0.75rem;
+        color: #777;
+    }
+    
+    .notifications-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 </style>

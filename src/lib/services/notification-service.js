@@ -9,11 +9,15 @@ import { writable } from 'svelte/store';
 export const notifications = writable([]); // For toast notifications
 export const dashboardNotifications = writable([]); // For dashboard notifications
 
-// Key for localStorage
+// Create stores for push notifications
+export const pushNotifications = writable([]);
+
+// Keys for localStorage
 const NOTIFICATION_HISTORY_KEY = 'inet-ready-notifications-history';
+const REMINDER_TIMESTAMPS_KEY = 'inet-ready-reminder-timestamps';
 
 /**
- * Show a notification (appears as toast and in dashboard)
+ * Show a notification (as push notification)
  * @param {string} message - The notification message
  * @param {string} type - The notification type (success, warning, error, info)
  * @param {number} duration - How long to show the toast notification in ms (default 5000ms, set to 0 for persistent)
@@ -21,32 +25,124 @@ const NOTIFICATION_HISTORY_KEY = 'inet-ready-notifications-history';
  * @returns {string} The ID of the notification
  */
 export function showNotification(message, type = 'info', duration = 5000, title = '') {
-    // Generate a unique ID
-    const notificationId = `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
     const notification = {
-        id: notificationId,
+        id: crypto.randomUUID(),
         message,
         type,
         title: title || getDefaultTitle(type),
-        timestamp: new Date(),
-        read: false,
-        dismissed: false,
-        showAsToast: true,
-        autoDismiss: duration > 0,
-        duration
+        timestamp: new Date().toISOString(),
+        showAsToast: false, // Never show as toast
     };
-    
-    // Add notification to the toast store
-    notifications.update(all => [notification, ...all]);
-    
-    // Add to dashboard notifications store 
-    dashboardNotifications.update(all => [notification, ...all]);
-    
-    // Add to localStorage history
+
+    // Add to notification history
     addToNotificationHistory(notification);
+
+    // Update dashboard notifications store
+    dashboardNotifications.update(notifs => [notification, ...notifs]);
+
+    // If notification permission is granted, show as push notification
+    if (Notification.permission === 'granted') {
+        showPushNotification(notification.title, notification.message);
+    }
+
+    return notification.id;
+}
+
+/**
+ * Show a daily reminder notification that only appears once per day
+ * @param {string} reminderId - Unique identifier for this reminder type
+ * @param {string} message - The notification message
+ * @param {string} title - Title for the notification
+ * @param {string} type - The notification type (success, warning, error, info)
+ * @returns {string|null} The ID of the notification if sent, null if already sent today
+ */
+export function showDailyReminderNotification(reminderId, message, title, type = 'warning') {
+    // Check if this reminder was already sent today
+    if (wasReminderSentToday(reminderId)) {
+        console.log(`Daily reminder "${reminderId}" already sent today, skipping`);
+        return null;
+    }
+    
+    // Send the notification
+    const notificationId = showNotification(message, type, 0, title);
+    
+    // Record that this reminder was sent today
+    recordReminderSent(reminderId);
     
     return notificationId;
+}
+
+/**
+ * Check if a reminder was already sent today
+ * @param {string} reminderId - Unique identifier for the reminder
+ * @returns {boolean} True if the reminder was already sent today
+ */
+function wasReminderSentToday(reminderId) {
+    try {
+        const timestamps = getReminderTimestamps();
+        
+        if (!timestamps[reminderId]) {
+            return false;
+        }
+        
+        const lastSent = new Date(timestamps[reminderId]);
+        const now = new Date();
+        
+        // Check if the reminder was sent today
+        return lastSent.toDateString() === now.toDateString();
+    } catch (e) {
+        console.error('Error checking reminder timestamp:', e);
+        return false;
+    }
+}
+
+/**
+ * Record that a reminder was sent today
+ * @param {string} reminderId - Unique identifier for the reminder
+ */
+function recordReminderSent(reminderId) {
+    try {
+        const timestamps = getReminderTimestamps();
+        
+        // Update the timestamp for this reminder
+        timestamps[reminderId] = new Date().toISOString();
+        
+        // Save back to localStorage
+        localStorage.setItem(REMINDER_TIMESTAMPS_KEY, JSON.stringify(timestamps));
+    } catch (e) {
+        console.error('Error recording reminder timestamp:', e);
+    }
+}
+
+/**
+ * Get reminder timestamps from localStorage
+ * @returns {Object} Reminder timestamps
+ */
+function getReminderTimestamps() {
+    try {
+        const timestamps = localStorage.getItem(REMINDER_TIMESTAMPS_KEY);
+        return timestamps ? JSON.parse(timestamps) : {};
+    } catch (e) {
+        console.error('Error reading reminder timestamps:', e);
+        return {};
+    }
+}
+
+/**
+ * Show a push notification
+ * @param {string} title - Notification title
+ * @param {string} message - Notification message
+ * @param {object} options - Additional options for the notification
+ */
+export function showPushNotification(title, message, options = {}) {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification(title, {
+                body: message,
+                ...options
+            });
+        });
+    }
 }
 
 /**
@@ -64,19 +160,9 @@ export function dismissNotification(id) {
  * @param {Object} notification - The notification to add
  */
 function addToNotificationHistory(notification) {
-    try {
-        // Get existing history from localStorage
-        const historyString = localStorage.getItem(NOTIFICATION_HISTORY_KEY);
-        const history = historyString ? JSON.parse(historyString) : [];
-        
-        // Add new notification to history (limit to last 50)
-        const updatedHistory = [notification, ...history].slice(0, 50);
-        
-        // Save back to localStorage
-        localStorage.setItem(NOTIFICATION_HISTORY_KEY, JSON.stringify(updatedHistory));
-    } catch (e) {
-        console.error('Error saving notification history:', e);
-    }
+    const history = getNotificationHistory();
+    history.push(notification);
+    localStorage.setItem(NOTIFICATION_HISTORY_KEY, JSON.stringify(history));
 }
 
 /**

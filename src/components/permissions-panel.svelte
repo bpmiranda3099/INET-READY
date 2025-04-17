@@ -1,4 +1,6 @@
 <script>
+    import { requestFCMToken } from '$lib/firebase';
+    
     export let notificationPermission;
     export let locationPermission;
     export let onRequestNotification;
@@ -8,6 +10,21 @@
     let showNotificationRequest = notificationPermission !== 'granted';
     let showLocationRequest = locationPermission !== 'granted';
     let dismissed = false;
+
+    async function handleRequestNotification() {
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                // Get FCM token and subscribe to topics
+                const token = await requestFCMToken();
+                if (token) {
+                    // Subscribe to relevant topics
+                }
+            }
+        } catch (error) {
+            console.error("Error requesting notification permission:", error);
+        }
+    }
 </script>
 
 {#if !dismissed}
