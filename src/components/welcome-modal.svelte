@@ -33,21 +33,9 @@
         >
             <div class="welcome-header">
                 <h2>Welcome to INET-READY</h2>
-                <button class="close-button" on:click={closeWelcome}>×</button>
             </div>
             
             <div class="welcome-content">
-                <div class="welcome-logo">
-                    <div class="logo-icon">🌐</div>
-                    <div class="logo-pulse"></div>
-                </div>
-                
-                {#if user && user.email}
-                    <div class="user-card">
-                        <div class="user-avatar">{user.email.charAt(0).toUpperCase()}</div>
-                        <p class="user-greeting">Hello, <span class="user-name">{user.email}</span>!</p>
-                    </div>
-                {/if}
                 
                 <div class="welcome-message">
                     <h3>Your Travel Health Companion</h3>
@@ -127,9 +115,9 @@
     .welcome-header {
         background-color: #dd815e;
         color: white;
-        padding: 1.2rem 1.8rem;
+        padding: 1rem 1rem;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
@@ -164,12 +152,12 @@
     }
     
     .welcome-content {
-        padding: 2rem;
+        padding: 1rem 0.5rem;
         text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1.5rem;
+        gap: 0.5rem;
     }
     
     /* Logo styling */
@@ -333,7 +321,7 @@
     .buttons-container {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.5rem;
         width: 100%;
         margin-top: 0.5rem;
     }
@@ -342,7 +330,7 @@
         background: linear-gradient(135deg, #dd815e, #c26744);
         color: white;
         border: none;
-        padding: 1rem 1.5rem;
+        padding: 1rem;
         border-radius: 12px;
         font-weight: 600;
         font-size: 1.1rem;
@@ -368,8 +356,8 @@
     .dont-show-option {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin: 0.5rem 0;
+        gap: 1rem;
+        margin: 0.5rem 1rem;
         cursor: pointer;
     }
     
