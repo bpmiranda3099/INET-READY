@@ -1931,7 +1931,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 2000;
+        z-index: 3000; /* Increased to ensure it's above all other content */
+        pointer-events: all;
     }
     .modal-dialog {
         background: white;
@@ -1941,6 +1942,8 @@
         max-width: 350px;
         width: 100%;
         text-align: center;
+        z-index: 3100;
+        pointer-events: auto;
     }
     .modal-actions {
         display: flex;
