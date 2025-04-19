@@ -299,176 +299,179 @@
             on:cancel={handleFormCancel}
         />{:else if medicalData}
           <div class="medical-data"><!-- Demographics & Biometrics Section -->
-            <div class="section-container">
-                <div class="section-header">
-                    <h3>Demographics & Biometrics</h3>
-                    {#if medicalData.demographics?.age && medicalData.biometrics?.height && medicalData.biometrics?.weight}
-                        <div class="bmi-indicator">
-                            {#if medicalData.biometrics?.weight && medicalData.biometrics?.height}
-                                {@const bmi = Math.round((medicalData.biometrics.weight / Math.pow(medicalData.biometrics.height / 100, 2)) * 10) / 10}
-                                <span class="bmi-value">BMI: {bmi}</span>
-                                <span class="bmi-category 
-                                    {bmi < 18.5 ? 'underweight' : 
-                                     bmi < 25 ? 'normal' : 
-                                     bmi < 30 ? 'overweight' : 'obese'}">
-                                    {bmi < 18.5 ? 'Underweight' : 
-                                     bmi < 25 ? 'Normal' : 
-                                     bmi < 30 ? 'Overweight' : 'Obese'}
-                                </span>
-                            {/if}
-                        </div>
+    <div class="section-container">
+        <div class="section-header header-demographics">
+            <h3>Demographics & Biometrics</h3>
+            {#if medicalData.demographics?.age && medicalData.biometrics?.height && medicalData.biometrics?.weight}
+                <div class="bmi-indicator">
+                    {#if medicalData.biometrics?.weight && medicalData.biometrics?.height}
+                        {@const bmi = Math.round((medicalData.biometrics.weight / Math.pow(medicalData.biometrics.height / 100, 2)) * 10) / 10}
+                        <span class="bmi-value">BMI: {bmi}</span>
+                        <span class="bmi-category 
+                            {bmi < 18.5 ? 'underweight' : 
+                             bmi < 25 ? 'normal' : 
+                             bmi < 30 ? 'overweight' : 'obese'}">
+                            {bmi < 18.5 ? 'Underweight' : 
+                             bmi < 25 ? 'Normal' : 
+                             bmi < 30 ? 'Overweight' : 'Obese'}
+                        </span>
                     {/if}
                 </div>
-                <div class="section-body demographics-biometrics">
-                    <div class="biometrics-stats">
-                        <div class="stat-row">
-                            <span class="stat-label">Age</span>
-                            <span class="stat-value">{medicalData.demographics?.age || '—'}</span>
-                            <span class="stat-unit">years</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Gender</span>
-                            <span class="stat-value">
-                                {#if medicalData.demographics?.gender === 'male'}Male
-                                {:else if medicalData.demographics?.gender === 'female'}Female
-                                {:else}Other{/if}
-                            </span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Height</span>
-                            <span class="stat-value">{medicalData.biometrics?.height || '—'}</span>
-                            <span class="stat-unit">cm</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Weight</span>
-                            <span class="stat-value">{medicalData.biometrics?.weight || '—'}</span>
-                            <span class="stat-unit">kg</span>
-                        </div>
+            {/if}
+        </div>
+        <div class="section-body demographics-biometrics">
+            <div class="biometrics-stats-rows">
+                <div class="stat-row-group">
+                    <div class="stat-row">
+                        <span class="stat-label">Age</span>
+                        <span class="stat-value">{medicalData.demographics?.age || '—'}</span>
+                        <span class="stat-unit">years</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Gender</span>
+                        <span class="stat-value">
+                            {#if medicalData.demographics?.gender === 'male'}Male
+                            {:else if medicalData.demographics?.gender === 'female'}Female
+                            {:else}Other{/if}
+                        </span>
                     </div>
                 </div>
-            </div><!-- Medical Conditions Section -->
-            <div class="section-container">
-                <div class="section-header">
-                    <h3>Medical Conditions</h3>
-                    <div class="conditions-indicator">
-                        <span class="conditions-count">{medicalConditions.length}</span>
-                        <span class="conditions-status">{medicalConditions.length ? 'Active' : 'None'}</span>
+                <div class="stat-row-group">
+                    <div class="stat-row">
+                        <span class="stat-label">Height</span>
+                        <span class="stat-value">{medicalData.biometrics?.height || '—'}</span>
+                        <span class="stat-unit">cm</span>
                     </div>
-                </div>
-                <div class="section-body">
-                    {#if medicalConditions.length === 0}
-                        <div class="empty-state">
-                            <div class="empty-icon">🩺</div>
-                            <p>No medical conditions reported</p>
-                        </div>
-                    {:else}
-                        <div class="conditions-container">
-                            {#each medicalConditionCategories as category}
-                                {@const categoryConditions = category.conditions.filter(c => medicalData.medical_conditions[c.id])}
-                                {#if categoryConditions.length > 0}
-                                    <div class="condition-category">
-                                        <div class="category-header">
-                                            <span class="category-name">{category.name}</span>
-                                            <span class="category-count">{categoryConditions.length}</span>
-                                        </div>
-                                        <div class="condition-cards">
-                                            {#each categoryConditions as condition}
-                                                <div class="condition-card">
-                                                    <div class="condition-icon-container">
-                                                        <span class="condition-icon">
-                                                            {#if category.name === 'Cardiovascular'}❤️
-                                                            {:else if category.name === 'Metabolic'}⚡
-                                                            {:else if category.name === 'Respiratory'}🫁
-                                                            {:else}⚠️
-                                                            {/if}
-                                                        </span>
-                                                    </div>
-                                                    <span class="condition-name">{condition.label}</span>
-                                                </div>
-                                            {/each}
-                                        </div>
-                                    </div>
-                                {/if}
-                            {/each}
-                            
-                            {#if medicalData.medical_conditions?.other?.has_other && medicalData.medical_conditions?.other?.description}
-                                <div class="condition-category">
-                                    <div class="category-header">
-                                        <span class="category-name">Other</span>
-                                        <span class="category-count">1</span>
-                                    </div>
-                                    <div class="condition-cards">
-                                        <div class="condition-card">
-                                            <div class="condition-icon-container">
-                                                <span class="condition-icon">📋</span>
-                                            </div>
-                                            <span class="condition-name">{medicalData.medical_conditions.other.description}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            {/if}
-                        </div>
-                    {/if}
+                    <div class="stat-row">
+                        <span class="stat-label">Weight</span>
+                        <span class="stat-value">{medicalData.biometrics?.weight || '—'}</span>
+                        <span class="stat-unit">kg</span>
+                    </div>
                 </div>
             </div>
-
-            <!-- Medications Section -->
-            <div class="section-container">
-                <div class="section-header">
-                    <h3>Medications</h3>
-                    <div class="medication-indicator">
-                        <span class="medication-count">{medications.length}</span>
-                        <span class="medication-status">{medications.length ? 'Active' : 'None'}</span>
-                    </div>
+        </div>
+    </div>
+    <!-- Medical Conditions Section -->
+    <div class="section-container">
+        <div class="section-header header-medical-conditions">
+            <h3>Medical Conditions</h3>
+            <div class="conditions-indicator">
+                <span class="conditions-count">{medicalConditions.length}</span>
+                <span class="conditions-status">{medicalConditions.length ? 'Active' : 'None'}</span>
+            </div>
+        </div>
+        <div class="section-body">
+            {#if medicalConditions.length === 0}
+                <div class="empty-state">
+                    <div class="empty-icon">🩺</div>
+                    <p>No medical conditions reported</p>
                 </div>
-                <!-- ...existing code... -->
-                <div class="section-body">
-                    {#if medications.length === 0}
-                        <div class="empty-state">
-                            <div class="empty-icon">💊</div>
-                            <p>No medications reported</p>
-                        </div>
-                    {:else}
-                        <div class="medications-grid">
-                            {#each medications as medication}
-                                <div class="medication-card">
-                                    <div class="medication-icon-container">
-                                        <span class="medication-icon">
-                                            {#if medication.includes('Diuretic')}💧
-                                            {:else if medication.includes('Blood Pressure')}❤️
-                                            {:else if medication.includes('Antihistamine')}🤧
-                                            {:else if medication.includes('Antidepressant')}🧠
-                                            {:else if medication.includes('Antipsychotic')}💫
-                                            {:else}💊
-                                            {/if}
-                                        </span>
-                                    </div>
-                                    <span class="medication-name">{medication}</span>
+            {:else}
+                <div class="conditions-container">
+                    {#each medicalConditionCategories as category}
+                        {@const categoryConditions = category.conditions.filter(c => medicalData.medical_conditions[c.id])}
+                        {#if categoryConditions.length > 0}
+                            <div class="condition-category">
+                                <div class="category-header">
+                                    <span class="category-name">{category.name}</span>
+                                    <span class="category-count">{categoryConditions.length}</span>
                                 </div>
-                            {/each}
+                                <div class="condition-cards">
+                                    {#each categoryConditions as condition}
+                                        <div class="condition-card full-width">
+                                            <div class="condition-icon-container">
+                                                <span class="condition-icon">
+                                                    {#if category.name === 'Cardiovascular'}❤️
+                                                    {:else if category.name === 'Metabolic'}⚡
+                                                    {:else if category.name === 'Respiratory'}🫁
+                                                    {:else}⚠️
+                                                    {/if}
+                                                </span>
+                                            </div>
+                                            <span class="condition-name">{condition.label}</span>
+                                        </div>
+                                    {/each}
+                                </div>
+                            </div>
+                        {/if}
+                    {/each}
+                    {#if medicalData.medical_conditions?.other?.has_other && medicalData.medical_conditions?.other?.description}
+                        <div class="condition-category">
+                            <div class="category-header">
+                                <span class="category-name">Other</span>
+                                <span class="category-count">1</span>
+                            </div>
+                            <div class="condition-cards">
+                                <div class="condition-card full-width">
+                                    <div class="condition-icon-container">
+                                        <span class="condition-icon">📋</span>
+                                    </div>
+                                    <span class="condition-name">{medicalData.medical_conditions.other.description}</span>
+                                </div>
+                            </div>
                         </div>
                     {/if}
                 </div>
-                <!-- ...existing code... -->
-            </div><!-- Fluid Intake Section with Visual Representation -->
-            <div class="section-container">
-                <div class="section-header">
-                    <h3>Daily Fluid Intake</h3>
-                    <div class="fluid-header-info">
-                        <span class="fluid-status" class:low={hydrationStatus?.status === 'concern'} class:optimal={hydrationStatus?.status === 'good'} class:excessive={totalFluidIntake > (medicalData?.biometrics?.weight * 50)}>
-                            {#if hydrationStatus?.status === 'concern'}
-                                Low
-                            {:else if totalFluidIntake > (medicalData?.biometrics?.weight * 50)}
-                                Excessive
-                            {:else if hydrationStatus?.status === 'good'}
-                                Optimal
-                            {:else}
-                                Moderate
-                            {/if}
-                        </span>
-                        <span class="total-ml">{totalFluidIntake} ml</span>
-                    </div>
-                </div>                <div class="section-body">
+            {/if}
+        </div>
+    </div>
+    <!-- Medications Section -->
+    <div class="section-container">
+        <div class="section-header header-medications">
+            <h3>Medications</h3>
+            <div class="medication-indicator">
+                <span class="medication-count">{medications.length}</span>
+                <span class="medication-status">{medications.length ? 'Active' : 'None'}</span>
+            </div>
+        </div>
+        <div class="section-body">
+            {#if medications.length === 0}
+                <div class="empty-state">
+                    <div class="empty-icon">💊</div>
+                    <p>No medications reported</p>
+                </div>
+            {:else}
+                <div class="medications-grid">
+                    {#each medications as medication}
+                        <div class="medication-card full-width">
+                            <div class="medication-icon-container">
+                                <span class="medication-icon">
+                                    {#if medication.includes('Diuretic')}💧
+                                    {:else if medication.includes('Blood Pressure')}❤️
+                                    {:else if medication.includes('Antihistamine')}🤧
+                                    {:else if medication.includes('Antidepressant')}🧠
+                                    {:else if medication.includes('Antipsychotic')}💫
+                                    {:else}💊
+                                    {/if}
+                                </span>
+                            </div>
+                            <span class="medication-name">{medication}</span>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
+        </div>
+    </div>
+    <!-- Fluid Intake Section with Visual Representation -->
+    <div class="section-container">
+        <div class="section-header header-fluid-intake">
+            <h3>Daily Fluid Intake</h3>
+            <div class="fluid-header-info">
+                <span class="fluid-status" class:low={hydrationStatus?.status === 'concern'} class:optimal={hydrationStatus?.status === 'good'} class:excessive={totalFluidIntake > (medicalData?.biometrics?.weight * 50)}>
+                    {#if hydrationStatus?.status === 'concern'}
+                        Low
+                    {:else if totalFluidIntake > (medicalData?.biometrics?.weight * 50)}
+                        Excessive
+                    {:else if hydrationStatus?.status === 'good'}
+                        Optimal
+                    {:else}
+                        Moderate
+                    {/if}
+                </span>
+                <span class="total-ml">{totalFluidIntake} ml</span>
+            </div>
+        </div>
+        <div class="section-body">
                     <!-- Hydration insight banner - only show when status is concern or warning -->
                     {#if hydrationStatus && ['concern', 'warning'].includes(hydrationStatus.status)}
                     <div class="insight-banner" 
@@ -554,25 +557,26 @@
                         </div>
                     {/if}
                 </div>
-            </div><!-- Heat Conditions Section -->
-            <div class="section-container">
-                <div class="section-header">
-                    <h3>Heat-Related Conditions</h3>
-                    <div class="heat-indicator">
-                        <span class="heat-risk-level" class:high-risk={heatConditions.length > 1} class:medium-risk={heatConditions.length === 1} class:low-risk={heatConditions.length === 0}>
-                            {heatConditions.length > 1 ? 'High Risk' : heatConditions.length === 1 ? 'Medium Risk' : 'Low Risk'}
-                        </span>
-                    </div>
+    </div>
+    <!-- Heat Conditions Section -->
+    <div class="section-container">
+        <div class="section-header header-heat-conditions">
+            <h3>Heat-Related Conditions</h3>
+            <div class="heat-indicator">
+                <span class="heat-risk-level" class:high-risk={heatConditions.length > 1} class:medium-risk={heatConditions.length === 1} class:low-risk={heatConditions.length === 0}>
+                    {heatConditions.length > 1 ? 'High Risk' : heatConditions.length === 1 ? 'Medium Risk' : 'Low Risk'}
+                </span>
+            </div>
+        </div>
+        <div class="section-body">
+            {#if heatConditions.length === 0}
+                <div class="empty-state">
+                    <div class="empty-icon">🌡️</div>
+                    <p>No heat-related conditions reported</p>
+                    <span class="heat-message">Your risk for heat-related issues is low</span>
                 </div>
-                <!-- ...existing code... -->                <div class="section-body">
-                    {#if heatConditions.length === 0}
-                        <div class="empty-state">
-                            <div class="empty-icon">🌡️</div>
-                            <p>No heat-related conditions reported</p>
-                            <span class="heat-message">Your risk for heat-related issues is low</span>
-                        </div>
-                    {:else}
-                        <!-- Only show Heat Warning alert if there is more than one heat condition (higher risk) -->
+            {:else}
+                <!-- Only show Heat Warning alert if there is more than one heat condition (higher risk) -->
                         {#if heatConditions.length > 1}
                         <div class="heat-warning insight-banner concern">
                             <div class="warning-icon large-icon">⚠️</div>
@@ -582,59 +586,57 @@
                             </div>
                         </div>
                         {/if}
-                        <div class="heat-conditions-grid">
-                            {#each heatConditions as condition}
-                                <div class="heat-condition-card">
-                                    <div class="condition-icon-container heat-icon">
-                                        <span class="condition-icon">
-                                            {#if condition.includes('Dehydration')}💧
-                                            {:else if condition.includes('Rash')}🔴
-                                            {:else if condition.includes('Stroke')}🔥
-                                            {:else if condition.includes('Fatigue')}😩
-                                            {:else if condition.includes('Syncope')}😵
-                                            {:else if condition.includes('Edema')}🦶
-                                            {:else if condition.includes('Exhaustion')}⚡
-                                            {:else}🌡️
-                                            {/if}
-                                        </span>
-                                    </div>
-                                    <div class="heat-condition-info">
-                                        <span class="condition-name">{condition}</span>
-                                        <span class="condition-tip">
-                                            {#if condition.includes('Dehydration')}Keep hydrated
-                                            {:else if condition.includes('Rash')}Keep skin dry
-                                            {:else if condition.includes('Stroke')}Seek cool areas
-                                            {:else if condition.includes('Fatigue')}Rest frequently
-                                            {:else if condition.includes('Syncope')}Avoid standing long
-                                            {:else if condition.includes('Edema')}Elevate extremities
-                                            {:else if condition.includes('Exhaustion')}Monitor symptoms
-                                            {:else}Stay cool
-                                            {/if}
-                                        </span>
-                                    </div>
-                                </div>
-                            {/each}
+                <div class="heat-conditions-grid">
+                    {#each heatConditions as condition}
+                        <div class="heat-condition-card full-width">
+                            <div class="condition-icon-container heat-icon">
+                                <span class="condition-icon">
+                                    {#if condition.includes('Dehydration')}💧
+                                    {:else if condition.includes('Rash')}🔴
+                                    {:else if condition.includes('Stroke')}🔥
+                                    {:else if condition.includes('Fatigue')}😩
+                                    {:else if condition.includes('Syncope')}😵
+                                    {:else if condition.includes('Edema')}🦶
+                                    {:else if condition.includes('Exhaustion')}⚡
+                                    {:else}🌡️
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="heat-condition-info">
+                                <span class="condition-name">{condition}</span>
+                                <span class="condition-tip">
+                                    {#if condition.includes('Dehydration')}Keep hydrated
+                                    {:else if condition.includes('Rash')}Keep skin dry
+                                    {:else if condition.includes('Stroke')}Seek cool areas
+                                    {:else if condition.includes('Fatigue')}Rest frequently
+                                    {:else if condition.includes('Syncope')}Avoid standing long
+                                    {:else if condition.includes('Edema')}Elevate extremities
+                                    {:else if condition.includes('Exhaustion')}Monitor symptoms
+                                    {:else}Stay cool
+                                    {/if}
+                                </span>
+                            </div>
                         </div>
-                    {/if}
+                    {/each}
                 </div>
-                <!-- ...existing code... -->
+            {/if}
+        </div>
+    </div>
+    <!-- Activity Section -->
+    <div class="section-container">
+        <div class="section-header header-activity">
+            <h3>Activity & Heat Issues</h3>
+            <div class="activity-indicator">
+                <span class="activity-status" 
+                      class:active={medicalData.activity?.outdoor_activity && medicalData.activity?.activity_level !== 'sedentary'}
+                      class:caution={medicalData.activity?.previous_heat_issues}
+                      class:inactive={!medicalData.activity?.outdoor_activity || medicalData.activity?.activity_level === 'sedentary'}>
+                    {medicalData.activity?.previous_heat_issues ? 'Caution' : 
+                    medicalData.activity?.outdoor_activity && medicalData.activity?.activity_level !== 'sedentary' ? 'Active' : 'Inactive'}
+                </span>
             </div>
-
-            <!-- Activity Section -->
-            <div class="section-container">
-                <div class="section-header">
-                    <h3>Activity & Heat Issues</h3>
-                    <div class="activity-indicator">
-                        <span class="activity-status" 
-                              class:active={medicalData.activity?.outdoor_activity && medicalData.activity?.activity_level !== 'sedentary'}
-                              class:caution={medicalData.activity?.previous_heat_issues}
-                              class:inactive={!medicalData.activity?.outdoor_activity || medicalData.activity?.activity_level === 'sedentary'}>
-                            {medicalData.activity?.previous_heat_issues ? 'Caution' : 
-                            medicalData.activity?.outdoor_activity && medicalData.activity?.activity_level !== 'sedentary' ? 'Active' : 'Inactive'}
-                        </span>
-                    </div>
-                </div>
-                <div class="section-body">
+        </div>
+        <div class="section-body">
                     <div class="activity-container">
                         <!-- Activity level visualization -->
                         {#if medicalData.activity?.outdoor_activity}
@@ -695,8 +697,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+    </div>
+</div>
         <!-- Closing div for medical-data -->
     {:else}
         <div class="empty-medical-profile">
@@ -1237,4 +1239,35 @@
         font-weight: 600;
         color: #333;
     }
+    .biometrics-stats-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .stat-row-group {
+        display: flex;
+        gap: 2rem;
+    }
+    .stat-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    /* Full width for condition/medication/heat cards */
+    .condition-card.full-width,
+    .medication-card.full-width,
+    .heat-condition-card.full-width {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        box-sizing: border-box;
+    }
+    /* Unique header colors for each section */
+    .header-demographics { background: #0fb9b1; }
+    .header-medical-conditions { background: #e17055; }
+    .header-medications { background: #8854d0; }
+    .header-fluid-intake { background: #4a89dc; }
+    .header-heat-conditions { background: #f0932b; }
+    .header-activity { background: #dc4a4a; }
 </style>
