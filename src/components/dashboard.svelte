@@ -694,7 +694,7 @@
                     <div class="section-body">
                         <div class="preference-content">
                             <!-- Email Info -->
-                            <div class="preference-header">
+                            <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-envelope"></i>
                                 </div>
@@ -705,7 +705,7 @@
                             </div>
                             <hr class="preference-divider" />
                             <!-- User ID Info -->
-                            <div class="preference-header">
+                            <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-person-badge"></i>
                                 </div>
@@ -716,7 +716,7 @@
                             </div>
                             <hr class="preference-divider" />
                             <!-- Email Verification Status -->
-                            <div class="preference-header">
+                            <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-patch-check"></i>
                                 </div>
@@ -733,7 +733,7 @@
                             </div>
                             <hr class="preference-divider" />
                             <!-- Account Created Date -->
-                            <div class="preference-header">
+                            <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-calendar-date"></i>
                                 </div>
@@ -744,7 +744,7 @@
                             </div>
                             <hr class="preference-divider" />
                             <!-- Delete Medical Data Option -->
-                            <div class="preference-header">
+                            <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-trash"></i>
                                 </div>
@@ -797,7 +797,7 @@
                         <div class="preference-content">
                             {#if locationData}
                                 <!-- Current Location -->
-                                <div class="preference-header">
+                                <div class="account-header">
                                     <div class="preference-icon">
                                         <i class="bi bi-geo-alt"></i>
                                     </div>
@@ -827,7 +827,7 @@
                                 </div>
                                 <hr class="preference-divider" />
                                 <!-- Coordinates -->
-                                <div class="preference-header">
+                                <div class="account-header">
                                     <div class="preference-icon">
                                         <i class="bi bi-pin-map-fill"></i>
                                     </div>
@@ -840,7 +840,7 @@
                                 </div>
                                 <hr class="preference-divider" />
                                 <!-- Last Updated -->
-                                <div class="preference-header">
+                                <div class="account-header">
                                     <div class="preference-icon">
                                         <i class="bi bi-clock-history"></i>
                                     </div>
@@ -852,7 +852,7 @@
                                     </div>
                                 </div>
                             {:else if locationPermission === 'granted' && !locationData}
-                                <div class="preference-header">
+                                <div class="account-header">
                                     <div class="preference-icon">
                                         <i class="bi bi-geo-alt"></i>
                                     </div>
@@ -868,7 +868,7 @@
                                     </div>
                                 </div>
                             {:else if locationError}
-                                <div class="preference-header">
+                                <div class="account-header">
                                     <div class="preference-icon error-icon">
                                         <i class="bi bi-exclamation-triangle"></i>
                                     </div>
@@ -883,7 +883,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            {:else}                                <div class="preference-header">
+                            {:else}                                <div class="paccount-header">
                                     <div class="preference-icon">
                                         <i class="bi bi-shield-lock"></i>
                                     </div>
@@ -907,7 +907,7 @@
                     <div class="section-body">
                         <div class="preference-content">
                             <!-- Notifications Permission -->
-                            <div class="preference-header">
+                            <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-bell"></i>
                                 </div>
@@ -928,7 +928,7 @@
                             </div>
                             <hr class="preference-divider" />
                             <!-- Location Permission -->
-                            <div class="preference-header">
+                            <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-geo-alt"></i>
                                 </div>
@@ -949,7 +949,7 @@
                             </div>
                             <hr class="preference-divider" />
                             <!-- Service Worker Status -->
-                            <div class="preference-header">
+                            <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-hdd-network"></i>
                                 </div>
@@ -1979,5 +1979,11 @@
         background-color: #eee;
         background-image: linear-gradient(90deg, transparent, #ccc, transparent);
         margin: 0.5rem 0 0.5rem 0;
+    }
+    .account-header {
+    display: flex;
+    align-items: center;
+    padding: .75rem .5rem .5rem;
+    position: relative;
     }
 </style>
