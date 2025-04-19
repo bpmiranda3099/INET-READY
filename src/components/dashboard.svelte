@@ -15,7 +15,7 @@
     } from '../lib/services/service-worker';
     import { getUserCityPreferences } from '$lib/services/user-preferences-service';
     import { getNotificationHistory, markNotificationAsRead, clearNotificationHistory } from '$lib/services/notification-service';
-    import { hasMedicalRecord, getMedicalData } from '$lib/services/medical-api.js';
+    import { hasMedicalRecord, getMedicalData, deleteMedicalData } from '$lib/services/medical-api.js';
     
     // Components
     import MedicalProfile from './medicalprofile.svelte';
@@ -35,6 +35,10 @@
     let activeTab = 'dashboard'; // Changed default to dashboard
     let showWelcomeMessage = true; // Control whether to show welcome message on startup
     let unreadNotifications = 0;
+    let deletingMedicalData = false;
+    let deleteError = null;
+    let showDeleteConfirm = false;
+    let deleteSuccess = false;
     
     // City preferences state
     let hasCityPreferences = false;
@@ -531,6 +535,22 @@
 
     // Get categorized notifications
     $: categorizedNotifications = categorizeNotifications(notifications);
+
+    // Add this function to handle delete
+    async function handleDeleteMedicalData() {
+        deleteError = null;
+        deletingMedicalData = true;
+        try {
+            await deleteMedicalData();
+            deleteSuccess = true;
+            medicalRecordExists = false;
+            showDeleteConfirm = false;
+        } catch (err) {
+            deleteError = err?.message || 'Failed to delete medical data.';
+        } finally {
+            deletingMedicalData = false;
+        }
+    }
 </script>
 
 <div class="dashboard">    <!-- App Bar -->    <div class="app-bar">
@@ -716,6 +736,43 @@
                                     <span class="setting-description">{user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleString() : 'Unknown'}</span>
                                 </div>
                             </div>
+                            <!-- Delete Medical Data Option -->
+                            <div class="preference-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-trash"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Delete Medical Data</span>
+                                    <span class="setting-description">Permanently remove your medical profile from our system.</span>
+                                </div>
+                                <div class="setting-action">
+                                    <button class="enable-btn danger" on:click={() => showDeleteConfirm = true} disabled={deletingMedicalData}>
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            {#if showDeleteConfirm}
+                                <div class="modal-overlay">
+                                    <div class="modal-dialog">
+                                        <h4>Confirm Deletion</h4>
+                                        <p>Are you sure you want to permanently delete your medical data? This action cannot be undone.</p>
+                                        {#if deleteError}
+                                            <div class="error">{deleteError}</div>
+                                        {/if}
+                                        <div class="modal-actions">
+                                            <button class="enable-btn danger" on:click={handleDeleteMedicalData} disabled={deletingMedicalData}>
+                                                {deletingMedicalData ? 'Deleting...' : 'Yes, Delete'}
+                                            </button>
+                                            <button class="enable-btn" on:click={() => { showDeleteConfirm = false; deleteError = null; }} disabled={deletingMedicalData}>
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/if}
+                            {#if deleteSuccess}
+                                <div class="success-message">Your medical data has been deleted.</div>
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -1859,5 +1916,45 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+    }
+
+    .enable-btn.danger {
+        background-color: #e74c3c;
+    }
+    .enable-btn.danger:hover {
+        background-color: #c0392b;
+    }
+    .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+    }
+    .modal-dialog {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem 1.5rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        max-width: 350px;
+        width: 100%;
+        text-align: center;
+    }
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+    .success-message {
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+        text-align: center;
+        font-weight: 500;
     }
 </style>

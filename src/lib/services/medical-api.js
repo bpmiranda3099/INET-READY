@@ -62,3 +62,19 @@ export async function hasMedicalRecord() {
     return false;
   }
 }
+
+export async function deleteMedicalData() {
+  const token = await getIdToken();
+  console.log('[deleteMedicalData] Sending request to delete medical data');
+  const res = await fetch(`${API_BASE}/delete-medical-data`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  console.log('[deleteMedicalData] Response status:', res.status);
+  if (!res.ok) throw new Error('Failed to delete medical data');
+  const data = await res.json();
+  console.log('[deleteMedicalData] Response data:', data);
+  return data;
+}
