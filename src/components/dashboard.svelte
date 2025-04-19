@@ -703,7 +703,7 @@
                                     <span class="setting-description">{user.email}</span>
                                 </div>
                             </div>
-                            
+                            <hr class="preference-divider" />
                             <!-- User ID Info -->
                             <div class="preference-header">
                                 <div class="preference-icon">
@@ -714,7 +714,7 @@
                                     <span class="setting-description">{user.uid}</span>
                                 </div>
                             </div>
-                            
+                            <hr class="preference-divider" />
                             <!-- Email Verification Status -->
                             <div class="preference-header">
                                 <div class="preference-icon">
@@ -731,7 +731,7 @@
                                     </span>
                                 </div>
                             </div>
-                            
+                            <hr class="preference-divider" />
                             <!-- Account Created Date -->
                             <div class="preference-header">
                                 <div class="preference-icon">
@@ -742,6 +742,7 @@
                                     <span class="setting-description">{user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleString() : 'Unknown'}</span>
                                 </div>
                             </div>
+                            <hr class="preference-divider" />
                             <!-- Delete Medical Data Option -->
                             <div class="preference-header">
                                 <div class="preference-icon">
@@ -759,19 +760,23 @@
                             </div>
                             {#if showDeleteConfirm}
                                 <div class="modal-overlay">
-                                    <div class="modal-dialog">
-                                        <h4>Confirm Deletion</h4>
-                                        <p>Are you sure you want to permanently delete your medical data? This action cannot be undone.</p>
-                                        {#if deleteError}
-                                            <div class="error">{deleteError}</div>
-                                        {/if}
-                                        <div class="modal-actions">
-                                            <button class="enable-btn danger" on:click={() => { console.log('Delete clicked'); handleDeleteMedicalData(); }} disabled={deletingMedicalData}>
-                                                {deletingMedicalData ? 'Deleting...' : 'Yes, Delete'}
-                                            </button>
-                                            <button class="enable-btn" on:click={() => { console.log('Cancel clicked'); showDeleteConfirm = false; deleteError = null; }} disabled={deletingMedicalData}>
-                                                Cancel
-                                            </button>
+                                    <div class="modal-dialog section-container">
+                                        <div class="section-header danger-header">
+                                            <h3><i class="bi bi-trash"></i> Confirm Deletion</h3>
+                                        </div>
+                                        <div class="section-body">
+                                            <p>Are you sure you want to permanently delete your medical data? This action cannot be undone.</p>
+                                            {#if deleteError}
+                                                <div class="error">{deleteError}</div>
+                                            {/if}
+                                            <div class="modal-actions">
+                                                <button class="enable-btn danger" on:click={() => { console.log('Delete clicked'); handleDeleteMedicalData(); }} disabled={deletingMedicalData}>
+                                                    {deletingMedicalData ? 'Deleting...' : 'Yes, Delete'}
+                                                </button>
+                                                <button class="enable-btn" on:click={() => { console.log('Cancel clicked'); showDeleteConfirm = false; deleteError = null; }} disabled={deletingMedicalData}>
+                                                    Cancel
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -820,7 +825,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                
+                                <hr class="preference-divider" />
                                 <!-- Coordinates -->
                                 <div class="preference-header">
                                     <div class="preference-icon">
@@ -833,7 +838,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                
+                                <hr class="preference-divider" />
                                 <!-- Last Updated -->
                                 <div class="preference-header">
                                     <div class="preference-icon">
@@ -921,7 +926,7 @@
                                     {/if}
                                 </div>
                             </div>
-                            
+                            <hr class="preference-divider" />
                             <!-- Location Permission -->
                             <div class="preference-header">
                                 <div class="preference-icon">
@@ -942,7 +947,7 @@
                                     {/if}
                                 </div>
                             </div>
-                            
+                            <hr class="preference-divider" />
                             <!-- Service Worker Status -->
                             <div class="preference-header">
                                 <div class="preference-icon">
@@ -1963,5 +1968,16 @@
     
     .refresh-btn:active {
         transform: translateY(0);
+    }
+    .danger-header {
+        background: #e74c3c;
+        color: white;
+    }
+    .preference-divider {
+        border: 0;
+        height: 1px;
+        background-color: #eee;
+        background-image: linear-gradient(90deg, transparent, #ccc, transparent);
+        margin: 0.5rem 0 0.5rem 0;
     }
 </style>
