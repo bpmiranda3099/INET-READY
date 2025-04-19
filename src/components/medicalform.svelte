@@ -1,8 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { saveMedicalData } from '$lib/firebase';
+    import { saveMedicalData } from '$lib/services/medical-api.js';
     
-    export let userId: string;
     export let initialData: any = null;
     export let isEditing: boolean = false;
     
@@ -443,17 +442,13 @@
                 }
             };
             
-            const { success: saveSuccess, error: saveError } = await saveMedicalData(userId, processedData);
-            
-            if (saveSuccess) {
-                success = true;
-                dispatch('completed', { success: true });
-            } else {
-                error = saveError || "Failed to save medical data. Please try again.";
-            }
+            // Use new API client (no userId needed)
+            await saveMedicalData(processedData);
+            success = true;
+            dispatch('completed', { success: true });
         } catch (err) {
             console.error("Error saving medical data:", err);
-            error = "An unexpected error occurred. Please try again.";
+            error = err?.message || "An unexpected error occurred. Please try again.";
         } finally {
             loading = false;
         }
@@ -482,7 +477,7 @@
     }
 </script>
 
-<div class="medical-form-container">
+<div class="medical-form-container"></div>
     <div class="form-header">
         <h2>{isEditing ? 'Update Medical Information' : 'Complete Your Medical Profile'}</h2>
         {#if !isEditing}
@@ -951,8 +946,7 @@
             </button>
         </div>
     </form>
-</div>
-
+    
 <style>
     .medical-form-container {
         max-width: 800px;

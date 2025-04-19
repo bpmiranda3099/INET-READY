@@ -1,9 +1,8 @@
-<script>    import { onMount } from 'svelte';
-    import { getMedicalData } from '$lib/firebase';
+<script>
+    import { onMount } from 'svelte';
+    import { getMedicalData } from '$lib/services/medical-api.js';
     import MedicalForm from './medicalform.svelte';
     import { showDailyReminderNotification } from '$lib/services/notification-service';
-    
-    export let userId;
     
     let loading = true;
     let error = null;
@@ -67,12 +66,13 @@
         loading = true;
         
         try {
-            const { data, error: fetchError } = await getMedicalData(userId);
+            const data = await getMedicalData();
             
             if (data) {
                 medicalData = data;
+                error = null;
             } else {
-                error = fetchError;
+                error = 'No medical data found.';
             }
         } catch (err) {
             console.error("Error loading medical data:", err);
@@ -293,7 +293,6 @@
             <button on:click={loadMedicalData} class="retry-btn">Try Again</button>
         </div>    {:else if isEditing}
         <MedicalForm 
-            {userId} 
             initialData={medicalData} 
             isEditing={true}
             on:completed={handleFormCompleted}

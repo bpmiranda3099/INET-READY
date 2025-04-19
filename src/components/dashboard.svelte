@@ -1,5 +1,5 @@
 <script>    import { onMount } from 'svelte';
-    import { logoutUser, onMessageListener, hasMedicalRecord, requestFCMToken, getMedicalData } from '$lib/firebase';
+    import { logoutUser, onMessageListener, requestFCMToken } from '$lib/firebase';
     import { getCurrentPosition, currentLocation } from '$lib/services/location-service';
     import { 
         getLocationNameFromCoordinates,
@@ -15,6 +15,7 @@
     } from '../lib/services/service-worker';
     import { getUserCityPreferences } from '$lib/services/user-preferences-service';
     import { getNotificationHistory, markNotificationAsRead, clearNotificationHistory } from '$lib/services/notification-service';
+    import { hasMedicalRecord, getMedicalData } from '$lib/services/medical-api.js';
     
     // Components
     import MedicalProfile from './medicalprofile.svelte';
@@ -185,11 +186,7 @@
             const unsubscribeMessages = onMessageListener();
             
             // Check if user has medical record
-            if (user && user.uid) {
-                hasMedicalRecord(user.uid).then(result => {
-                    medicalRecordExists = result;
-                });
-            }
+            medicalRecordExists = await hasMedicalRecord();
         })();
         let unsubscribeMessages = onMessageListener();
         return () => {
@@ -246,8 +243,7 @@
     async function openMedicalForm() {
         loadingMedicalData = true;
         try {
-            const { data, error: fetchError } = await getMedicalData(user.uid);
-            
+            const data = await getMedicalData();
             if (data) {
                 // Ensure all required nested objects exist in the data
                 if (!data.fluid_intake) {
@@ -333,9 +329,6 @@
                 medicalData = data;
                 showMedicalForm = true;
             } else {
-                console.error("Error fetching medical data:", fetchError);
-                // Still open the form even if there's an error,
-                // as the user might be creating a new record
                 medicalData = null;
                 showMedicalForm = true;
             }
@@ -922,14 +915,13 @@
             <div class="medical-section">
                 <!-- Main section keeps app bar header, no additional container header -->                {#if showMedicalForm}
                     <MedicalForm 
-                        userId={user.uid} 
                         initialData={medicalData}
                         isEditing={medicalRecordExists} 
                         on:completed={handleMedicalFormCompleted} 
                         on:cancel={() => showMedicalForm = false}
                     />
                 {:else}
-                    <MedicalProfile userId={user.uid} />
+                    <MedicalProfile />
                 {/if}
             </div>{:else if activeTab === 'settings'}
             <div class="settings-section">
