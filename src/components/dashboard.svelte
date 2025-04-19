@@ -760,10 +760,10 @@
                                             <div class="error">{deleteError}</div>
                                         {/if}
                                         <div class="modal-actions">
-                                            <button class="enable-btn danger" on:click={handleDeleteMedicalData} disabled={deletingMedicalData}>
+                                            <button class="enable-btn danger" on:click={() => { console.log('Delete clicked'); handleDeleteMedicalData(); }} disabled={deletingMedicalData}>
                                                 {deletingMedicalData ? 'Deleting...' : 'Yes, Delete'}
                                             </button>
-                                            <button class="enable-btn" on:click={() => { showDeleteConfirm = false; deleteError = null; }} disabled={deletingMedicalData}>
+                                            <button class="enable-btn" on:click={() => { console.log('Cancel clicked'); showDeleteConfirm = false; deleteError = null; }} disabled={deletingMedicalData}>
                                                 Cancel
                                             </button>
                                         </div>
