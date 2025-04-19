@@ -805,7 +805,7 @@
                                         </span>
                                     </div>
                                     <div class="setting-action">
-                                        <button on:click={getLocation} class="icon-button" disabled={fetchingLocation} aria-label="Refresh location">
+                                        <button on:click={getLocation} class="refresh-btn" disabled={fetchingLocation} aria-label="Refresh location">
                                             {#if fetchingLocation}
                                                 <div class="button-spinner"></div>
                                             {:else}
@@ -1012,22 +1012,9 @@
                   <!-- City Preferences Container -->
                 <div class="section-container">
                     <div class="section-header">
-                        <h3>City Preferences</h3>                        
-                        <div class="data-source-info">
-                            <span>Powered by: <a href="https://open-meteo.com/" class="open-meteo-link"><img src="/open-meteo-icon.png" alt="Open-Meteo" class="open-meteo-icon"></a></span>
-                            {#if lastUpdated}
-                                <span>Last updated: {lastUpdated.toLocaleString()}</span>
-                            {/if}
-                            <button 
-                                class="refresh-button" 
-                                on:click={refreshCityList}
-                                disabled={loadingCities}
-                                aria-label="Refresh city list"
-                            >
-                                {loadingCities ? '↻' : '↻'}
-                            </button>
-                        </div>
-                    </div>                    <div class="section-body city-preferences-wrapper">
+                        <h3>City Preferences</h3>              
+                    </div>                    
+                    <div class="section-body city-preferences-wrapper">
                         <CityPreferences userId={user.uid} />
                     </div>
                 </div>
@@ -1958,5 +1945,24 @@
         margin: 1rem 0;
         text-align: center;
         font-weight: 500;
+    }
+    .refresh-btn {
+        background-color: #dd815e;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .refresh-btn:hover {
+        background-color: #c26744;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .refresh-btn:active {
+        transform: translateY(0);
     }
 </style>
