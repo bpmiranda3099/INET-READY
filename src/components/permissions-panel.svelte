@@ -73,13 +73,12 @@
         background-color: #f8f9fa;
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        margin: 1rem 0 2rem;
+        margin: 1rem 0rem;
         padding: 1.5rem;
         border-left: 4px solid #4285f4;
     }
     
     .permissions-content {
-        max-width: 800px;
         margin: 0 auto;
     }
     

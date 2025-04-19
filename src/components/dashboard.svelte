@@ -634,7 +634,7 @@
                     {#each Object.keys(categorizedNotifications) as categoryKey}
                         {@const category = categorizedNotifications[categoryKey]}
                         {#if category.notifications.length > 0}                            <div class="section-container notification-category">
-                                <div class="section-header" style="background-color: {category.color}; color: white; padding-bottom: 8px;">
+                                <div class="section-header" style="background-color: {category.color}; color: white; margin-bottom: 8px;">
                                     <h3>
                                         <i class="bi {category.icon}"></i>
                                         {category.name}
