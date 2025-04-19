@@ -161,7 +161,7 @@
       }
       
       // Register new service worker
-      const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
+      const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' }); // Ensure correct path
       console.log("Registered new service worker:", reg.scope);
       
       // Update status
