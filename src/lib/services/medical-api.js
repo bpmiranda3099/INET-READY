@@ -13,6 +13,7 @@ async function getIdToken() {
 
 export async function saveMedicalData(medicalData) {
   const token = await getIdToken();
+  console.log('[saveMedicalData] Sending request to save medical data:', medicalData);
   const res = await fetch(`${API_BASE}/store-medical-data`, {
     method: 'POST',
     headers: {
@@ -21,34 +22,42 @@ export async function saveMedicalData(medicalData) {
     },
     body: JSON.stringify({ medicalData }),
   });
+  console.log('[saveMedicalData] Response status:', res.status);
   if (!res.ok) throw new Error('Failed to save medical data');
-  return await res.json().catch(() => ({}));
+  const responseData = await res.json().catch(() => ({}));
+  console.log('[saveMedicalData] Response data:', responseData);
+  return responseData;
 }
 
 export async function updateMedicalData(partialData) {
-  // For simplicity, use the same endpoint as save (API should handle upsert)
+  console.log('[updateMedicalData] Updating medical data with partial data:', partialData);
   return saveMedicalData(partialData);
 }
 
 export async function getMedicalData() {
   const token = await getIdToken();
+  console.log('[getMedicalData] Sending request to fetch medical data');
   const res = await fetch(`${API_BASE}/get-medical-data`, {
     headers: {
       'Authorization': `Bearer ${token}`,
     },
   });
+  console.log('[getMedicalData] Response status:', res.status);
   if (!res.ok) throw new Error('Failed to fetch medical data');
   const data = await res.json();
-  // If API returns an array, return the first record (as in the reference)
+  console.log('[getMedicalData] Response data:', data);
   if (Array.isArray(data)) return data[0]?.data || null;
   return data?.data || null;
 }
 
 export async function hasMedicalRecord() {
+  console.log('[hasMedicalRecord] Checking if medical record exists');
   try {
     const data = await getMedicalData();
+    console.log('[hasMedicalRecord] Medical record exists:', !!data);
     return !!data;
-  } catch {
+  } catch (error) {
+    console.error('[hasMedicalRecord] Error checking medical record:', error);
     return false;
   }
 }
