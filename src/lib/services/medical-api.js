@@ -13,6 +13,7 @@ async function getIdToken() {
 
 export async function saveMedicalData(medicalData) {
   const token = await getIdToken();
+  console.log('Token:', token);
   console.log('[saveMedicalData] Sending request to save medical data:', medicalData);
   const res = await fetch(`${API_BASE}/store-medical-data`, {
     method: 'POST',
