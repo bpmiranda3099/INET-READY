@@ -709,7 +709,6 @@
 
 <style>
     .medical-profile {
-        max-width: 800px;
         margin: 0 auto;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }

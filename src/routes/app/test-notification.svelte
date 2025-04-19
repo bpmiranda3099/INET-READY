@@ -297,8 +297,3 @@
   </div>
 </div>
 
-<style>
-  .container {
-    max-width: 800px;
-  }
-</style>

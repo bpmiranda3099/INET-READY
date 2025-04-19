@@ -1231,7 +1231,6 @@
     .account-section, 
     .medical-section, 
     .settings-section {
-        max-width: 1170px;
         padding-top: 1rem;
         padding-bottom: 1rem;
     }
