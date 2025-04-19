@@ -1,7 +1,7 @@
 // src/lib/services/medical-api.js
 // API client for medical data via Aptible-hosted Express/Postgres backend
 
-const API_BASE = 'app-91403.on-aptible.com'; // TODO: Replace with your actual API base URL
+const API_BASE = 'https://app-91403.on-aptible.com'; // Ensure the URL includes the https:// prefix
 
 async function getIdToken() {
   // Use Firebase Auth to get the current user's ID token
