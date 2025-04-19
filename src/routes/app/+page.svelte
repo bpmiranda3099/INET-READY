@@ -1,12 +1,11 @@
 <script>
     import { onMount } from 'svelte';
+    import { hasMedicalRecord } from '../../lib/services/medical-api.js';
     import { 
         subscribeToAuthChanges, 
         getCurrentUser,
-        hasMedicalRecord,
-        isEmailVerified,
-        sendVerificationEmail
-    } from '$lib/firebase';
+        isEmailVerified as isUserEmailVerified,
+    } from '$lib/firebase/auth';
     
     import Login from '../../components/login.svelte';
     import Register from '../../components/register.svelte';
@@ -42,13 +41,13 @@
                 if (authUser.providerData.some(provider => provider.providerId === 'google.com')) {
                     isVerified = true;
                 } else {
-                    isVerified = isEmailVerified(authUser);
+                    isVerified = isUserEmailVerified(authUser);
                 }
                 
                 if (isVerified) {
                     // Only check medical record if verified
                     checkingMedicalRecord = true;
-                    const hasMedicalProfile = await hasMedicalRecord(authUser.uid);
+                    const hasMedicalProfile = await hasMedicalRecord();
                     needsMedicalForm = !hasMedicalProfile || justVerified;
                     checkingMedicalRecord = false;
                 }
@@ -69,12 +68,12 @@
                 if (user.providerData.some(provider => provider.providerId === 'google.com')) {
                     isVerified = true;
                 } else {
-                    isVerified = isEmailVerified(user);
+                    isVerified = isUserEmailVerified(user);
                 }
                 
                 if (isVerified) {
                     checkingMedicalRecord = true;
-                    const hasMedicalProfile = await hasMedicalRecord(user.uid);
+                    const hasMedicalProfile = await hasMedicalRecord();
                     needsMedicalForm = !hasMedicalProfile || justVerified;
                     checkingMedicalRecord = false;
                 }
@@ -106,7 +105,7 @@
             </div>
         {:else if needsMedicalForm}
             <div class="onboarding-container">
-                <h1>Complete Your Medical Profile</h1>
+                <!-- Removed duplicate h1: Complete Your Medical Profile -->
                 <p class="onboarding-message">
                     {#if justVerified}
                         Thank you for verifying your email! To continue,
@@ -116,7 +115,6 @@
                     we need to collect some information about your health and habits.
                 </p>
                 <MedicalForm 
-                    userId={user.uid} 
                     on:completed={handleMedicalFormCompleted}
                 />
             </div>        {:else}

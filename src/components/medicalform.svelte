@@ -961,8 +961,10 @@
     
     .form-header h2 {
         margin-bottom: 0.5rem;
-        color: #333;
+        color: #000;
         font-weight: 600;
+        font-size: 2rem;
+        text-align: center;
     }
     
     .form-intro {
