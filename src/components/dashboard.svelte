@@ -564,6 +564,12 @@
                 <i class="bi bi-pencil-square"></i>
             </button>
         {/if}
+        <!-- Logout Button (only shows when on account tab) -->
+        {#if activeTab === 'account'}
+            <button class="edit-icon-btn" on:click={handleLogout} aria-label="Logout" disabled={loading}>
+                <i class="bi bi-box-arrow-right"></i>
+            </button>
+        {/if}
         <!-- Clear All Notifications Button (only shows when on notifications tab and notifications exist) -->
         {#if activeTab === 'notifications' && notifications.length > 0}
             <button 
@@ -959,15 +965,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Logout Button -->
-                <div class="section-container">
-                    <div class="section-body logout-section">
-                        <button on:click={handleLogout} class="logout-btn" disabled={loading}>
-                            {loading ? 'Logging out...' : 'Logout'}
-                        </button>
-                    </div>
-                </div>
             </div>        {:else if activeTab === 'medical'}
             <div class="medical-section">
                 <!-- Main section keeps app bar header, no additional container header -->                {#if showMedicalForm}
@@ -1239,7 +1236,7 @@
     
     .notification-category .section-header h3 {
         margin: 0;
-        font-size: 1rem;
+        font-size: 1.2rem;
         font-weight: 600;
         display: flex;
         align-items: center;
@@ -1259,6 +1256,8 @@
         display: flex;
         padding: 12px 16px;
         background-color: white;
+        margin-left: 8px;
+        margin-right: 8px;
         margin-bottom: 8px;
         border-radius: 6px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);

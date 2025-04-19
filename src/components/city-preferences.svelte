@@ -200,7 +200,7 @@
             </div>
             <div class="preference-title">
                 <h4>Preferred Cities</h4>
-                <p class="section-description">Add cities in Cavite you frequently travel to or are interested in</p>
+                <p class="section-description">Add cities you frequently travel to or are interested in</p>
             </div>
         </div>
         
