@@ -363,14 +363,14 @@
 		return travelCards.map((_, i) => {
 			const diff = i - $progress;
 			let transform = `translateX(${100 * diff}%)`;
-			let opacity = 1;
+			let opacity = 0.3;
 			let zIndex = 10 - Math.abs(diff);
 
 			// Apply scaling effect for non-active cards
 			if (diff !== 0) {
 				const scale = 0.95;
 				transform = `${transform} scale(${scale})`;
-				opacity = 0.7;
+				opacity = 0.1;
 			}
 
 			return { transform, opacity, zIndex };
