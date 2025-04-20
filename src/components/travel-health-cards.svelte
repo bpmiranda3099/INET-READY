@@ -826,9 +826,9 @@
 	/* Windows 10 Start Menu style tile rows */
 	.tile-row {
 		display: flex;
-		gap: 0.5rem; /* Reduced gap */
+		gap: 0; /* Removed gap */
 		width: 100%;
-		margin-bottom: 0.5rem; /* Reduced margin */
+		margin-bottom: 0; /* Removed margin */
 	}
 
 	/* Adjusted height distribution: 25%, 35%, 40% */
@@ -842,14 +842,14 @@
 		width: 40%;
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: 0; /* Removed gap */
 	}
 
 	.column-60 {
 		width: 60%;
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: 0; /* Removed gap */
 	}
 
 	.row-two {
@@ -867,7 +867,7 @@
 	.sub-row {
 		height: 50%;
 		display: flex;
-		gap: 0.5rem;
+		gap: 0; /* Removed gap */
 	}
 
 	.tile {
