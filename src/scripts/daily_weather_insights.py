@@ -298,8 +298,12 @@ def get_all_user_fcm_tokens(db):
         for user_doc in user_docs:
             user_data = user_doc.to_dict()
             # Check for FCM token in different possible fields
-            token = user_data.get('fcmToken') or user_data.get('fcm_token') or user_data.get('messagingToken')
-            if token and isinstance(token, str) and len(token) > 20:  # Basic validation for token format
+            token = (
+                user_data.get('fcmToken')
+                or user_data.get('fcm_token')
+                or user_data.get('messagingToken')
+            )
+            if token and isinstance(token, str) and len(token) > 20:  # Basic validation
                 tokens.append(token)
         
         print(f"Found {len(tokens)} FCM tokens for notification")
@@ -495,14 +499,24 @@ def generate_and_notify_city_insights(db, fcm, forecast_data):
 
         # Find users whose user_preferences.homecity == city_name
         users_ref = db.collection('users')
-        users_query = users_ref.where('user_preferences.homecity', '==', city_name)
-        user_docs = users_query.stream()
+        user_docs = users_ref.stream()
         tokens = []
         for user_doc in user_docs:
-            user_data = user_doc.to_dict()
-            token = user_data.get('fcm_token')
-            if token:
-                tokens.append(token)
+            user_id = user_doc.id
+            city_pref_ref = users_ref.document(user_id).collection('userPreference').document('cityPreferences')
+            city_pref_doc = city_pref_ref.get()
+            if city_pref_doc.exists:
+                city_pref_data = city_pref_doc.to_dict()
+                if city_pref_data.get('homeCity') == city_name:
+                    # Check for FCM token in different possible fields
+                    user_data = user_doc.to_dict()
+                    token = (
+                        user_data.get('fcmToken')
+                        or user_data.get('fcm_token')
+                        or user_data.get('messagingToken')
+                    )
+                    if token and isinstance(token, str) and len(token) > 20:
+                        tokens.append(token)
 
         if not tokens:
             print(f"No users found in {city_name} to notify.")
