@@ -7,6 +7,7 @@
 	import { getCityCoords } from '$lib/services/city-coords';
 	import { getInetReadyStatus } from '$lib/services/inet-ready-advice';
 	import { getMedicalData } from '$lib/services/medical-api';
+	import { v4 as uuidv4 } from 'uuid';
 
 	export let homeCity;
 	export let preferredCities = [];
@@ -120,6 +121,45 @@
 			resizeObserver.disconnect();
 		}
 	});
+	// Helper: fetch nearby POIs using Mapbox Search Box API
+	async function fetchNearbyPOIs({ lat, lng, types = ["cafe", "mall", "establishment"], limit = 5 }) {
+		// @ts-ignore
+		const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN; 
+		if (!accessToken) {
+			console.warn("Mapbox access token missing");
+			return [];
+		}
+
+		const sessionToken = uuidv4(); // Generate a unique session token
+		const results = [];
+
+		for (const category of types) {
+			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=${limit}&access_token=${accessToken}&session_token=${sessionToken}`;
+			try {
+				const res = await fetch(url);
+				if (!res.ok) throw new Error("Mapbox API error");
+				const data = await res.json();
+				const suggestions = data.suggestions || [];
+				for (const s of suggestions) {
+					const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${s.mapbox_id}?access_token=${accessToken}&session_token=${sessionToken}`;
+					const retrieveRes = await fetch(retrieveUrl);
+					if (!retrieveRes.ok) throw new Error("Mapbox Retrieve API error");
+					const detailedData = await retrieveRes.json();
+					results.push({
+						title: detailedData.name || '',
+						address: detailedData.full_address || '',
+						category: detailedData.place_type ? detailedData.place_type[0] : '',
+						id: detailedData.mapbox_id || ''
+					});
+				}
+			} catch (e) {
+				console.error(`Failed to fetch POIs for category ${category} from Mapbox:`, e);
+			}
+		}
+
+		return results.slice(0, limit);
+	}
+
 	/**
 	 * Generate travel cards for each preferred city
 	 */
@@ -132,6 +172,20 @@
 			// Origin city is current location if available and useCurrentLocation is true,
 			// otherwise use home city
 			const fromCity = useCurrentLocation && currentLocation ? currentLocation : homeCity;
+
+			let refCoords = null;
+			if (useCurrentLocation && currentLocation) {
+				const coords = getCityCoords(currentLocation);
+				if (coords) refCoords = coords;
+			}
+			if (!refCoords && fromCity) {
+				const coords = getCityCoords(fromCity);
+				if (coords) refCoords = coords;
+			}
+			if (!refCoords && homeCity) {
+				const coords = getCityCoords(homeCity);
+				if (coords) refCoords = coords;
+			}
 
 			if (!fromCity) {
 				error = 'No home city or current location set. Please update your preferences.';
@@ -147,27 +201,22 @@
 			}
 
 			// Generate basic travel cards for each city pair
-			travelCards = destinations.map((toCity) => ({
-				fromCity,
-				toCity,
-				timestamp: new Date(),
-				// Creating empty data structures for the 4 tile rows
-				rowOne: {
-					// Row 1 (15% height) tiles - can be populated later
-					tiles: []
-				},
-				rowTwo: {
-					// Row 2 (15% height) tiles - can be populated later
-					tiles: []
-				},
-				rowThree: {
-					// Row 3 (30% height) tiles - can be populated later
-					tiles: []
-				},
-				rowFour: {
-					// Row 4 (40% height) tiles - can be populated later
-					tiles: []
+			travelCards = await Promise.all(destinations.map(async (toCity) => {
+				// For each card, get POIs near the destination city (or refCoords)
+				let coords = getCityCoords(toCity) || refCoords;
+				let pois = [];
+				if (coords) {
+					pois = await fetchNearbyPOIs({ lat: coords.lat, lng: coords.lng });
 				}
+				return {
+					fromCity,
+					toCity,
+					timestamp: new Date(),
+					rowOne: { tiles: [] },
+					rowTwo: { tiles: [] },
+					rowThree: { tiles: [{ pois }] }, // Store POIs in rowThree, column 1
+					rowFour: { tiles: [] }
+				};
 			}));
 
 			totalCards = travelCards.length;
@@ -523,16 +572,24 @@
 						<!-- Row 4 - now becomes Row 3 -->
 						<div class="tile-row row-three">
 							<div class="tile-column column-60">
-								{#if card.rowFour.tiles.length === 0}
+								{#if card.rowThree.tiles.length === 0 || !card.rowThree.tiles[0].pois || card.rowThree.tiles[0].pois.length === 0}
 									<div class="tile empty-tile">
-										<div class="tile-placeholder">Column 1 Content</div>
+										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
 									</div>
 								{:else}
-									{#each card.rowFour.tiles.slice(0, 1) as tile}
-										<div class="tile">
-											<!-- Tile content will be filled later -->
-										</div>
-									{/each}
+									<div class="tile" style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px;">
+										<div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
+										<ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
+											{#each card.rowThree.tiles[0].pois as poi, j}
+												<li style="margin-bottom: 0.5rem;">
+													<span style="font-weight: 500;">{poi.title}</span>
+													{#if poi.address}
+														<br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
+													{/if}
+												</li>
+											{/each}
+										</ul>
+									</div>
 								{/if}
 							</div>
 							<div class="tile-column column-40">
