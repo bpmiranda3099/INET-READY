@@ -521,6 +521,9 @@ def generate_and_notify_city_insights(db, fcm, forecast_data):
         response = fcm.send_multicast(message)
         print(f"Sent {response.success_count} notifications to {city_name} users ({response.failure_count} failures)")
 
+        # Add a delay to avoid hitting Gemini API rate limits (10/sec)
+        time.sleep(0.15)  # 150ms pause between requests (max ~6-7/sec)
+
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(

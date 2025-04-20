@@ -45,7 +45,7 @@ Always be concise, friendly, and factual. If a question is outside your scope, p
 
 // Create the chatbot model with system instructions
 const chatModel = genAI.getGenerativeModel({
-  model: "gemini-2.5-pro-preview-03-25",
+  model: "gemini-2.5-flash-preview-04-17",
   systemInstruction: SYSTEM_INSTRUCTION
 });
 
