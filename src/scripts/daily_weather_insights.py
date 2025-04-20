@@ -607,7 +607,7 @@ def send_city_insight_to_all_users(db, fcm, forecast_data):
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(
-        description='Generate daily weather insights and send push notifications'
+        description='Generate city-level weather insights and send push notifications'
     )
     parser.add_argument('--dry-run', action='store_true', 
                       help='Generate insights without sending notifications')
@@ -632,21 +632,71 @@ def main():
         print("No forecast data available")
         return 1
     
-    # Generate insights using Gemini API via Node.js bridge
-    insights = call_gemini_via_node_bridge(forecast_data)
-    if not insights:
-        print("Failed to generate insights")
-        return 1
-    
-    print("\n===== Generated Weather Insights =====")
-    print(insights)
-    print("======================================\n")
-    
-    # Store insights in Firestore
-    store_insights_in_firestore(db, insights)
+    # For each city, generate a city-specific insight and store in Firestore
+    today = datetime.now().strftime("%Y-%m-%d")
+    cities = forecast_data.get('cities', {})
+    city_insights = {}
+    for city_name, city_forecast in cities.items():
+        print(f"Generating insight for {city_name}...")
+        city_insight = call_gemini_via_node_bridge({'city': city_name, 'forecast': city_forecast})
+        if not city_insight:
+            print(f"Failed to generate insight for {city_name}")
+            continue
+        # Store in Firestore: weather_insights/{date}/cities/{cityName}/insight
+        insight_doc_ref = db.collection('weather_insights').document(today).collection('cities').document(city_name)
+        insight_doc_ref.set({
+            'insight': city_insight,
+            'timestamp': firestore.SERVER_TIMESTAMP
+        })
+        print(f"Stored insight for {city_name} in Firestore.")
+        city_insights[city_name] = city_insight
+        # Add a delay to avoid hitting Gemini API rate limits (10/sec)
+        time.sleep(0.15)  # 150ms pause between requests (max ~6-7/sec)
 
     # Send city-specific push notifications to all users based on their homeCity
-    send_city_insight_to_all_users(db, fcm, forecast_data)
+    users_ref = db.collection('users')
+    user_docs = users_ref.stream()
+    for user_doc in user_docs:
+        user_id = user_doc.id
+        user_data = user_doc.to_dict()
+        city_pref_ref = users_ref.document(user_id).collection('userPreferences').document('cityPreferences')
+        city_pref_doc = city_pref_ref.get()
+        if not city_pref_doc.exists:
+            continue
+        city_pref_data = city_pref_doc.to_dict()
+        home_city = city_pref_data.get('homeCity')
+        if not home_city or home_city not in city_insights:
+            continue
+        city_insight = city_insights[home_city]
+        # Get FCM token
+        token = (
+            user_data.get('fcmToken')
+            or user_data.get('fcm_token')
+            or user_data.get('messagingToken')
+        )
+        if not token or not isinstance(token, str) or len(token) <= 20:
+            continue
+        # Prepare notification
+        notification = messaging.Notification(
+            title=f"Weather Insight for {home_city}",
+            body=city_insight[:MAX_NOTIFICATION_LENGTH] + ("..." if len(city_insight) > MAX_NOTIFICATION_LENGTH else "")
+        )
+        message = messaging.Message(
+            notification=notification,
+            data={
+                'city': home_city,
+                'type': 'city_weather_insight',
+                'insight': city_insight,
+                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                'tag': f"city-weather-{home_city}-{datetime.now().strftime('%Y%m%d')}"
+            },
+            token=token
+        )
+        try:
+            response = fcm.send(message)
+            print(f"Sent city insight to user {user_id} for {home_city}: {response}")
+        except Exception as e:
+            print(f"Failed to send city insight to user {user_id} for {home_city}: {e}")
 
     return 0
 
