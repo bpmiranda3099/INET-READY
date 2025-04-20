@@ -629,6 +629,7 @@
         height: 100%; /* Make the card take up the full height of its parent */
         display: flex;
         flex-direction: column;
+		max-height: calc(100vh - 250px); 
     }
 
 	.travel-card.active {
