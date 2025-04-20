@@ -1,5 +1,5 @@
 <script>
-import { onMount } from 'svelte';
+import { onMount, onDestroy } from 'svelte';
 import { askGemini } from '$lib/services/gemini-service';
 import { getMedicalData } from '$lib/services/medical-api';
 import { getAllHeatIndexData, getHeatIndexPredictions } from '$lib/services/weather-data-service';
@@ -16,6 +16,7 @@ let heatIndexData = null;
 let heatIndexPredictions = null;
 let inputRef;
 let containerRef;
+let keyboardOffset = 0;
 
 onMount(() => {
   // Run async logic separately
@@ -86,8 +87,13 @@ function adjustForKeyboard() {
   if (window.visualViewport) {
     const vh = window.visualViewport.height;
     document.documentElement.style.setProperty('--chatbot-vh', vh + 'px');
+    // Calculate keyboard offset (for iOS/Android)
+    const offset = window.innerHeight - vh;
+    keyboardOffset = offset > 0 ? offset : 0;
   }
 }
+
+$: document.documentElement.style.setProperty('--keyboard-offset', keyboardOffset + 'px');
 </script>
 
 <div class="chatbot-fullpage">
@@ -108,7 +114,7 @@ function adjustForKeyboard() {
       <div class="error">{error}</div>
     {/if}
   </main>
-  <form class="chatbot-inputbar" on:submit|preventDefault={sendMessage}>
+  <form class="chatbot-inputbar" on:submit|preventDefault={sendMessage} style="bottom: {keyboardOffset}px">
     <input type="text" bind:value={input} placeholder="Ask about your health, heat index, etc..." autocomplete="off" bind:this={inputRef} on:focus={handleInputFocus} />
     <button type="submit" disabled={loading || !input.trim()}><i class="bi bi-send"></i></button>
   </form>
@@ -127,6 +133,26 @@ function adjustForKeyboard() {
   max-width: 100vw;
   max-height: 100vh;
   overscroll-behavior: contain;
+}
+@media (max-width: 600px) {
+  .chatbot-fullpage {
+    height: var(--chatbot-vh, 100dvh);
+    max-height: var(--chatbot-vh, 100dvh);
+  }
+  .chatbot-main {
+    padding-bottom: 1.5rem;
+  }
+  .chatbot-inputbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    bottom: 0;
+    z-index: 4000;
+    background: #fff;
+    border-top: 1px solid #eee;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0) + 0px);
+  }
 }
 .chatbot-appbar {
   background: #dd815e;
@@ -157,7 +183,7 @@ function adjustForKeyboard() {
 .chatbot-main {
   flex: 1;
   overflow-y: auto;
-  padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+  padding: 1.2rem 0.5rem calc(1.2rem + var(--keyboard-offset, 0px)) 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -166,6 +192,7 @@ function adjustForKeyboard() {
 .message-row {
   display: flex;
   margin-bottom: 0.5rem;
+  width: 100%;
 }
 .message-row.user {
   justify-content: flex-end;
@@ -181,8 +208,6 @@ function adjustForKeyboard() {
   line-height: 1.5;
   word-break: break-word;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  margin-left: 0;
-  margin-right: 0;
 }
 .message-row.user .message-bubble.user {
   margin-left: auto;
@@ -194,6 +219,18 @@ function adjustForKeyboard() {
   margin-left: 0;
   align-self: flex-start;
 }
+.message-bubble.user {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 18px;
+}
+.message-bubble.ai {
+  background: #fff3e0;
+  color: #b35d3a;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 18px;
+}
 .error {
   color: #e74c3c;
   margin: 1rem 0 0 0.5rem;
@@ -201,11 +238,11 @@ function adjustForKeyboard() {
 .chatbot-inputbar {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   padding: 0.7rem 0.7rem 0.7rem 0.7rem;
   background: #fff;
   border-top: 1px solid #eee;
   flex-shrink: 0;
-  gap: 0.5rem;
 }
 .chatbot-inputbar input {
   flex: 1;
