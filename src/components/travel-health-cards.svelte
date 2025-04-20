@@ -629,14 +629,12 @@
 									</div>
 								{:else}
 									{#each card.rowOne.tiles.slice(0, 1) as tile}
-										<div class="tile" style="background-color: {tile.color}; color: white;">
-											<div style="font-size: 1.2rem; font-weight: bold;">Heat Index</div>
-											<div style="font-size: 2.2rem; font-weight: bold;">{tile.heatIndex !== null ? tile.heatIndex.toFixed(1) + '°C' : 'N/A'}</div>
-											<div style="font-size: 0.9rem;">
-												{tile.heatIndex !== null
-													? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
-													: 'No data'}
-											</div>
+										<div class="tile heat-index-tile" style="background: {tile.color};">
+											<div class="heat-index-label">Heat Index</div>
+											<div class="heat-index-value">{tile.heatIndex !== null ? tile.heatIndex.toFixed(1) + '°C' : 'N/A'}</div>
+											<div class="heat-index-condition">{tile.heatIndex !== null
+												? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
+												: 'No data'}</div>
 										</div>
 									{/each}
 								{/if}
@@ -647,8 +645,11 @@
 										<div class="tile-placeholder">INET-READY Status</div>
 									</div>
 								{:else}
-									<div class="tile" style="background-color: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'}; color: white;">
-										<div style="font-size: 1.2rem; font-weight: bold;">{card.rowOne.inetReady.status}</div>
+									<div class="tile inet-ready-tile" style="background: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'};">
+										<span class="inet-ready-badge">
+											<i class="bi bi-wifi" style="margin-right: 0.4em;"></i>
+											{card.rowOne.inetReady.status}
+										</span>
 									</div>
 								{/if}
 							</div>
@@ -656,11 +657,11 @@
 
 						<!-- Row 2: Advice -->
 						<div class="tile-row row-two">
-							<div class="tile" style="background: #f9f9f9; color: #333; width: 100%;">
+							<div class="tile advice-tile">
 								{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
-									<div style="font-size: 0.98rem; line-height: 1.5;">{card.rowOne.inetReady.advice}</div>
+									<div class="advice-text">{card.rowOne.inetReady.advice}</div>
 								{:else}
-									<div class="tile-placeholder">Travel advice will appear here.</div>
+									<div class="advice-placeholder">Travel advice will appear here.</div>
 								{/if}
 							</div>
 						</div>
@@ -673,23 +674,20 @@
 										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
 									</div>
 								{:else}
-									<div class="tile"
-  style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px; cursor: pointer;"
-  on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
-  on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
->
-  <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
-  <ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
-    {#each card.rowThree.tiles[0].pois as poi, j}
-      <li style="margin-bottom: 0.5rem;">
-        <span style="font-weight: 500;">{poi.title}</span>
-        {#if poi.address}
-          <br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
-        {/if}
-      </li>
-    {/each}
-  </ul>
-</div>
+									<div class="tile pois-tile" on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)} on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}>
+										<div class="pois-title">Nearby Cool Indoor Spots</div>
+										<ul class="pois-list">
+											{#each card.rowThree.tiles[0].pois as poi, j}
+												<li class="poi-item">
+													<span class="poi-title">{poi.title}</span>
+													{#if poi.address}
+														<span class="poi-address">{poi.address}</span>
+													{/if}
+													<i class="bi bi-geo-alt-fill poi-icon"></i>
+												</li>
+											{/each}
+										</ul>
+									</div>
 								{/if}
 							</div>
 							<div class="tile-column column-40">
@@ -1564,5 +1562,131 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+	.heat-index-tile {
+		border-radius: 16px;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 1.1rem 0.5rem 1.2rem 0.5rem;
+		min-height: 120px;
+		color: #fff;
+		position: relative;
+	}
+	.heat-index-label {
+		font-size: clamp(0.9rem, 2vw, 1.1rem);
+		font-weight: 500;
+		opacity: 0.92;
+		margin-bottom: 0.2em;
+		letter-spacing: 0.01em;
+	}
+	.heat-index-value {
+		font-size: clamp(2.1rem, 5vw, 2.7rem);
+		font-weight: 800;
+		line-height: 1.1;
+		margin-bottom: 0.15em;
+		letter-spacing: -0.01em;
+	}
+	.heat-index-condition {
+		font-size: clamp(1rem, 2vw, 1.2rem);
+		font-weight: 600;
+		opacity: 0.85;
+		text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+		margin-top: 0.1em;
+	}
+	.inet-ready-tile {
+		border-radius: 16px;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 120px;
+		color: #fff;
+		font-size: clamp(1.1rem, 2vw, 1.3rem);
+		font-weight: 700;
+		position: relative;
+	}
+	.inet-ready-badge {
+		display: inline-flex;
+		align-items: center;
+		background: rgba(255,255,255,0.13);
+		border-radius: 999px;
+		padding: 0.3em 1.1em;
+		font-size: clamp(1rem, 2vw, 1.1rem);
+		font-weight: 700;
+		letter-spacing: 0.01em;
+		box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+	}
+	.advice-tile {
+		background: linear-gradient(120deg, #f9f9f9 80%, #f3f3f3 100%);
+		border-radius: 14px;
+		box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+		padding: 1.1rem 1.2rem;
+		font-size: clamp(0.98rem, 2vw, 1.08rem);
+		color: #444;
+		font-weight: 400;
+		font-style: italic;
+		min-height: 110px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+	.advice-text {
+		font-style: italic;
+		font-weight: 400;
+		color: #444;
+	}
+	.advice-placeholder {
+		color: #aaa;
+		font-style: italic;
+		font-size: 0.98rem;
+	}
+	.pois-tile {
+		background: #f5f7fa;
+		color: #333;
+		border-radius: 14px;
+		box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 0.8rem 0.7rem;
+		min-height: 120px;
+		cursor: pointer;
+		display: flex;
+	}
+	.pois-title {
+		font-weight: 700;
+		font-size: clamp(1.05rem, 2vw, 1.15rem);
+		margin-bottom: 0.4rem;
+		color: #2d2d2d;
+	}
+	.pois-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		width: 100%;
+	}
+	.poi-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		margin-bottom: 0.5rem;
+	}
+	.poi-title {
+		font-weight: 600;
+		font-size: clamp(0.98rem, 2vw, 1.08rem);
+		color: #333;
+	}
+	.poi-address {
+		font-size: 0.85rem;
+		color: #888;
+		margin-left: 0.5em;
+	}
+	.poi-icon {
+		color: #b35d3a;
+		font-size: 1.1em;
+		margin-left: auto;
+		opacity: 0.7;
 	}
 </style>

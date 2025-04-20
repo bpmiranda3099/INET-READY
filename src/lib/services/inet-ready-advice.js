@@ -48,17 +48,27 @@ function isHeatVulnerable(medicalData) {
 	return false;
 }
 
+// Helper: extract city name before comma (e.g., 'Dasmariñas, Cavite' -> 'Dasmariñas')
+function extractCityName(city) {
+	if (!city) return '';
+	return city.split(',')[0].trim();
+}
+
 // Main function: get INET-READY status and advice
 export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
+	// Always sanitize city names to avoid province/region mismatches
+	const cleanFromCity = extractCityName(fromCity);
+	const cleanToCity = extractCityName(toCity);
+
 	const [fromData, toData] = await Promise.all([
-		getCityData(fromCity),
-		getCityData(toCity)
+		getCityData(cleanFromCity),
+		getCityData(cleanToCity)
 	]);
 	const fromHeat = fromData?.heat_index;
 	const toHeat = toData?.heat_index;
 	const fromLevel = getHeatIndexLevel(fromHeat);
 	const toLevel = getHeatIndexLevel(toHeat);
-	const distance = getDistanceBetweenCities(fromCity, toCity);
+	const distance = getDistanceBetweenCities(cleanFromCity, cleanToCity);
 	const vulnerable = isHeatVulnerable(medicalData);
 
 	let safe = true;
@@ -69,7 +79,7 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 	// Always remind to consult a healthcare professional for medical decisions
 
 	// Edge: Same city (no travel)
-	if (fromCity === toCity) {
+	if (cleanFromCity === cleanToCity) {
 		adviceParts.push('Origin and destination are the same. No travel needed.');
 		if (fromLevel === 'danger' || fromLevel === 'extreme') {
 			adviceParts.push('Stay indoors due to dangerous heat in your city.');
@@ -153,7 +163,7 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 
 	// If cities have different heat levels
 	if (fromLevel !== toLevel) {
-		adviceParts.push(`Note: Heat index differs between ${fromCity} (${fromLevel}) and ${toCity} (${toLevel}). Prepare accordingly.`);
+		adviceParts.push(`Note: Heat index differs between ${cleanFromCity} (${fromLevel}) and ${cleanToCity} (${toLevel}). Prepare accordingly.`);
 		if (fromLevel === 'safe' && toLevel === 'caution') adviceParts.push('Expect warmer conditions at your destination.');
 		if (fromLevel === 'caution' && toLevel === 'safe') adviceParts.push('It will be cooler at your destination.');
 		if (fromLevel === 'warning' && toLevel === 'danger') adviceParts.push('Conditions worsen as you travel. Take extra care.');
@@ -219,8 +229,8 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 	const status = safe ? 'INET-READY' : 'NOT INET-READY';
 	let advice = adviceParts.filter(Boolean).join(' ');
 	if (!advice) advice = safe
-		? `Travel from ${fromCity} to ${toCity} is considered safe at this time.`
-		: `Travel from ${fromCity} to ${toCity} is not recommended now due to: ${reasons.join(', ')}.`;
+		? `Travel from ${cleanFromCity} to ${cleanToCity} is considered safe at this time.`
+		: `Travel from ${cleanFromCity} to ${cleanToCity} is not recommended now due to: ${reasons.join(', ')}.`;
 
 	return {
 		status,
