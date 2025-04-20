@@ -1,6 +1,6 @@
 <script>
 	import { onMount, onDestroy, afterUpdate } from 'svelte';
-	import { availableCities } from '$lib/services/weather-data-service';
+	import { availableCities, getCityData } from '$lib/services/weather-data-service';
 	import { fade, fly, slide } from 'svelte/transition';
 	import { spring } from 'svelte/motion';
 	import MapBackground from './map-background.svelte';
@@ -164,12 +164,37 @@
 
 			// Reset to the first card
 			currentCard = 0;
+
+			// Fetch heat index for each card
+			await fetchHeatIndexesForCards(travelCards);
 		} catch (err) {
 			console.error('Error generating travel cards:', err);
 			error = 'Failed to generate travel cards. Please try again later.';
 		} finally {
 			loading = false;
 		}
+	}
+
+	// Helper to get heat index color
+	function getHeatIndexColor(heatIndex) {
+		if (heatIndex == null || isNaN(heatIndex)) return '#cccccc';
+		if (heatIndex < 27) return '#43a047'; // Green
+		if (heatIndex < 33) return '#fbc02d'; // Yellow
+		if (heatIndex < 42) return '#fb8c00'; // Orange
+		if (heatIndex < 52) return '#e53935'; // Red
+		return '#8e24aa'; // Purple
+	}
+
+	// Fetch heat index for all destination cities and update travelCards
+	async function fetchHeatIndexesForCards(cards) {
+		await Promise.all(cards.map(async (card) => {
+			const cityData = await getCityData(card.toCity);
+			const heatIndex = cityData?.heat_index ?? null;
+			card.rowOne.tiles = [{
+				heatIndex,
+				color: getHeatIndexColor(heatIndex)
+			}];
+		}));
 	}
 
 	/**
@@ -436,30 +461,26 @@
 						<!-- Row 2 - now becomes Row 1 -->
 						<div class="tile-row row-one">
 							<div class="tile-column column-40">
-								{#if card.rowTwo.tiles.length === 0}
+								{#if card.rowOne.tiles.length === 0}
 									<div class="tile empty-tile">
-										<div class="tile-placeholder">Column 1 Content</div>
+										<div class="tile-placeholder">Heat Index</div>
 									</div>
 								{:else}
-									{#each card.rowTwo.tiles.slice(0, 1) as tile}
-										<div class="tile">
-											<!-- Tile content will be filled later -->
+									{#each card.rowOne.tiles.slice(0, 1) as tile}
+										<div class="tile" style="background-color: {tile.color}; color: white;">
+											<div style="font-size: 1.2rem; font-weight: bold;">Heat Index</div>
+											<div style="font-size: 2.2rem; font-weight: bold;">{tile.heatIndex !== null ? tile.heatIndex.toFixed(1) + '°C' : 'N/A'}</div>
+											<div style="font-size: 0.9rem;">
+												{tile.heatIndex !== null
+													? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
+													: 'No data'}
+											</div>
 										</div>
 									{/each}
 								{/if}
 							</div>
 							<div class="tile-column column-60">
-								{#if card.rowTwo.tiles.length <= 1}
-									<div class="tile empty-tile">
-										<div class="tile-placeholder">Column 2 Content</div>
-									</div>
-								{:else}
-									{#each card.rowTwo.tiles.slice(1) as tile}
-										<div class="tile">
-											<!-- Tile content will be filled later -->
-										</div>
-									{/each}
-								{/if}
+								<!-- ...existing code for column 2... -->
 							</div>
 						</div>
 
@@ -1035,7 +1056,7 @@
 
 	.update-time {
 		color: #999;
-		font-size: 0.75rem;
+		font-size: 0.5rem;
 	}
 	/* Navigation dots */
 	.navigation-dots {
@@ -1301,7 +1322,7 @@
 
 	.city-name {
 		font-weight: 600;
-		font-size: 0.75rem;
+		font-size: 1.5rem;
 		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 		letter-spacing: 0.2px;
 		white-space: nowrap;
