@@ -159,18 +159,17 @@
 	// Helper to open Google Maps with pins for POIs
 	function openGoogleMapsWithPOIs(pois) {
 		if (!pois || pois.length === 0) return;
-			// Use up to 5 POIs, build a query with all their coordinates for Google Maps multi-pin search
-			const queries = pois.slice(0, 5).map(poi => {
-				// Prefer coordinates if available, else fallback to title+address
-				if (poi.lat && poi.lng) {
-					return `${poi.lat},${poi.lng}`;
-				} else {
-					return `${poi.title} ${poi.address}`.replace(/\s+/g, '+');
-				}
-			});
-			// Join with '/'
-			const url = `https://www.google.com/maps/dir/${queries.join('/')}`;
-			window.open(url, '_blank');
+		// Use up to 5 POIs, build a query with all their coordinates for Google Maps multi-pin search (not directions)
+		// We'll use a search query with all locations separated by ' | '
+		const queries = pois.slice(0, 5).map(poi => {
+			if (poi.lat && poi.lng) {
+				return `${poi.lat},${poi.lng}`;
+			} else {
+				return `${poi.title} ${poi.address}`;
+			}
+		});
+		const url = `https://www.google.com/maps/search/${encodeURIComponent(queries.join(' | '))}`;
+		window.open(url, '_blank');
 	}
 
 	/**
