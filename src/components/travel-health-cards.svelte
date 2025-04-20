@@ -433,26 +433,11 @@
 					</div>
 
 					<div class="card-body">
-						<!-- Row 1 - 15% height -->
+						<!-- Row 2 - now becomes Row 1 -->
 						<div class="tile-row row-one">
-							{#if card.rowOne.tiles.length === 0}
-								<div class="tile empty-tile">
-									<div class="tile-placeholder">Row 1 Content</div>
-								</div>
-							{:else}
-								{#each card.rowOne.tiles as tile}
-									<div class="tile">
-										<!-- Tile content will be filled later -->
-									</div>
-								{/each}
-							{/if}
-						</div>
-
-						<!-- Row 2 - 15% height -->
-						<div class="tile-row row-two">
 							{#if card.rowTwo.tiles.length === 0}
 								<div class="tile empty-tile">
-									<div class="tile-placeholder">Row 2 Content</div>
+									<div class="tile-placeholder">Row 1 Content</div>
 								</div>
 							{:else}
 								{#each card.rowTwo.tiles as tile}
@@ -463,11 +448,11 @@
 							{/if}
 						</div>
 
-						<!-- Row 3 - 30% height -->
-						<div class="tile-row row-three">
+						<!-- Row 3 - now becomes Row 2 -->
+						<div class="tile-row row-two">
 							{#if card.rowThree.tiles.length === 0}
 								<div class="tile empty-tile">
-									<div class="tile-placeholder">Row 3 Content</div>
+									<div class="tile-placeholder">Row 2 Content</div>
 								</div>
 							{:else}
 								{#each card.rowThree.tiles as tile}
@@ -478,11 +463,11 @@
 							{/if}
 						</div>
 
-						<!-- Row 4 - 40% height -->
-						<div class="tile-row row-four">
+						<!-- Row 4 - now becomes Row 3 -->
+						<div class="tile-row row-three">
 							{#if card.rowFour.tiles.length === 0}
 								<div class="tile empty-tile">
-									<div class="tile-placeholder">Row 4 Content</div>
+									<div class="tile-placeholder">Row 3 Content</div>
 								</div>
 							{:else}
 								{#each card.rowFour.tiles as tile}
@@ -801,23 +786,18 @@
 		margin-bottom: 0.5rem; /* Reduced margin */
 	}
 
-	/* Height distribution as specified: 15%, 15%, 30%, 40% */
+	/* Adjusted height distribution: 25%, 35%, 40% */
 	.row-one {
-		height: 15%;
-		min-height: 60px;
+		height: 25%;
+		min-height: 100px;
 	}
 
 	.row-two {
-		height: 15%;
-		min-height: 60px;
+		height: 35%;
+		min-height: 140px;
 	}
 
 	.row-three {
-		height: 30%;
-		min-height: 120px;
-	}
-
-	.row-four {
 		height: 40%;
 		min-height: 160px;
 		margin-bottom: 0;
