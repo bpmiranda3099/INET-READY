@@ -14,6 +14,8 @@ let error = null;
 let medicalData = null;
 let heatIndexData = null;
 let heatIndexPredictions = null;
+let inputRef;
+let containerRef;
 
 onMount(async () => {
   try {
@@ -23,137 +25,210 @@ onMount(async () => {
   } catch (e) {
     error = 'Failed to load context data.';
   }
+  // Scroll to bottom on mount
+  setTimeout(scrollToBottom, 100);
 });
+
+function scrollToBottom() {
+  if (containerRef) {
+    containerRef.scrollTop = containerRef.scrollHeight;
+  }
+}
 
 async function sendMessage() {
   if (!input.trim()) return;
   messages = [...messages, { sender: 'user', text: input }];
   loading = true;
   error = null;
+  const chatHistory = messages.map(m => ({ role: m.sender === 'user' ? 'user' : 'model', text: m.text }));
   try {
     const context = {
       user,
       medicalData,
       heatIndexData,
-      heatIndexPredictions
+      heatIndexPredictions,
+      chatHistory
     };
     const response = await askGemini(input, context);
     messages = [...messages, { sender: 'ai', text: response }];
     input = '';
+    setTimeout(scrollToBottom, 100);
   } catch (e) {
     error = 'AI failed to respond.';
   } finally {
     loading = false;
   }
 }
+
+function handleInputFocus() {
+  // On mobile, scroll input into view
+  setTimeout(() => {
+    if (inputRef) inputRef.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, 100);
+}
 </script>
 
-<div class="chatbot-container">
-  <div class="chatbot-header">
-    <span>AI Health Assistant</span>
-    <button class="close-btn" on:click={onClose} aria-label="Close">×</button>
-  </div>
-  <div class="chatbot-messages">
+<div class="chatbot-fullpage">
+  <header class="chatbot-appbar">
+    <button class="close-btn" on:click={onClose} aria-label="Close"><i class="bi bi-arrow-left"></i></button>
+    <span class="appbar-title">AI Health Assistant</span>
+  </header>
+  <main class="chatbot-main" bind:this={containerRef}>
     {#each messages as msg}
-      <div class="message {msg.sender}">{msg.text}</div>
+      <div class="message-row {msg.sender}">
+        <div class="message-bubble {msg.sender}">{msg.text}</div>
+      </div>
     {/each}
     {#if loading}
-      <div class="message ai">Thinking...</div>
+      <div class="message-row ai"><div class="message-bubble ai">Thinking...</div></div>
     {/if}
     {#if error}
       <div class="error">{error}</div>
     {/if}
-  </div>
-  <form class="chatbot-input" on:submit|preventDefault={sendMessage}>
-    <input type="text" bind:value={input} placeholder="Ask about your health, heat index, etc..." autocomplete="off" />
-    <button type="submit" disabled={loading || !input.trim()}>Send</button>
+  </main>
+  <form class="chatbot-inputbar" on:submit|preventDefault={sendMessage}>
+    <input type="text" bind:value={input} placeholder="Ask about your health, heat index, etc..." autocomplete="off" bind:this={inputRef} on:focus={handleInputFocus} />
+    <button type="submit" disabled={loading || !input.trim()}><i class="bi bi-send"></i></button>
   </form>
 </div>
 
 <style>
-.chatbot-container {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  max-width: 420px;
-  width: 100%;
-  margin: 2rem auto;
+.chatbot-fullpage {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: #f7f7f7;
   display: flex;
   flex-direction: column;
-  height: 80vh;
-  position: relative;
+  height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  max-height: 100vh;
+  overscroll-behavior: contain;
 }
-.chatbot-header {
+.chatbot-appbar {
   background: #dd815e;
   color: white;
-  padding: 1rem;
-  border-radius: 16px 16px 0 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-size: 1.2rem;
+  height: 56px;
+  padding: 0 1rem;
+  box-shadow: 0 2px 8px rgba(221,129,94,0.08);
+  font-size: 1.15rem;
+  flex-shrink: 0;
 }
 .close-btn {
-  background: transparent;
+  background: none;
   border: none;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  margin-right: 1rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
-.chatbot-messages {
+.appbar-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.2px;
+}
+.chatbot-main {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-bottom: 1px solid #eee;
+  padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #f7f7f7;
 }
-.message {
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  max-width: 80%;
+.message-row {
+  display: flex;
+  margin-bottom: 0.5rem;
+}
+.message-row.user {
+  justify-content: flex-end;
+}
+.message-row.ai {
+  justify-content: flex-start;
+}
+.message-bubble {
+  max-width: 80vw;
+  padding: 0.85rem 1.1rem;
+  border-radius: 18px;
+  font-size: 1rem;
+  line-height: 1.5;
   word-break: break-word;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.message.user {
+.message-bubble.user {
   background: #e3f2fd;
-  align-self: flex-end;
   color: #1976d2;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 18px;
+  align-self: flex-end;
 }
-.message.ai {
+.message-bubble.ai {
   background: #fff3e0;
-  align-self: flex-start;
   color: #b35d3a;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 18px;
+  align-self: flex-start;
 }
 .error {
   color: #e74c3c;
-  margin-bottom: 1rem;
+  margin: 1rem 0 0 0.5rem;
 }
-.chatbot-input {
+.chatbot-inputbar {
   display: flex;
-  padding: 1rem;
-  background: white;
-  border-radius: 0 0 16px 16px;
+  align-items: center;
+  padding: 0.7rem 0.7rem 0.7rem 0.7rem;
+  background: #fff;
+  border-top: 1px solid #eee;
+  flex-shrink: 0;
+  gap: 0.5rem;
 }
-.chatbot-input input {
+.chatbot-inputbar input {
   flex: 1;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
   border: 1px solid #eee;
   font-size: 1rem;
-  margin-right: 0.5rem;
+  background: #f9f9f9;
+  outline: none;
+  transition: border 0.2s;
 }
-.chatbot-input button {
+.chatbot-inputbar input:focus {
+  border: 1.5px solid #dd815e;
+  background: #fff;
+}
+.chatbot-inputbar button {
   background: #dd815e;
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1.2rem;
-  font-size: 1rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: background 0.2s;
 }
-.chatbot-input button:disabled {
+.chatbot-inputbar button:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+@media (max-width: 600px) {
+  .chatbot-fullpage {
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+  .chatbot-main {
+    padding-bottom: 1.5rem;
+  }
+  .chatbot-inputbar {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
 }
 </style>
