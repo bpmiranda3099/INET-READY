@@ -156,6 +156,16 @@
 		return results.slice(0, limit);
 	}
 
+	// Helper to open Google Maps with pins for POIs
+	function openGoogleMapsWithPOIs(pois) {
+		if (!pois || pois.length === 0) return;
+		// Google Maps supports up to 10 waypoints in directions, but for pins, we can use a search query with all coordinates
+		// We'll use a custom search URL with all locations as a query string
+		const pinStrings = pois.map(poi => `${poi.title} ${poi.address}`.replace(/\s+/g, '+')).join('+or+');
+		const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pinStrings)}`;
+		window.open(url, '_blank');
+	}
+
 	/**
 	 * Generate travel cards for each preferred city
 	 */
@@ -573,19 +583,24 @@
 										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
 									</div>
 								{:else}
-									<div class="tile" style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px;">
-										<div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
-										<ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
-											{#each card.rowThree.tiles[0].pois as poi, j}
-												<li style="margin-bottom: 0.5rem;">
-													<span style="font-weight: 500;">{poi.title}</span>
-													{#if poi.address}
-														<br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
-													{/if}
-												</li>
-											{/each}
-										</ul>
-									</div>
+									<div class="tile"
+  style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px; cursor: pointer;"
+  on:click={() => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois)}
+  on:touchend={() => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois)}
+>
+  <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
+  <ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
+    {#each card.rowThree.tiles[0].pois as poi, j}
+      <li style="margin-bottom: 0.5rem;">
+        <span style="font-weight: 500;">{poi.title}</span>
+        {#if poi.address}
+          <br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
+        {/if}
+      </li>
+    {/each}
+  </ul>
+  <span style="font-size:0.85rem;color:#1976d2;margin-top:0.5rem;">Open in Google Maps</span>
+</div>
 								{/if}
 							</div>
 							<div class="tile-column column-40">
