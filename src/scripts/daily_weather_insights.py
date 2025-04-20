@@ -547,11 +547,21 @@ def generate_and_notify_city_insights(db, fcm, forecast_data):
 def send_city_insight_to_all_users(db, fcm, forecast_data):
     """
     For each user, send a push notification with the insight for their homeCity only.
+    Each city insight is generated once and reused for all users from that city.
     """
     today = datetime.now().strftime("%Y-%m-%d")
+    cities = forecast_data.get('cities', {})
+    # 1. Generate all city insights once
+    city_insights = {}
+    for city_name, city_forecast in cities.items():
+        city_insight = call_gemini_via_node_bridge({'city': city_name, 'forecast': city_forecast})
+        if city_insight:
+            city_insights[city_name] = city_insight
+        else:
+            print(f"Failed to generate insight for {city_name}")
+    # 2. Send the correct city insight to each user
     users_ref = db.collection('users')
     user_docs = users_ref.stream()
-    cities = forecast_data.get('cities', {})
     for user_doc in user_docs:
         user_id = user_doc.id
         user_data = user_doc.to_dict()
@@ -561,13 +571,9 @@ def send_city_insight_to_all_users(db, fcm, forecast_data):
             continue
         city_pref_data = city_pref_doc.to_dict()
         home_city = city_pref_data.get('homeCity')
-        if not home_city or home_city not in cities:
+        if not home_city or home_city not in city_insights:
             continue
-        city_forecast = cities[home_city]
-        # Generate city-specific insight
-        city_insight = call_gemini_via_node_bridge({'city': home_city, 'forecast': city_forecast})
-        if not city_insight:
-            continue
+        city_insight = city_insights[home_city]
         # Get FCM token
         token = (
             user_data.get('fcmToken')
