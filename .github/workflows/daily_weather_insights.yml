@@ -1,0 +1,81 @@
+name: Daily Weather Insights
+
+on:
+  schedule:
+    # Run daily at 6:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  generate-insights:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout repository
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      # Step 3: Set up Node.js (for gemini-service.js)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: |
+          # Python dependencies
+          python -m pip install --upgrade pip
+          pip install firebase-admin requests
+
+          # Node.js dependencies
+          npm install @google/generative-ai
+
+      # Step 5: Decode Firebase credentials from GitHub Secrets
+      - name: Decode Firebase credentials
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" | tr -d '\n' | base64 -d > ./firebase_service_account.json
+
+          # Verify the JSON is valid (but don't show contents in logs)
+          cat ./firebase_service_account.json | python -m json.tool > /dev/null || echo "Warning: Invalid JSON format in credentials file"
+
+      # Step 6: Generate insights and send notifications
+      - name: Generate insights and send notifications
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ./firebase_service_account.json
+          VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          cd src/scripts
+          # Run without --topic parameter to send to all users individually
+          python daily_weather_insights.py
+
+      # Step 7: Upload insights as artifact
+      - name: Upload insights as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weather-insights
+          path: |
+            ./logs/insights_*.txt
+            ./logs/notifications_*.json
+          retention-days: 7
+          if-no-files-found: ignore
+
+      # Step 8: Clean up credentials
+      - name: Clean up credentials
+        if: always()
+        run: |
+          rm -f ./firebase_service_account.json
+
+      # Step 9: Log completion
+      - name: Log completion
+        run: |
+          echo "Weather insights and notifications completed at $(date)"
+          echo "Process completed with status: ${{ job.status }}"

@@ -14,8 +14,9 @@
         serviceWorkerError 
     } from '../lib/services/service-worker';
     import { getUserCityPreferences } from '$lib/services/user-preferences-service';
-    import { getNotificationHistory, markNotificationAsRead, clearNotificationHistory } from '$lib/services/notification-service';
+    import { getNotificationHistory, markNotificationAsRead, clearNotificationHistory, showNotification } from '$lib/services/notification-service';
     import { hasMedicalRecord, getMedicalData, deleteMedicalData } from '$lib/services/medical-api.js';
+    import { syncCityInsightsToDashboard } from '$lib/services/city-insight-sync';
     
     // Components
     import MedicalProfile from './medicalprofile.svelte';
@@ -186,11 +187,23 @@
                 }
             }
             
-            // Subscribe to foreground messages
-            const unsubscribeMessages = onMessageListener();
+            // Subscribe to foreground messages and store them in dashboard notification history
+            unsubscribeMessages = onMessageListener((payload) => {
+                const notification = payload.notification || {};
+                const data = payload.data || {};
+                const title = notification.title || data.title || 'INET-READY Alert';
+                const message = notification.body || data.body || 'You have a new alert.';
+                const type = data.type || 'info';
+                showNotification(message, type, 0, title);
+            });
             
             // Check if user has medical record
             medicalRecordExists = await hasMedicalRecord();
+
+            // After loading city preferences, sync city insights to dashboard
+            if (hasCityPreferences && homeCity) {
+                await syncCityInsightsToDashboard(homeCity);
+            }
         })();
         let unsubscribeMessages = onMessageListener();
         return () => {

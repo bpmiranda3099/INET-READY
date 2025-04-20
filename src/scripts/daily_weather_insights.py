@@ -474,6 +474,53 @@ def check_node_installation():
     except (subprocess.SubprocessError, FileNotFoundError):
         return False
 
+def generate_and_notify_city_insights(db, fcm, forecast_data):
+    today = datetime.now().strftime("%Y-%m-%d")
+    cities = forecast_data.get('cities', {})
+    for city_name, city_forecast in cities.items():
+        print(f"Generating insight for {city_name}...")
+        # Generate city-specific insight using Node.js bridge
+        city_insight = call_gemini_via_node_bridge({'city': city_name, 'forecast': city_forecast})
+        if not city_insight:
+            print(f"Failed to generate insight for {city_name}")
+            continue
+
+        # Store in Firestore: weather_insights/{date}/cities/{cityName}/insight
+        insight_doc_ref = db.collection('weather_insights').document(today).collection('cities').document(city_name)
+        insight_doc_ref.set({
+            'insight': city_insight,
+            'timestamp': firestore.SERVER_TIMESTAMP
+        })
+        print(f"Stored insight for {city_name} in Firestore.")
+
+        # Find users whose user_preferences.homecity == city_name
+        users_ref = db.collection('users')
+        users_query = users_ref.where('user_preferences.homecity', '==', city_name)
+        user_docs = users_query.stream()
+        tokens = []
+        for user_doc in user_docs:
+            user_data = user_doc.to_dict()
+            token = user_data.get('fcm_token')
+            if token:
+                tokens.append(token)
+
+        if not tokens:
+            print(f"No users found in {city_name} to notify.")
+            continue
+
+        # Send push notification to these users
+        notification = messaging.Notification(
+            title=f"Weather Insight for {city_name}",
+            body=city_insight[:MAX_NOTIFICATION_LENGTH] + ("..." if len(city_insight) > MAX_NOTIFICATION_LENGTH else "")
+        )
+        message = messaging.MulticastMessage(
+            notification=notification,
+            data={'city': city_name, 'type': 'city_weather_insight'},
+            tokens=tokens
+        )
+        response = fcm.send_multicast(message)
+        print(f"Sent {response.success_count} notifications to {city_name} users ({response.failure_count} failures)")
+
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(
@@ -534,6 +581,9 @@ def main():
         print(f"Notification title: {notification['title']}")
         print(f"Notification body: {notification['body']}")
     
+    # Generate, store, and notify city-specific insights
+    generate_and_notify_city_insights(db, fcm, forecast_data)
+
     return 0
 
 if __name__ == "__main__":

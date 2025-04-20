@@ -4,7 +4,7 @@ import { registerServiceWorker, isServiceWorkerActive } from '../services/servic
 // Default empty exports for SSR compatibility
 let messaging = null;
 export let requestFCMToken = async () => null;
-export let onMessageListener = () => () => {};
+export let onMessageListener = (callback) => () => {};
 
 // Only import and initialize Firebase messaging in browser context
 if (typeof window !== "undefined") {

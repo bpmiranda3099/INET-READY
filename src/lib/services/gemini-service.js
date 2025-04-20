@@ -94,3 +94,37 @@ export async function askInetReadyAssistant(userMessage, chatHistory = []) {
     return `Sorry, I couldn't process your request. (${error.message || 'Unknown error'})`;
   }
 }
+
+/**
+ * Generate daily weather insights from forecast data using Gemini
+ * @param {object} forecastData - The weather forecast data (cities, values, etc)
+ * @returns {Promise<string>} The generated insights text
+ */
+export async function generateDailyWeatherInsights(forecastData) {
+  try {
+    // Compose a prompt for Gemini based on the forecast data
+    const prompt = `You are INET-READY's smart travel and health assistant.\n\nHere is the latest Cavite weather forecast data (JSON):\n\n${JSON.stringify(forecastData, null, 2)}\n\nPlease provide:\n- A concise summary of today's weather and heat index for all cities\n- Specific travel and health tips for each city\n- Highlight any cities with extreme or unusual conditions\n- Use clear, friendly language\n- Start with a section titled "TODAY'S SUMMARY:"\n- Limit the response to 800 words\n`;
+    const result = await chatModel.generateContent(prompt);
+    return result.response.text().trim();
+  } catch (error) {
+    console.error("Error generating daily weather insights:", error);
+    return "Sorry, I couldn't generate weather insights today.";
+  }
+}
+
+/**
+ * Generate a weather insight for a single city using Gemini
+ * @param {string} cityName - The name of the city
+ * @param {object} cityForecastData - The forecast data for the city
+ * @returns {Promise<string>} The generated insight for the city
+ */
+export async function generateCityWeatherInsight(cityName, cityForecastData) {
+  try {
+    const prompt = `You are INET-READY's smart travel and health assistant.\n\nHere is the latest weather forecast for ${cityName} (JSON):\n\n${JSON.stringify(cityForecastData, null, 2)}\n\nPlease provide:\n- A concise summary of today's weather and heat index for ${cityName}\n- Specific travel and health tips for this city\n- Highlight any extreme or unusual conditions\n- Use clear, friendly language\n- Start with a section titled "TODAY'S SUMMARY:"\n- Limit the response to 300 words\n`;
+    const result = await chatModel.generateContent(prompt);
+    return result.response.text().trim();
+  } catch (error) {
+    console.error(`Error generating weather insight for ${cityName}:`, error);
+    return `Sorry, I couldn't generate a weather insight for ${cityName} today.`;
+  }
+}
