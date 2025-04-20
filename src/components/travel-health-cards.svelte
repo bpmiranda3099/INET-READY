@@ -122,7 +122,7 @@
 		}
 	});
 	// Helper: fetch nearby POIs using Mapbox Search Box API
-	async function fetchNearbyPOIs({ lat, lng, types = ["cafe", "mall", "establishment"], limit = 5 }) {
+	async function fetchNearbyPOIs({ lat, lng, types = ["cafe", "mall", "establishment", "restaurant", "shopping", "museum"], limit = 10 }) {
 		// @ts-ignore
 		const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN; 
 		if (!accessToken) {
@@ -141,11 +141,14 @@
 				const features = data.features || [];
 				for (const f of features) {
 					const props = f.properties || {};
+					// Add lat/lng for Google Maps pins
 					results.push({
 						title: props.name || '',
 						address: props.full_address || props.address || '',
 						category: props.poi_category ? props.poi_category[0] : '',
-						id: props.mapbox_id || ''
+						id: props.mapbox_id || '',
+						lat: props.coordinates?.latitude || f.geometry?.coordinates?.[1],
+						lng: props.coordinates?.longitude || f.geometry?.coordinates?.[0]
 					});
 				}
 			} catch (e) {
@@ -153,7 +156,17 @@
 			}
 		}
 
-		return results.slice(0, limit);
+		// Remove duplicates by mapbox_id
+		const unique = [];
+		const seen = new Set();
+		for (const poi of results) {
+			if (!seen.has(poi.id)) {
+				unique.push(poi);
+				seen.add(poi.id);
+			}
+		}
+
+		return unique.slice(0, 5);
 	}
 
 	// Helper to open Google Maps with pins for POIs
