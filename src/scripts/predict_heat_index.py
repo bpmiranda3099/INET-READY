@@ -66,10 +66,9 @@ def check_required_columns(data, required_columns):
     try:
         if required_columns.issubset(data.columns):
             logger.info("CSV has all the required columns")
-            # Use more efficient datetime parsing with a specified format if known
             data['Date'] = pd.to_datetime(data['Date'], errors='coerce')
-            
-            # Use inplace sort for memory efficiency
+            # Make all dates timezone-naive
+            data['Date'] = data['Date'].dt.tz_localize(None)
             data.sort_values(by=['City', 'Date'], inplace=True)
         else:
             missing_cols = required_columns - set(data.columns)
