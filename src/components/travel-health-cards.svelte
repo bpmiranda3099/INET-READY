@@ -435,17 +435,32 @@
 					<div class="card-body">
 						<!-- Row 2 - now becomes Row 1 -->
 						<div class="tile-row row-one">
-							{#if card.rowTwo.tiles.length === 0}
-								<div class="tile empty-tile">
-									<div class="tile-placeholder">Row 1 Content</div>
-								</div>
-							{:else}
-								{#each card.rowTwo.tiles as tile}
-									<div class="tile">
-										<!-- Tile content will be filled later -->
+							<div class="tile-column column-40">
+								{#if card.rowTwo.tiles.length === 0}
+									<div class="tile empty-tile">
+										<div class="tile-placeholder">Column 1 Content</div>
 									</div>
-								{/each}
-							{/if}
+								{:else}
+									{#each card.rowTwo.tiles.slice(0, 1) as tile}
+										<div class="tile">
+											<!-- Tile content will be filled later -->
+										</div>
+									{/each}
+								{/if}
+							</div>
+							<div class="tile-column column-60">
+								{#if card.rowTwo.tiles.length <= 1}
+									<div class="tile empty-tile">
+										<div class="tile-placeholder">Column 2 Content</div>
+									</div>
+								{:else}
+									{#each card.rowTwo.tiles.slice(1) as tile}
+										<div class="tile">
+											<!-- Tile content will be filled later -->
+										</div>
+									{/each}
+								{/if}
+							</div>
 						</div>
 
 						<!-- Row 3 - now becomes Row 2 -->
@@ -465,17 +480,47 @@
 
 						<!-- Row 4 - now becomes Row 3 -->
 						<div class="tile-row row-three">
-							{#if card.rowFour.tiles.length === 0}
-								<div class="tile empty-tile">
-									<div class="tile-placeholder">Row 3 Content</div>
-								</div>
-							{:else}
-								{#each card.rowFour.tiles as tile}
-									<div class="tile">
-										<!-- Tile content will be filled later -->
+							<div class="tile-column column-60">
+								{#if card.rowFour.tiles.length === 0}
+									<div class="tile empty-tile">
+										<div class="tile-placeholder">Column 1 Content</div>
 									</div>
-								{/each}
-							{/if}
+								{:else}
+									{#each card.rowFour.tiles.slice(0, 1) as tile}
+										<div class="tile">
+											<!-- Tile content will be filled later -->
+										</div>
+									{/each}
+								{/if}
+							</div>
+							<div class="tile-column column-40">
+								<div class="tile-row sub-row">
+									{#if card.rowFour.tiles.length <= 1}
+										<div class="tile empty-tile">
+											<div class="tile-placeholder">Row 1 Content</div>
+										</div>
+									{:else}
+										{#each card.rowFour.tiles.slice(1, 2) as tile}
+											<div class="tile">
+												<!-- Tile content will be filled later -->
+											</div>
+										{/each}
+									{/if}
+								</div>
+								<div class="tile-row sub-row">
+									{#if card.rowFour.tiles.length <= 2}
+										<div class="tile empty-tile">
+											<div class="tile-placeholder">Row 2 Content</div>
+										</div>
+									{:else}
+										{#each card.rowFour.tiles.slice(2) as tile}
+											<div class="tile">
+												<!-- Tile content will be filled later -->
+											</div>
+										{/each}
+									{/if}
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -790,6 +835,21 @@
 	.row-one {
 		height: 25%;
 		min-height: 100px;
+		display: flex;
+	}
+
+	.column-40 {
+		width: 40%;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.column-60 {
+		width: 60%;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 
 	.row-two {
@@ -800,7 +860,14 @@
 	.row-three {
 		height: 40%;
 		min-height: 160px;
+		display: flex;
 		margin-bottom: 0;
+	}
+
+	.sub-row {
+		height: 50%;
+		display: flex;
+		gap: 0.5rem;
 	}
 
 	.tile {
