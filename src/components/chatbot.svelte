@@ -52,6 +52,8 @@ function scrollToBottom() {
 async function sendMessage() {
   if (!input.trim()) return;
   messages = [...messages, { sender: 'user', text: input }];
+  const sentInput = input;
+  input = '';
   loading = true;
   error = null;
   const chatHistory = messages.map(m => ({ role: m.sender === 'user' ? 'user' : 'model', text: m.text }));
@@ -63,9 +65,8 @@ async function sendMessage() {
       heatIndexPredictions,
       chatHistory
     };
-    const response = await askGemini(input, context);
+    const response = await askGemini(sentInput, context);
     messages = [...messages, { sender: 'ai', text: response }];
-    input = '';
     setTimeout(scrollToBottom, 100);
   } catch (e) {
     error = 'AI failed to respond.';
@@ -115,8 +116,14 @@ $: document.documentElement.style.setProperty('--keyboard-offset', keyboardOffse
     {/if}
   </main>
   <form class="chatbot-inputbar" on:submit|preventDefault={sendMessage} style="bottom: {keyboardOffset}px">
-    <input type="text" bind:value={input} placeholder="Ask about your health, heat index, etc..." autocomplete="off" bind:this={inputRef} on:focus={handleInputFocus} />
-    <button type="submit" disabled={loading || !input.trim()}><i class="bi bi-send"></i></button>
+    <div class="row w-100 g-0 align-items-center">
+      <div class="col">
+        <input type="text" bind:value={input} placeholder="Ask about your health, heat index, etc..." autocomplete="off" bind:this={inputRef} on:focus={handleInputFocus} class="form-control border-0 bg-light" />
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary ms-2 d-flex align-items-center justify-content-center" disabled={loading || !input.trim()} style="width:40px;height:40px;"><i class="bi bi-send"></i></button>
+      </div>
+    </div>
   </form>
 </div>
 
@@ -236,44 +243,33 @@ $: document.documentElement.style.setProperty('--keyboard-offset', keyboardOffse
   margin: 1rem 0 0 0.5rem;
 }
 .chatbot-inputbar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 0.7rem 0.7rem 0.7rem;
+  display: block;
+  width: 100%;
   background: #fff;
   border-top: 1px solid #eee;
   flex-shrink: 0;
+  padding: 0.7rem 0.7rem 0.7rem 0.7rem;
 }
-.chatbot-inputbar input {
-  flex: 1;
-  padding: 0.7rem 1rem;
+.chatbot-inputbar input.form-control {
   border-radius: 999px;
-  border: 1px solid #eee;
   font-size: 1rem;
   background: #f9f9f9;
   outline: none;
   transition: border 0.2s;
+  box-shadow: none;
 }
-.chatbot-inputbar input:focus {
+.chatbot-inputbar input.form-control:focus {
   border: 1.5px solid #dd815e;
   background: #fff;
+  box-shadow: none;
 }
-.chatbot-inputbar button {
+.chatbot-inputbar button.btn {
   background: #dd815e;
   color: white;
   border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
   transition: background 0.2s;
-  margin-left: 0.3rem;
 }
-.chatbot-inputbar button:disabled {
+.chatbot-inputbar button.btn:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
