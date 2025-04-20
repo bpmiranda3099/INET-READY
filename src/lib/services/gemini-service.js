@@ -40,7 +40,7 @@ MEDICAL DATA CONSIDERATION REQUIREMENTS:
 - Address age-appropriate concerns in recommendations
 - If no medical data is provided, offer general advice and mention this limitation
 
-Always be concise, friendly, and factual. If a question is outside your scope, politely indicate so. Never provide medical diagnoses—remind users to consult a healthcare professional for urgent or personal medical issues.
+Always be concise (word limit: 20 words or less), friendly, and factual. If a question is outside your scope, politely indicate so. Never provide medical diagnoses—remind users to consult a healthcare professional for urgent or personal medical issues.
 `;
 
 // Create the chatbot model with system instructions
@@ -103,7 +103,7 @@ export async function askInetReadyAssistant(userMessage, chatHistory = []) {
 export async function generateDailyWeatherInsights(forecastData) {
   try {
     // Compose a prompt for Gemini based on the forecast data
-    const prompt = `You are INET-READY's smart travel and health assistant.\n\nHere is the latest Cavite weather forecast data (JSON):\n\n${JSON.stringify(forecastData, null, 2)}\n\nPlease provide:\n- A concise summary of today's weather and heat index for all cities\n- Specific travel and health tips for each city\n- Highlight any cities with extreme or unusual conditions\n- Use clear, friendly language\n- Start with a section titled "TODAY'S SUMMARY:"\n- Limit the response to 800 words\n`;
+    const prompt = `You are INET-READY's smart travel and health assistant.\n\nHere is the latest Cavite weather forecast data (JSON):\n\n${JSON.stringify(forecastData, null, 2)}\n\nPlease provide:\n- A concise summary of today's weather and heat index for all cities\n- Specific travel and health tips for each city\n- Highlight any cities with extreme or unusual conditions\n- Use clear, friendly language\n- Start with a section titled "TODAY'S SUMMARY:"\n- Limit the response to 100 words\n`;
     const result = await chatModel.generateContent(prompt);
     return result.response.text().trim();
   } catch (error) {
@@ -120,7 +120,7 @@ export async function generateDailyWeatherInsights(forecastData) {
  */
 export async function generateCityWeatherInsight(cityName, cityForecastData) {
   try {
-    const prompt = `You are INET-READY's smart travel and health assistant.\n\nHere is the latest weather forecast for ${cityName} (JSON):\n\n${JSON.stringify(cityForecastData, null, 2)}\n\nPlease provide:\n- A concise summary of today's weather and heat index for ${cityName}\n- Specific travel and health tips for this city\n- Highlight any extreme or unusual conditions\n- Use clear, friendly language\n- Start with a section titled "TODAY'S SUMMARY:"\n- Limit the response to 300 words\n`;
+    const prompt = `You are INET-READY's smart travel and health assistant.\n\nHere is the latest weather forecast for ${cityName} (JSON):\n\n${JSON.stringify(cityForecastData, null, 2)}\n\nPlease provide:\n- A concise summary of today's weather and heat index for ${cityName}\n- Specific travel and health tips for this city\n- Highlight any extreme or unusual conditions\n- Use clear, friendly language\n- Start with a section titled "TODAY'S SUMMARY:"\n- Limit the response to 50 words\n`;
     const result = await chatModel.generateContent(prompt);
     return result.response.text().trim();
   } catch (error) {

@@ -17,16 +17,29 @@ let heatIndexPredictions = null;
 let inputRef;
 let containerRef;
 
-onMount(async () => {
-  try {
-    medicalData = await getMedicalData();
-    heatIndexData = await getAllHeatIndexData();
-    heatIndexPredictions = await getHeatIndexPredictions();
-  } catch (e) {
-    error = 'Failed to load context data.';
+onMount(() => {
+  // Run async logic separately
+  (async () => {
+    try {
+      medicalData = await getMedicalData();
+      heatIndexData = await getAllHeatIndexData();
+      heatIndexPredictions = await getHeatIndexPredictions();
+    } catch (e) {
+      error = 'Failed to load context data.';
+    }
+    // Scroll to bottom on mount
+    setTimeout(scrollToBottom, 100);
+  })();
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', adjustForKeyboard);
+    adjustForKeyboard();
   }
-  // Scroll to bottom on mount
-  setTimeout(scrollToBottom, 100);
+  return () => {
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', adjustForKeyboard);
+    }
+  };
 });
 
 function scrollToBottom() {
@@ -61,10 +74,19 @@ async function sendMessage() {
 }
 
 function handleInputFocus() {
-  // On mobile, scroll input into view
+  // On mobile, scroll input into view and adjust for keyboard
   setTimeout(() => {
     if (inputRef) inputRef.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    adjustForKeyboard();
   }, 100);
+}
+
+function adjustForKeyboard() {
+  // On mobile, adjust the chatbot-main height so input is always visible
+  if (window.visualViewport) {
+    const vh = window.visualViewport.height;
+    document.documentElement.style.setProperty('--chatbot-vh', vh + 'px');
+  }
 }
 </script>
 
@@ -159,19 +181,17 @@ function handleInputFocus() {
   line-height: 1.5;
   word-break: break-word;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-left: 0;
+  margin-right: 0;
 }
-.message-bubble.user {
-  background: #e3f2fd;
-  color: #1976d2;
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 18px;
+.message-row.user .message-bubble.user {
+  margin-left: auto;
+  margin-right: 0;
   align-self: flex-end;
 }
-.message-bubble.ai {
-  background: #fff3e0;
-  color: #b35d3a;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 18px;
+.message-row.ai .message-bubble.ai {
+  margin-right: auto;
+  margin-left: 0;
   align-self: flex-start;
 }
 .error {
@@ -214,21 +234,10 @@ function handleInputFocus() {
   justify-content: center;
   cursor: pointer;
   transition: background 0.2s;
+  margin-left: 0.3rem;
 }
 .chatbot-inputbar button:disabled {
   background: #ccc;
   cursor: not-allowed;
-}
-@media (max-width: 600px) {
-  .chatbot-fullpage {
-    height: 100dvh;
-    max-height: 100dvh;
-  }
-  .chatbot-main {
-    padding-bottom: 1.5rem;
-  }
-  .chatbot-inputbar {
-    padding-bottom: env(safe-area-inset-bottom, 0);
-  }
 }
 </style>
