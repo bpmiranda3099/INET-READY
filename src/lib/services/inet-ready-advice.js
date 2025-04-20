@@ -61,18 +61,43 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 	const distance = getDistanceBetweenCities(fromCity, toCity);
 	const vulnerable = isHeatVulnerable(medicalData);
 
-	// Decision logic
 	let safe = true;
 	let reasons = [];
 	let adviceParts = [];
 
+	// HIPAA/PH privacy: never display or infer specific diagnoses, only general risk
+	// Always remind to consult a healthcare professional for medical decisions
+
+	// Edge: Same city (no travel)
+	if (fromCity === toCity) {
+		adviceParts.push('Origin and destination are the same. No travel needed.');
+		if (fromLevel === 'danger' || fromLevel === 'extreme') {
+			adviceParts.push('Stay indoors due to dangerous heat in your city.');
+			safe = false;
+			reasons.push('Dangerous heat in your city');
+		}
+		if (fromLevel === 'safe') adviceParts.push('Enjoy your day!');
+		adviceParts.push('For any health concerns, consult a licensed healthcare provider.');
+		return {
+			status: safe ? 'INET-READY' : 'NOT INET-READY',
+			advice: adviceParts.join(' '),
+			fromHeat,
+			toHeat,
+			distance: 0,
+			fromLevel,
+			toLevel
+		};
+	}
+
+	// Distance logic
 	if (distance == null) {
 		safe = false;
 		reasons.push('Unknown route distance');
 		adviceParts.push('Unable to determine travel safety due to missing route data.');
 	}
-	if (distance !== null) {
-		if (distance < 10) adviceParts.push('Short trip: minimal travel risk.');
+	else {
+		if (distance < 1) adviceParts.push('Very short trip. Minimal risk.');
+		else if (distance < 10) adviceParts.push('Short trip: minimal travel risk.');
 		else if (distance < 50) adviceParts.push('Moderate distance: plan for hydration and rest.');
 		else if (distance < 100) adviceParts.push('Longer journey: bring water, sun protection, and take breaks.');
 		else {
@@ -84,6 +109,9 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 
 	// Heat index logic for both cities
 	const heatLevels = [fromLevel, toLevel];
+	if (fromLevel === 'unknown' || toLevel === 'unknown') {
+		adviceParts.push('Heat index data unavailable for one or both cities. Use general heat safety precautions.');
+	}
 	if (heatLevels.includes('extreme')) {
 		safe = false;
 		reasons.push('Extreme heat index');
@@ -100,18 +128,18 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 		adviceParts.push('Weather is favorable for travel.');
 	}
 
-	// Medical risk logic
+	// Medical risk logic (general, not specific)
 	if (vulnerable) {
 		if (heatLevels.includes('warning') || heatLevels.includes('danger') || heatLevels.includes('extreme')) {
 			safe = false;
-			reasons.push('Medical risk with current heat');
-			adviceParts.push('Your medical profile increases your risk in current heat. Consult your doctor before travel.');
+			reasons.push('Increased risk with current heat');
+			adviceParts.push('Individuals with certain health conditions or age groups may be at higher risk in this heat.');
 		} else {
-			adviceParts.push('You have medical conditions that may increase your risk. Monitor your health closely.');
+			adviceParts.push('Some individuals may be more sensitive to heat. Monitor your well-being during travel.');
 		}
 	}
 
-	// Specific advice for children and elderly
+	// Specific advice for children and elderly (general, not personal)
 	const age = Number(medicalData?.demographics?.age);
 	if (age) {
 		if (age < 10) adviceParts.push('Children are more sensitive to heat. Ensure frequent breaks and hydration.');
@@ -126,6 +154,10 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 	// If cities have different heat levels
 	if (fromLevel !== toLevel) {
 		adviceParts.push(`Note: Heat index differs between ${fromCity} (${fromLevel}) and ${toCity} (${toLevel}). Prepare accordingly.`);
+		if (fromLevel === 'safe' && toLevel === 'caution') adviceParts.push('Expect warmer conditions at your destination.');
+		if (fromLevel === 'caution' && toLevel === 'safe') adviceParts.push('It will be cooler at your destination.');
+		if (fromLevel === 'warning' && toLevel === 'danger') adviceParts.push('Conditions worsen as you travel. Take extra care.');
+		if (fromLevel === 'danger' && toLevel === 'warning') adviceParts.push('Conditions improve at your destination, but remain alert.');
 	}
 
 	// If user has no medical data
@@ -138,12 +170,53 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 		adviceParts.push('Monitor for signs of heat stress: dizziness, headache, or nausea.');
 	}
 
-	// If user is traveling during midday (optional, if time data is available)
-	// adviceParts.push('Avoid traveling during midday when heat is most intense.');
+	// Edge: Both cities have unknown heat index
+	if (fromLevel === 'unknown' && toLevel === 'unknown') {
+		adviceParts.push('No heat index data for either city. Use general heat safety precautions.');
+	}
+
+	// Edge: Distance is very large and both cities are dangerous/extreme
+	if (distance > 100 && (fromLevel === 'danger' || toLevel === 'danger' || fromLevel === 'extreme' || toLevel === 'extreme')) {
+		adviceParts.push('Traveling a long distance in dangerous heat is extremely risky. Postpone your trip.');
+		safe = false;
+	}
+
+	// Edge: Vulnerable and both cities are warning or higher
+	if (vulnerable && (fromLevel === 'warning' || toLevel === 'warning' || fromLevel === 'danger' || toLevel === 'danger' || fromLevel === 'extreme' || toLevel === 'extreme')) {
+		adviceParts.push('Combined risk factors make travel especially unsafe.');
+		safe = false;
+	}
+
+	// Edge: Not vulnerable, both cities are safe, but distance is long
+	if (!vulnerable && heatLevels.every(l => l === 'safe') && distance > 50) {
+		adviceParts.push('Even with safe weather, long trips require planning. Bring water and rest often.');
+	}
+
+	// Edge: Vulnerable, both cities are safe, distance is short
+	if (vulnerable && heatLevels.every(l => l === 'safe') && distance < 10) {
+		adviceParts.push('Conditions are good, but monitor your health during your trip.');
+	}
+
+	// Edge: Child or elderly, cities are caution or higher
+	if ((age < 10 || age > 65) && (fromLevel === 'caution' || toLevel === 'caution' || fromLevel === 'warning' || toLevel === 'warning')) {
+		adviceParts.push('Extra caution for children and elderly in warm weather.');
+	}
+
+	// Edge: If fromHeat or toHeat is very close to a threshold
+	if (fromHeat && Math.abs(fromHeat - 27) < 1) adviceParts.push('Heat index is near caution threshold. Monitor for changes.');
+	if (toHeat && Math.abs(toHeat - 27) < 1) adviceParts.push('Destination heat index is near caution threshold.');
+	if (fromHeat && Math.abs(fromHeat - 33) < 1) adviceParts.push('Heat index is near warning threshold.');
+	if (toHeat && Math.abs(toHeat - 33) < 1) adviceParts.push('Destination heat index is near warning threshold.');
+	if (fromHeat && Math.abs(fromHeat - 42) < 1) adviceParts.push('Heat index is near danger threshold.');
+	if (toHeat && Math.abs(toHeat - 42) < 1) adviceParts.push('Destination heat index is near danger threshold.');
+	if (fromHeat && Math.abs(fromHeat - 52) < 1) adviceParts.push('Heat index is near extreme threshold.');
+	if (toHeat && Math.abs(toHeat - 52) < 1) adviceParts.push('Destination heat index is near extreme threshold.');
+
+	// Always add a general disclaimer for legal/medical compliance
+	adviceParts.push('This advice is for informational purposes only and does not constitute medical advice. For any health concerns or symptoms, consult a licensed healthcare professional.');
+	adviceParts.push('Your privacy is protected. No sensitive health details are shown.');
 
 	const status = safe ? 'INET-READY' : 'NOT INET-READY';
-
-	// Compose final advice sentence
 	let advice = adviceParts.filter(Boolean).join(' ');
 	if (!advice) advice = safe
 		? `Travel from ${fromCity} to ${toCity} is considered safe at this time.`
