@@ -185,6 +185,44 @@
 		window.open(url, '_blank');
 	}
 
+	// Helper: fetch nearest hospital/clinic POI with phone number using Mapbox Search Box API
+	async function fetchNearestHospitalPOI({ lat, lng }) {
+		// @ts-ignore
+		const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+		if (!accessToken) {
+			console.warn("Mapbox access token missing");
+			return null;
+		}
+		const types = ["hospital", "clinic", "emergency", "medical"];
+		for (const category of types) {
+			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=5&access_token=${accessToken}`;
+			try {
+				const res = await fetch(url);
+				if (!res.ok) throw new Error("Mapbox API error");
+				const data = await res.json();
+				const features = data.features || [];
+				for (const f of features) {
+					const props = f.properties || {};
+					const phone = props.metadata?.phone || props.phone || null;
+					if (phone) {
+						return {
+							title: props.name || '',
+							address: props.full_address || props.address || '',
+							phone,
+							category: props.poi_category ? props.poi_category[0] : '',
+							id: props.mapbox_id || '',
+							lat: props.coordinates?.latitude || f.geometry?.coordinates?.[1],
+							lng: props.coordinates?.longitude || f.geometry?.coordinates?.[0]
+						};
+					}
+				}
+			} catch (e) {
+				console.error(`Failed to fetch hospital POIs for category ${category} from Mapbox:`, e);
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Generate travel cards for each preferred city
 	 */
@@ -230,8 +268,10 @@
 				// For each card, get POIs near the destination city (or refCoords)
 				let coords = getCityCoords(toCity) || refCoords;
 				let pois = [];
+				let hospitalPOI = null;
 				if (coords) {
 					pois = await fetchNearbyPOIs({ lat: coords.lat, lng: coords.lng });
+					hospitalPOI = await fetchNearestHospitalPOI({ lat: coords.lat, lng: coords.lng });
 				}
 				return {
 					fromCity,
@@ -239,7 +279,7 @@
 					timestamp: new Date(),
 					rowOne: { tiles: [] },
 					rowTwo: { tiles: [] },
-					rowThree: { tiles: [{ pois }] }, // Store POIs in rowThree, column 1
+					rowThree: { tiles: [{ pois }, { hospitalPOI }] }, // POIs in col 1, hospital in col 2
 					rowFour: { tiles: [] }
 				};
 			}));
@@ -623,16 +663,22 @@
 							</div>
 							<div class="tile-column column-40">
 								<div class="tile-row sub-row">
-									{#if card.rowFour.tiles.length <= 1}
-										<div class="tile empty-tile">
-											<div class="tile-placeholder">Row 1 Content</div>
-										</div>
+									{#if card.rowThree.tiles[1] && card.rowThree.tiles[1].hospitalPOI && card.rowThree.tiles[1].hospitalPOI.phone}
+										<button class="tile" style="background: #e3f2fd; color: #1976d2; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 1rem;"
+											on:click={() => window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`)}
+											on:touchend={() => window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`)}
+										>
+											<span style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem;">Nearest Hospital/Clinic</span>
+											<span style="font-size: 0.95rem; font-weight: 500;">{card.rowThree.tiles[1].hospitalPOI.title}</span>
+											{#if card.rowThree.tiles[1].hospitalPOI.phone}
+												<span style="font-size: 0.9rem; color: #333; margin-top: 0.2rem;">{card.rowThree.tiles[1].hospitalPOI.phone}</span>
+											{/if}
+											<span style="font-size: 0.85rem; color: #1976d2; margin-top: 0.5rem;">Call Emergency Hotline</span>
+										</button>
 									{:else}
-										{#each card.rowFour.tiles.slice(1, 2) as tile}
-											<div class="tile">
-												<!-- Tile content will be filled later -->
-											</div>
-										{/each}
+										<div class="tile empty-tile">
+											<div class="tile-placeholder">No hospital/clinic hotline found</div>
+										</div>
 									{/if}
 								</div>
 								<div class="tile-row sub-row">
