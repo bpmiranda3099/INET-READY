@@ -600,7 +600,7 @@
     <!-- City Preferences Setup -->
     {#if !showPermissionsPanel && showCityPreferencesSetup && !checkingCityPreferences}
         <CityPreferencesSetup 
-            userId={user.uid}
+            userId={user?.uid}
             onComplete={handleCityPreferencesComplete}
         />
     {/if}
@@ -619,7 +619,6 @@
                   <!-- Travel Health Cards - Only show if user has city preferences -->
                 {#if hasCityPreferences && preferredCities.length > 0}
                     <TravelHealthCards 
-                        userId={user.uid}
                         homeCity={homeCity}
                         preferredCities={preferredCities}
                         useCurrentLocation={true}
@@ -1017,7 +1016,7 @@
                         <h3>City Preferences</h3>              
                     </div>                    
                     <div class="section-body city-preferences-wrapper">
-                        <CityPreferences userId={user.uid} />
+                        <CityPreferences userId={user?.uid} />
                     </div>
                 </div>
             </div>

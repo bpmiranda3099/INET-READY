@@ -30,6 +30,7 @@
 		"@google/generative-ai": "^0.22.0",
 		"@vercel/speed-insights": "^1.2.0",
 		"dotenv": "^16.4.7",
-		"firebase": "^11.4.0"
+		"firebase": "^11.4.0",
+		"mapbox-gl": "^3.11.0"
 	}
 }
