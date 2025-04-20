@@ -720,6 +720,7 @@
 										</div>
 									{/if}
 								</div>
+								
 								<div class="tile-row sub-row">
 									<!-- AI Chatbot Button -->
 									<button class="tile ai-chat-btn" style="background: #fffbe7; color: #b35d3a; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; padding: 1rem; gap: 0.7rem;"
@@ -729,19 +730,6 @@
 										<i class="bi bi-robot" style="font-size: 1.3rem;"></i>
 										<span>Ask AI</span>
 									</button>
-								</div>
-								<div class="tile-row sub-row">
-									{#if card.rowFour.tiles.length <= 2}
-										<div class="tile empty-tile">
-											<div class="tile-placeholder">Row 2 Content</div>
-										</div>
-									{:else}
-										{#each card.rowFour.tiles.slice(2) as tile}
-											<div class="tile">
-												<!-- Tile content will be filled later -->
-											</div>
-										{/each}
-									{/if}
 								</div>
 							</div>
 						</div>
