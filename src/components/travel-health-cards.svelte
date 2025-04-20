@@ -789,6 +789,7 @@
         flex-direction: column;
         flex: 1; /* Take up remaining space */
         overflow-y: auto; /* Add scroll if content overflows */
+		max-height: calc(100vh - 250px);
     }
 
 	/* Windows 10 Start Menu style tile rows */
