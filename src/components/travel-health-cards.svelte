@@ -170,7 +170,11 @@
 	}
 
 	// Helper to open Google Maps with 5 POIs as route pins, starting from origin/current location/homeCity
-	function openGoogleMapsWithPOIs(pois) {
+	function openGoogleMapsWithPOIs(pois, event) {
+		if (event) {
+			// Prevent accidental trigger if this was a drag/swipe
+			if (Math.abs(touchStartX - touchEndX) > 20 || Math.abs(touchStartY - touchEndY) > 20) return;
+		}
 		if (!pois || pois.length === 0) return;
 		// Get up to 5 POIs
 		const pins = pois.slice(0, 5);
@@ -206,9 +210,10 @@
 			console.warn("Mapbox access token missing");
 			return null;
 		}
-		const types = ["hospital", "clinic", "emergency", "medical"];
+		// Only use emergency-related categories
+		const types = ["emergency", "hospital", "emergency_room", "urgent_care"]; // prioritize emergency care
 		for (const category of types) {
-			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=5&access_token=${accessToken}`;
+			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=8&access_token=${accessToken}`;
 			try {
 				const res = await fetch(url);
 				if (!res.ok) throw new Error("Mapbox API error");
@@ -217,7 +222,11 @@
 				for (const f of features) {
 					const props = f.properties || {};
 					const phone = props.metadata?.phone || props.phone || null;
-					if (phone) {
+					const categories = (props.poi_category_ids || []).map(x => x.toLowerCase());
+					// Filter out maternity, dental, physical therapy, and non-emergency clinics
+					const isEmergency = categories.some(cat => ["emergency", "hospital", "urgent_care", "emergency_room"].includes(cat));
+					const isNonEmergency = categories.some(cat => ["maternity", "obstetric", "dental", "physical_therapy", "rehabilitation", "optical", "spa", "wellness"].includes(cat));
+					if (phone && isEmergency && !isNonEmergency) {
 						return {
 							title: props.name || '',
 							address: props.full_address || props.address || '',
@@ -657,8 +666,8 @@
 								{:else}
 									<div class="tile"
   style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px; cursor: pointer;"
-  on:click={() => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois)}
-  on:touchend={() => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois)}
+  on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
+  on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
 >
   <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
   <ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
@@ -678,8 +687,16 @@
 								<div class="tile-row sub-row">
 									{#if card.rowThree.tiles[1] && card.rowThree.tiles[1].hospitalPOI && card.rowThree.tiles[1].hospitalPOI.phone}
 										<button class="tile" style="background: #e3f2fd; color: #1976d2; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 1rem;"
-											on:click={() => window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`)}
-											on:touchend={() => window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`)}
+											on:click={(e) => {
+												if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
+													window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
+												}
+											}}
+											on:touchend={(e) => {
+												if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
+													window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
+												}
+											}}
 										>
 											<span style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem;">Nearest Hospital/Clinic</span>
 											<span style="font-size: 0.95rem; font-weight: 500;">{card.rowThree.tiles[1].hospitalPOI.title}</span>
