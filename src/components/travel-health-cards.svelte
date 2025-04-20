@@ -7,7 +7,6 @@
 	import { getCityCoords } from '$lib/services/city-coords';
 	import { getInetReadyStatus } from '$lib/services/inet-ready-advice';
 	import { getMedicalData } from '$lib/services/medical-api';
-	import { v4 as uuidv4 } from 'uuid';
 
 	export let homeCity;
 	export let preferredCities = [];
@@ -129,35 +128,22 @@
 			console.warn("Mapbox access token missing");
 			return [];
 		}
-
-		const sessionToken = uuidv4(); // Generate a unique session token
-		const results = [];
-
-		for (const category of types) {
-			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=${limit}&access_token=${accessToken}&session_token=${sessionToken}`;
-			try {
-				const res = await fetch(url);
-				if (!res.ok) throw new Error("Mapbox API error");
-				const data = await res.json();
-				const suggestions = data.suggestions || [];
-				for (const s of suggestions) {
-					const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${s.mapbox_id}?access_token=${accessToken}&session_token=${sessionToken}`;
-					const retrieveRes = await fetch(retrieveUrl);
-					if (!retrieveRes.ok) throw new Error("Mapbox Retrieve API error");
-					const detailedData = await retrieveRes.json();
-					results.push({
-						title: detailedData.name || '',
-						address: detailedData.full_address || '',
-						category: detailedData.place_type ? detailedData.place_type[0] : '',
-						id: detailedData.mapbox_id || ''
-					});
-				}
-			} catch (e) {
-				console.error(`Failed to fetch POIs for category ${category} from Mapbox:`, e);
-			}
+		const query = encodeURIComponent(types.join(" "));
+		const url = `https://api.mapbox.com/search/searchbox/v1/suggest?q=${query}&proximity=${lng},${lat}&limit=${limit}&access_token=${accessToken}`;
+		try {
+			const res = await fetch(url);
+			if (!res.ok) throw new Error("Mapbox API error");
+			const data = await res.json();
+			return (data.suggestions || []).map(s => ({
+				title: s.name || s.full_address || s.place_formatted,
+				address: s.full_address || s.place_formatted || '',
+				category: s.place_type ? s.place_type[0] : '',
+				id: s.mapbox_id || s.id || s.name
+			})).slice(0, limit);
+		} catch (e) {
+			console.error("Failed to fetch POIs from Mapbox:", e);
+			return [];
 		}
-
-		return results.slice(0, limit);
 	}
 
 	/**
