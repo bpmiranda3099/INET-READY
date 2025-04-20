@@ -28,5 +28,4 @@ vite.config.ts.timestamp-*
 /Scripts
 /src/scripts/logs
 
-# Github
-/.github
+/.github/on_hold
