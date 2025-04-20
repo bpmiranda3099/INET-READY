@@ -425,48 +425,23 @@
 					class="card-header-container"
 					class:active={currentCard === i}
 					style="transform: {cardTransforms[i].transform}; 
-                           opacity: {cardTransforms[i].opacity};
-                           z-index: {cardTransforms[i].zIndex};"
+						   opacity: {cardTransforms[i].opacity};
+						   z-index: {cardTransforms[i].zIndex};"
 				>
 					<span class="city-name">{card.toCity}</span>
 				</div>
 			{/each}
 		</div>
-		<div
-			class="cards-container"
-			on:mousedown={handleDragStart}
-			on:touchstart={handleTouchStart}
-			on:mousemove={handleDragMove}
-			on:touchmove={handleTouchMove}
-			on:touchend={handleTouchEnd}
-			style="height: {cardHeight}px; transition: height 0.3s ease-out;"
-		>
+		<div class="cards-container">
 			{#each travelCards as card, i}
 				<div
 					class="travel-card"
 					class:active={currentCard === i}
 					style="transform: {cardTransforms[i].transform}; 
-                           opacity: {cardTransforms[i].opacity};
-                           z-index: {cardTransforms[i].zIndex};"
+						   opacity: {cardTransforms[i].opacity};
+						   z-index: {cardTransforms[i].zIndex};"
 					bind:this={cardElements[i]}
 				>
-					<div class="card-header">
-						<div class="route-display">
-							<div class="route-container">
-								<div class="route-shine"></div>
-								<div class="city-circle origin-city">
-									<i class="bi bi-geo-fill"></i>
-									<span class="city-name">{card.fromCity}</span>
-								</div>
-								<div class="traveling-text">traveling to</div>
-								<div class="city-circle dest-city">
-									<i class="bi bi-flag-fill"></i>
-									<span class="city-name">{card.toCity}</span>
-								</div>
-							</div>
-						</div>
-					</div>
-
 					<div class="card-body">
 						<!-- Row 1 - 15% height -->
 						<div class="tile-row row-one">
