@@ -417,6 +417,7 @@
 			on:touchstart={handleTouchStart}
 			on:touchmove={handleTouchMove}
 			on:touchend={handleTouchEnd}
+			style="height: {cardHeight + 20}px; transition: height 0.3s ease-out;"
 		>
 			{#each travelCards as card, i}
 				<div
@@ -596,7 +597,7 @@
 		position: relative;
 		width: 100%;
 		margin: 1rem 0;
-		padding-bottom: 1rem; /* Space for navigation dots */
+		padding-bottom: 2rem; /* Space for navigation dots */
 		overflow: hidden; /* Hide horizontal overflow */
 		max-width: 100vw; /* Ensure it doesn't exceed viewport width */
 	}
@@ -610,7 +611,7 @@
 		-webkit-user-select: none;
 		-webkit-touch-callout: none;
 	}
-	.travel-card {
+	    .travel-card {
         position: absolute;
         top: 0;
         left: 0;
@@ -783,12 +784,12 @@
         color: white;
     } */
 	.card-body {
-		padding: 0.5rem; /* Reduced padding */
-		display: flex;
-		flex-direction: column;
-		flex: 1;
-		height: calc(100% - 80px); /* Adjust for header and footer height */
-	}
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1; /* Take up remaining space */
+        overflow-y: auto; /* Add scroll if content overflows */
+    }
 
 	/* Windows 10 Start Menu style tile rows */
 	.tile-row {

@@ -1987,22 +1987,4 @@
     padding: .75rem .5rem .5rem;
     position: relative;
     }
-    .dashboard-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 0 1rem;
-    margin-bottom: calc(70px + 1rem); /* 70px is bottom nav height + 1rem gap */
-    }
-
-    .dashboard-section :global(.cards-wrapper) {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    }
-
-    .dashboard-section :global(.cards-container) {
-    flex: 1;
-    position: relative;
-    }
 </style>
