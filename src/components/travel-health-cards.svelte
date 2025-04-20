@@ -138,17 +138,14 @@
 				const res = await fetch(url);
 				if (!res.ok) throw new Error("Mapbox API error");
 				const data = await res.json();
-				const suggestions = data.suggestions || [];
-				for (const s of suggestions) {
-					const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${s.mapbox_id}?access_token=${accessToken}`;
-					const retrieveRes = await fetch(retrieveUrl);
-					if (!retrieveRes.ok) throw new Error("Mapbox Retrieve API error");
-					const detailedData = await retrieveRes.json();
+				const features = data.features || [];
+				for (const f of features) {
+					const props = f.properties || {};
 					results.push({
-						title: detailedData.name || '',
-						address: detailedData.full_address || '',
-						category: detailedData.place_type ? detailedData.place_type[0] : '',
-						id: detailedData.mapbox_id || ''
+						title: props.name || '',
+						address: props.full_address || props.address || '',
+						category: props.poi_category ? props.poi_category[0] : '',
+						id: props.mapbox_id || ''
 					});
 				}
 			} catch (e) {
