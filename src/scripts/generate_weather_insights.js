@@ -7,7 +7,7 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve, join } from 'path';
 import fs from 'fs/promises';
-import { generateDailyWeatherInsights } from '../lib/services/gemini-service.js';
+import { generateDailyWeatherInsights, generateCityWeatherInsight } from '../lib/services/gemini-service.js';
 
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -66,8 +66,18 @@ async function processForecasts() {
     // Parse any ISO date strings back to Date objects
     forecastData = parseISODates(forecastData);
 
-    // Generate insights using the gemini-service
-    const insights = await generateDailyWeatherInsights(forecastData);
+    let insights;
+    // Detect if input is for a single city (has 'city' and 'forecast' keys)
+    if (
+      forecastData &&
+      typeof forecastData === 'object' &&
+      'city' in forecastData &&
+      'forecast' in forecastData
+    ) {
+      insights = await generateCityWeatherInsight(forecastData.city, forecastData.forecast);
+    } else {
+      insights = await generateDailyWeatherInsights(forecastData);
+    }
 
     // Either write to file or stdout
     if (outputFile) {
