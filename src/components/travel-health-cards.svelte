@@ -624,12 +624,12 @@
 						<div class="tile-row row-one">
 							<div class="tile-column column-60">
 								{#if card.rowOne.tiles.length === 0}
-									<div class="tile empty-tile">
+									<div class="tile empty-tile dashboard-tile">
 										<div class="tile-placeholder">Heat Index</div>
 									</div>
 								{:else}
 									{#each card.rowOne.tiles.slice(0, 1) as tile}
-										<div class="tile heat-index-tile" style="background: {tile.color};">
+										<div class="tile heat-index-tile dashboard-tile" style="background: {tile.color};">
 											<div class="heat-index-label">Heat Index</div>
 											<div class="heat-index-value">{tile.heatIndex !== null ? tile.heatIndex.toFixed(1) + '°C' : 'N/A'}</div>
 											<div class="heat-index-condition">{tile.heatIndex !== null
@@ -641,11 +641,11 @@
 							</div>
 							<div class="tile-column column-40">
 								{#if !card.rowOne.inetReady}
-									<div class="tile empty-tile">
+									<div class="tile empty-tile dashboard-tile">
 										<div class="tile-placeholder">INET-READY Status</div>
 									</div>
 								{:else}
-									<div class="tile inet-ready-tile" style="background: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'};">
+									<div class="tile inet-ready-tile dashboard-tile" style="background: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'};">
 										<span class="inet-ready-badge">
 											<i class="bi bi-wifi" style="margin-right: 0.4em;"></i>
 											{card.rowOne.inetReady.status}
@@ -657,7 +657,7 @@
 
 						<!-- Row 2: Advice -->
 						<div class="tile-row row-two">
-							<div class="tile advice-tile">
+							<div class="tile advice-tile dashboard-tile">
 								{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
 									<div class="advice-text">{card.rowOne.inetReady.advice}</div>
 								{:else}
@@ -670,20 +670,20 @@
 						<div class="tile-row row-three">
 							<div class="tile-column column-60">
 								{#if card.rowThree.tiles.length === 0 || !card.rowThree.tiles[0].pois || card.rowThree.tiles[0].pois.length === 0}
-									<div class="tile empty-tile">
+									<div class="tile empty-tile dashboard-tile">
 										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
 									</div>
 								{:else}
-									<div class="tile pois-tile" on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)} on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}>
+									<div class="tile pois-tile dashboard-tile" on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)} on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}>
 										<div class="pois-title">Nearby Cool Indoor Spots</div>
 										<ul class="pois-list">
 											{#each card.rowThree.tiles[0].pois as poi, j}
 												<li class="poi-item">
+													<i class="bi bi-geo-alt-fill poi-icon location-icon"></i>
 													<span class="poi-title">{poi.title}</span>
 													{#if poi.address}
 														<span class="poi-address">{poi.address}</span>
 													{/if}
-													<i class="bi bi-geo-alt-fill poi-icon"></i>
 												</li>
 											{/each}
 										</ul>
@@ -693,7 +693,7 @@
 							<div class="tile-column column-40">
 								<div class="tile-row sub-row">
 									{#if card.rowThree.tiles[1] && card.rowThree.tiles[1].hospitalPOI && card.rowThree.tiles[1].hospitalPOI.phone}
-										<button class="tile" style="background: #e3f2fd; color: #1976d2; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 1rem;"
+										<button class="tile dashboard-tile emergency-tile" style="background: #e3f2fd; color: #1976d2; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 1rem;"
 											on:click={(e) => {
 												if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
 													window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
@@ -705,15 +705,18 @@
 												}
 											}}
 										>
-											<span style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem;">Nearest Hospital/Clinic</span>
+											<span style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5em;">
+												<i class="bi bi-telephone-fill phone-icon" style="color: #1976d2; font-size: 1.2rem;"></i>
+												Nearest Hospital/Clinic
+											</span>
 											<span style="font-size: 0.95rem; font-weight: 500;">{card.rowThree.tiles[1].hospitalPOI.title}</span>
 											{#if card.rowThree.tiles[1].hospitalPOI.phone}
 												<span style="font-size: 0.9rem; color: #333; margin-top: 0.2rem;">{card.rowThree.tiles[1].hospitalPOI.phone}</span>
 											{/if}
-											<span style="font-size: 0.85rem; color: #1976d2; margin-top: 0.5rem;">Call Emergency Hotline</span>
+											<span class="emergency-disclaimer">Tap in case of emergency</span>
 										</button>
 									{:else}
-										<div class="tile empty-tile">
+										<div class="tile empty-tile dashboard-tile">
 											<div class="tile-placeholder">No hospital/clinic hotline found</div>
 										</div>
 									{/if}
@@ -721,7 +724,7 @@
 								
 								<div class="tile-row sub-row">
 									<!-- AI Chatbot Button -->
-									<button class="tile ai-chat-btn" style="background: #fffbe7; color: #b35d3a; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; padding: 1rem; gap: 0.7rem;"
+									<button class="tile ai-chat-btn dashboard-tile chatbot-tile" style="background: #fffbe7; color: #b35d3a; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; padding: 1rem; gap: 0.7rem;"
 										on:click={() => showChatbot = true}
 										aria-label="Ask AI Chatbot"
 									>
@@ -744,6 +747,8 @@
 			{/each}
 		</div>
 
+		{#if showDots}
+			<div class="navigation-dots">
 		{#if showDots}
 			<div class="navigation-dots">
 				{#each Array(totalCards) as _, i}
@@ -1563,130 +1568,199 @@
 		align-items: center;
 		justify-content: center;
 	}
+	.dashboard-tile {
+		background: linear-gradient(135deg, #f7fafd 0%, #f0f4f8 100%);
+		box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+		border: 1.5px solid #e3e8ee;
+		padding: 0.7rem 1rem;
+		font-size: 1.05rem;
+		font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+		word-break: break-word;
+		white-space: normal;
+		min-height: 60px;
+	}
 	.heat-index-tile {
-		border-radius: 16px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		padding: 1.1rem 0.5rem 1.2rem 0.5rem;
-		min-height: 120px;
 		color: #fff;
-		position: relative;
+		font-size: 1.3rem;
+		font-weight: 700;
+		padding: 1.1rem 0.7rem 0.7rem 0.7rem;
+		border-radius: 10px;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		text-align: center;
+		min-height: 110px;
 	}
 	.heat-index-label {
-		font-size: clamp(0.9rem, 2vw, 1.1rem);
+		font-size: 1.05rem;
 		font-weight: 500;
-		opacity: 0.92;
 		margin-bottom: 0.2em;
-		letter-spacing: 0.01em;
+		letter-spacing: 0.5px;
+		color: #fff;
+		text-shadow: 0 1px 2px rgba(0,0,0,0.13);
 	}
 	.heat-index-value {
-		font-size: clamp(2.1rem, 5vw, 2.7rem);
+		font-size: 2.1rem;
 		font-weight: 800;
-		line-height: 1.1;
-		margin-bottom: 0.15em;
-		letter-spacing: -0.01em;
+		margin-bottom: 0.1em;
+		color: #fff;
 	}
 	.heat-index-condition {
-		font-size: clamp(1rem, 2vw, 1.2rem);
+		font-size: 1.1rem;
 		font-weight: 600;
-		opacity: 0.85;
-		text-shadow: 0 1px 2px rgba(0,0,0,0.08);
-		margin-top: 0.1em;
+		color: #fffbe7;
 	}
 	.inet-ready-tile {
-		border-radius: 16px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-height: 120px;
 		color: #fff;
-		font-size: clamp(1.1rem, 2vw, 1.3rem);
+		font-size: 1.2rem;
 		font-weight: 700;
-		position: relative;
-	}
-	.inet-ready-badge {
-		display: inline-flex;
-		align-items: center;
-		background: rgba(255,255,255,0.13);
-		border-radius: 999px;
-		padding: 0.3em 1.1em;
-		font-size: clamp(1rem, 2vw, 1.1rem);
-		font-weight: 700;
-		letter-spacing: 0.01em;
-		box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-	}
-	.advice-tile {
-		background: linear-gradient(120deg, #f9f9f9 80%, #f3f3f3 100%);
-		border-radius: 14px;
-		box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-		padding: 1.1rem 1.2rem;
-		font-size: clamp(0.98rem, 2vw, 1.08rem);
-		color: #444;
-		font-weight: 400;
-		font-style: italic;
+		padding: 1.1rem 0.7rem 0.7rem 0.7rem;
+		border-radius: 10px;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		text-align: center;
 		min-height: 110px;
 		display: flex;
 		align-items: center;
-		justify-content: flex-start;
+		justify-content: center;
+	}
+	.inet-ready-badge {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		font-size: 1.2rem;
+		font-weight: 700;
+	}
+	.advice-tile {
+		background: #f9f6f2;
+		color: #7a5c3e;
+		font-size: 1.08rem;
+		font-weight: 500;
+		padding: 1.1rem 1.2rem;
+		border-radius: 10px;
+		min-height: 90px;
+		max-height: 100px;
+		overflow-y: auto;
 	}
 	.advice-text {
-		font-style: italic;
-		font-weight: 400;
-		color: #444;
+		font-size: 1.08rem;
+		font-weight: 500;
+		color: #7a5c3e;
 	}
 	.advice-placeholder {
-		color: #aaa;
-		font-style: italic;
 		font-size: 0.98rem;
+		color: #bdbdbd;
 	}
 	.pois-tile {
-		background: #f5f7fa;
-		color: #333;
-		border-radius: 14px;
-		box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-		flex-direction: column;
-		align-items: flex-start;
-		padding: 0.8rem 0.7rem;
-		min-height: 120px;
+		background: #eaf6ff;
+		color: #1976d2;
+		font-size: 1.05rem;
+		font-weight: 500;
+		border-radius: 10px;
+		padding: 0.7rem 0.7rem 0.7rem 0.7rem;
+		min-height: 110px;
+		max-height: 140px;
+		overflow-y: auto;
 		cursor: pointer;
-		display: flex;
+		transition: box-shadow 0.2s;
+	}
+	.pois-tile:hover {
+		box-shadow: 0 4px 16px rgba(25, 118, 210, 0.13);
 	}
 	.pois-title {
+		font-size: 1.08rem;
 		font-weight: 700;
-		font-size: clamp(1.05rem, 2vw, 1.15rem);
-		margin-bottom: 0.4rem;
-		color: #2d2d2d;
+		margin-bottom: 0.3em;
+		color: #1976d2;
+		display: flex;
+		align-items: center;
+		gap: 0.4em;
 	}
 	.pois-list {
 		list-style: none;
 		padding: 0;
 		margin: 0;
-		width: 100%;
 	}
 	.poi-item {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: 0.5em;
-		margin-bottom: 0.5rem;
+		margin-bottom: 0.3em;
+		font-size: 0.98rem;
+		color: #1976d2;
 	}
 	.poi-title {
 		font-weight: 600;
-		font-size: clamp(0.98rem, 2vw, 1.08rem);
-		color: #333;
+		font-size: 1.01rem;
+		margin-right: 0.2em;
 	}
 	.poi-address {
-		font-size: 0.85rem;
-		color: #888;
-		margin-left: 0.5em;
+		font-size: 0.93rem;
+		color: #4a90e2;
+		margin-left: 0.2em;
 	}
-	.poi-icon {
+	.location-icon {
+		color: #1976d2;
+		font-size: 1.1rem;
+		margin-right: 0.2em;
+	}
+	.emergency-tile {
+		background: #e3f2fd !important;
+		color: #1976d2 !important;
+		font-size: 1.08rem !important;
+		font-weight: 700 !important;
+		border-radius: 10px;
+		padding: 0.7rem 1rem !important;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.2em;
+		min-height: 90px;
+		max-height: 120px;
+		justify-content: center;
+	}
+	.phone-icon {
+		font-size: 1.2rem;
+		color: #1976d2;
+		margin-right: 0.3em;
+	}
+	.emergency-disclaimer {
+		font-size: 0.85rem;
 		color: #b35d3a;
-		font-size: 1.1em;
-		margin-left: auto;
-		opacity: 0.7;
+		margin-top: 0.4em;
+		font-weight: 500;
+		letter-spacing: 0.2px;
+	}
+	.chatbot-tile {
+		background: #fffbe7 !important;
+		color: #b35d3a !important;
+		font-size: 1.08rem !important;
+		font-weight: 700 !important;
+		border-radius: 10px;
+		padding: 0.7rem 1rem !important;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.7em;
+		min-height: 70px;
+		max-height: 100px;
+	}
+	.ai-chat-btn {
+		justify-content: center !important;
+		align-items: center !important;
+	}
+	/* Card footer disclaimer and update time */
+	.card-footer {
+		background: #fafafa;
+		padding: .5rem .75rem;
+		border-top: 1px solid #f0f0f0;
+		font-size: 0.7rem;
+		color: #999;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.update-time {
+		color: #bbb;
+		font-size: 0.65rem;
 	}
 </style>
