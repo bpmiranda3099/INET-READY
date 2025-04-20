@@ -1,0 +1,62 @@
+name: Heat Index Change Notifications
+
+on:
+  # Run this workflow after the hourly data update
+  workflow_run:
+    workflows: ['Hourly Weather Update']
+    types:
+      - completed
+  # Allow manual triggering for testing
+  workflow_dispatch:
+
+jobs:
+  send-heat-index-notifications:
+    # Only run if the dependent workflow succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout repository
+      - uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install firebase-admin loguru
+
+      # Step 4: Decode Firebase credentials from GitHub Secrets
+      - name: Set up Firebase credentials
+        run: |
+          # Decode the base64 string and save to a file
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" | tr -d '\n' | base64 -d > ./firebase_service_account.json
+
+          # Verify the JSON is valid
+          cat ./firebase_service_account.json | python -m json.tool || echo "Warning: Invalid JSON format in credentials file"
+
+      # Step 5: Run the heat index alert service
+      - name: Run heat index alert service
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ./firebase_service_account.json
+          ALERT_DELAY_SECONDS: 60 # Wait to ensure the data is fully updated
+        run: python src/scripts/heat_index_alert_service.py
+
+      # Step 6: Upload logs as artifacts for debugging
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heat-index-alert-logs
+          path: heat_index_alerts.log
+          retention-days: 7
+
+      # Step 7: Clean up credentials file
+      - name: Clean up credentials
+        if: always()
+        run: rm -f firebase_service_account.json
