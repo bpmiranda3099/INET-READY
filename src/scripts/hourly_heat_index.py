@@ -6,6 +6,7 @@ from functools import lru_cache
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functions.calculate_heat_index import calculate_heat_index  # Import the function
 from datetime import datetime
+import time
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 csv_path = os.path.join(script_dir, '..', '..', 'public', 'data', 'city_coords.csv')
@@ -16,10 +17,11 @@ def fetch_weather(latitude, longitude):
     resp = requests.get(url).json()
     if "hourly" not in resp:
         logger.error(f"API response missing 'hourly' for lat={latitude}, lon={longitude}: {resp}")
+        time.sleep(1)  # Wait 1 second before raising error or retrying
         raise KeyError("hourly")
     celsius = resp["hourly"]["temperature_2m"][0]
     humidity = resp["hourly"]["relative_humidity_2m"][0]
-    return celsius, humidity  # Return temperature in Celsius
+    return celsius, humidity
 
 def inet_level(heat_index):
     if heat_index < 27:
@@ -55,7 +57,7 @@ def main():
         for row in reader:
             cities.append(row)
 
-    with ThreadPoolExecutor() as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         futures = {executor.submit(process_city, c): c for c in cities}
         for future in as_completed(futures):
             city = futures[future]
