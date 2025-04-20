@@ -503,7 +503,7 @@ def generate_and_notify_city_insights(db, fcm, forecast_data):
         tokens = []
         for user_doc in user_docs:
             user_id = user_doc.id
-            city_pref_ref = users_ref.document(user_id).collection('userPreference').document('cityPreferences')
+            city_pref_ref = users_ref.document(user_id).collection('userPreferences').document('cityPreferences')
             city_pref_doc = city_pref_ref.get()
             if city_pref_doc.exists:
                 city_pref_data = city_pref_doc.to_dict()
