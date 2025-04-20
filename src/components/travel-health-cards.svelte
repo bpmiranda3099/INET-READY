@@ -169,19 +169,32 @@
 		return unique.slice(0, 5);
 	}
 
-	// Helper to open Google Maps with pins for POIs
+	// Helper to open Google Maps with 5 POIs as route pins, starting from origin/current location/homeCity
 	function openGoogleMapsWithPOIs(pois) {
 		if (!pois || pois.length === 0) return;
-		// Use up to 5 POIs, build a query with all their coordinates for Google Maps multi-pin search (not directions)
-		// We'll use a search query with all locations separated by ' | '
-		const queries = pois.slice(0, 5).map(poi => {
-			if (poi.lat && poi.lng) {
-				return `${poi.lat},${poi.lng}`;
-			} else {
-				return `${poi.title} ${poi.address}`;
-			}
-		});
-		const url = `https://www.google.com/maps/search/${encodeURIComponent(queries.join(' | '))}`;
+		// Get up to 5 POIs
+		const pins = pois.slice(0, 5);
+		// Get origin: current location, or home city, or fallback to first POI
+		let origin = '';
+		if (currentLocation && currentLocation.lat && currentLocation.lng) {
+			origin = `${currentLocation.lat},${currentLocation.lng}`;
+		} else if (homeCity) {
+			const coords = getCityCoords(homeCity);
+			if (coords) origin = `${coords.lat},${coords.lng}`;
+		}
+		if (!origin && pins[0] && pins[0].lat && pins[0].lng) {
+			origin = `${pins[0].lat},${pins[0].lng}`;
+		}
+		// Build waypoints (all but last POI)
+		const waypoints = pins.slice(0, -1).map(poi => `${poi.lat},${poi.lng}`).join('|');
+		// Destination is last POI
+		const destination = pins[pins.length - 1];
+		const destStr = `${destination.lat},${destination.lng}`;
+		// Build Google Maps directions URL
+		let url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destStr)}`;
+		if (waypoints) {
+			url += `&waypoints=${encodeURIComponent(waypoints)}`;
+		}
 		window.open(url, '_blank');
 	}
 
