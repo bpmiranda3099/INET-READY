@@ -1001,7 +1001,6 @@
 		left: 0;
 		right: 0;
 		height: 20px; /* Fixed height for the navigation dots container */
-		padding: 6px 0; /* Add padding to prevent layout shifts */
 	}
 
 	.dot {
