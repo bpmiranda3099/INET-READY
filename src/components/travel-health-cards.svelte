@@ -412,36 +412,32 @@
 {:else}
 	<div class="cards-wrapper" bind:this={cardsContainerElement}>
 		<div
-			class="card-headers-container"
+			class="cards-container"
 			on:mousedown={handleDragStart}
 			on:touchstart={handleTouchStart}
-			on:mousemove={handleDragMove}
 			on:touchmove={handleTouchMove}
 			on:touchend={handleTouchEnd}
-			style="height: 60px; transition: height 0.3s ease-out;"
+			style="height: {cardHeight + 20}px; transition: height 0.3s ease-out;"
 		>
-			{#each travelCards as card, i}
-				<div
-					class="card-header-container"
-					class:active={currentCard === i}
-					style="transform: {cardTransforms[i].transform}; 
-						   opacity: {cardTransforms[i].opacity};
-						   z-index: {cardTransforms[i].zIndex};"
-				>
-					<span class="city-name">{card.toCity}</span>
-				</div>
-			{/each}
-		</div>
-		<div class="cards-container">
 			{#each travelCards as card, i}
 				<div
 					class="travel-card"
 					class:active={currentCard === i}
 					style="transform: {cardTransforms[i].transform}; 
-						   opacity: {cardTransforms[i].opacity};
-						   z-index: {cardTransforms[i].zIndex};"
+                           opacity: {cardTransforms[i].opacity};
+                           z-index: {cardTransforms[i].zIndex};"
 					bind:this={cardElements[i]}
 				>
+					<div
+						class="card-header-container"
+						class:active={currentCard === i}
+						style="transform: {cardTransforms[i].transform}; 
+                           opacity: {cardTransforms[i].opacity};
+                           z-index: {cardTransforms[i].zIndex};"
+					>
+						<span class="city-name">{card.toCity}</span>
+					</div>
+
 					<div class="card-body">
 						<!-- Row 1 - 15% height -->
 						<div class="tile-row row-one">
@@ -610,35 +606,6 @@
 		padding-bottom: 2rem; /* Space for navigation dots */
 		overflow: hidden; /* Hide horizontal overflow */
 		max-width: 100vw; /* Ensure it doesn't exceed viewport width */
-	}
-
-	.card-headers-container {
-		position: relative;
-		width: 100%;
-		overflow: hidden;
-	}
-
-	.card-header-container {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 60px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background-color: #dd815e;
-		color: white;
-		border-radius: 12px 12px 0 0;
-	}
-
-	.card-header-container.active {
-		z-index: 10;
-	}
-
-	.city-name {
-		font-size: 1.2rem;
-		font-weight: 600;
 	}
 
 	.cards-container {
