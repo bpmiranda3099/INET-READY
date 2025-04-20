@@ -417,7 +417,6 @@
 			on:touchstart={handleTouchStart}
 			on:touchmove={handleTouchMove}
 			on:touchend={handleTouchEnd}
-			style="height: {cardHeight + 20}px; transition: height 0.3s ease-out;"
 		>
 			{#each travelCards as card, i}
 				<div
@@ -629,7 +628,6 @@
         height: 100%; /* Make the card take up the full height of its parent */
         display: flex;
         flex-direction: column;
-		max-height: calc(100vh - 250px); 
     }
 
 	.travel-card.active {
