@@ -475,9 +475,9 @@
 					</div>
 
 					<div class="card-body">
-						<!-- Row 2 - now becomes Row 1 -->
+						<!-- Row 1: Heat Index (60%) and INET-READY Status (40%) -->
 						<div class="tile-row row-one">
-							<div class="tile-column column-40">
+							<div class="tile-column column-60">
 								{#if card.rowOne.tiles.length === 0}
 									<div class="tile empty-tile">
 										<div class="tile-placeholder">Heat Index</div>
@@ -496,7 +496,7 @@
 									{/each}
 								{/if}
 							</div>
-							<div class="tile-column column-60">
+							<div class="tile-column column-40">
 								{#if !card.rowOne.inetReady}
 									<div class="tile empty-tile">
 										<div class="tile-placeholder">INET-READY Status</div>
@@ -504,25 +504,20 @@
 								{:else}
 									<div class="tile" style="background-color: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'}; color: white;">
 										<div style="font-size: 1.2rem; font-weight: bold;">{card.rowOne.inetReady.status}</div>
-										<div style="font-size: 0.95rem; margin-top: 0.2rem;">{card.rowOne.inetReady.advice}</div>
 									</div>
 								{/if}
 							</div>
 						</div>
 
-						<!-- Row 3 - now becomes Row 2 -->
+						<!-- Row 2: Advice -->
 						<div class="tile-row row-two">
-							{#if card.rowThree.tiles.length === 0}
-								<div class="tile empty-tile">
-									<div class="tile-placeholder">Row 2 Content</div>
-								</div>
-							{:else}
-								{#each card.rowThree.tiles as tile}
-									<div class="tile">
-										<!-- Tile content will be filled later -->
-									</div>
-								{/each}
-							{/if}
+							<div class="tile" style="background: #f9f9f9; color: #333; width: 100%;">
+								{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
+									<div style="font-size: 0.98rem; line-height: 1.5;">{card.rowOne.inetReady.advice}</div>
+								{:else}
+									<div class="tile-placeholder">Travel advice will appear here.</div>
+								{/if}
+							</div>
 						</div>
 
 						<!-- Row 4 - now becomes Row 3 -->
