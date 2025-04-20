@@ -1,0 +1,104 @@
+name: Daily Heat Index Forecast
+
+on:
+  schedule:
+    # Run daily at 4:00 AM UTC
+    - cron: '0 4 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  generate-forecast:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout repository
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for potential version tagging
+          token: ${{ secrets.GITHUB_TOKEN }} # Use GitHub token for auth
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+          cache: 'pip' # Cache pip dependencies
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install firebase-admin requests
+
+      # Step 4: Debug and decode Firebase credentials from GitHub Secrets
+      - name: Debug and decode Firebase credentials
+        run: |
+          # Optional: Check the length of the base64 string
+          echo "Base64 string length: $(echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" | wc -c)"
+
+          # Decode the base64 string and save to a file
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" | tr -d '\n' | base64 -d > ./firebase_service_account.json
+
+          # Verify the JSON is valid
+          cat ./firebase_service_account.json | python -m json.tool || echo "Warning: Invalid JSON format in credentials file"
+
+      # Step 5: Configure Git
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      # Step 6: Run the forecast generation script
+      - name: Generate Heat Index Forecast
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ./firebase_service_account.json
+        run: |
+          cd src/scripts
+          python heat_index_forecast_api.py --regenerate --firebase
+
+      # Step 7: Upload forecast as artifact
+      - name: Upload forecast as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: heat-index-forecast
+          path: public/data/predicted_heat_index/*_heat_index_forecast.json
+          retention-days: 7
+
+      # Step 9: Commit and push CSV updates
+      - name: Commit and push CSV updates
+        run: |
+          # Get today's date for commit message
+          TODAY=$(date +"%Y-%m-%d")
+
+          # Check for new CSV files in the data directory
+          CSV_FILES=$(find public/data/predicted_heat_index -name "*.csv" -mtime -1 -type f | wc -l)
+
+          if [ "$CSV_FILES" -gt 0 ]; then
+            echo "Found $CSV_FILES new CSV files to commit"
+            
+            # Add the files
+            git add public/data/predicted_heat_index/*.csv
+            
+            # Commit with date in message
+            git commit -m "Update heat index forecast data - $TODAY [automated]"
+            
+            # Push changes
+            git push origin ${GITHUB_REF##*/}
+            
+            echo "Successfully pushed forecast CSV updates to repository"
+          else
+            echo "No new CSV files found to commit"
+          fi
+
+      # Step 8: Clean up credentials file
+      - name: Clean up credentials
+        if: always()
+        run: |
+          rm -f ./firebase_service_account.json
+          rm -f .env
+
+      # Step 9: Log completion
+      - name: Log completion
+        run: |
+          echo "Heat index forecast completed at $(date)"
+          echo "Process completed with status: ${{ job.status }}"
