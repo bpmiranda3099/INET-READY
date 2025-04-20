@@ -136,3 +136,53 @@ export async function getCityData(cityName) {
         return null;
     }
 }
+
+/**
+ * Get all current heat index data for all cities (latest snapshot)
+ * @returns {Promise<Array>} Array of city weather data
+ */
+export async function getAllHeatIndexData() {
+    try {
+        const latest = await fetchLatestWeatherData();
+        return latest.cities || [];
+    } catch (error) {
+        console.error('Error getting all heat index data:', error);
+        return [];
+    }
+}
+
+/**
+ * Get 7-day heat index predictions for all cities from Firestore
+ * @returns {Promise<Object>} { cities: { [cityName]: [ {date, heat_index, ...}, ... ] }, ... }
+ */
+export async function getHeatIndexPredictions() {
+    try {
+        // The predictions are stored in 'heat_index_forecast' collection, keyed by date (YYYY-MM-DD)
+        const forecastRef = collection(db, 'heat_index_forecast');
+        // Get the most recent forecast document (order by timestamp desc)
+        const forecastQuery = query(forecastRef, orderBy('timestamp', 'desc'), limit(1));
+        const forecastSnap = await getDocs(forecastQuery);
+        if (forecastSnap.empty) return {};
+        const doc = forecastSnap.docs[0];
+        const data = doc.data();
+        // If city forecasts are in a subcollection, fetch them
+        let cities = {};
+        try {
+            const citiesCol = collection(db, 'heat_index_forecast', doc.id, 'cities');
+            const cityDocs = await getDocs(citiesCol);
+            cityDocs.forEach(cityDoc => {
+                const cityData = cityDoc.data();
+                if (cityData && cityData.city && cityData.forecast) {
+                    cities[cityData.city] = cityData.forecast;
+                }
+            });
+        } catch (e) {
+            // fallback: try to use cities from main doc
+            if (data.cities) cities = data.cities;
+        }
+        return { ...data, cities };
+    } catch (error) {
+        console.error('Error getting heat index predictions:', error);
+        return {};
+    }
+}

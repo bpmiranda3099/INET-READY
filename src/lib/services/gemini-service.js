@@ -128,3 +128,35 @@ export async function generateCityWeatherInsight(cityName, cityForecastData) {
     return `Sorry, I couldn't generate a weather insight for ${cityName} today.`;
   }
 }
+
+/**
+ * Ask Gemini with user context (medical, heat index, predictions)
+ * @param {string} userMessage - The user's message
+ * @param {object} context - { user, medicalData, heatIndexData, heatIndexPredictions }
+ * @returns {Promise<string>} The assistant's reply
+ */
+export async function askGemini(userMessage, context = {}) {
+  try {
+    // Compose a context-rich prompt
+    let contextPrompt = '';
+    if (context.user) {
+      contextPrompt += `USER PROFILE (for context):\n${JSON.stringify(context.user, null, 2)}\n`;
+    }
+    if (context.medicalData) {
+      contextPrompt += `USER MEDICAL DATA (for context):\n${JSON.stringify(context.medicalData, null, 2)}\n`;
+    }
+    if (context.heatIndexData) {
+      contextPrompt += `CURRENT HEAT INDEX DATA (all cities):\n${JSON.stringify(context.heatIndexData, null, 2)}\n`;
+    }
+    if (context.heatIndexPredictions) {
+      contextPrompt += `HEAT INDEX PREDICTIONS (7 days, all cities):\n${JSON.stringify(context.heatIndexPredictions, null, 2)}\n`;
+    }
+    contextPrompt += `\nUSER QUESTION: ${userMessage}`;
+    // Use the main chat model with system instructions
+    const result = await chatModel.generateContent(contextPrompt);
+    return result.response.text().trim();
+  } catch (error) {
+    console.error('Error in askGemini:', error);
+    return `Sorry, I couldn't process your request. (${error.message || 'Unknown error'})`;
+  }
+}

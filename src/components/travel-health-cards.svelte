@@ -8,6 +8,8 @@
 	import { getInetReadyStatus } from '$lib/services/inet-ready-advice';
 	import { getMedicalData } from '$lib/services/medical-api';
 	import { v4 as uuidv4 } from 'uuid';
+	import Chatbot from './chatbot.svelte';
+	import { getCurrentUser } from '.././lib/firebase/auth';
 
 	export let homeCity;
 	export let preferredCities = [];
@@ -38,6 +40,8 @@
 	let cardOffset = 0;
 	let animating = false;
 	let contentHeights = [];
+	let showChatbot = false;
+	let user = null;
 
 	// Track if we should show navigation dots
 	$: showDots = totalCards > 1;
@@ -57,6 +61,11 @@
 		} catch (e) {
 			console.error('Failed to fetch medical data:', e);
 			medicalData = null;
+		}
+		try {
+			user = await getCurrentUser();
+		} catch (e) {
+			user = null;
 		}
 		// Create resize observer to handle card height adjustments
 		resizeObserver = new ResizeObserver((entries) => {
@@ -712,6 +721,16 @@
 									{/if}
 								</div>
 								<div class="tile-row sub-row">
+									<!-- AI Chatbot Button -->
+									<button class="tile ai-chat-btn" style="background: #fffbe7; color: #b35d3a; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; padding: 1rem; gap: 0.7rem;"
+										on:click={() => showChatbot = true}
+										aria-label="Ask AI Chatbot"
+									>
+										<i class="bi bi-robot" style="font-size: 1.3rem;"></i>
+										<span>Ask AI</span>
+									</button>
+								</div>
+								<div class="tile-row sub-row">
 									{#if card.rowFour.tiles.length <= 2}
 										<div class="tile empty-tile">
 											<div class="tile-placeholder">Row 2 Content</div>
@@ -757,6 +776,12 @@
 			<div class="swipe-icon">→</div>
 			<span>Swipe to navigate</span>
 		</div>
+	</div>
+{/if}
+
+{#if showChatbot}
+	<div class="chatbot-overlay">
+		<Chatbot onClose={() => showChatbot = false} {user} />
 	</div>
 {/if}
 
@@ -1522,5 +1547,34 @@
 		font-weight: 400;
 		letter-spacing: 0.5px;
 		margin: 0 0.25rem;
+	}
+	.ai-chat-btn {
+		background: #fffbe7;
+		color: #b35d3a;
+		border: none;
+		border-radius: 12px;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+		transition: all 0.2s;
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+	}
+	.ai-chat-btn:hover {
+		background: #ffe9b3;
+		color: #a35d1a;
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(221, 129, 94, 0.08);
+	}
+	.chatbot-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: rgba(0,0,0,0.25);
+		z-index: 2000;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>
