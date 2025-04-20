@@ -625,7 +625,9 @@
                         currentLocation={currentLocationName}
                     />
                 {/if}
-            </div>        {:else if activeTab === 'notifications'}            <div class="notifications-section">
+            </div>        
+            {:else if activeTab === 'notifications'}            
+            <div class="notifications-section">
                 {#if notifications.length === 0}
                     <div class="card">
                         <div class="empty-state">
