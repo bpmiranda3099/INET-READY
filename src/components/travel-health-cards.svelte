@@ -417,7 +417,7 @@
 			on:touchstart={handleTouchStart}
 			on:touchmove={handleTouchMove}
 			on:touchend={handleTouchEnd}
-			style="height: calc(100vh - 200px); transition: height 0.3s ease-out;"
+			style="height: calc(100vh - 250px); transition: height 0.3s ease-out;"
 		>
 			{#each travelCards as card, i}
 				<div
@@ -970,7 +970,7 @@
 	/* Card footer styling */
 	.card-footer {
 		background: #fafafa;
-		padding: 1rem 1.5rem;
+		padding: .5rem .75rem;
 		border-top: 1px solid #f0f0f0;
 		font-size: 0.8rem;
 		color: #777;
