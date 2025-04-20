@@ -529,7 +529,13 @@ def generate_and_notify_city_insights(db, fcm, forecast_data):
         )
         message = messaging.MulticastMessage(
             notification=notification,
-            data={'city': city_name, 'type': 'city_weather_insight'},
+            data={
+                'city': city_name,
+                'type': 'city_weather_insight',
+                'insight': city_insight, 
+                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                'tag': f"city-weather-{city_name}-{datetime.now().strftime('%Y%m%d')}"
+            },
             tokens=tokens
         )
         response = fcm.send_multicast(message)
