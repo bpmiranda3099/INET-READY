@@ -6,6 +6,7 @@
 	import MapBackground from './map-background.svelte';
 	import { getCityCoords } from '$lib/services/city-coords';
 	import { getInetReadyStatus } from '$lib/services/inet-ready-advice';
+	import { getMedicalData } from '$lib/services/medical-api';
 
 	export let homeCity;
 	export let preferredCities = [];
@@ -49,6 +50,13 @@
 	});
 
 	onMount(async () => {
+			// Fetch medical data before generating cards
+		try {
+			medicalData = await getMedicalData();
+		} catch (e) {
+			console.error('Failed to fetch medical data:', e);
+			medicalData = null;
+		}
 		// Create resize observer to handle card height adjustments
 		resizeObserver = new ResizeObserver((entries) => {
 			for (let entry of entries) {
