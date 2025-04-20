@@ -624,32 +624,31 @@
 						<div class="tile-row row-one">
 							<div class="tile-column column-60">
 								{#if card.rowOne.tiles.length === 0}
-									<div class="tile empty-tile dashboard-tile">
+									<div class="tile empty-tile">
 										<div class="tile-placeholder">Heat Index</div>
 									</div>
 								{:else}
 									{#each card.rowOne.tiles.slice(0, 1) as tile}
-										<div class="tile heat-index-tile dashboard-tile" style="background: {tile.color};">
-											<div class="heat-index-label">Heat Index</div>
-											<div class="heat-index-value">{tile.heatIndex !== null ? tile.heatIndex.toFixed(1) + '°C' : 'N/A'}</div>
-											<div class="heat-index-condition">{tile.heatIndex !== null
-												? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
-												: 'No data'}</div>
+										<div class="tile" style="background-color: {tile.color}; color: white;">
+											<div style="font-size: 1.2rem; font-weight: bold;">Heat Index</div>
+											<div style="font-size: 2.2rem; font-weight: bold;">{tile.heatIndex !== null ? tile.heatIndex.toFixed(1) + '°C' : 'N/A'}</div>
+											<div style="font-size: 0.9rem;">
+												{tile.heatIndex !== null
+													? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
+													: 'No data'}
+											</div>
 										</div>
 									{/each}
 								{/if}
 							</div>
 							<div class="tile-column column-40">
 								{#if !card.rowOne.inetReady}
-									<div class="tile empty-tile dashboard-tile">
+									<div class="tile empty-tile">
 										<div class="tile-placeholder">INET-READY Status</div>
 									</div>
 								{:else}
-									<div class="tile inet-ready-tile dashboard-tile" style="background: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'};">
-										<span class="inet-ready-badge">
-											<i class="bi bi-wifi" style="margin-right: 0.4em;"></i>
-											{card.rowOne.inetReady.status}
-										</span>
+									<div class="tile" style="background-color: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'}; color: white;">
+										<div style="font-size: 1.2rem; font-weight: bold;">{card.rowOne.inetReady.status}</div>
 									</div>
 								{/if}
 							</div>
@@ -657,11 +656,11 @@
 
 						<!-- Row 2: Advice -->
 						<div class="tile-row row-two">
-							<div class="tile advice-tile dashboard-tile">
+							<div class="tile" style="background: #f9f9f9; color: #333; width: 100%;">
 								{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
-									<div class="advice-text">{card.rowOne.inetReady.advice}</div>
+									<div style="font-size: 0.98rem; line-height: 1.5;">{card.rowOne.inetReady.advice}</div>
 								{:else}
-									<div class="advice-placeholder">Travel advice will appear here.</div>
+									<div class="tile-placeholder">Travel advice will appear here.</div>
 								{/if}
 							</div>
 						</div>
@@ -670,30 +669,33 @@
 						<div class="tile-row row-three">
 							<div class="tile-column column-60">
 								{#if card.rowThree.tiles.length === 0 || !card.rowThree.tiles[0].pois || card.rowThree.tiles[0].pois.length === 0}
-									<div class="tile empty-tile dashboard-tile">
+									<div class="tile empty-tile">
 										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
 									</div>
 								{:else}
-									<div class="tile pois-tile dashboard-tile" on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)} on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}>
-										<div class="pois-title">Nearby Cool Indoor Spots</div>
-										<ul class="pois-list">
-											{#each card.rowThree.tiles[0].pois as poi, j}
-												<li class="poi-item">
-													<i class="bi bi-geo-alt-fill poi-icon location-icon"></i>
-													<span class="poi-title">{poi.title}</span>
-													{#if poi.address}
-														<span class="poi-address">{poi.address}</span>
-													{/if}
-												</li>
-											{/each}
-										</ul>
-									</div>
+									<div class="tile"
+  style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px; cursor: pointer;"
+  on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
+  on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
+>
+  <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
+  <ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
+    {#each card.rowThree.tiles[0].pois as poi, j}
+      <li style="margin-bottom: 0.5rem;">
+        <span style="font-weight: 500;">{poi.title}</span>
+        {#if poi.address}
+          <br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
+        {/if}
+      </li>
+    {/each}
+  </ul>
+</div>
 								{/if}
 							</div>
 							<div class="tile-column column-40">
 								<div class="tile-row sub-row">
 									{#if card.rowThree.tiles[1] && card.rowThree.tiles[1].hospitalPOI && card.rowThree.tiles[1].hospitalPOI.phone}
-										<button class="tile dashboard-tile emergency-tile" style="background: #e3f2fd; color: #1976d2; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 1rem;"
+										<button class="tile" style="background: #e3f2fd; color: #1976d2; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 1rem;"
 											on:click={(e) => {
 												if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
 													window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
@@ -705,18 +707,15 @@
 												}
 											}}
 										>
-											<span style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5em;">
-												<i class="bi bi-telephone-fill phone-icon" style="color: #1976d2; font-size: 1.2rem;"></i>
-												Nearest Hospital/Clinic
-											</span>
+											<span style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem;">Nearest Hospital/Clinic</span>
 											<span style="font-size: 0.95rem; font-weight: 500;">{card.rowThree.tiles[1].hospitalPOI.title}</span>
 											{#if card.rowThree.tiles[1].hospitalPOI.phone}
 												<span style="font-size: 0.9rem; color: #333; margin-top: 0.2rem;">{card.rowThree.tiles[1].hospitalPOI.phone}</span>
 											{/if}
-											<span class="emergency-disclaimer">Tap in case of emergency</span>
+											<span style="font-size: 0.85rem; color: #1976d2; margin-top: 0.5rem;">Call Emergency Hotline</span>
 										</button>
 									{:else}
-										<div class="tile empty-tile dashboard-tile">
+										<div class="tile empty-tile">
 											<div class="tile-placeholder">No hospital/clinic hotline found</div>
 										</div>
 									{/if}
@@ -724,7 +723,7 @@
 								
 								<div class="tile-row sub-row">
 									<!-- AI Chatbot Button -->
-									<button class="tile ai-chat-btn dashboard-tile chatbot-tile" style="background: #fffbe7; color: #b35d3a; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; padding: 1rem; gap: 0.7rem;"
+									<button class="tile ai-chat-btn" style="background: #fffbe7; color: #b35d3a; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; padding: 1rem; gap: 0.7rem;"
 										on:click={() => showChatbot = true}
 										aria-label="Ask AI Chatbot"
 									>
@@ -747,8 +746,6 @@
 			{/each}
 		</div>
 
-		{#if showDots}
-			<div class="navigation-dots">
 		{#if showDots}
 			<div class="navigation-dots">
 				{#each Array(totalCards) as _, i}
@@ -1567,200 +1564,5 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-	.dashboard-tile {
-		background: linear-gradient(135deg, #f7fafd 0%, #f0f4f8 100%);
-		box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-		border: 1.5px solid #e3e8ee;
-		padding: 0.7rem 1rem;
-		font-size: 1.05rem;
-		font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-		word-break: break-word;
-		white-space: normal;
-		min-height: 60px;
-	}
-	.heat-index-tile {
-		color: #fff;
-		font-size: 1.3rem;
-		font-weight: 700;
-		padding: 1.1rem 0.7rem 0.7rem 0.7rem;
-		border-radius: 10px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-		text-align: center;
-		min-height: 110px;
-	}
-	.heat-index-label {
-		font-size: 1.05rem;
-		font-weight: 500;
-		margin-bottom: 0.2em;
-		letter-spacing: 0.5px;
-		color: #fff;
-		text-shadow: 0 1px 2px rgba(0,0,0,0.13);
-	}
-	.heat-index-value {
-		font-size: 2.1rem;
-		font-weight: 800;
-		margin-bottom: 0.1em;
-		color: #fff;
-	}
-	.heat-index-condition {
-		font-size: 1.1rem;
-		font-weight: 600;
-		color: #fffbe7;
-	}
-	.inet-ready-tile {
-		color: #fff;
-		font-size: 1.2rem;
-		font-weight: 700;
-		padding: 1.1rem 0.7rem 0.7rem 0.7rem;
-		border-radius: 10px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-		text-align: center;
-		min-height: 110px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.inet-ready-badge {
-		display: flex;
-		align-items: center;
-		gap: 0.5em;
-		font-size: 1.2rem;
-		font-weight: 700;
-	}
-	.advice-tile {
-		background: #f9f6f2;
-		color: #7a5c3e;
-		font-size: 1.08rem;
-		font-weight: 500;
-		padding: 1.1rem 1.2rem;
-		border-radius: 10px;
-		min-height: 90px;
-		max-height: 100px;
-		overflow-y: auto;
-	}
-	.advice-text {
-		font-size: 1.08rem;
-		font-weight: 500;
-		color: #7a5c3e;
-	}
-	.advice-placeholder {
-		font-size: 0.98rem;
-		color: #bdbdbd;
-	}
-	.pois-tile {
-		background: #eaf6ff;
-		color: #1976d2;
-		font-size: 1.05rem;
-		font-weight: 500;
-		border-radius: 10px;
-		padding: 0.7rem 0.7rem 0.7rem 0.7rem;
-		min-height: 110px;
-		max-height: 140px;
-		overflow-y: auto;
-		cursor: pointer;
-		transition: box-shadow 0.2s;
-	}
-	.pois-tile:hover {
-		box-shadow: 0 4px 16px rgba(25, 118, 210, 0.13);
-	}
-	.pois-title {
-		font-size: 1.08rem;
-		font-weight: 700;
-		margin-bottom: 0.3em;
-		color: #1976d2;
-		display: flex;
-		align-items: center;
-		gap: 0.4em;
-	}
-	.pois-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-	.poi-item {
-		display: flex;
-		align-items: flex-start;
-		gap: 0.5em;
-		margin-bottom: 0.3em;
-		font-size: 0.98rem;
-		color: #1976d2;
-	}
-	.poi-title {
-		font-weight: 600;
-		font-size: 1.01rem;
-		margin-right: 0.2em;
-	}
-	.poi-address {
-		font-size: 0.93rem;
-		color: #4a90e2;
-		margin-left: 0.2em;
-	}
-	.location-icon {
-		color: #1976d2;
-		font-size: 1.1rem;
-		margin-right: 0.2em;
-	}
-	.emergency-tile {
-		background: #e3f2fd !important;
-		color: #1976d2 !important;
-		font-size: 1.08rem !important;
-		font-weight: 700 !important;
-		border-radius: 10px;
-		padding: 0.7rem 1rem !important;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.2em;
-		min-height: 90px;
-		max-height: 120px;
-		justify-content: center;
-	}
-	.phone-icon {
-		font-size: 1.2rem;
-		color: #1976d2;
-		margin-right: 0.3em;
-	}
-	.emergency-disclaimer {
-		font-size: 0.85rem;
-		color: #b35d3a;
-		margin-top: 0.4em;
-		font-weight: 500;
-		letter-spacing: 0.2px;
-	}
-	.chatbot-tile {
-		background: #fffbe7 !important;
-		color: #b35d3a !important;
-		font-size: 1.08rem !important;
-		font-weight: 700 !important;
-		border-radius: 10px;
-		padding: 0.7rem 1rem !important;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.7em;
-		min-height: 70px;
-		max-height: 100px;
-	}
-	.ai-chat-btn {
-		justify-content: center !important;
-		align-items: center !important;
-	}
-	/* Card footer disclaimer and update time */
-	.card-footer {
-		background: #fafafa;
-		padding: .5rem .75rem;
-		border-top: 1px solid #f0f0f0;
-		font-size: 0.7rem;
-		color: #999;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-	.update-time {
-		color: #bbb;
-		font-size: 0.65rem;
 	}
 </style>
