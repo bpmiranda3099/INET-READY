@@ -417,7 +417,6 @@
 			on:touchstart={handleTouchStart}
 			on:touchmove={handleTouchMove}
 			on:touchend={handleTouchEnd}
-			style="height: {cardHeight + 20}px; transition: height 0.3s ease-out;"
 		>
 			{#each travelCards as card, i}
 				<div
@@ -597,7 +596,7 @@
 		position: relative;
 		width: 100%;
 		margin: 1rem 0;
-		padding-bottom: 2rem; /* Space for navigation dots */
+		padding-bottom: 1rem; /* Space for navigation dots */
 		overflow: hidden; /* Hide horizontal overflow */
 		max-width: 100vw; /* Ensure it doesn't exceed viewport width */
 	}
