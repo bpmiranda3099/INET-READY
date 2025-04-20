@@ -14,6 +14,9 @@ csv_path = os.path.join(script_dir, '..', '..', 'public', 'data', 'city_coords.c
 def fetch_weather(latitude, longitude):
     url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,relative_humidity_2m"
     resp = requests.get(url).json()
+    if "hourly" not in resp:
+        logger.error(f"API response missing 'hourly' for lat={latitude}, lon={longitude}: {resp}")
+        raise KeyError("hourly")
     celsius = resp["hourly"]["temperature_2m"][0]
     humidity = resp["hourly"]["relative_humidity_2m"][0]
     return celsius, humidity  # Return temperature in Celsius
