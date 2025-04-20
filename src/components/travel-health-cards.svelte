@@ -5,11 +5,13 @@
 	import { spring } from 'svelte/motion';
 	import MapBackground from './map-background.svelte';
 	import { getCityCoords } from '$lib/services/city-coords';
+	import { getInetReadyStatus } from '$lib/services/inet-ready-advice';
 
 	export let homeCity;
 	export let preferredCities = [];
 	export let useCurrentLocation = true;
 	export let currentLocation = null; // Current location city name if available
+	export let medicalData = null; // Add this prop to receive user's medical data
 
 	let travelCards = [];
 	let loading = false;
@@ -165,7 +167,7 @@
 			// Reset to the first card
 			currentCard = 0;
 
-			// Fetch heat index for each card
+			// Fetch heat index and INET-READY status/advice for each card
 			await fetchHeatIndexesForCards(travelCards);
 		} catch (err) {
 			console.error('Error generating travel cards:', err);
@@ -185,7 +187,7 @@
 		return '#8e24aa'; // Purple
 	}
 
-	// Fetch heat index for all destination cities and update travelCards
+	// Fetch heat index and INET-READY status/advice for all destination cities and update travelCards
 	async function fetchHeatIndexesForCards(cards) {
 		await Promise.all(cards.map(async (card) => {
 			const cityData = await getCityData(card.toCity);
@@ -194,6 +196,13 @@
 				heatIndex,
 				color: getHeatIndexColor(heatIndex)
 			}];
+			// INET-READY status/advice
+			const inetResult = await getInetReadyStatus({
+				fromCity: card.fromCity,
+				toCity: card.toCity,
+				medicalData
+			});
+			card.rowOne.inetReady = inetResult;
 		}));
 	}
 
@@ -480,7 +489,16 @@
 								{/if}
 							</div>
 							<div class="tile-column column-60">
-								<!-- ...existing code for column 2... -->
+								{#if !card.rowOne.inetReady}
+									<div class="tile empty-tile">
+										<div class="tile-placeholder">INET-READY Status</div>
+									</div>
+								{:else}
+									<div class="tile" style="background-color: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'}; color: white;">
+										<div style="font-size: 1.2rem; font-weight: bold;">{card.rowOne.inetReady.status}</div>
+										<div style="font-size: 0.95rem; margin-top: 0.2rem;">{card.rowOne.inetReady.advice}</div>
+									</div>
+								{/if}
 							</div>
 						</div>
 
