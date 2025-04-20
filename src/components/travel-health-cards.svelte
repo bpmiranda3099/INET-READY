@@ -611,22 +611,24 @@
 		-webkit-touch-callout: none;
 	}
 	.travel-card {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		background: white;
-		border-radius: 12px; /* Reduced from 16px */
-		overflow: hidden;
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Lighter shadow */
-		transition:
-			transform 0.05s ease-out,
-			opacity 0.2s ease;
-		will-change: transform, opacity;
-		touch-action: pan-y;
-		overflow-y: hidden; /* Changed from visible to hidden to prevent overflow */
-		max-width: 100%; /* Ensure card doesn't exceed container width */
-	}
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        transition:
+            transform 0.05s ease-out,
+            opacity 0.2s ease;
+        will-change: transform, opacity;
+        touch-action: pan-y;
+        max-width: 100%; /* Ensure card doesn't exceed container width */
+        height: 100%; /* Make the card take up the full height of its parent */
+        display: flex;
+        flex-direction: column;
+    }
 
 	.travel-card.active {
 		z-index: 10;
@@ -784,6 +786,7 @@
 		padding: 0.5rem; /* Reduced padding */
 		display: flex;
 		flex-direction: column;
+		flex: 1;
 		height: calc(100% - 80px); /* Adjust for header and footer height */
 	}
 
