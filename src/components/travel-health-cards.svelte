@@ -428,13 +428,7 @@
                            z-index: {cardTransforms[i].zIndex};"
 					bind:this={cardElements[i]}
 				>
-					<div
-						class="card-header-container"
-						class:active={currentCard === i}
-						style="transform: {cardTransforms[i].transform}; 
-                           opacity: {cardTransforms[i].opacity};
-                           z-index: {cardTransforms[i].zIndex};"
-					>
+					<div class="card-header">
 						<span class="city-name">{card.toCity}</span>
 					</div>
 
