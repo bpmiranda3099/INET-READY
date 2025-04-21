@@ -395,6 +395,13 @@
 		}));
 	}
 
+	// Helper: split advice into lines for display (handles periods and newlines)
+	function getAdviceLines(advice) {
+		if (!advice) return [];
+		// Split on newlines or after a period followed by a space (but not inside parentheses)
+		return advice.split(/\n|(?<=\.) /g).map(l => l.trim()).filter(Boolean);
+	}
+
 	/**
 	 * Handle card navigation
 	 */
@@ -721,9 +728,29 @@
 
 						<!-- Row 2: Advice -->
 						<div class="tile-row row-two">
-							<div class="tile" style="background: #f9f9f9; color: #333; width: 100%;">
+							<div class="tile advice-tile">
 								{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
-									<div style="font-size: 0.98rem; line-height: 1.5;">{card.rowOne.inetReady.advice}</div>
+									<div class="advice-list">
+										{#each getAdviceLines(card.rowOne.inetReady.advice) as adviceLine (adviceLine)}
+											{#if adviceLine.trim() !== '' && !adviceLine.match(/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i)}
+												<div class="advice-item">
+													{#if adviceLine.match(/(avoid|warning|caution|not recommended|danger|risk|emergency|heat|hydrate|stay indoors|limit outdoor|seek shade|call|hospital|clinic|doctor|medical|urgent|critical|alert|high)/i)}
+														<i class="bi bi-exclamation-triangle-fill advice-icon warning"></i>
+													{:else if adviceLine.match(/(recommended|safe|good|ok|fine|clear|all set|ready|approved|can travel|proceed|no issues|no problem|healthy|normal|low risk|go ahead|suitable|safest|best|ideal|excellent|positive|yes|enjoy|ideal conditions)/i)}
+														<i class="bi bi-check-circle-fill advice-icon positive"></i>
+													{:else}
+														<i class="bi bi-info-circle-fill advice-icon info"></i>
+													{/if}
+													<span class="advice-text">{adviceLine}</span>
+												</div>
+											{/if}
+										{/each}
+									</div>
+									{#each getAdviceLines(card.rowOne.inetReady.advice) as adviceLine (adviceLine)}
+										{#if adviceLine.match(/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i)}
+											<div class="advice-disclaimer">{adviceLine}</div>
+										{/if}
+									{/each}
 								{:else}
 									<div class="tile-placeholder">Travel advice will appear here.</div>
 								{/if}
@@ -739,22 +766,22 @@
 									</div>
 								{:else}
 									<div class="tile"
-  style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px; cursor: pointer;"
-  on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
-  on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
->
-  <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
-  <ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
-    {#each card.rowThree.tiles[0].pois as poi, j}
-      <li style="margin-bottom: 0.5rem;">
-        <span style="font-weight: 500;">{poi.title}</span>
-        {#if poi.address}
-          <br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
-        {/if}
-      </li>
-    {/each}
-  </ul>
-</div>
+									style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px; cursor: pointer;"
+									on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
+									on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
+									>
+									<div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
+									<ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
+										{#each card.rowThree.tiles[0].pois as poi, j}
+										<li style="margin-bottom: 0.5rem;">
+											<span style="font-weight: 500;">{poi.title}</span>
+											{#if poi.address}
+											<br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
+											{/if}
+										</li>
+										{/each}
+									</ul>
+									</div>
 								{/if}
 							</div>
 							<div class="tile-column column-40">
@@ -1840,5 +1867,92 @@
         min-width: 30px; /* Further reduce min-width */
     }
 	
+}
+.advice-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: #f9f9f9;
+  color: #333;
+  width: 100%;
+  min-height: 100px;
+  padding: 0.9rem 0.8rem 1.2rem 0.8rem;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+.advice-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.advice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  word-break: break-word;
+  flex-wrap: wrap;
+}
+.advice-icon {
+  flex-shrink: 0;
+  font-size: 1.15em;
+  margin-top: 0.1em;
+}
+.advice-icon.positive {
+  color: #43a047;
+}
+.advice-icon.warning {
+  color: #e53935;
+}
+.advice-icon.info {
+  color: #1976d2;
+}
+.advice-text {
+  flex: 1 1 0%;
+  min-width: 0;
+  word-break: break-word;
+}
+.advice-disclaimer {
+  position: absolute;
+  left: 0.9rem;
+  bottom: 0.5rem;
+  font-size: 0.68rem;
+  color: #888;
+  opacity: 0.85;
+  font-style: italic;
+  max-width: 90%;
+  white-space: normal;
+  pointer-events: none;
+}
+@media (max-width: 600px) {
+  .advice-tile {
+    padding: 0.7rem 0.5rem 1.1rem 0.5rem;
+  }
+  .advice-item {
+    font-size: 0.97rem;
+    gap: 0.45rem;
+  }
+  .advice-icon {
+    font-size: 1em;
+  }
+  .advice-disclaimer {
+    font-size: 0.6rem;
+    left: 0.5rem;
+    bottom: 0.3rem;
+  }
+}
+@media (max-width: 400px) {
+  .advice-item {
+    font-size: 0.85rem;
+  }
+  .advice-disclaimer {
+    font-size: 0.5rem;
+    left: 0.3rem;
+    bottom: 0.2rem;
+  }
 }
 </style>
