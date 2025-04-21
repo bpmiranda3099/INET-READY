@@ -700,16 +700,23 @@
 								{/if}
 							</div>
 							<div class="tile-column column-40">
-								{#if !card.rowOne.inetReady}
-									<div class="tile empty-tile">
-										<div class="tile-placeholder">INET-READY Status</div>
-									</div>
-								{:else}
-									<div class="tile" style="background-color: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'}; color: white;">
-										<div style="font-size: 1.2rem; font-weight: bold;">{card.rowOne.inetReady.status}</div>
-									</div>
-								{/if}
-							</div>
+                                {#if !card.rowOne.inetReady}
+                                    <div class="tile empty-tile">
+                                        <div class="tile-placeholder">INET-READY Status</div>
+                                    </div>
+                                {:else}
+                                    <div class="tile inet-status-tile" style="background-color: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'}; color: white; position: relative; flex-direction: column; justify-content: center; align-items: center; padding: 0.5rem;">
+                                        {#if card.rowOne.inetReady.status === 'INET-READY'}
+                                            <i class="bi bi-check-circle-fill inet-status-icon"></i>
+                                            <span class="inet-status-text inet-ready">INET-READY</span>
+                                        {:else}
+                                            <i class="bi bi-exclamation-triangle-fill inet-status-icon"></i>
+                                            <span class="inet-status-text not-ready-label">NOT</span>
+                                            <span class="inet-status-text inet-not-ready">INET-READY</span>
+                                        {/if}
+                                    </div>
+                                {/if}
+                            </div>
 						</div>
 
 						<!-- Row 2: Advice -->
@@ -1729,6 +1736,48 @@
     font-weight: bold;
 }
 
+.inet-status-tile {
+    text-align: center;
+    line-height: 1.2; /* Adjusted line height */
+    overflow: hidden; /* Prevent content spillover */
+    display: flex; /* Use flexbox for better control */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem; /* Ensure some padding */
+}
+
+.inet-status-icon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.7rem;
+    font-size: 1.5rem; /* Adjust size as needed */
+    opacity: 0.9;
+    flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+.inet-status-text {
+    display: block;
+    font-weight: bold;
+    white-space: normal; /* Allow text wrapping */
+    word-wrap: break-word; /* Break long words if necessary */
+    max-width: 100%; /* Ensure text doesn't exceed tile width */
+}
+
+.inet-ready {
+    font-size: 1.3rem; /* Slightly reduced size for better fit */
+}
+
+.not-ready-label {
+    font-size: 0.85rem; /* Slightly reduced size */
+    font-weight: 500;
+    margin-bottom: -0.1rem; /* Adjust spacing */
+}
+
+.inet-not-ready {
+    font-size: 1.3rem; /* Slightly reduced size */
+}
+
 /* Responsive adjustments for smaller screens */
 @media (max-width: 400px) {
     .tile.weather-tile {
@@ -1760,7 +1809,22 @@
     .weather-detail span:first-child {
         margin-right: 0.3rem;
     }
+	.inet-status-icon {
+        font-size: 1.3rem; /* Smaller icon on small screens */
+        top: 0.4rem;
+        right: 0.5rem;
+    }
+
+    .inet-ready,
+    .inet-not-ready {
+        font-size: 1.1rem; /* Smaller text on small screens */
+    }
+
+    .not-ready-label {
+        font-size: 0.75rem;
+    }
 }
+
 
 @media (max-width: 350px) {
     .temp-main {
@@ -1775,5 +1839,6 @@
     .weather-detail span:first-child {
         min-width: 30px; /* Further reduce min-width */
     }
+	
 }
 </style>
