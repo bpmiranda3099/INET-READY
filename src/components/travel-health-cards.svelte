@@ -1,6 +1,6 @@
 <script>
 	import { onMount, onDestroy, afterUpdate } from 'svelte';
-	import { availableCities, getCityData } from '$lib/services/weather-data-service';
+	import { availableCities, getCityData, getHeatIndexPredictions } from '$lib/services/weather-data-service';
 	import { fade, fly, slide } from 'svelte/transition';
 	import { spring } from 'svelte/motion';
 	import MapBackground from './map-background.svelte';
@@ -342,12 +342,38 @@
 
 	// Fetch heat index and INET-READY status/advice for all destination cities and update travelCards
 	async function fetchHeatIndexesForCards(cards) {
+		// Fetch 7-day predictions for all cities
+		let predictions = {};
+		try {
+			predictions = await getHeatIndexPredictions();
+		} catch (e) {
+			console.error('Failed to fetch heat index predictions:', e);
+		}
+
 		await Promise.all(cards.map(async (card) => {
 			const cityData = await getCityData(card.toCity);
 			const heatIndex = cityData?.heat_index ?? null;
+			const temperature = cityData?.temperature ?? null;
+			const humidity = cityData?.humidity ?? null;
+
+			// Find tomorrow's predicted heat index for this city
+			let tomorrowPrediction = null;
+			if (predictions.cities && predictions.cities[card.toCity]) {
+				const forecastArr = predictions.cities[card.toCity];
+				if (Array.isArray(forecastArr)) {
+					const tomorrow = new Date();
+					tomorrow.setDate(tomorrow.getDate() + 1);
+					const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+					tomorrowPrediction = forecastArr.find(f => f.date === tomorrowStr)?.heat_index ?? null;
+				}
+			}
+
 			card.rowOne.tiles = [{
 				heatIndex,
-				color: getHeatIndexColor(heatIndex)
+				tomorrowPrediction,
+				color: getHeatIndexColor(heatIndex),
+				temperature,
+				humidity
 			}];
 			// INET-READY status/advice
 			const inetResult = await getInetReadyStatus({
@@ -629,16 +655,40 @@
 									</div>
 								{:else}
 									{#each card.rowOne.tiles.slice(0, 1) as tile}
-										<div class="tile" style="background-color: {tile.color}; color: white;">
-											<div style="font-size: 1.2rem; font-weight: bold;">Heat Index</div>
-											<div style="font-size: 2.2rem; font-weight: bold;">{tile.heatIndex !== null ? tile.heatIndex.toFixed(1) + '°C' : 'N/A'}</div>
-											<div style="font-size: 0.9rem;">
-												{tile.heatIndex !== null
-													? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
-													: 'No data'}
-											</div>
-										</div>
-									{/each}
+                                        <div class="tile weather-tile" style="background-color: {tile.color}; color: white; padding: 0.8rem; align-items: stretch;">
+                                            <div class="weather-left">
+                                                <!-- Placeholder weather icon - replace with dynamic icon if available -->
+                                                <i class="bi bi-sun-fill weather-icon"></i> 
+                                                <div class="temp-main">
+                                                    {tile.heatIndex !== null ? tile.heatIndex.toFixed(0) + '°C' : 'N/A'}
+                                                    <span class="temp-label">HI</span>
+                                                </div>
+                                                {#if tile.tomorrowPrediction !== undefined}
+                                                    <div class="temp-tomorrow">
+                                                        Tomorrow {tile.tomorrowPrediction !== null ? tile.tomorrowPrediction.toFixed(0) + '°' : 'N/A'}
+                                                    </div>
+                                                {/if}
+                                            </div>
+                                            <div class="weather-right">
+                                                <div class="weather-detail">
+                                                    <span>Temperature</span>
+                                                    <span>{tile.temperature !== null && tile.temperature !== undefined ? tile.temperature.toFixed(0) + '°' : 'N/A'}</span>
+                                                </div>
+                                                <div class="weather-detail">
+                                                    <span>Humidity</span>
+                                                    <span>{tile.humidity !== null && tile.humidity !== undefined ? tile.humidity.toFixed(0) + '%' : 'N/A'}</span>
+                                                </div>
+                                                <div class="weather-detail">
+                                                    <span>Intensity</span>
+                                                    <span class="intensity-level">
+                                                        {tile.heatIndex !== null
+                                                            ? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
+                                                            : 'N/A'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {/each}
 								{/if}
 							</div>
 							<div class="tile-column column-40">
@@ -1565,4 +1615,86 @@
 		align-items: center;
 		justify-content: center;
 	}
+	.tile.weather-tile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Align items vertically */
+    gap: 0.8rem;
+    padding: 0.8rem; /* Add padding */
+    flex-wrap: nowrap; /* Prevent wrapping for main sections */
+}
+
+.weather-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center content vertically */
+    text-align: center;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.weather-icon {
+    font-size: 2.5rem; /* Adjust icon size */
+    margin-bottom: 0.2rem;
+    opacity: 0.9;
+}
+
+.temp-main {
+    font-size: 2.4rem; /* Larger temperature */
+    font-weight: bold;
+    line-height: 1;
+    display: flex;
+    align-items: baseline; /* Align °C and HI */
+}
+
+.temp-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-left: 0.2rem;
+    opacity: 0.8;
+}
+
+.temp-tomorrow {
+    font-size: 0.9rem;
+    margin-top: 0.1rem;
+    opacity: 0.9;
+}
+
+.weather-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    flex-grow: 1; /* Allow this section to take remaining space */
+    font-size: 0.9rem;
+    gap: 0.3rem; /* Space between detail lines */
+    min-width: 0; /* Allow shrinking if needed */
+}
+
+.weather-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
+    padding-bottom: 0.2rem;
+    white-space: nowrap; /* Prevent wrapping within a detail line */
+}
+
+.weather-detail:last-child {
+    border-bottom: none; /* Remove border from last item */
+}
+
+.weather-detail span:first-child {
+    opacity: 0.85; /* Slightly less prominent label */
+    margin-right: 0.5rem; /* Space between label and value */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.weather-detail span:last-child {
+    font-weight: 500;
+    text-align: right;
+}
+
+.intensity-level {
+    font-weight: bold;
+}
 </style>
