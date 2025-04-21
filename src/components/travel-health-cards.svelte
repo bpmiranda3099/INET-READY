@@ -10,7 +10,6 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import Chatbot from './chatbot.svelte';
 	import { getCurrentUser } from '.././lib/firebase/auth';
-	import Icon from '@iconify/svelte';
 
 	export let homeCity;
 	export let preferredCities = [];
@@ -668,8 +667,6 @@
 									{#each card.rowOne.tiles.slice(0, 1) as tile}
                                         <div class="tile weather-tile" style="background-color: {tile.color}; color: white; padding: 0.8rem; align-items: stretch;">
                                             <div class="weather-left">
-                                                <!-- Dynamic flat weather icon -->
-                                                <Icon icon={getWeatherIconName(tile.heatIndex)} class="weather-icon" width="32" height="32" />
                                                 <div class="temp-main">
                                                     {tile.heatIndex !== null ? tile.heatIndex.toFixed(0) + '°C' : 'N/A'}
                                                     <span class="temp-label">HI</span>
