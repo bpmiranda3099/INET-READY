@@ -10,6 +10,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import Chatbot from './chatbot.svelte';
 	import { getCurrentUser } from '.././lib/firebase/auth';
+	import Icon from '@iconify/svelte';
 
 	export let homeCity;
 	export let preferredCities = [];
@@ -340,6 +341,16 @@
 		return '#8e24aa'; // Purple
 	}
 
+	// Helper: get flat weather icon name based on heat index intensity
+	function getWeatherIconName(heatIndex) {
+		if (heatIndex == null || isNaN(heatIndex)) return 'mdi:weather-partly-cloudy';
+		if (heatIndex < 27) return 'mdi:weather-sunny'; // Safe
+		if (heatIndex < 33) return 'mdi:weather-sunny-alert'; // Caution
+		if (heatIndex < 42) return 'mdi:weather-hot'; // Warning
+		if (heatIndex < 52) return 'mdi:weather-hurricane'; // Danger
+		return 'mdi:fire'; // Extreme
+	}
+
 	// Fetch heat index and INET-READY status/advice for all destination cities and update travelCards
 	async function fetchHeatIndexesForCards(cards) {
 		// Fetch 7-day predictions for all cities
@@ -657,8 +668,8 @@
 									{#each card.rowOne.tiles.slice(0, 1) as tile}
                                         <div class="tile weather-tile" style="background-color: {tile.color}; color: white; padding: 0.8rem; align-items: stretch;">
                                             <div class="weather-left">
-                                                <!-- Placeholder weather icon - replace with dynamic icon if available -->
-                                                <i class="bi bi-sun-fill weather-icon"></i> 
+                                                <!-- Dynamic flat weather icon -->
+                                                <Icon icon={getWeatherIconName(tile.heatIndex)} class="weather-icon" width="32" height="32" />
                                                 <div class="temp-main">
                                                     {tile.heatIndex !== null ? tile.heatIndex.toFixed(0) + '°C' : 'N/A'}
                                                     <span class="temp-label">HI</span>
