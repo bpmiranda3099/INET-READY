@@ -671,15 +671,15 @@
                                             </div>
                                             <div class="weather-right">
                                                 <div class="weather-detail">
-                                                    <span>Temperature</span>
+                                                    <i class="bi bi-thermometer-half weather-detail-icon" title="Temperature"></i>
                                                     <span>{tile.temperature !== null && tile.temperature !== undefined ? tile.temperature.toFixed(0) + '°' : 'N/A'}</span>
                                                 </div>
                                                 <div class="weather-detail">
-                                                    <span>Humidity</span>
+                                                    <i class="bi bi-droplet-half weather-detail-icon" title="Humidity"></i>
                                                     <span>{tile.humidity !== null && tile.humidity !== undefined ? tile.humidity.toFixed(0) + '%' : 'N/A'}</span>
                                                 </div>
                                                 <div class="weather-detail">
-                                                    <span>Intensity</span>
+                                                    <i class="bi bi-speedometer2 weather-detail-icon" title="Intensity"></i>
                                                     <span class="intensity-level">
                                                         {tile.heatIndex !== null
                                                             ? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
@@ -1673,10 +1673,20 @@
     min-width: 0; /* Allow shrinking if needed */
     overflow: hidden; /* Hide overflow within this section */
 }
+.weather-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    flex-grow: 1; /* Allow this section to take remaining space */
+    font-size: 0.9rem;
+    gap: 0.3rem; /* Space between detail lines */
+    min-width: 0; /* Allow shrinking if needed */
+    overflow: hidden; /* Hide overflow within this section */
+}
 
 .weather-detail {
     display: flex;
-    justify-content: space-between;
+    /* Removed justify-content: space-between; - let icon/span spacing handle it */
     align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
     padding-bottom: 0.2rem;
@@ -1688,22 +1698,23 @@
     border-bottom: none; /* Remove border from last item */
 }
 
-.weather-detail span {
-    display: block; /* Ensure spans behave predictably */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Add ellipsis if text still overflows */
+.weather-detail-icon {
+    font-size: 1rem; /* Adjust icon size as needed */
+    opacity: 0.85;
+    margin-right: 0.5rem; /* Space between icon and value */
+    flex-shrink: 0; /* Prevent icon from shrinking */
+    width: 1.2em; /* Give icon a consistent width */
+    text-align: center;
 }
 
-.weather-detail span:first-child {
-    opacity: 0.85; /* Slightly less prominent label */
-    margin-right: 0.5rem; /* Space between label and value */
-    flex-shrink: 1; /* Allow label to shrink if needed */
-    min-width: 40px; /* Give label some minimum space */
-}
-.weather-detail span:last-child {
+.weather-detail span {
+    /* Styles previously applied to :last-child now apply to the only span */
     font-weight: 500;
     text-align: right;
-    flex-shrink: 0; /* Prevent value from shrinking initially */
+    flex-grow: 1; /* Allow span to take remaining space */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis if text still overflows */
+    display: block; /* Ensure spans behave predictably */
 }
 
 .intensity-level {
