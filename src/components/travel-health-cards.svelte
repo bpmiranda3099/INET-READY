@@ -1622,6 +1622,7 @@
     gap: 0.8rem;
     padding: 0.8rem; /* Add padding */
     flex-wrap: nowrap; /* Prevent wrapping for main sections */
+    overflow: hidden; /* Prevent content spilling out */
 }
 
 .weather-left {
@@ -1645,6 +1646,7 @@
     line-height: 1;
     display: flex;
     align-items: baseline; /* Align °C and HI */
+    white-space: nowrap; /* Prevent main temp from wrapping */
 }
 
 .temp-label {
@@ -1658,6 +1660,7 @@
     font-size: 0.9rem;
     margin-top: 0.1rem;
     opacity: 0.9;
+    white-space: nowrap; /* Prevent tomorrow's temp from wrapping */
 }
 
 .weather-right {
@@ -1668,6 +1671,7 @@
     font-size: 0.9rem;
     gap: 0.3rem; /* Space between detail lines */
     min-width: 0; /* Allow shrinking if needed */
+    overflow: hidden; /* Hide overflow within this section */
 }
 
 .weather-detail {
@@ -1676,25 +1680,81 @@
     align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
     padding-bottom: 0.2rem;
-    white-space: nowrap; /* Prevent wrapping within a detail line */
+    white-space: nowrap; /* Prevent wrapping within a detail line initially */
+    overflow: hidden; /* Hide overflow */
 }
 
 .weather-detail:last-child {
     border-bottom: none; /* Remove border from last item */
 }
 
+.weather-detail span {
+    display: block; /* Ensure spans behave predictably */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis if text still overflows */
+}
+
 .weather-detail span:first-child {
     opacity: 0.85; /* Slightly less prominent label */
     margin-right: 0.5rem; /* Space between label and value */
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex-shrink: 1; /* Allow label to shrink if needed */
+    min-width: 40px; /* Give label some minimum space */
 }
 .weather-detail span:last-child {
     font-weight: 500;
     text-align: right;
+    flex-shrink: 0; /* Prevent value from shrinking initially */
 }
 
 .intensity-level {
     font-weight: bold;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 400px) {
+    .tile.weather-tile {
+        gap: 0.4rem;
+        padding: 0.6rem;
+    }
+
+    .weather-icon {
+        font-size: 2rem;
+    }
+
+    .temp-main {
+        font-size: 1.8rem; /* Reduced font size */
+    }
+
+    .temp-label {
+        font-size: 0.75rem;
+    }
+
+    .temp-tomorrow {
+        font-size: 0.75rem;
+    }
+
+    .weather-right {
+        font-size: 0.8rem; /* Reduced font size */
+        gap: 0.15rem;
+    }
+
+    .weather-detail span:first-child {
+        margin-right: 0.3rem;
+    }
+}
+
+@media (max-width: 350px) {
+    .temp-main {
+        font-size: 1.6rem;
+    }
+    .weather-icon {
+        font-size: 1.8rem;
+    }
+    .weather-right {
+        font-size: 0.75rem;
+    }
+    .weather-detail span:first-child {
+        min-width: 30px; /* Further reduce min-width */
+    }
 }
 </style>
