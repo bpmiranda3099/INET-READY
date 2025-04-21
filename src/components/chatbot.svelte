@@ -3,6 +3,7 @@ import { onMount, onDestroy } from 'svelte';
 import { askGemini } from '$lib/services/gemini-service';
 import { getMedicalData } from '$lib/services/medical-api';
 import { getAllHeatIndexData, getHeatIndexPredictions } from '$lib/services/weather-data-service';
+import { marked } from 'marked';
 
 export let onClose = () => {};
 export let user = null;
@@ -17,6 +18,12 @@ let heatIndexPredictions = null;
 let inputRef;
 let containerRef;
 let keyboardOffset = 0;
+
+// Typing animation state
+let aiTyping = false;
+let aiTypedText = '';
+let aiFullText = '';
+let typingInterval;
 
 onMount(() => {
   // Run async logic separately
@@ -56,6 +63,10 @@ async function sendMessage() {
   input = '';
   loading = true;
   error = null;
+  aiTyping = false;
+  aiTypedText = '';
+  aiFullText = '';
+  clearInterval(typingInterval);
   const chatHistory = messages.map(m => ({ role: m.sender === 'user' ? 'user' : 'model', text: m.text }));
   try {
     const context = {
@@ -66,8 +77,24 @@ async function sendMessage() {
       chatHistory
     };
     const response = await askGemini(sentInput, context);
-    messages = [...messages, { sender: 'ai', text: response }];
-    setTimeout(scrollToBottom, 100);
+    aiFullText = response;
+    aiTypedText = '';
+    aiTyping = true;
+    let i = 0;
+    typingInterval = setInterval(() => {
+      if (i < aiFullText.length) {
+        aiTypedText += aiFullText[i];
+        i++;
+        setTimeout(scrollToBottom, 0);
+      } else {
+        clearInterval(typingInterval);
+        aiTyping = false;
+        messages = [...messages, { sender: 'ai', text: aiFullText }];
+        aiTypedText = '';
+        aiFullText = '';
+        setTimeout(scrollToBottom, 100);
+      }
+    }, 18); // Typing speed (ms per character)
   } catch (e) {
     error = 'AI failed to respond.';
   } finally {
@@ -94,6 +121,10 @@ function adjustForKeyboard() {
   }
 }
 
+onDestroy(() => {
+  clearInterval(typingInterval);
+});
+
 $: document.documentElement.style.setProperty('--keyboard-offset', keyboardOffset + 'px');
 </script>
 
@@ -105,10 +136,19 @@ $: document.documentElement.style.setProperty('--keyboard-offset', keyboardOffse
   <main class="chatbot-main" bind:this={containerRef}>
     {#each messages as msg}
       <div class="message-row {msg.sender}">
-        <div class="message-bubble {msg.sender}">{msg.text}</div>
+        {#if msg.sender === 'ai'}
+          <div class="message-bubble ai"><div class="markdown">{@html marked(msg.text)}</div></div>
+        {:else}
+          <div class="message-bubble user">{msg.text}</div>
+        {/if}
       </div>
     {/each}
-    {#if loading}
+    {#if aiTyping}
+      <div class="message-row ai">
+        <div class="message-bubble ai"><div class="markdown">{@html marked(aiTypedText + (aiTypedText.length < aiFullText.length ? '▍' : ''))}</div></div>
+      </div>
+    {/if}
+    {#if loading && !aiTyping}
       <div class="message-row ai"><div class="message-bubble ai">Thinking...</div></div>
     {/if}
     {#if error}
@@ -273,4 +313,37 @@ $: document.documentElement.style.setProperty('--keyboard-offset', keyboardOffse
   background: #ccc;
   cursor: not-allowed;
 }
+.markdown {
+  font-size: 1rem;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.markdown p {
+  margin: 0 0 0.5em 0;
+}
+.markdown ul, .markdown ol {
+  margin: 0.5em 0 0.5em 1.5em;
+}
+.markdown li {
+  margin-bottom: 0.2em;
+}
+.markdown strong {
+  font-weight: 600;
+}
+.markdown em {
+  font-style: italic;
+}
+.markdown code {
+  background: #f4f4f4;
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
+  font-size: 0.95em;
+}
+.markdown h1, .markdown h2, .markdown h3 {
+  margin: 0.5em 0 0.3em 0;
+  font-weight: 700;
+}
+.markdown h1 { font-size: 1.3em; }
+.markdown h2 { font-size: 1.15em; }
+.markdown h3 { font-size: 1.05em; }
 </style>
