@@ -46,6 +46,7 @@
 	let adviceScrollableRef;
 	let showHospitalPhoneIcon = [];
 	let hospitalIconTimers = [];
+	let coolAreaCarouselPage = [];
 
 	// Track if we should show navigation dots
 	$: showDots = totalCards > 1;
@@ -847,28 +848,37 @@
 
 						<!-- Row 4 - now becomes Row 3 -->
 						<div class="tile-row row-three">
+							<!-- Row 3 - Nearby Cool Areas Carousel (Column 1) -->
 							<div class="tile-column column-60">
-								{#if card.rowThree.tiles.length === 0 || !card.rowThree.tiles[0].pois || card.rowThree.tiles[0].pois.length === 0}
+								{#if card.rowThree.tiles.length === 0 || !card.rowThree.tiles[0].pois || card.rowThree.tiles[0].pois.length < 1}
 									<div class="tile empty-tile">
-										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
+										<div class="tile-placeholder">Nearby Cool Indoor Spots</div>
 									</div>
 								{:else}
-									<div class="tile"
-									style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px; cursor: pointer;"
-									on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
-									on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
-									>
-									<div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
-									<ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
-										{#each card.rowThree.tiles[0].pois as poi, j}
-										<li style="margin-bottom: 0.5rem;">
-											<span style="font-weight: 500;">{poi.title}</span>
-											{#if poi.address}
-											<br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
-											{/if}
-										</li>
-										{/each}
-									</ul>
+									{#if coolAreaCarouselPage[i] === undefined}
+										{@html (() => { coolAreaCarouselPage[i] = 0; return ''; })()}
+									{/if}
+									<div class="tile cool-areas-carousel-tile" style="background: #7c3aed; color: #fff;">
+										<div class="cool-areas-carousel-header">Nearby Cool Areas</div>
+										<div class="cool-areas-carousel-content">
+											{#each card.rowThree.tiles[0].pois.slice(coolAreaCarouselPage[i]*2, coolAreaCarouselPage[i]*2+2) as poi, j}
+												<div class="cool-areas-poi">
+													<i class="bi bi-geo-alt-fill cool-areas-location-icon"></i>
+													<span class="cool-areas-poi-title">{poi.title}</span>
+													{#if poi.address}
+														<br><span class="cool-areas-poi-address">{poi.address}</span>
+													{/if}
+												</div>
+												{#if j === 0}
+													<hr class="cool-areas-divider" />
+												{/if}
+											{/each}
+										</div>
+										<div class="cool-areas-carousel-nav">
+											<button class="cool-areas-arrow" on:click={() => coolAreaCarouselPage[i] = 0} disabled={coolAreaCarouselPage[i] === 0} aria-label="Previous" tabindex="-1">&#8592;</button>
+											<span class="cool-areas-page-indicator">{coolAreaCarouselPage[i]+1}/2</span>
+											<button class="cool-areas-arrow" on:click={() => coolAreaCarouselPage[i] = 1} disabled={coolAreaCarouselPage[i] === 1} aria-label="Next" tabindex="-1">&#8594;</button>
+										</div>
 									</div>
 								{/if}
 							</div>
@@ -2187,6 +2197,118 @@
     top: 0;
     right: 0;
     margin: 0;
+  }
+}
+.cool-areas-carousel-tile {
+  background: #7c3aed;
+  color: #fff;
+  border-radius: 1.1rem;
+  padding: 1rem 0.7rem 1rem 0.7rem;
+  min-height: 120px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+.cool-areas-carousel-header {
+  font-weight: 700;
+  font-size: 1.08rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  letter-spacing: 0.01em;
+}
+.cool-areas-carousel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  width: 100%;
+}
+.cool-areas-poi {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0.1rem;
+  word-break: break-word;
+}
+.cool-areas-location-icon {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 0.1rem;
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+.cool-areas-poi-title {
+  font-weight: 700;
+  font-size: 1.01rem;
+  margin-bottom: 0.1rem;
+  color: #fff;
+  display: inline-block;
+}
+.cool-areas-poi-address {
+  font-size: 0.85rem;
+  color: #e0e7ff;
+  font-weight: 400;
+  display: inline-block;
+  margin-bottom: 0.1rem;
+}
+.cool-areas-divider {
+  border: none;
+  border-top: 1px solid #a78bfa;
+  margin: 0.5rem 0 0.5rem 0;
+  width: 100%;
+  opacity: 0.7;
+}
+.cool-areas-carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+.cool-areas-arrow {
+  background: rgba(255,255,255,0.13);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s;
+}
+.cool-areas-arrow:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.cool-areas-page-indicator {
+  font-size: 0.95rem;
+  color: #fff;
+  font-weight: 500;
+}
+@media (max-width: 600px) {
+  .cool-areas-carousel-tile {
+    padding: 0.7rem 0.3rem 0.7rem 0.3rem;
+    min-height: 90px;
+  }
+  .cool-areas-carousel-header {
+    font-size: 0.98rem;
+  }
+  .cool-areas-poi-title {
+    font-size: 0.93rem;
+  }
+  .cool-areas-poi-address {
+    font-size: 0.75rem;
+  }
+  .cool-areas-arrow {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 1rem;
   }
 }
 </style>
