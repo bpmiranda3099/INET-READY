@@ -84,6 +84,7 @@ function scrollToBottom() {
 
 async function sendMessage() {
   if (!input.trim()) return;
+  // Add the user's message to the messages array
   messages = [...messages, { sender: 'user', text: input }];
   const sentInput = input;
   input = '';
@@ -93,14 +94,18 @@ async function sendMessage() {
   aiTypedText = '';
   aiFullText = '';
   clearInterval(typingInterval);
-  const chatHistory = messages.map(m => ({ role: m.sender === 'user' ? 'user' : 'model', text: m.text }));
+  // Prepare chat history for context: include all user and AI messages in order
+  const chatHistory = messages.map(m => ({
+    role: m.sender === 'user' ? 'user' : 'assistant',
+    text: m.text
+  }));
   try {
     const context = {
       user,
       medicalData,
       heatIndexData,
       heatIndexPredictions,
-      chatHistory
+      chatHistory // always send full chat history
     };
     const response = await askGemini(sentInput, context);
     aiFullText = response;
@@ -218,7 +223,7 @@ function renderWithDisclaimer(text) {
         <input type="text" bind:value={input} placeholder="Ask about your health, heat index, etc..." autocomplete="off" bind:this={inputRef} on:focus={handleInputFocus} class="form-control border-0 bg-light" />
       </div>
       <div class="col-auto">
-        <button type="submit" class="btn ms-2 d-flex align-items-center justify-content-center" disabled={loading || !input.trim()} style="width:40px;height:38px;background:#dd815e;color:white;"><i class="bi bi-send"></i></button>
+        <button type="submit" class="btn chatbot-send-btn ms-2 d-flex align-items-center justify-content-center" disabled={loading || !input.trim()}><i class="bi bi-send"></i></button>
       </div>
     </div>
   </form>
@@ -405,17 +410,18 @@ function renderWithDisclaimer(text) {
 .markdown h3 { font-size: 1.05em; }
 .prompt-suggestions {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 0.7rem;
   justify-content: center;
   align-items: center;
+  margin: 4.5rem 1rem;
 }
 .prompt-suggestion-btn {
   background: #dd815e;
   color: white;
   border: none;
-  padding: 4rem 1rem;
-  border-radius: 999px;
+  padding: 1rem 1rem;
+  border-radius: 1px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
@@ -444,5 +450,24 @@ function renderWithDisclaimer(text) {
   margin-bottom: 0.7rem;
   position: relative;
   z-index: 10;
+}
+.chatbot-send-btn {
+  width: 40px;
+  height: 35px;
+  background: #dd815e;
+  color: white;
+  border: none;
+  transition: background 0.2s;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(221,129,94,0.07);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chatbot-send-btn:disabled {
+  background: #ccc;
+  color: #fff;
+  cursor: not-allowed;
 }
 </style>
