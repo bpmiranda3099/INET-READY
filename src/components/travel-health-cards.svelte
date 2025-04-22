@@ -42,6 +42,7 @@
 	let contentHeights = [];
 	let showChatbot = false;
 	let user = null;
+	let adviceScrollableRef;
 
 	// Track if we should show navigation dots
 	$: showDots = totalCards > 1;
@@ -728,9 +729,11 @@
 
 						<!-- Row 2: Advice -->
 						<div class="tile-row row-two">
-							<div class="tile advice-tile">
+							<div class="tile advice-tile"
+								class:no-scroll={adviceScrollableRef && adviceScrollableRef.scrollHeight <= adviceScrollableRef.clientHeight}
+							>
 								{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
-									<div class="advice-scrollable">
+									<div class="advice-scrollable" bind:this={adviceScrollableRef}>
 										<div class="advice-list">
 											{#each getAdviceLines(card.rowOne.inetReady.advice) as adviceLine (adviceLine)}
 												{#if adviceLine.trim() !== '' && !adviceLine.match(/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i)}
@@ -1873,13 +1876,14 @@
 .advice-tile {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: stretch;
+  justify-content: stretch;
   background: skyblue;
   color: #fff;
   width: 100%;
   min-height: 100px;
-  padding: 0.9rem 0.8rem 1.2rem 0.8rem;
+  height: 100%;
+  padding: 0;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
@@ -1887,116 +1891,67 @@
 .advice-scrollable {
   flex: 1 1 auto;
   width: 100%;
-  max-height: 120px;
+  max-height: none;
+  min-height: 0;
   overflow-y: auto;
-  margin-bottom: 1.2rem;
-  padding-right: 0.2rem;
+  margin-bottom: 0;
+  padding: 1.1rem 0.8rem 2.1rem 0.8rem;
   scrollbar-width: thin;
   scrollbar-color: #b3e0ff transparent;
-  /* Hide scrollbar by default */
   transition: box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  box-sizing: border-box;
 }
-.advice-scrollable::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
-.advice-scrollable:focus,
-.advice-scrollable:hover,
-.advice-scrollable:active {
-  scrollbar-width: thin;
-}
-.advice-scrollable:focus::-webkit-scrollbar,
-.advice-scrollable:hover::-webkit-scrollbar,
-.advice-scrollable:active::-webkit-scrollbar {
-  width: 6px;
-  background: #b3e0ff;
+.advice-tile.no-scroll .advice-scrollable {
+  justify-content: center;
 }
 .advice-list {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-.advice-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  font-size: 1.05rem;
-  line-height: 1.45;
-  word-break: break-word;
-  flex-wrap: wrap;
-  color: #fff;
-}
-.advice-icon {
-  flex-shrink: 0;
-  font-size: 1.15em;
-  margin-top: 0.1em;
-}
-.advice-icon.positive {
-  color: #fff;
-  filter: drop-shadow(0 0 2px #43a047);
-}
-.advice-icon.warning {
-  color: #fff;
-  filter: drop-shadow(0 0 2px #e53935);
-}
-.advice-icon.info {
-  color: #fff;
-  filter: drop-shadow(0 0 2px #1976d2);
-}
-.advice-text {
-  flex: 1 1 0%;
-  min-width: 0;
-  word-break: break-word;
-  color: #fff;
+  flex: 1 1 auto;
+  justify-content: flex-start;
 }
 .advice-disclaimer {
   position: absolute;
   left: 0.9rem;
+  right: 0.9rem;
   bottom: 0.5rem;
   font-size: 0.68rem;
   color: #fff;
   opacity: 0.95;
   font-style: italic;
-  max-width: 90%;
+  max-width: unset;
   white-space: normal;
   pointer-events: none;
   background: rgba(0,0,0,0.18);
   padding: 0.25em 0.7em 0.25em 0.5em;
   border-radius: 8px;
   z-index: 2;
+  box-sizing: border-box;
 }
 @media (max-width: 600px) {
   .advice-tile {
-    padding: 0.7rem 0.5rem 1.1rem 0.5rem;
-  }
-  .advice-item {
-    font-size: 0.97rem;
-    gap: 0.45rem;
-  }
-  .advice-icon {
-    font-size: 1em;
-  }
-  .advice-disclaimer {
-    font-size: 0.6rem;
-    left: 0.5rem;
-    bottom: 0.3rem;
+    padding: 0;
   }
   .advice-scrollable {
-    max-height: 90px;
+    padding: 0.7rem 0.5rem 1.5rem 0.5rem;
+  }
+  .advice-disclaimer {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.3rem;
   }
 }
 @media (max-width: 400px) {
-  .advice-item {
-    font-size: 0.85rem;
-  }
   .advice-disclaimer {
-    font-size: 0.5rem;
     left: 0.3rem;
+    right: 0.3rem;
     bottom: 0.2rem;
-  }
-  .advice-scrollable {
-    max-height: 60px;
   }
 }
 </style>

@@ -223,8 +223,7 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 	if (toHeat && Math.abs(toHeat - 52) < 1) adviceParts.push('Destination heat index is near extreme threshold.');
 
 	// Always add a general disclaimer for legal/medical compliance
-	adviceParts.push('This advice is for informational purposes only and does not constitute medical advice. For any health concerns or symptoms, consult a licensed healthcare professional.');
-	adviceParts.push('Your privacy is protected. No sensitive health details are shown.');
+	adviceParts.push('This is a general advice only. For health concerns, consult a healthcare professional.');
 
 	const status = safe ? 'INET-READY' : 'NOT INET-READY';
 	let advice = adviceParts.filter(Boolean).join(' ');
