@@ -875,7 +875,16 @@
 							<div class="tile-column column-40">
 								<div class="tile-row sub-row">
 									{#if card.rowThree.tiles[1] && card.rowThree.tiles[1].hospitalPOI && card.rowThree.tiles[1].hospitalPOI.phone}
-										<div class="tile hospital-tile">
+										<div class="tile hospital-tile"
+										  on:click={() => {
+											const phone = card.rowThree.tiles[1].hospitalPOI.phone;
+											if (phone) window.open(`tel:${phone.replace(/[^\d+]/g, '')}`);
+										  }}
+										  on:touchend={() => {
+											const phone = card.rowThree.tiles[1].hospitalPOI.phone;
+											if (phone) window.open(`tel:${phone.replace(/[^\d+]/g, '')}`);
+										  }}
+										>
 											{#if showHospitalPhoneIcon[i]}
 												<div class="hospital-phone-anim" in:fade={{duration:300}} out:fade={{duration:300}}>
 													<i class="bi bi-telephone-fill hospital-anim-icon"></i>
