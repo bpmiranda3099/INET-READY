@@ -399,8 +399,25 @@
 	// Helper: split advice into lines for display (handles periods and newlines)
 	function getAdviceLines(advice) {
 		if (!advice) return [];
-		// Split on newlines or after a period followed by a space (but not inside parentheses)
 		return advice.split(/\n|(?<=\.) /g).map(l => l.trim()).filter(Boolean);
+	}
+
+	// Group advice lines by type: warning, positive, info, disclaimer
+	function groupAdviceLines(advice) {
+		const lines = getAdviceLines(advice);
+		const groups = { warning: [], positive: [], info: [], disclaimer: [] };
+		for (const line of lines) {
+			if (/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i.test(line)) {
+				groups.disclaimer.push(line);
+			} else if (/(avoid|warning|caution|not recommended|danger|risk|emergency|heat|hydrate|stay indoors|limit outdoor|seek shade|call|hospital|clinic|doctor|medical|urgent|critical|alert|high|postpone|unsafe|worsen|dehydration|heat stress|dizziness|headache|nausea|rest often|extra care|combined risk|especially unsafe|monitor for signs|travel is highly discouraged|very long trip|conditions worsen|traveling a long distance in dangerous heat|postpone your trip|no heat index data|data unavailable|general heat safety precautions|higher risk|sensitive to heat|children are more sensitive|older adults are at higher risk|extra caution|monitor for changes)/i.test(line)) {
+				groups.warning.push(line);
+			} else if (/(recommended|safe|good|ok|fine|clear|all set|ready|approved|can travel|proceed|no issues|no problem|healthy|normal|low risk|go ahead|suitable|safest|best|ideal|excellent|positive|yes|enjoy|ideal conditions|favorable|minimal risk|quick trip|conditions are good|weather is favorable|enjoy your day|it will be cooler|conditions improve|short trip|minimal travel risk|very short trip|minimal risk|conditions are good|ideal conditions for a quick trip)/i.test(line)) {
+				groups.positive.push(line);
+			} else {
+				groups.info.push(line);
+			}
+		}
+		return groups;
 	}
 
 	/**
@@ -728,38 +745,43 @@
 						</div>
 
 						<!-- Row 2: Advice -->
-						<div class="tile-row row-two">
-							<div class="tile advice-tile"
-								class:no-scroll={adviceScrollableRef && adviceScrollableRef.scrollHeight <= adviceScrollableRef.clientHeight}
-							>
-								{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
-									<div class="advice-scrollable" bind:this={adviceScrollableRef}>
-										<div class="advice-list">
-											{#each getAdviceLines(card.rowOne.inetReady.advice) as adviceLine (adviceLine)}
-												{#if adviceLine.trim() !== '' && !adviceLine.match(/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i)}
-													<div class="advice-item">
-														{#if adviceLine.match(/(avoid|warning|caution|not recommended|danger|risk|emergency|heat|hydrate|stay indoors|limit outdoor|seek shade|call|hospital|clinic|doctor|medical|urgent|critical|alert|high|postpone|unsafe|worsen|dehydration|heat stress|dizziness|headache|nausea|rest often|extra care|combined risk|especially unsafe|monitor for signs|travel is highly discouraged|very long trip|conditions worsen|traveling a long distance in dangerous heat|postpone your trip|no heat index data|data unavailable|general heat safety precautions|higher risk|sensitive to heat|children are more sensitive|older adults are at higher risk|extra caution|monitor for changes)/i)}
-															<i class="bi bi-exclamation-triangle-fill advice-icon warning"></i>
-														{:else if adviceLine.match(/(recommended|safe|good|ok|fine|clear|all set|ready|approved|can travel|proceed|no issues|no problem|healthy|normal|low risk|go ahead|suitable|safest|best|ideal|excellent|positive|yes|enjoy|ideal conditions|favorable|minimal risk|quick trip|conditions are good|weather is favorable|enjoy your day|it will be cooler|conditions improve|short trip|minimal travel risk|very short trip|minimal risk|conditions are good|ideal conditions for a quick trip)/i)}
-															<i class="bi bi-check-circle-fill advice-icon positive"></i>
-														{:else}
-															<i class="bi bi-info-circle-fill advice-icon info"></i>
-														{/if}
-														<span class="advice-text">{adviceLine}</span>
-													</div>
-												{/if}
-											{/each}
-										</div>
+						<div class="tile advice-tile"
+							class:no-scroll={adviceScrollableRef && adviceScrollableRef.scrollHeight <= adviceScrollableRef.clientHeight}
+						>
+							{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
+								{@const grouped = groupAdviceLines(card.rowOne.inetReady.advice)}
+								<div class="advice-scrollable" bind:this={adviceScrollableRef}>
+									<div class="advice-list">
+										{#each grouped.warning as adviceLine (adviceLine)}
+											<div class="advice-item">
+												<i class="bi bi-exclamation-triangle-fill advice-icon warning" style="color: #fff;"></i>
+												<span class="advice-text">{adviceLine}</span>
+											</div>
+										{/each}
+										{#each grouped.positive as adviceLine (adviceLine)}
+											<div class="advice-item">
+												<i class="bi bi-check-circle-fill advice-icon positive" style="color: #fff;"></i>
+												<span class="advice-text">{adviceLine}</span>
+											</div>
+										{/each}
+										{#each grouped.info as adviceLine (adviceLine)}
+											<div class="advice-item">
+												<i class="bi bi-info-circle-fill advice-icon info" style="color: #fff;"></i>
+												<span class="advice-text">{adviceLine}</span>
+											</div>
+										{/each}
 									</div>
-									{#each getAdviceLines(card.rowOne.inetReady.advice) as adviceLine (adviceLine)}
-										{#if adviceLine.match(/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i)}
-											<div class="advice-disclaimer">{adviceLine}</div>
-										{/if}
-									{/each}
-								{:else}
-									<div class="tile-placeholder">Travel advice will appear here.</div>
+								</div>
+								{#if grouped.disclaimer.length > 0}
+									<div class="advice-disclaimer-fixed">
+										{#each grouped.disclaimer as adviceLine (adviceLine)}
+											<div>{adviceLine}</div>
+										{/each}
+									</div>
 								{/if}
-							</div>
+							{:else}
+								<div class="tile-placeholder">Travel advice will appear here.</div>
+							{/if}
 						</div>
 
 						<!-- Row 4 - now becomes Row 3 -->
@@ -1916,7 +1938,7 @@
   flex: 1 1 auto;
   justify-content: flex-start;
 }
-.advice-disclaimer {
+.advice-disclaimer-fixed {
   position: absolute;
   left: 0.9rem;
   right: 0.9rem;
@@ -1941,17 +1963,22 @@
   .advice-scrollable {
     padding: 0.7rem 0.5rem 1.5rem 0.5rem;
   }
-  .advice-disclaimer {
+  .advice-disclaimer-fixed {
     left: 0.5rem;
     right: 0.5rem;
     bottom: 0.3rem;
   }
 }
 @media (max-width: 400px) {
-  .advice-disclaimer {
+  .advice-disclaimer-fixed {
     left: 0.3rem;
     right: 0.3rem;
     bottom: 0.2rem;
   }
+}
+.advice-icon.warning,
+.advice-icon.positive,
+.advice-icon.info {
+  color: #fff !important;
 }
 </style>
