@@ -683,17 +683,34 @@
                         {/if}
                         
                         <!-- Previous heat issues -->
-                        <div class="heat-issues-container">
-                            <div class="issue-header">
-                                <span class="issue-icon">{medicalData.activity?.previous_heat_issues ? '🔥' : '✅'}</span>
-                                <span class="issue-title">Previous Heat Issues</span>
-                                <span class="issue-status">{medicalData.activity?.previous_heat_issues ? 'Yes' : 'No'}</span>
-                                {#if medicalData.activity?.previous_heat_issues && medicalData.activity?.heat_issues_details}
-                                    <div class="issue-details">
-                                        <p>{medicalData.activity.heat_issues_details}</p>
-                                    </div>
-                                {/if}
-                            </div>
+                        <div class="heat-issues-container creative-heat-issues">
+                            {#if medicalData.activity?.previous_heat_issues}
+                                <div class="issue-header creative">
+                                    <span class="issue-icon heat-survivor">🔥</span>
+                                    <span class="issue-title">Heat Survivor</span>
+                                    <span class="issue-badge">Caution: Past Heat Events</span>
+                                </div>
+                                <div class="issue-story">
+                                    <span class="story-quote">“{medicalData.activity.heat_issues_details || 'You have experienced heat-related health issues in the past. Stay vigilant in hot weather!'}”</span>
+                                </div>
+                                <div class="issue-tip">
+                                    <span class="tip-icon">💡</span>
+                                    <span class="tip-text">Remember to take extra breaks, hydrate, and listen to your body during heat waves.</span>
+                                </div>
+                            {:else}
+                                <div class="issue-header creative">
+                                    <span class="issue-icon no-issues">❄️</span>
+                                    <span class="issue-title">No Major Heat Issues</span>
+                                    <span class="issue-badge safe">Cool & Clear</span>
+                                </div>
+                                <div class="issue-story">
+                                    <span class="story-quote">“No significant heat-related health events reported. Keep up the good habits!”</span>
+                                </div>
+                                <div class="issue-tip">
+                                    <span class="tip-icon">👍</span>
+                                    <span class="tip-text">Continue staying cool and hydrated for a healthy summer.</span>
+                                </div>
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -703,7 +720,7 @@
     {:else}
         <div class="empty-medical-profile">
             <h3>No Medical Profile Found</h3>
-            <p>Please complete your medical profile to help us provide personalized hydration recommendations.</p>
+            <p>Please complete your medical profile.</p>
             <button on:click={toggleEdit} class="submit-btn">Create Medical Profile</button>
         </div>
     {/if}
@@ -1270,4 +1287,76 @@
     .header-fluid-intake { background: #4a89dc; }
     .header-heat-conditions { background: #f0932b; }
     .header-activity { background: #dc4a4a; }
+    /* Creative Previous Heat Issues Styles */
+    .creative-heat-issues {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(90deg, #fff7f0 0%, #f0f7ff 100%);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(221,129,94,0.06);
+        padding: 1.25rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    .creative-heat-issues .issue-header.creative {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    .creative-heat-issues .issue-icon.heat-survivor {
+        font-size: 1.7rem;
+        color: #e17055;
+        filter: drop-shadow(0 2px 6px #e1705522);
+    }
+    .creative-heat-issues .issue-icon.no-issues {
+        font-size: 1.7rem;
+        color: #0fb9b1;
+        filter: drop-shadow(0 2px 6px #0fb9b122);
+    }
+    .creative-heat-issues .issue-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #333;
+    }
+    .creative-heat-issues .issue-badge {
+        background: #ffe5d0;
+        color: #e17055;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.2rem 0.7rem;
+        margin-left: 0.5rem;
+    }
+    .creative-heat-issues .issue-badge.safe {
+        background: #e0f7f5;
+        color: #0fb9b1;
+    }
+    .creative-heat-issues .issue-story {
+        margin: 0.5rem 0 0.2rem 2.2rem;
+        font-style: italic;
+        color: #555;
+        font-size: 1rem;
+    }
+    .creative-heat-issues .story-quote {
+        quotes: "\201C" "\201D";
+        position: relative;
+    }
+    .creative-heat-issues .issue-tip {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: 2.2rem;
+        font-size: 0.95rem;
+        color: #666;
+        background: #f9f9f9;
+        border-radius: 8px;
+        padding: 0.3rem 0.8rem;
+    }
+    .creative-heat-issues .tip-icon {
+        font-size: 1.1rem;
+    }
 </style>
