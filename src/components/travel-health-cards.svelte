@@ -2035,7 +2035,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 1rem;
+  padding: 0.5rem;
   min-height: 70px;
 }
 .safetrip-ai-btn:hover {
@@ -2044,11 +2044,12 @@
 }
 .safetrip-ai-icon {
   position: absolute;
-  top: 0.7rem;
-  right: 0.9rem;
+  top: 0;
+  right: 0;
   font-size: 1.5rem;
   color: #fff;
   opacity: 0.95;
+  margin: 0;
 }
 .hospital-tile {
   position: relative;
@@ -2058,7 +2059,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 0.7rem 0.4rem 0.7rem 0.4rem;
+  padding: 0.5rem;
   min-height: 60px;
   width: 100%;
   box-sizing: border-box;
@@ -2066,8 +2067,8 @@
 }
 .hospital-phone-btn {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0;
+  right: 0;
   background: transparent;
   color: #fff;
   border: none;
@@ -2111,11 +2112,15 @@
 }
 @media (max-width: 600px) {
   .hospital-tile {
-    padding: 0.5rem 0.2rem 0.5rem 0.2rem;
+    padding: 0.5rem;
     min-height: 48px;
+  }
+  .safetrip-ai-btn {
+    padding: 0.5rem;
   }
   .hospital-tile-title {
     font-size: 0.85rem;
+	margin-top: 1rem;
   }
   .hospital-tile-phone {
     font-size: 0.7rem;
@@ -2124,8 +2129,14 @@
     width: 1.3rem;
     height: 1.3rem;
     font-size: 0.9rem;
-    top: 0.3rem;
-    right: 0.3rem;
+    top: 0;
+    right: 0;
+  }
+  .safetrip-ai-icon {
+    font-size: 1.2rem;
+    top: 0;
+    right: 0;
+    margin: 0;
   }
 }
 </style>
