@@ -55,19 +55,21 @@ function extractCityName(city) {
 }
 
 // Main function: get INET-READY status and advice
-export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
+export async function getInetReadyStatus({ fromCity, toCity, medicalData, fromHeat = null, toHeat = null }) {
 	// Always sanitize city names to avoid province/region mismatches
 	const cleanFromCity = extractCityName(fromCity);
 	const cleanToCity = extractCityName(toCity);
 
+	// Use provided heat index data if available, otherwise fetch it
 	const [fromData, toData] = await Promise.all([
-		getCityData(cleanFromCity),
-		getCityData(cleanToCity)
+		fromHeat !== null ? Promise.resolve({ heat_index: fromHeat }) : getCityData(cleanFromCity),
+		toHeat !== null ? Promise.resolve({ heat_index: toHeat }) : getCityData(cleanToCity)
 	]);
-	const fromHeat = fromData?.heat_index;
-	const toHeat = toData?.heat_index;
-	const fromLevel = getHeatIndexLevel(fromHeat);
-	const toLevel = getHeatIndexLevel(toHeat);
+
+	const fromHeatIndex = fromData?.heat_index;
+	const toHeatIndex = toData?.heat_index;
+	const fromLevel = getHeatIndexLevel(fromHeatIndex);
+	const toLevel = getHeatIndexLevel(toHeatIndex);
 	const distance = getDistanceBetweenCities(cleanFromCity, cleanToCity);
 	const vulnerable = isHeatVulnerable(medicalData);
 
@@ -91,8 +93,8 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 		return {
 			status: safe ? 'INET-READY' : 'NOT INET-READY',
 			advice: adviceParts.join(' '),
-			fromHeat,
-			toHeat,
+			fromHeat: fromHeatIndex,
+			toHeat: toHeatIndex,
 			distance: 0,
 			fromLevel,
 			toLevel
@@ -234,8 +236,8 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData }) {
 	return {
 		status,
 		advice,
-		fromHeat,
-		toHeat,
+		fromHeat: fromHeatIndex,
+		toHeat: toHeatIndex,
 		distance,
 		fromLevel,
 		toLevel

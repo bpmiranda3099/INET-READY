@@ -363,6 +363,11 @@
 
 		await Promise.all(cards.map(async (card) => {
 			const cityData = await getCityData(card.toCity);
+			if (!cityData) {
+				console.warn(`No data found for city: ${card.toCity}`);
+				return;
+			}
+
 			const heatIndex = cityData?.heat_index ?? null;
 			const temperature = cityData?.temperature ?? null;
 			const humidity = cityData?.humidity ?? null;
@@ -386,12 +391,16 @@
 				temperature,
 				humidity
 			}];
-			// INET-READY status/advice
+
+			// Pass already-fetched data to getInetReadyStatus
 			const inetResult = await getInetReadyStatus({
 				fromCity: card.fromCity,
 				toCity: card.toCity,
-				medicalData
+				medicalData,
+				fromHeat: cityData?.heat_index, // Pass heat index directly
+				toHeat: heatIndex // Use fetched heat index
 			});
+
 			card.rowOne.inetReady = inetResult;
 		}));
 	}
