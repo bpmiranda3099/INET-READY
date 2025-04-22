@@ -856,7 +856,7 @@
 									<div class="tile poi-tile-purple">
 										<div class="poi-tile-title">Nearby Cool Indoor Areas</div>
 										<ul class="poi-list">
-											{#each card.rowThree.tiles[0].pois as poi, j}
+											{#each card.rowThree.tiles[0].pois.slice(0, 3) as poi, j (poi.id || j)}
 												<li class="poi-list-item">
 													<i class="bi bi-geo-alt-fill poi-location-icon"></i>
 													<span class="poi-name">{poi.title}</span>
@@ -864,6 +864,9 @@
 														<br><span class="poi-address">{poi.address}</span>
 													{/if}
 												</li>
+												{#if j < Math.min(card.rowThree.tiles[0].pois.length, 3) - 1}
+													<hr class="poi-divider" />
+												{/if}
 											{/each}
 										</ul>
 									</div>
@@ -2214,9 +2217,12 @@
 .poi-list-item {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
   flex-wrap: wrap;
   word-break: break-word;
+}
+.poi-list-item:last-child {
+  margin-bottom: 0;
 }
 .poi-location-icon {
   color: #fff;
@@ -2239,6 +2245,13 @@
   line-height: 1.2;
   word-break: break-word;
 }
+.poi-divider {
+  border: none;
+  border-top: 1px solid #a78bfa;
+  margin: 0.3rem 0 0.3rem 1.5em;
+  width: calc(100% - 1.5em);
+  opacity: 0.5;
+}
 @media (max-width: 600px) {
   .poi-tile-title {
     font-size: 0.95rem;
@@ -2248,6 +2261,10 @@
   }
   .poi-address {
     font-size: 0.68rem;
+  }
+  .poi-tile-purple {
+    min-height: 70px;
+    padding: 0.4rem 0.4rem 0.4rem 0.4rem;
   }
 }
 </style>
