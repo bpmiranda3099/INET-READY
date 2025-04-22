@@ -853,22 +853,19 @@
 										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
 									</div>
 								{:else}
-									<div class="tile"
-									style="background: #f5f7fa; color: #333; flex-direction: column; align-items: flex-start; padding: 0.8rem 0.7rem; min-height: 120px; cursor: pointer;"
-									on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
-									on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois, e)}
-									>
-									<div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem;">Nearby Cool Indoor Spots</div>
-									<ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
-										{#each card.rowThree.tiles[0].pois as poi, j}
-										<li style="margin-bottom: 0.5rem;">
-											<span style="font-weight: 500;">{poi.title}</span>
-											{#if poi.address}
-											<br><span style="font-size: 0.85rem; color: #666;">{poi.address}</span>
-											{/if}
-										</li>
-										{/each}
-									</ul>
+									<div class="tile poi-tile-purple">
+										<div class="poi-tile-title">Nearby Cool Indoor Areas</div>
+										<ul class="poi-list">
+											{#each card.rowThree.tiles[0].pois as poi, j}
+												<li class="poi-list-item">
+													<i class="bi bi-geo-alt-fill poi-location-icon"></i>
+													<span class="poi-name">{poi.title}</span>
+													{#if poi.address}
+														<br><span class="poi-address">{poi.address}</span>
+													{/if}
+												</li>
+											{/each}
+										</ul>
 									</div>
 								{/if}
 							</div>
@@ -2187,6 +2184,70 @@
     top: 0;
     right: 0;
     margin: 0;
+  }
+}
+.poi-tile-purple {
+  background: #7c3aed; /* Modern purple */
+  color: #fff;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.7rem 0.7rem 0.7rem 0.7rem;
+  min-height: 120px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.poi-tile-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+.poi-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+.poi-list-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  word-break: break-word;
+}
+.poi-location-icon {
+  color: #fff;
+  font-size: 1rem;
+  margin-right: 0.5em;
+  flex-shrink: 0;
+  margin-top: 0.1em;
+}
+.poi-name {
+  font-size: 0.93rem;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.2;
+}
+.poi-address {
+  font-size: 0.75rem;
+  color: #e0e7ff;
+  margin-left: 1.5em;
+  display: block;
+  line-height: 1.2;
+  word-break: break-word;
+}
+@media (max-width: 600px) {
+  .poi-tile-title {
+    font-size: 0.95rem;
+  }
+  .poi-name {
+    font-size: 0.85rem;
+  }
+  .poi-address {
+    font-size: 0.68rem;
   }
 }
 </style>
