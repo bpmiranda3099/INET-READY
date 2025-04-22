@@ -814,21 +814,27 @@
 								<div class="advice-scrollable" bind:this={adviceScrollableRef}>
 									<div class="advice-list">
 										{#each grouped.warning as adviceLine (adviceLine)}
-											<div class="advice-item">
+											<div class="advice-item-col">
 												<i class="bi bi-exclamation-triangle-fill advice-icon warning" style="color: #fff;"></i>
-												<span class="advice-text">{adviceLine}</span>
+												<div class="advice-info-col">
+													<span class="advice-main">{adviceLine}</span>
+												</div>
 											</div>
 										{/each}
 										{#each grouped.positive as adviceLine (adviceLine)}
-											<div class="advice-item">
+											<div class="advice-item-col">
 												<i class="bi bi-check-circle-fill advice-icon positive" style="color: #fff;"></i>
-												<span class="advice-text">{adviceLine}</span>
+												<div class="advice-info-col">
+													<span class="advice-main">{adviceLine}</span>
+												</div>
 											</div>
 										{/each}
 										{#each grouped.info as adviceLine (adviceLine)}
-											<div class="advice-item">
+											<div class="advice-item-col">
 												<i class="bi bi-info-circle-fill advice-icon info" style="color: #fff;"></i>
-												<span class="advice-text">{adviceLine}</span>
+												<div class="advice-info-col">
+													<span class="advice-main">{adviceLine}</span>
+												</div>
 											</div>
 										{/each}
 									</div>
@@ -2284,6 +2290,31 @@
   .poi-tile-purple {
     min-height: 70px;
     padding: 0.4rem 0.4rem 0.4rem 0.4rem;
+  }
+}
+.advice-item-col {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: 0.2rem;
+  word-break: break-word;
+}
+.advice-info-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 0.1em;
+}
+.advice-main {
+  font-size: 0.93rem;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 0.08em;
+}
+@media (max-width: 600px) {
+  .advice-main {
+    font-size: 0.85rem;
   }
 }
 </style>
