@@ -128,6 +128,15 @@
 			// Set initial progress value
 			progress.set(0);
 		}
+
+		if (travelCards && travelCards.length) {
+			hospitalIconTimers.forEach(clearTimeout);
+			showHospitalPhoneIcon = travelCards.map(() => false);
+			hospitalIconTimers = travelCards.map(() => null);
+			travelCards.forEach((_, idx) => {
+				animateHospitalTile(idx);
+			});
+		}
 	});
 
 	// Save cache whenever cards or currentCard changes
@@ -160,27 +169,18 @@
 		hospitalIconTimers.forEach(clearTimeout);
 	});
 
-	// Watch travelCards and set up animation timers for each hospital tile
-	$: if (travelCards && travelCards.length) {
-		hospitalIconTimers.forEach(clearTimeout);
-		showHospitalPhoneIcon = travelCards.map(() => false);
-		hospitalIconTimers = travelCards.map((_, i) => null);
-		travelCards.forEach((card, idx) => {
-			function animateHospitalTile() {
+	function animateHospitalTile(idx) {
+		showHospitalPhoneIcon[idx] = false;
+		showHospitalPhoneIcon = [...showHospitalPhoneIcon];
+		hospitalIconTimers[idx] = setTimeout(() => {
+			showHospitalPhoneIcon[idx] = true;
+			showHospitalPhoneIcon = [...showHospitalPhoneIcon];
+			hospitalIconTimers[idx] = setTimeout(() => {
 				showHospitalPhoneIcon[idx] = false;
 				showHospitalPhoneIcon = [...showHospitalPhoneIcon];
-				hospitalIconTimers[idx] = setTimeout(() => {
-					showHospitalPhoneIcon[idx] = true;
-					showHospitalPhoneIcon = [...showHospitalPhoneIcon];
-					hospitalIconTimers[idx] = setTimeout(() => {
-						showHospitalPhoneIcon[idx] = false;
-						showHospitalPhoneIcon = [...showHospitalPhoneIcon];
-						animateHospitalTile();
-					}, 2000); // Show icon for 2s
-				}, 5000); // Wait 5s before showing icon
-			}
-			animateHospitalTile();
-		});
+				animateHospitalTile(idx);
+			}, 2000); // Show icon for 2s
+		}, 5000); // Wait 5s before showing icon
 	}
 
 	// Helper: fetch nearby POIs using Mapbox Search Box API
