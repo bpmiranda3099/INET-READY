@@ -882,7 +882,7 @@
 										aria-label="Ask AI Chatbot"
 									>
 										<i class="bi bi-robot safetrip-ai-icon" style="position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.5rem; color: #fff;"></i>
-										<span style="font-size: 1.15rem; font-weight: 700; letter-spacing: 0.02em;">SafeTrip AI</span>
+										<span style="font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em;">SafeTrip AI</span>
 									</button>
 								</div>
 							</div>
