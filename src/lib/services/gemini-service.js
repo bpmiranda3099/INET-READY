@@ -22,7 +22,7 @@ export const allowedCities = [
 
 // System instructions for the chatbot
 const SYSTEM_INSTRUCTION = `
-You are an AI assistant for INET-READY: Your Heat Check for Safe and Informed Travel app.
+You are SafeTrip AI, an AI assistant for INET-READY: Your Heat Check for Safe and Informed Travel app.
 Supported cities: ${allowedCities.join(', ')}
 
 ROLE & BOUNDARIES:

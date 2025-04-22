@@ -2021,38 +2021,47 @@
     padding: .75rem .5rem .5rem;
     position: relative;
     }
+    .dashboard-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    /* AI tile in row 2, column 2 */
     .ai-tile {
-  background: #dd815e;
-  color: #fff;
-  border-radius: 16px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 120px;
-  min-width: 0;
-  box-shadow: 0 2px 8px rgba(221,129,94,0.10);
-  padding: 2.2rem 1rem 1.2rem 1rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-.ai-tile-logo {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  font-size: 2.1rem;
-  color: #fff;
-  opacity: 0.85;
-  z-index: 2;
-}
-.ai-tile-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  color: #fff;
-  z-index: 1;
-}
+        grid-row: 2;
+        grid-column: 2;
+        background: #dd815e;
+        color: #fff;
+        border-radius: 16px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 120px;
+        min-width: 0;
+        box-shadow: 0 2px 8px rgba(221,129,94,0.10);
+        padding: 2.2rem 1rem 1.2rem 1rem;
+        text-align: center;
+    }
+    .ai-tile-logo {
+        position: absolute;
+        top: 16px;
+        right: 18px;
+        font-size: 2.1rem;
+        color: #fff;
+        opacity: 0.85;
+        z-index: 2;
+    }
+    .ai-tile-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        color: #fff;
+        z-index: 1;
+    }
 </style>
