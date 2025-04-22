@@ -162,17 +162,19 @@
 
 	// Watch travelCards and set up animation timers for each hospital tile
 	$: if (travelCards && travelCards.length) {
-		// Clean up old timers
 		hospitalIconTimers.forEach(clearTimeout);
 		showHospitalPhoneIcon = travelCards.map(() => false);
 		hospitalIconTimers = travelCards.map((_, i) => null);
 		travelCards.forEach((card, idx) => {
 			function animateHospitalTile() {
 				showHospitalPhoneIcon[idx] = false;
+				showHospitalPhoneIcon = [...showHospitalPhoneIcon];
 				hospitalIconTimers[idx] = setTimeout(() => {
 					showHospitalPhoneIcon[idx] = true;
+					showHospitalPhoneIcon = [...showHospitalPhoneIcon];
 					hospitalIconTimers[idx] = setTimeout(() => {
 						showHospitalPhoneIcon[idx] = false;
+						showHospitalPhoneIcon = [...showHospitalPhoneIcon];
 						animateHospitalTile();
 					}, 2000); // Show icon for 2s
 				}, 5000); // Wait 5s before showing icon
