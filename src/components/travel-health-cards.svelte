@@ -730,21 +730,23 @@
 						<div class="tile-row row-two">
 							<div class="tile advice-tile">
 								{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
-									<div class="advice-list">
-										{#each getAdviceLines(card.rowOne.inetReady.advice) as adviceLine (adviceLine)}
-											{#if adviceLine.trim() !== '' && !adviceLine.match(/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i)}
-												<div class="advice-item">
-													{#if adviceLine.match(/(avoid|warning|caution|not recommended|danger|risk|emergency|heat|hydrate|stay indoors|limit outdoor|seek shade|call|hospital|clinic|doctor|medical|urgent|critical|alert|high|postpone|unsafe|worsen|dehydration|heat stress|dizziness|headache|nausea|rest often|extra care|combined risk|especially unsafe|monitor for signs|travel is highly discouraged|very long trip|conditions worsen|traveling a long distance in dangerous heat|postpone your trip|no heat index data|data unavailable|general heat safety precautions|higher risk|sensitive to heat|children are more sensitive|older adults are at higher risk|extra caution|monitor for changes)/i)}
-														<i class="bi bi-exclamation-triangle-fill advice-icon warning"></i>
-													{:else if adviceLine.match(/(recommended|safe|good|ok|fine|clear|all set|ready|approved|can travel|proceed|no issues|no problem|healthy|normal|low risk|go ahead|suitable|safest|best|ideal|excellent|positive|yes|enjoy|ideal conditions|favorable|minimal risk|quick trip|conditions are good|weather is favorable|enjoy your day|it will be cooler|conditions improve|short trip|minimal travel risk|very short trip|minimal risk|conditions are good|ideal conditions for a quick trip)/i)}
-														<i class="bi bi-check-circle-fill advice-icon positive"></i>
-													{:else}
-														<i class="bi bi-info-circle-fill advice-icon info"></i>
-													{/if}
-													<span class="advice-text">{adviceLine}</span>
-												</div>
-											{/if}
-										{/each}
+									<div class="advice-scrollable">
+										<div class="advice-list">
+											{#each getAdviceLines(card.rowOne.inetReady.advice) as adviceLine (adviceLine)}
+												{#if adviceLine.trim() !== '' && !adviceLine.match(/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i)}
+													<div class="advice-item">
+														{#if adviceLine.match(/(avoid|warning|caution|not recommended|danger|risk|emergency|heat|hydrate|stay indoors|limit outdoor|seek shade|call|hospital|clinic|doctor|medical|urgent|critical|alert|high|postpone|unsafe|worsen|dehydration|heat stress|dizziness|headache|nausea|rest often|extra care|combined risk|especially unsafe|monitor for signs|travel is highly discouraged|very long trip|conditions worsen|traveling a long distance in dangerous heat|postpone your trip|no heat index data|data unavailable|general heat safety precautions|higher risk|sensitive to heat|children are more sensitive|older adults are at higher risk|extra caution|monitor for changes)/i)}
+															<i class="bi bi-exclamation-triangle-fill advice-icon warning"></i>
+														{:else if adviceLine.match(/(recommended|safe|good|ok|fine|clear|all set|ready|approved|can travel|proceed|no issues|no problem|healthy|normal|low risk|go ahead|suitable|safest|best|ideal|excellent|positive|yes|enjoy|ideal conditions|favorable|minimal risk|quick trip|conditions are good|weather is favorable|enjoy your day|it will be cooler|conditions improve|short trip|minimal travel risk|very short trip|minimal risk|conditions are good|ideal conditions for a quick trip)/i)}
+															<i class="bi bi-check-circle-fill advice-icon positive"></i>
+														{:else}
+															<i class="bi bi-info-circle-fill advice-icon info"></i>
+														{/if}
+														<span class="advice-text">{adviceLine}</span>
+													</div>
+												{/if}
+											{/each}
+										</div>
 									</div>
 									{#each getAdviceLines(card.rowOne.inetReady.advice) as adviceLine (adviceLine)}
 										{#if adviceLine.match(/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i)}
@@ -1873,14 +1875,41 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  background: #f9f9f9;
-  color: #333;
+  background: skyblue;
+  color: #fff;
   width: 100%;
   min-height: 100px;
   padding: 0.9rem 0.8rem 1.2rem 0.8rem;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+}
+.advice-scrollable {
+  flex: 1 1 auto;
+  width: 100%;
+  max-height: 120px;
+  overflow-y: auto;
+  margin-bottom: 1.2rem;
+  padding-right: 0.2rem;
+  scrollbar-width: thin;
+  scrollbar-color: #b3e0ff transparent;
+  /* Hide scrollbar by default */
+  transition: box-shadow 0.2s;
+}
+.advice-scrollable::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+.advice-scrollable:focus,
+.advice-scrollable:hover,
+.advice-scrollable:active {
+  scrollbar-width: thin;
+}
+.advice-scrollable:focus::-webkit-scrollbar,
+.advice-scrollable:hover::-webkit-scrollbar,
+.advice-scrollable:active::-webkit-scrollbar {
+  width: 6px;
+  background: #b3e0ff;
 }
 .advice-list {
   width: 100%;
@@ -1896,6 +1925,7 @@
   line-height: 1.45;
   word-break: break-word;
   flex-wrap: wrap;
+  color: #fff;
 }
 .advice-icon {
   flex-shrink: 0;
@@ -1903,30 +1933,38 @@
   margin-top: 0.1em;
 }
 .advice-icon.positive {
-  color: #43a047;
+  color: #fff;
+  filter: drop-shadow(0 0 2px #43a047);
 }
 .advice-icon.warning {
-  color: #e53935;
+  color: #fff;
+  filter: drop-shadow(0 0 2px #e53935);
 }
 .advice-icon.info {
-  color: #1976d2;
+  color: #fff;
+  filter: drop-shadow(0 0 2px #1976d2);
 }
 .advice-text {
   flex: 1 1 0%;
   min-width: 0;
   word-break: break-word;
+  color: #fff;
 }
 .advice-disclaimer {
   position: absolute;
   left: 0.9rem;
   bottom: 0.5rem;
   font-size: 0.68rem;
-  color: #888;
-  opacity: 0.85;
+  color: #fff;
+  opacity: 0.95;
   font-style: italic;
   max-width: 90%;
   white-space: normal;
   pointer-events: none;
+  background: rgba(0,0,0,0.18);
+  padding: 0.25em 0.7em 0.25em 0.5em;
+  border-radius: 8px;
+  z-index: 2;
 }
 @media (max-width: 600px) {
   .advice-tile {
@@ -1944,6 +1982,9 @@
     left: 0.5rem;
     bottom: 0.3rem;
   }
+  .advice-scrollable {
+    max-height: 90px;
+  }
 }
 @media (max-width: 400px) {
   .advice-item {
@@ -1953,6 +1994,9 @@
     font-size: 0.5rem;
     left: 0.3rem;
     bottom: 0.2rem;
+  }
+  .advice-scrollable {
+    max-height: 60px;
   }
 }
 </style>
