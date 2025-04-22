@@ -10,7 +10,7 @@ firebase.initializeApp({
   apiKey: "AIzaSyDBnH_d4k-LofTrj9a9y0yRbXaQGZzmKqI",
   authDomain: "inet-ready-5a5c1.firebaseapp.com",
   projectId: "inet-ready-5a5c1",
-  storageBucket: "inet-ready-5a5c1.appspot.com",
+  storageBucket: "inet-ready-5a5c1",
   messagingSenderId: "452680864851",
   appId: "1:452680864851:web:79303713fff1d23a4ae2a6",
   measurementId: "G-JS80BEPX2C"
@@ -198,11 +198,6 @@ self.addEventListener('message', (event) => {
   
   // You can communicate back to the client
   if (event.data && event.data.type === 'PING') {
-    event.ports[0].postMessage({
-      type: 'PONG',
-      status: 'Service Worker is active!'
-    });
+    // ...existing code...
   }
 });
-
-console.log('[firebase-messaging-sw.js] Service Worker initialized');
