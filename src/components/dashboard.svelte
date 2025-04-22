@@ -17,6 +17,7 @@
     import { getNotificationHistory, markNotificationAsRead, clearNotificationHistory, showNotification } from '$lib/services/notification-service';
     import { hasMedicalRecord, getMedicalData, deleteMedicalData } from '$lib/services/medical-api.js';
     import { syncCityInsightsToDashboard } from '$lib/services/city-insight-sync';
+    import { saveDashboardCache, loadDashboardCache, clearDashboardCache } from '$lib/services/dashboard-cache';
     
     // Components
     import MedicalProfile from './medicalprofile.svelte';
@@ -99,6 +100,14 @@
     });
     
     let unsubscribeMessages;    onMount(() => {
+        // Try to load cached dashboard state
+        const cached = loadDashboardCache();
+        if (cached) {
+            homeCity = cached.homeCity || '';
+            preferredCities = cached.preferredCities || [];
+            notifications = cached.notifications || [];
+            lastUpdated = cached.lastUpdated || null;
+        }
         // Check if welcome message is disabled in local storage
         const hideWelcome = localStorage.getItem('inet-ready-hide-welcome');
         if (hideWelcome === 'true') {
@@ -218,6 +227,14 @@
         };
     });
     
+    // Save dashboard cache whenever relevant data changes
+    $: saveDashboardCache({
+        homeCity,
+        preferredCities,
+        notifications,
+        lastUpdated
+    });
+    
     function handleCityPreferencesComplete() {
         showCityPreferencesSetup = false;
         hasCityPreferences = true;
@@ -245,6 +262,7 @@
     async function handleLogout() {
         loading = true;
         try {
+            clearDashboardCache();
             await logoutUser();
         } catch (err) {
             console.error("Logout error:", err);

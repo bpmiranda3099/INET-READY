@@ -10,6 +10,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import Chatbot from './chatbot.svelte';
 	import { getCurrentUser } from '.././lib/firebase/auth';
+	import { saveTravelCardsCache, loadTravelCardsCache, clearTravelCardsCache } from '$lib/services/travel-cards-cache';
 
 	export let homeCity;
 	export let preferredCities = [];
@@ -55,61 +56,83 @@
 		cityList = cities;
 	});
 
+	// On mount, try to load cached travel cards and state
 	onMount(async () => {
+		const cached = loadTravelCardsCache();
+		if (cached && cached.cards && cached.cards.length > 0) {
+			// Restore cards and state
+			travelCards = cached.cards.map(card => ({
+				...card,
+				rowOne: { tiles: [], inetReady: { advice: card.advice, status: card.status } },
+				rowThree: { tiles: [ { pois: card.pois }, { hospitalPOI: card.hospital } ] },
+				timestamp: card.timestamp
+			}));
+			totalCards = travelCards.length;
+			currentCard = cached.state.cardIndex || 0;
+			// Optionally restore map state if you want to persist zoom/center
+		} else {
 			// Fetch medical data before generating cards
-		try {
-			medicalData = await getMedicalData();
-		} catch (e) {
-			console.error('Failed to fetch medical data:', e);
-			medicalData = null;
-		}
-		try {
-			user = await getCurrentUser();
-		} catch (e) {
-			user = null;
-		}
-		// Create resize observer to handle card height adjustments
-		resizeObserver = new ResizeObserver((entries) => {
-			for (let entry of entries) {
-				const targetIndex = cardElements.findIndex((el) => el === entry.target);
+			try {
+				medicalData = await getMedicalData();
+			} catch (e) {
+				console.error('Failed to fetch medical data:', e);
+				medicalData = null;
+			}
+			try {
+				user = await getCurrentUser();
+			} catch (e) {
+				user = null;
+			}
+			// Create resize observer to handle card height adjustments
+			resizeObserver = new ResizeObserver((entries) => {
+				for (let entry of entries) {
+					const targetIndex = cardElements.findIndex((el) => el === entry.target);
 
-				if (targetIndex >= 0) {
-					// Store height of each card content
-					contentHeights[targetIndex] = entry.contentRect.height;
+					if (targetIndex >= 0) {
+						// Store height of each card content
+						contentHeights[targetIndex] = entry.contentRect.height;
 
-					// Update card width
-					cardWidth = entry.contentRect.width;
+						// Update card width
+						cardWidth = entry.contentRect.width;
 
-					// If this is the current card, update container height
-					if (targetIndex === currentCard) {
-						cardHeight = Math.max(entry.contentRect.height, 500);
+						// If this is the current card, update container height
+						if (targetIndex === currentCard) {
+							cardHeight = Math.max(entry.contentRect.height, 500);
+						}
 					}
 				}
+			});
+
+			try {
+				// Generate travel cards
+				await generateTravelCards();
+
+				cardsGenerated = true;
+			} catch (err) {
+				console.error('Error initializing travel cards:', err);
+				error = 'Failed to load travel cards. Please try again later.';
+			} finally {
+				loading = false;
 			}
-		});
 
-		try {
-			// Generate travel cards
-			await generateTravelCards();
+			// Add keyboard navigation support
+			window.addEventListener('keydown', handleKeydown);
 
-			cardsGenerated = true;
-		} catch (err) {
-			console.error('Error initializing travel cards:', err);
-			error = 'Failed to load travel cards. Please try again later.';
-		} finally {
-			loading = false;
+			// Observe card container size
+			if (cardsContainerElement) {
+				resizeObserver.observe(cardsContainerElement);
+			}
+
+			// Set initial progress value
+			progress.set(0);
 		}
+	});
 
-		// Add keyboard navigation support
-		window.addEventListener('keydown', handleKeydown);
-
-		// Observe card container size
-		if (cardsContainerElement) {
-			resizeObserver.observe(cardsContainerElement);
-		}
-
-		// Set initial progress value
-		progress.set(0);
+	// Save cache whenever cards or currentCard changes
+	$: saveTravelCardsCache({
+		cards: travelCards,
+		cardIndex: currentCard,
+		mapState: { center: travelCards[currentCard]?.toCity || '', zoom: 15 }
 	});
 
 	afterUpdate(() => {
@@ -123,7 +146,9 @@
 		}
 	});
 
+	// Clear cache on destroy (optional, or do this on logout/settings change)
 	onDestroy(() => {
+		clearTravelCardsCache();
 		unsubscribeCities();
 		window.removeEventListener('keydown', handleKeydown);
 
