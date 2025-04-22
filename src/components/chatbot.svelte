@@ -27,6 +27,7 @@ let typingInterval;
 
 let promptSuggestions = [];
 let showPromptSuggestions = true;
+let suggestionTimeout;
 
 onMount(() => {
   // Run async logic separately
@@ -154,6 +155,7 @@ function adjustForKeyboard() {
 
 onDestroy(() => {
   clearInterval(typingInterval);
+  clearTimeout(suggestionTimeout);
 });
 
 $: document.documentElement.style.setProperty('--keyboard-offset', keyboardOffset + 'px');
@@ -177,6 +179,26 @@ function renderWithDisclaimer(text) {
   }
   return marked(text || '');
 }
+
+function handleInputChange() {
+  // Hide suggestions when typing
+  showPromptSuggestions = false;
+  // Clear any previous timer
+  clearTimeout(suggestionTimeout);
+  // If input is empty, set a timer to show suggestions after 4 seconds
+  if (!input.trim()) {
+    suggestionTimeout = setTimeout(() => {
+      if (!input.trim() && messages.length === 0) {
+        showPromptSuggestions = true;
+      } else if (!input.trim()) {
+        showPromptSuggestions = true;
+      }
+    }, 4000);
+  }
+}
+
+// Watch input changes
+$: input, handleInputChange();
 </script>
 
 <div class="chatbot-fullpage">
@@ -421,7 +443,7 @@ function renderWithDisclaimer(text) {
   color: white;
   border: none;
   padding: 1rem 1rem;
-  border-radius: 1px;
+  border-radius: 1rem;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
@@ -435,7 +457,7 @@ function renderWithDisclaimer(text) {
   margin-top: 0.7em;
   background: rgba(255, 221, 51, 0.55);
   color: #fff;
-  font-size: 0.85em;
+  font-size: 0.4em;
   border-radius: 10px;
   padding: 0.5em 1em;
   font-weight: 500;
