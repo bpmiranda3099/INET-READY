@@ -6,7 +6,6 @@ export function saveDashboardCache(data) {
     const safeData = {
         homeCity: data.homeCity,
         preferredCities: data.preferredCities,
-        notifications: data.notifications,
         lastUpdated: data.lastUpdated,
         // Add more non-sensitive fields as needed
     };
