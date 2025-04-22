@@ -180,13 +180,6 @@ function renderWithDisclaimer(text) {
     <span class="appbar-title">AI Health Assistant</span>
   </header>
   <main class="chatbot-main" bind:this={containerRef}>
-    {#if showPromptSuggestions && promptSuggestions.length > 0 && messages.length === 0 && !input.trim()}
-      <div class="prompt-suggestions">
-        {#each promptSuggestions as suggestion}
-          <button class="prompt-suggestion-btn" on:click={() => selectPromptSuggestion(suggestion)}>{suggestion}</button>
-        {/each}
-      </div>
-    {/if}
     {#each messages as msg}
       <div class="message-row {msg.sender}">
         {#if msg.sender === 'ai'}
@@ -210,6 +203,15 @@ function renderWithDisclaimer(text) {
       <div class="error">{error}</div>
     {/if}
   </main>
+  {#if showPromptSuggestions && promptSuggestions.length > 0 && messages.length === 0 && !input.trim()}
+    <div class="prompt-suggestions-bar">
+      <div class="prompt-suggestions">
+        {#each promptSuggestions as suggestion}
+          <button class="prompt-suggestion-btn" on:click={() => selectPromptSuggestion(suggestion)}>{suggestion}</button>
+        {/each}
+      </div>
+    </div>
+  {/if}
   <form class="chatbot-inputbar" on:submit|preventDefault={sendMessage} style="bottom: {keyboardOffset}px">
     <div class="row w-100 g-0 align-items-center">
       <div class="col">
@@ -403,26 +405,25 @@ function renderWithDisclaimer(text) {
 .markdown h3 { font-size: 1.05em; }
 .prompt-suggestions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.7rem;
-  margin: 1.5rem 0 1.5rem 0;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
 }
 .prompt-suggestion-btn {
-  background: #fffbe8;
-  color: #dd815e;
+  background: #dd815e;
+  color: white;
   border: none;
+  padding: 0.5rem 1.1rem;
   border-radius: 999px;
-  padding: 0.6rem 1.3rem;
+  cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
+  transition: background 0.2s;
   box-shadow: 0 2px 8px rgba(221,129,94,0.07);
-  cursor: pointer;
-  transition: background 0.18s, color 0.18s;
 }
 .prompt-suggestion-btn:hover {
-  background: #ffe9a7;
-  color: #b95e1a;
+  background: #c76b4e;
 }
 .ai-disclaimer {
   margin-top: 0.7em;
@@ -434,5 +435,14 @@ function renderWithDisclaimer(text) {
   font-weight: 500;
   box-shadow: 0 1px 4px rgba(221,129,94,0.07);
   display: inline-block;
+}
+.prompt-suggestions-bar {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  margin-bottom: 0.7rem;
+  position: relative;
+  z-index: 10;
 }
 </style>
