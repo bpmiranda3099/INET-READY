@@ -876,17 +876,14 @@
 								
 								<div class="tile-row sub-row">
 									<!-- AI Chatbot Button -->
-									<button class="tile ai-chat-btn" style="background: #fffbe7; color: #b35d3a; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; padding: 1rem; gap: 0.7rem;"
+									<button class="tile ai-chat-btn safetrip-ai-btn"
+										style="background: #dd815e; color: #fff; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 1rem;"
 										on:click={() => showChatbot = true}
 										aria-label="Ask AI Chatbot"
 									>
-										<i class="bi bi-robot" style="font-size: 1.3rem;"></i>
-										<span>Ask AI</span>
+										<i class="bi bi-robot safetrip-ai-icon" style="position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.5rem; color: #fff;"></i>
+										<span style="font-size: 1.15rem; font-weight: 700; letter-spacing: 0.02em;">SafeTrip AI</span>
 									</button>
-									<div class="tile ai-tile-custom">
-										<span class="ai-tile-robot"><i class="bi bi-robot"></i></span>
-										<span class="ai-tile-label">SafeTrip AI</span>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -2019,39 +2016,32 @@
 .advice-icon.info {
   color: #fff !important;
 }
-.ai-tile-custom {
-    background: #dd815e;
-    color: #fff;
-    border-radius: 8px;
-    position: relative;
-    min-height: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    font-weight: 700;
-    box-shadow: 0 2px 8px rgba(221,129,94,0.10);
-    padding: 1.2rem 1rem 1.2rem 1rem;
-    text-align: center;
-    grid-row: 3;
-    grid-column: 2;
-  }
-  .ai-tile-robot {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    font-size: 2.1rem;
-    color: #fff;
-    opacity: 0.85;
-    z-index: 2;
-  }
-  .ai-tile-label {
-    margin: 0 auto;
-    color: #fff;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    z-index: 1;
-  }
+.safetrip-ai-btn {
+  background: #dd815e !important;
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 1rem;
+  min-height: 70px;
+}
+.safetrip-ai-btn:hover {
+  background: #c26744 !important;
+  color: #fff !important;
+}
+.safetrip-ai-icon {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.9rem;
+  font-size: 1.5rem;
+  color: #fff;
+  opacity: 0.95;
+}
 </style>

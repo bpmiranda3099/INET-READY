@@ -414,7 +414,7 @@ function renderWithDisclaimer(text) {
   background: #dd815e;
   color: white;
   border: none;
-  padding: 0.5rem 1.1rem;
+  padding: 4rem 1rem;
   border-radius: 999px;
   cursor: pointer;
   font-size: 1rem;
