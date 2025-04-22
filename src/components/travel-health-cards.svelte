@@ -259,8 +259,8 @@
 					const phone = props.metadata?.phone || props.phone || null;
 					const categories = (props.poi_category_ids || []).map(x => x.toLowerCase());
 					// Filter out maternity, dental, physical therapy, and non-emergency clinics
-					const isEmergency = categories.some(cat => ["emergency", "hospital", "urgent_care", "emergency_room"].includes(cat));
-					const isNonEmergency = categories.some(cat => ["maternity", "obstetric", "dental", "physical_therapy", "rehabilitation", "optical", "spa", "wellness"].includes(cat));
+					const isEmergency = categories.some(cat => ["emergency", "hospital", "urgent_care", "emergency_room"].includes(cat.toLowerCase()));
+					const isNonEmergency = categories.some(cat => ["maternity", "obstetric", "dental", "physical_therapy", "rehabilitation", "optical", "spa", "wellness"].includes(cat.toLowerCase()));
 					if (phone && isEmergency && !isNonEmergency) {
 						return {
 							title: props.name || '',
@@ -848,25 +848,31 @@
 							<div class="tile-column column-40">
 								<div class="tile-row sub-row">
 									{#if card.rowThree.tiles[1] && card.rowThree.tiles[1].hospitalPOI && card.rowThree.tiles[1].hospitalPOI.phone}
-										<button class="tile" style="background: #e3f2fd; color: #1976d2; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 1rem;"
-											on:click={(e) => {
-												if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
-													window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
-												}
-											}}
-											on:touchend={(e) => {
-												if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
-													window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
-												}
-											}}
-										>
-											<span style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem;">Nearest Hospital/Clinic</span>
-											<span style="font-size: 0.95rem; font-weight: 500;">{card.rowThree.tiles[1].hospitalPOI.title}</span>
-											{#if card.rowThree.tiles[1].hospitalPOI.phone}
-												<span style="font-size: 0.9rem; color: #333; margin-top: 0.2rem;">{card.rowThree.tiles[1].hospitalPOI.phone}</span>
-											{/if}
-											<span style="font-size: 0.85rem; color: #1976d2; margin-top: 0.5rem;">Call Emergency Hotline</span>
-										</button>
+										<div class="tile hospital-tile">
+											<button
+												class="hospital-phone-btn"
+												title="Call"
+												on:click={(e) => {
+													e.stopPropagation();
+													if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
+														window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
+													}
+												}}
+												on:touchend={(e) => {
+													e.stopPropagation();
+													if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
+														window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
+													}
+												}}
+												aria-label="Call Hospital/Clinic"
+											>
+												<i class="bi bi-telephone-fill"></i>
+											</button>
+											<div class="hospital-tile-content">
+												<span class="hospital-tile-title">{card.rowThree.tiles[1].hospitalPOI.title}</span>
+												<span class="hospital-tile-phone">{card.rowThree.tiles[1].hospitalPOI.phone}</span>
+											</div>
+										</div>
 									{:else}
 										<div class="tile empty-tile">
 											<div class="tile-placeholder">No hospital/clinic hotline found</div>
@@ -2043,5 +2049,83 @@
   font-size: 1.5rem;
   color: #fff;
   opacity: 0.95;
+}
+.hospital-tile {
+  position: relative;
+  background: #fff5f5;
+  color: #e53935;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 1.1rem 0.7rem 1.1rem 0.7rem;
+  min-height: 90px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.hospital-phone-btn {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  background: #e53935;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(229,57,53,0.08);
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.18s;
+  z-index: 2;
+}
+.hospital-phone-btn:hover {
+  background: #b71c1c;
+}
+.hospital-tile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  word-break: break-word;
+}
+.hospital-tile-title {
+  font-weight: 700;
+  font-size: 1.08rem;
+  margin-bottom: 0.25rem;
+  color: #e53935;
+  display: block;
+}
+.hospital-tile-phone {
+  font-size: 0.92rem;
+  color: #b71c1c;
+  font-weight: 500;
+  display: block;
+  word-break: break-all;
+}
+@media (max-width: 600px) {
+  .hospital-tile {
+    padding: 0.7rem 0.4rem 0.7rem 0.4rem;
+    min-height: 70px;
+  }
+  .hospital-tile-title {
+    font-size: 1rem;
+  }
+  .hospital-tile-phone {
+    font-size: 0.85rem;
+  }
+  .hospital-phone-btn {
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
 }
 </style>
