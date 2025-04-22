@@ -887,7 +887,7 @@
 										on:click={() => showChatbot = true}
 										aria-label="Ask AI Chatbot"
 									>
-										<i class="bi bi-robot safetrip-ai-icon" style="position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.5rem; color: #fff;"></i>
+										<i class="bi bi-robot safetrip-ai-icon" style="position: absolute; top: 0.1rem; right: 0.6rem; font-size: 1.5rem; color: #fff;"></i>
 										<span style="font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em;">SafeTrip AI</span>
 									</button>
 								</div>
@@ -2073,8 +2073,8 @@
   color: #fff;
   border: none;
   border-radius: 50%;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 2.3rem;
+  height: 0rem;
   display: flex;
   align-items: center;
   justify-content: center;
