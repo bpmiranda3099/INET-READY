@@ -663,7 +663,6 @@
                     <div class="card">
                         <div class="empty-state">
                             <div class="empty-icon"><i class="bi bi-bell"></i></div>
-                            <p class="empty-message">No notifications yet</p>
                             <p class="empty-hint">Notifications will appear here when we have updates for you</p>
                         </div>
                     </div>

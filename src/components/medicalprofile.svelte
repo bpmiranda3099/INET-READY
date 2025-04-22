@@ -1287,13 +1287,13 @@
     .header-fluid-intake { background: #4a89dc; }
     .header-heat-conditions { background: #f0932b; }
     .header-activity { background: #dc4a4a; }
-    /* Creative Previous Heat Issues Styles */
+    /* Creative Previous Heat Issues Styles - Cohesive with App */
     .creative-heat-issues {
         margin-top: 1.5rem;
         margin-bottom: 1.5rem;
-        background: linear-gradient(90deg, #fff7f0 0%, #f0f7ff 100%);
-        border-radius: 14px;
-        box-shadow: 0 2px 8px rgba(221,129,94,0.06);
+        background: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         padding: 1.25rem 1rem;
         display: flex;
         flex-direction: column;
@@ -1304,21 +1304,31 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 600;
     }
     .creative-heat-issues .issue-icon.heat-survivor {
-        font-size: 1.7rem;
+        font-size: 1.5rem;
         color: #e17055;
-        filter: drop-shadow(0 2px 6px #e1705522);
+        background: rgba(225,112,85,0.08);
+        border-radius: 50%;
+        padding: 0.25rem 0.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .creative-heat-issues .issue-icon.no-issues {
-        font-size: 1.7rem;
+        font-size: 1.5rem;
         color: #0fb9b1;
-        filter: drop-shadow(0 2px 6px #0fb9b122);
+        background: rgba(15,185,177,0.08);
+        border-radius: 50%;
+        padding: 0.25rem 0.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .creative-heat-issues .issue-title {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 700;
         color: #333;
     }
@@ -1328,8 +1338,9 @@
         font-size: 0.85rem;
         font-weight: 600;
         border-radius: 8px;
-        padding: 0.2rem 0.7rem;
+        padding: 0.18rem 0.7rem;
         margin-left: 0.5rem;
+        letter-spacing: 0.02em;
     }
     .creative-heat-issues .issue-badge.safe {
         background: #e0f7f5;
@@ -1339,7 +1350,11 @@
         margin: 0.5rem 0 0.2rem 2.2rem;
         font-style: italic;
         color: #555;
-        font-size: 1rem;
+        font-size: 0.98rem;
+        background: #f0f0f0;
+        border-radius: 8px;
+        padding: 0.5rem 0.9rem;
+        max-width: 95%;
     }
     .creative-heat-issues .story-quote {
         quotes: "\201C" "\201D";
@@ -1352,9 +1367,10 @@
         margin-left: 2.2rem;
         font-size: 0.95rem;
         color: #666;
-        background: #f9f9f9;
+        background: #fffbe8;
         border-radius: 8px;
         padding: 0.3rem 0.8rem;
+        box-shadow: 0 1px 2px rgba(221,129,94,0.04);
     }
     .creative-heat-issues .tip-icon {
         font-size: 1.1rem;
