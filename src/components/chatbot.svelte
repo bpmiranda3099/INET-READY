@@ -161,7 +161,7 @@ $: document.documentElement.style.setProperty('--keyboard-offset', keyboardOffse
         <input type="text" bind:value={input} placeholder="Ask about your health, heat index, etc..." autocomplete="off" bind:this={inputRef} on:focus={handleInputFocus} class="form-control border-0 bg-light" />
       </div>
       <div class="col-auto">
-        <button type="submit" class="btn btn-primary ms-2 d-flex align-items-center justify-content-center" disabled={loading || !input.trim()} style="width:40px;height:40px;"><i class="bi bi-send"></i></button>
+        <button type="submit" class="btn ms-2 d-flex align-items-center justify-content-center" disabled={loading || !input.trim()} style="width:40px;height:38px;background:#dd815e;color:white;"><i class="bi bi-send"></i></button>
       </div>
     </div>
   </form>
