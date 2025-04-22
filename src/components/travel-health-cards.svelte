@@ -812,24 +812,27 @@
 							{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
 								{@const grouped = groupAdviceLines(card.rowOne.inetReady.advice)}
 								<div class="advice-scrollable" bind:this={adviceScrollableRef}>
-  <div class="advice-list">
-    {#each [...grouped.warning, ...grouped.positive, ...grouped.info] as adviceLine, j (adviceLine)}
-      <div class="advice-item-row">
-        {#if grouped.warning.includes(adviceLine)}
-          <i class="bi bi-exclamation-triangle-fill advice-icon warning" style="color: #fff;"></i>
-        {:else if grouped.positive.includes(adviceLine)}
-          <i class="bi bi-check-circle-fill advice-icon positive" style="color: #fff;"></i>
-        {:else}
-          <i class="bi bi-info-circle-fill advice-icon info" style="color: #fff;"></i>
-        {/if}
-        <span class="advice-main">{adviceLine}</span>
-      </div>
-      {#if j < grouped.warning.length + grouped.positive.length + grouped.info.length - 1}
-        <hr class="advice-divider" />
-      {/if}
-    {/each}
-  </div>
-</div>
+									<div class="advice-list">
+										{#each grouped.warning as adviceLine (adviceLine)}
+											<div class="advice-item">
+												<i class="bi bi-exclamation-triangle-fill advice-icon warning" style="color: #fff;"></i>
+												<span class="advice-text">{adviceLine}</span>
+											</div>
+										{/each}
+										{#each grouped.positive as adviceLine (adviceLine)}
+											<div class="advice-item">
+												<i class="bi bi-check-circle-fill advice-icon positive" style="color: #fff;"></i>
+												<span class="advice-text">{adviceLine}</span>
+											</div>
+										{/each}
+										{#each grouped.info as adviceLine (adviceLine)}
+											<div class="advice-item">
+												<i class="bi bi-info-circle-fill advice-icon info" style="color: #fff;"></i>
+												<span class="advice-text">{adviceLine}</span>
+											</div>
+										{/each}
+									</div>
+								</div>
 								{#if grouped.disclaimer.length > 0}
 									<div class="advice-disclaimer-fixed">
 										{#each grouped.disclaimer as adviceLine (adviceLine)}
@@ -2281,58 +2284,6 @@
   .poi-tile-purple {
     min-height: 70px;
     padding: 0.4rem 0.4rem 0.4rem 0.4rem;
-  }
-}
-.advice-item-col {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  margin-bottom: 0.2rem;
-  word-break: break-word;
-}
-.advice-info-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 0.1em;
-}
-.advice-main {
-  font-size: 0.93rem;
-  font-weight: 500;
-  color: #fff;
-  line-height: 1.2;
-  margin-bottom: 0.08em;
-}
-@media (max-width: 600px) {
-  .advice-main {
-    font-size: 0.85rem;
-  }
-}
-.advice-item-row {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 0.6em;
-  margin-bottom: 0;
-  word-break: break-word;
-}
-.advice-main {
-  font-size: 0.93rem;
-  font-weight: 500;
-  color: #fff;
-  line-height: 1.2;
-  margin-bottom: 0;
-}
-.advice-divider {
-  border: none;
-  border-top: 1px solid #b3e0ff;
-  margin: 0.3rem 0 0.3rem 1.5em;
-  width: calc(100% - 1.5em);
-  opacity: 0.5;
-}
-@media (max-width: 600px) {
-  .advice-main {
-    font-size: 0.85rem;
   }
 }
 </style>
