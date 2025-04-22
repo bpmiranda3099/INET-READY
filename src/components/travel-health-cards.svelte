@@ -853,16 +853,22 @@
 										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
 									</div>
 								{:else}
-									<div class="tile poi-tile-purple">
-										<div class="poi-tile-title">Nearby Cool Indoor Areas</div>
+									<div class="tile poi-tile-purple"
+									  on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
+									  on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
+									  style="cursor: pointer;"
+									>
+										<div class="poi-tile-title center">Nearby Cool Indoor Areas</div>
 										<ul class="poi-list">
 											{#each card.rowThree.tiles[0].pois.slice(0, 3) as poi, j (poi.id || j)}
 												<li class="poi-list-item">
 													<i class="bi bi-geo-alt-fill poi-location-icon"></i>
-													<span class="poi-name">{poi.title}</span>
-													{#if poi.address}
-														<br><span class="poi-address">{poi.address}</span>
-													{/if}
+													<div class="poi-info-col">
+														<span class="poi-name">{poi.title}</span>
+														{#if poi.address}
+															<span class="poi-address">{poi.address}</span>
+														{/if}
+													</div>
 												</li>
 												{#if j < Math.min(card.rowThree.tiles[0].pois.length, 3) - 1}
 													<hr class="poi-divider" />
@@ -2218,7 +2224,7 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 0.2rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   word-break: break-word;
 }
 .poi-list-item:last-child {
@@ -2231,19 +2237,27 @@
   flex-shrink: 0;
   margin-top: 0.1em;
 }
+.poi-info-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 0.1em;
+}
 .poi-name {
   font-size: 0.93rem;
   font-weight: 500;
   color: #fff;
   line-height: 1.2;
+  margin-bottom: 0.08em;
 }
 .poi-address {
   font-size: 0.75rem;
   color: #e0e7ff;
-  margin-left: 1.5em;
+  margin-left: 0;
   display: block;
   line-height: 1.2;
   word-break: break-word;
+  margin-top: 0.01em;
 }
 .poi-divider {
   border: none;
@@ -2251,6 +2265,11 @@
   margin: 0.3rem 0 0.3rem 1.5em;
   width: calc(100% - 1.5em);
   opacity: 0.5;
+}
+.poi-tile-title.center {
+  text-align: center;
+  width: 100%;
+  display: block;
 }
 @media (max-width: 600px) {
   .poi-tile-title {
