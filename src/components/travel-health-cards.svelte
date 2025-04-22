@@ -1,7 +1,6 @@
 <script>
 	import { onMount, onDestroy, afterUpdate } from 'svelte';
 	import { availableCities, getCityData, getHeatIndexPredictions } from '$lib/services/weather-data-service';
-	import { fade, fly, slide } from 'svelte/transition';
 	import { spring } from 'svelte/motion';
 	import MapBackground from './map-background.svelte';
 	import { getCityCoords } from '$lib/services/city-coords';
@@ -11,6 +10,7 @@
 	import Chatbot from './chatbot.svelte';
 	import { getCurrentUser } from '.././lib/firebase/auth';
 	import { saveTravelCardsCache, loadTravelCardsCache, clearTravelCardsCache } from '$lib/services/travel-cards-cache';
+	import { fade, scale } from 'svelte/transition';
 
 	export let homeCity;
 	export let preferredCities = [];
@@ -44,6 +44,8 @@
 	let showChatbot = false;
 	let user = null;
 	let adviceScrollableRef;
+	let showHospitalPhoneIcon = [];
+	let hospitalIconTimers = [];
 
 	// Track if we should show navigation dots
 	$: showDots = totalCards > 1;
@@ -155,7 +157,30 @@
 		if (resizeObserver) {
 			resizeObserver.disconnect();
 		}
+		hospitalIconTimers.forEach(clearTimeout);
 	});
+
+	// Watch travelCards and set up animation timers for each hospital tile
+	$: if (travelCards && travelCards.length) {
+		// Clean up old timers
+		hospitalIconTimers.forEach(clearTimeout);
+		showHospitalPhoneIcon = travelCards.map(() => false);
+		hospitalIconTimers = travelCards.map((_, i) => null);
+		travelCards.forEach((card, idx) => {
+			function animateHospitalTile() {
+				showHospitalPhoneIcon[idx] = false;
+				hospitalIconTimers[idx] = setTimeout(() => {
+					showHospitalPhoneIcon[idx] = true;
+					hospitalIconTimers[idx] = setTimeout(() => {
+						showHospitalPhoneIcon[idx] = false;
+						animateHospitalTile();
+					}, 2000); // Show icon for 2s
+				}, 5000); // Wait 5s before showing icon
+			}
+			animateHospitalTile();
+		});
+	}
+
 	// Helper: fetch nearby POIs using Mapbox Search Box API
 	async function fetchNearbyPOIs({ lat, lng, types = ["cafe", "mall", "establishment", "restaurant", "shopping", "museum"], limit = 10 }) {
 		// @ts-ignore
@@ -849,29 +874,16 @@
 								<div class="tile-row sub-row">
 									{#if card.rowThree.tiles[1] && card.rowThree.tiles[1].hospitalPOI && card.rowThree.tiles[1].hospitalPOI.phone}
 										<div class="tile hospital-tile">
-											<button
-												class="hospital-phone-btn"
-												title="Call"
-												on:click={(e) => {
-													e.stopPropagation();
-													if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
-														window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
-													}
-												}}
-												on:touchend={(e) => {
-													e.stopPropagation();
-													if (Math.abs(touchStartX - touchEndX) < 20 && Math.abs(touchStartY - touchEndY) < 20) {
-														window.open(`tel:${card.rowThree.tiles[1].hospitalPOI.phone.replace(/[^\d+]/g, '')}`);
-													}
-												}}
-												aria-label="Call Hospital/Clinic"
-											>
-												<i class="bi bi-telephone-fill"></i>
-											</button>
-											<div class="hospital-tile-content">
-												<span class="hospital-tile-title">{card.rowThree.tiles[1].hospitalPOI.title}</span>
-												<span class="hospital-tile-phone">{card.rowThree.tiles[1].hospitalPOI.phone}</span>
-											</div>
+											{#if showHospitalPhoneIcon[i]}
+												<div class="hospital-phone-anim" in:fade={{duration:300}} out:fade={{duration:300}}>
+													<i class="bi bi-telephone-fill hospital-anim-icon"></i>
+												</div>
+											{:else}
+												<div class="hospital-tile-content" in:fade={{duration:300}} out:fade={{duration:300}}>
+													<span class="hospital-tile-title">{card.rowThree.tiles[1].hospitalPOI.title}</span>
+													<span class="hospital-tile-phone">{card.rowThree.tiles[1].hospitalPOI.phone}</span>
+												</div>
+											{/if}
 										</div>
 									{:else}
 										<div class="tile empty-tile">
@@ -2030,13 +2042,10 @@
   border: none;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 0.5rem;
-  min-height: 70px;
+  gap: 0.7rem;
 }
 .safetrip-ai-btn:hover {
   background: #c26744 !important;
@@ -2064,6 +2073,37 @@
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+}
+.hospital-phone-anim {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 48px;
+  min-width: 48px;
+  animation: hospital-phone-fadein 0.3s, hospital-phone-fadeout 0.3s 1.7s;
+}
+.hospital-anim-icon {
+  color: #fff;
+  font-size: 2.2rem;
+  animation: hospital-vibrate 0.18s linear 0s 8;
+}
+@keyframes hospital-vibrate {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(-1px, -2px); }
+  60% { transform: translate(2px, 1px); }
+  80% { transform: translate(1px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes hospital-phone-fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hospital-phone-fadeout {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 .hospital-phone-btn {
   position: absolute;
@@ -2120,7 +2160,6 @@
   }
   .hospital-tile-title {
     font-size: 0.85rem;
-	margin-top: 1rem;
   }
   .hospital-tile-phone {
     font-size: 0.7rem;
