@@ -2052,39 +2052,39 @@
 }
 .hospital-tile {
   position: relative;
-  background: #fff5f5;
-  color: #e53935;
+  background: #e53935;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 1.1rem 0.7rem 1.1rem 0.7rem;
-  min-height: 90px;
+  padding: 0.7rem 0.4rem 0.7rem 0.4rem;
+  min-height: 60px;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
 }
 .hospital-phone-btn {
   position: absolute;
-  top: 0.7rem;
-  right: 0.8rem;
-  background: #e53935;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: transparent;
   color: #fff;
   border: none;
   border-radius: 50%;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 1.7rem;
+  height: 1.7rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(229,57,53,0.08);
+  box-shadow: none;
   cursor: pointer;
-  font-size: 1.2rem;
-  transition: background 0.18s;
+  font-size: 1rem;
   z-index: 2;
 }
-.hospital-phone-btn:hover {
-  background: #b71c1c;
+.hospital-phone-btn i {
+  color: #fff;
+  font-size: 1.1rem;
 }
 .hospital-tile-content {
   display: flex;
@@ -2097,35 +2097,35 @@
 }
 .hospital-tile-title {
   font-weight: 700;
-  font-size: 1.08rem;
-  margin-bottom: 0.25rem;
-  color: #e53935;
+  font-size: 0.95rem;
+  margin-bottom: 0.18rem;
+  color: #fff;
   display: block;
 }
 .hospital-tile-phone {
-  font-size: 0.92rem;
-  color: #b71c1c;
-  font-weight: 500;
+  font-size: 0.78rem;
+  color: #fff;
+  font-weight: 400;
   display: block;
   word-break: break-all;
 }
 @media (max-width: 600px) {
   .hospital-tile {
-    padding: 0.7rem 0.4rem 0.7rem 0.4rem;
-    min-height: 70px;
+    padding: 0.5rem 0.2rem 0.5rem 0.2rem;
+    min-height: 48px;
   }
   .hospital-tile-title {
-    font-size: 1rem;
-  }
-  .hospital-tile-phone {
     font-size: 0.85rem;
   }
+  .hospital-tile-phone {
+    font-size: 0.7rem;
+  }
   .hospital-phone-btn {
-    width: 1.8rem;
-    height: 1.8rem;
-    font-size: 1rem;
-    top: 0.5rem;
-    right: 0.5rem;
+    width: 1.3rem;
+    height: 1.3rem;
+    font-size: 0.9rem;
+    top: 0.3rem;
+    right: 0.3rem;
   }
 }
 </style>

@@ -204,7 +204,7 @@ $: input, handleInputChange();
 <div class="chatbot-fullpage">
   <header class="chatbot-appbar">
     <button class="close-btn" on:click={onClose} aria-label="Close"><i class="bi bi-arrow-left"></i></button>
-    <span class="appbar-title">AI Health Assistant</span>
+    <span class="appbar-title">SafeTrip AI</span>
   </header>
   <main class="chatbot-main" bind:this={containerRef}>
     {#each messages as msg}
