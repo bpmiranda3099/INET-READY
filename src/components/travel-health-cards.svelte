@@ -883,6 +883,10 @@
 										<i class="bi bi-robot" style="font-size: 1.3rem;"></i>
 										<span>Ask AI</span>
 									</button>
+									<div class="tile ai-tile-custom">
+										<span class="ai-tile-robot"><i class="bi bi-robot"></i></span>
+										<span class="ai-tile-label">SafeTrip AI</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -2015,4 +2019,39 @@
 .advice-icon.info {
   color: #fff !important;
 }
+.ai-tile-custom {
+    background: #dd815e;
+    color: #fff;
+    border-radius: 8px;
+    position: relative;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(221,129,94,0.10);
+    padding: 1.2rem 1rem 1.2rem 1rem;
+    text-align: center;
+    grid-row: 3;
+    grid-column: 2;
+  }
+  .ai-tile-robot {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 2.1rem;
+    color: #fff;
+    opacity: 0.85;
+    z-index: 2;
+  }
+  .ai-tile-label {
+    margin: 0 auto;
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    z-index: 1;
+  }
 </style>

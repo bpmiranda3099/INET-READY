@@ -405,25 +405,26 @@ function renderWithDisclaimer(text) {
 .markdown h3 { font-size: 1.05em; }
 .prompt-suggestions {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 0.7rem;
-  justify-content: center;
-  align-items: center;
+  margin: 1.5rem 0 1.5rem 0;
+  align-items: flex-start;
 }
 .prompt-suggestion-btn {
-  background: #dd815e;
-  color: white;
+  background: #fffbe8;
+  color: #dd815e;
   border: none;
-  padding: 0.5rem 1.1rem;
   border-radius: 999px;
-  cursor: pointer;
+  padding: 0.6rem 1.3rem;
   font-size: 1rem;
   font-weight: 500;
-  transition: background 0.2s;
   box-shadow: 0 2px 8px rgba(221,129,94,0.07);
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
 }
 .prompt-suggestion-btn:hover {
-  background: #c76b4e;
+  background: #ffe9a7;
+  color: #b95e1a;
 }
 .ai-disclaimer {
   margin-top: 0.7em;
@@ -439,10 +440,8 @@ function renderWithDisclaimer(text) {
 .prompt-suggestions-bar {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  width: 100%;
-  margin-bottom: 0.7rem;
-  position: relative;
-  z-index: 10;
+  padding: 0.5rem 0;
+  background: #f7f7f7;
+  border-top: 1px solid #eee;
 }
 </style>
