@@ -413,14 +413,6 @@
         </div>
     {:else if needsMedicalForm}
         <div class="onboarding-container">
-            <p class="onboarding-message">
-                {#if justVerified}
-                    Thank you for verifying your email! To continue,
-                {:else}
-                    Welcome to INET-READY! To provide you with personalized insights and recommendations, 
-                {/if}
-                we need to collect some information about your health and habits.
-            </p>
             <MedicalForm 
                 on:completed={handleMedicalFormCompleted}
             />

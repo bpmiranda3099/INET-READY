@@ -13,6 +13,33 @@
     
     // Constants for unit conversion
     const ML_PER_CUP = 237; // 1 cup = 237 ml (approximately)
+    const FEET_TO_CM = 30.48; // 1 foot = 30.48 cm
+    const INCH_TO_CM = 2.54; // 1 inch = 2.54 cm
+    
+    // Format functions for sliders
+    function formatAge(age) {
+        return `${age} years`;
+    }
+    
+    function formatHeight(feet, inches) {
+        return `${feet}'${inches}"`;
+    }
+    
+    function formatWeight(weight) {
+        return `${weight} kg`;
+    }
+    
+    // Height conversion function
+    function heightToCm(feet, inches) {
+        return Math.round(feet * FEET_TO_CM + inches * INCH_TO_CM);
+    }
+    
+    // Split height into feet and inches for UI
+    let heightFeet = 5; // Default height feet
+    let heightInches = 8; // Default height inches
+    
+    // Update height in cm whenever feet or inches change
+    $: medicalData.biometrics.height = heightToCm(heightFeet, heightInches);
     
     // Medical conditions and medications organized into categories
     const medicalConditionCategories = [
@@ -511,19 +538,26 @@
             <div class="section-body">
                 <div class="form-grid">
                     <div class="form-field">
-                        <label for="age">
-                            <div class="label-icon">📅</div>
-                            <span>Age <span class="required">*</span></span>
-                        </label>
-                        <input 
-                            type="number" 
-                            id="age" 
-                            bind:value={medicalData.demographics.age} 
-                            min="1" 
-                            max="120"
-                            required
-                            class="modern-input"
-                        />
+                        <div class="slider-header">
+                            <label for="age">
+                                <div class="label-icon">📅</div>
+                                <span>Age <span class="required">*</span></span>
+                            </label>
+                            <span class="slider-value">{formatAge(medicalData.demographics.age || 25)}</span>
+                        </div>
+                        <div class="modern-slider-container">
+                            <input 
+                                type="range" 
+                                id="age"
+                                bind:value={medicalData.demographics.age}
+                                min="18"
+                                max="100"
+                                class="modern-slider"
+                            />
+                            <div class="slider-track">
+                                <div class="slider-progress" style="width: {((medicalData.demographics.age || 25) - 18) / (100 - 18) * 100}%"></div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-field">
@@ -540,35 +574,68 @@
                     </div>
                     
                     <div class="form-field">
-                        <label for="height">
-                            <div class="label-icon">📏</div>
-                            <span>Height (cm) <span class="required">*</span></span>
-                        </label>
-                        <input 
-                            type="number" 
-                            id="height" 
-                            bind:value={medicalData.biometrics.height} 
-                            min="50" 
-                            max="250"
-                            required
-                            class="modern-input"
-                        />
+                        <div class="height-sliders">
+                            <div class="slider-header">
+                                <label>
+                                    <div class="label-icon">📏</div>
+                                    <span>Height <span class="required">*</span></span>
+                                </label>
+                                <span class="slider-value">{formatHeight(heightFeet, heightInches)} ({heightToCm(heightFeet, heightInches)} cm)</span>
+                            </div>
+                            <div class="height-slider-group">
+                                <div class="modern-slider-container">
+                                    <label for="height-feet" class="mini-label">Feet</label>
+                                    <input 
+                                        type="range" 
+                                        id="height-feet"
+                                        bind:value={heightFeet}
+                                        min="4"
+                                        max="7"
+                                        class="modern-slider"
+                                    />
+                                    <div class="slider-track">
+                                        <div class="slider-progress" style="width: {(heightFeet - 4) / (7 - 4) * 100}%"></div>
+                                    </div>
+                                </div>
+                                <div class="modern-slider-container">
+                                    <label for="height-inches" class="mini-label">Inches</label>
+                                    <input 
+                                        type="range" 
+                                        id="height-inches"
+                                        bind:value={heightInches}
+                                        min="0"
+                                        max="11"
+                                        class="modern-slider"
+                                    />
+                                    <div class="slider-track">
+                                        <div class="slider-progress" style="width: {heightInches / 11 * 100}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-field">
-                        <label for="weight">
-                            <div class="label-icon">⚖️</div>
-                            <span>Weight (kg) <span class="required">*</span></span>
-                        </label>
-                        <input 
-                            type="number" 
-                            id="weight" 
-                            bind:value={medicalData.biometrics.weight} 
-                            min="1" 
-                            max="500"
-                            required
-                            class="modern-input"
-                        />
+                        <div class="slider-header">
+                            <label for="weight">
+                                <div class="label-icon">⚖️</div>
+                                <span>Weight (kg) <span class="required">*</span></span>
+                            </label>
+                            <span class="slider-value">{formatWeight(medicalData.biometrics.weight || 70)}</span>
+                        </div>
+                        <div class="modern-slider-container">
+                            <input 
+                                type="range" 
+                                id="weight"
+                                bind:value={medicalData.biometrics.weight}
+                                min="40"
+                                max="200"
+                                class="modern-slider"
+                            />
+                            <div class="slider-track">
+                                <div class="slider-progress" style="width: {((medicalData.biometrics.weight || 70) - 40) / (200 - 40) * 100}%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
