@@ -417,8 +417,7 @@
         
         loading = true;
         
-        try {
-            // Validate "other" fields if they exist
+        try {            // Validate "other" fields if they exist
             if (medicalData.medical_conditions.other.has_other || 
                 medicalData.medications.other.has_other || 
                 medicalData.fluid_intake.other.has_other) {
@@ -434,45 +433,65 @@
 
                 try {
                     const validation = await validateMedicalProfileOtherFields(otherFields);
+                    let validationWarnings = [];
                     
-                    // Update medical conditions if valid
+                    // Update medical conditions with corrections or remove if invalid
                     if (medicalData.medical_conditions.other.has_other) {
                         if (!validation.conditions.isValid) {
                             medicalData.medical_conditions.other.has_other = false;
                             medicalData.medical_conditions.other.description = '';
-                            console.warn('Invalid medical condition removed:', validation.conditions.reason);
-                        } else {
+                            validationWarnings.push(`Invalid medical condition: ${validation.conditions.reason}`);
+                        } else if (validation.conditions.cleanedText !== medicalData.medical_conditions.other.description) {
+                            validationWarnings.push(`Medical condition corrected: "${medicalData.medical_conditions.other.description}" → "${validation.conditions.cleanedText}"`);
                             medicalData.medical_conditions.other.description = validation.conditions.cleanedText;
                         }
                     }
 
-                    // Update medications if valid
+                    // Update medications with corrections or remove if invalid
                     if (medicalData.medications.other.has_other) {
                         if (!validation.medications.isValid) {
                             medicalData.medications.other.has_other = false;
                             medicalData.medications.other.description = '';
-                            console.warn('Invalid medication removed:', validation.medications.reason);
-                        } else {
+                            validationWarnings.push(`Invalid medication: ${validation.medications.reason}`);
+                        } else if (validation.medications.cleanedText !== medicalData.medications.other.description) {
+                            validationWarnings.push(`Medication corrected: "${medicalData.medications.other.description}" → "${validation.medications.cleanedText}"`);
                             medicalData.medications.other.description = validation.medications.cleanedText;
                         }
                     }
 
-                    // Update fluids if valid
+                    // Update fluids with corrections or remove if invalid
                     if (medicalData.fluid_intake.other.has_other) {
                         if (!validation.fluids.isValid) {
                             medicalData.fluid_intake.other.has_other = false;
                             medicalData.fluid_intake.other.name = '';
                             medicalData.fluid_intake.other.cups = 0;
-                            console.warn('Invalid fluid removed:', validation.fluids.reason);
-                        } else {
+                            validationWarnings.push(`Invalid fluid: ${validation.fluids.reason}`);
+                        } else if (validation.fluids.cleanedText !== medicalData.fluid_intake.other.name) {
+                            validationWarnings.push(`Fluid name corrected: "${medicalData.fluid_intake.other.name}" → "${validation.fluids.cleanedText}"`);
                             medicalData.fluid_intake.other.name = validation.fluids.cleanedText;
                         }
                     }
-                } catch (validationError) {
+
+                    // If there were any corrections or invalid entries, show them to the user
+                    if (validationWarnings.length > 0) {
+                        error = "Some entries were corrected or removed:\n• " + validationWarnings.join("\n• ");
+                        // Return early without saving if all "other" fields were invalid
+                        if (!medicalData.medical_conditions.other.has_other && 
+                            !medicalData.medications.other.has_other && 
+                            !medicalData.fluid_intake.other.has_other) {
+                            loading = false;
+                            return;
+                        }
+                    }                } catch (validationError) {
                     console.error('Validation error:', validationError);
-                    // Continue with saving even if validation fails
+                    error = "Error validating entries. Please check your input and try again.";
+                    loading = false;
+                    return;
                 }
             }
+
+            // Only proceed with saving if there were no validation errors
+            // or if the user has reviewed the corrections
 
             // Convert cups back to milliliters for storage
             const processedFluidIntake: Record<string, any> = {};
