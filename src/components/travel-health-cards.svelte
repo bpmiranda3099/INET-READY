@@ -2053,7 +2053,7 @@
   color: #fff !important;
 }
 .safetrip-ai-btn {
-  background: #dd815e !important;
+  background: #2ecc71 !important;
   color: #fff !important;
   font-weight: 600;
   font-size: 1rem;
