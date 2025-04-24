@@ -590,15 +590,13 @@
                                     class="google-btn" 
                                     on:click={handleGoogleSignup}
                                     disabled={loading}
-                                >
-                                    <img 
+                                >                                    <img 
                                         src="https://upload.wikimedia.org/wikipedia/commons/archive/c/c1/20190923152039%21Google_%22G%22_logo.svg" 
                                         alt="Google Logo" 
                                         width="18" 
                                         height="18"
-                                        style="margin-bottom: 3rem;"
                                     />
-                                    <span style="margin-bottom: 3rem;">Sign in with Google</span>
+                                    <span>Sign in with Google</span>
                                 </button>
                             </form>
                         {/if}
@@ -728,13 +726,13 @@
     </div>
 {/if}
 
-<style>
+<style>    
     .auth-page {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        padding-bottom: 70px; /* Space for bottom nav */
-        padding-top: 80px; /* Space for app bar */
+        padding-bottom: 60px; /* Space for bottom nav */
+        padding-top: 60px; /* Space for app bar */
         position: relative;
     }
 
@@ -834,10 +832,8 @@
         letter-spacing: 0.3px;
         position: relative;
         z-index: 1;
-    }
-
-    .section-body {
-        padding: 2rem;
+    }    .section-body {
+        padding: 1.25rem;
     }
 
     .bottom-nav {
@@ -916,15 +912,13 @@
         font-size: 1.1rem;
         color: #333;
         line-height: 1.5;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
+    }    .form-group {
+        margin-bottom: 0.75rem;
     }
 
     .form-group label {
         display: block;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
         font-weight: 500;
     }
 
@@ -942,14 +936,12 @@
         color: #666;
         cursor: pointer;
         padding: 5px;
-    }
-
-    .password-strength-container {
-        margin-top: 0.5rem;
+    }    .password-strength-container {
+        margin-top: 0.25rem;
     }
 
     .password-strength-bar {
-        height: 4px;
+        height: 3px;
         background-color: #eee;
         border-radius: 2px;
         overflow: hidden;
