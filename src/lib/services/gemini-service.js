@@ -201,11 +201,23 @@ Respond in this exact JSON format:
   "conditions": {"isValid": boolean, "cleanedText": string, "reason": string},
   "medications": {"isValid": boolean, "cleanedText": string, "reason": string},
   "fluids": {"isValid": boolean, "cleanedText": string, "reason": string}
-}`;
-
-    const result = await chatModel.generateContent(prompt);
-    const validation = JSON.parse(result.response.text());
-    return validation;
+}`;    const result = await chatModel.generateContent(prompt);
+    const responseText = result.response.text();
+    
+    // Extract JSON from markdown code block if present
+    const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/) || 
+                     responseText.match(/`{0,3}({[\s\S]*?})`{0,3}/);
+                     
+    const jsonString = jsonMatch ? jsonMatch[1] : responseText;
+    
+    try {
+        const validation = JSON.parse(jsonString.trim());
+        return validation;
+    } catch (parseError) {
+        console.error('Error parsing validation response:', parseError);
+        console.error('Response text:', responseText);
+        throw new Error('Failed to parse validation response');
+    }
   } catch (error) {
     console.error('Error validating medical profile fields:', error);
     throw new Error('Failed to validate medical profile fields');
