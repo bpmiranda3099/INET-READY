@@ -916,13 +916,15 @@
         font-size: 1.1rem;
         color: #333;
         line-height: 1.5;
-    }    .form-group {
-        margin-bottom: 0.75rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
     }
 
     .form-group label {
         display: block;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
         font-weight: 500;
     }
 
