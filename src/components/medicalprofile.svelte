@@ -676,9 +676,7 @@
                                 </div>
                             </div>
                         {:else}
-                            <div class="heat-issues-container">
-                               <span class="issue-icon heat-survivor">🛋️</span>
-                               <span class="inactive-text">🛋️ No regular outdoor activity reported</span>
+                            <div>
                             </div>
                         {/if}
                         
