@@ -250,14 +250,13 @@
         align-items: center;
     }
     .setup-header {
-        padding: 6rem 1.5rem 2rem;
+        padding: 0rem 1.5rem 2rem;
         text-align: center;
         background-color: #dd815e;
         color: white;
         width: 100%;
         position: fixed;
-        top: 80px;
-        left: 0;
+        overflow: hidden;
     }
     .setup-header h2 {
         margin-bottom: 0.5rem;
