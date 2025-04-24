@@ -158,6 +158,7 @@
         margin: 0;
         max-height: 400px;
         overflow-y: auto;
+        flex-wrap: nowrap;
     }
     
     .notification-item {
