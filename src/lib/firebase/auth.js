@@ -77,24 +77,35 @@ export const loginWithEmailAndPassword = async (email, password, rememberMe = fa
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-   // After successful Google sign in, try to get Facebook credential if available
+    const user = result.user;
+    
+    // After successful Google sign in, check for other auth methods
     try {
-      const email = result.user.email;
+      const email = user.email;
       const methods = await fetchSignInMethodsForEmail(auth, email);
-      if (methods.includes('facebook.com')) {
+      
+      // Try to link Facebook if not already linked
+      if (methods.includes('facebook.com') && !user.providerData.some(p => p.providerId === 'facebook.com')) {
         // Try to sign in with Facebook to get credential
         const fbResult = await signInWithPopup(auth, facebookProvider);
         if (fbResult.user) {
-          // Get Facebook credential and link it
+          // Get Facebook credential
           const fbCredential = FacebookAuthProvider.credentialFromResult(fbResult);
           if (fbCredential) {
-            await linkWithCredential(result.user, fbCredential);
+            await linkWithCredential(user, fbCredential);
           }
         }
       }
     } catch (linkError) {
       console.error('Error attempting to link Facebook:', linkError);
-      // Don't throw error - user is still signed in with Google
+      // Return warning but don't fail - user is still signed in with Google
+      return { 
+        user: result.user, 
+        error: { 
+          code: 'auth/link-warning',
+          message: 'Successfully signed in with Google, but couldn\'t link Facebook account.' 
+        }
+      };
     }
     return { user: result.user, error: null };
   } catch (error) {
@@ -147,24 +158,35 @@ export const signInWithGoogle = async () => {
 export const signInWithFacebook = async () => {
   try {
     const result = await signInWithPopup(auth, facebookProvider);
+    const user = result.user;
+    
     // After successful Facebook sign in, try to get Google credential if available
     try {
-      const email = result.user.email;
+      const email = user.email;
       const methods = await fetchSignInMethodsForEmail(auth, email);
-      if (methods.includes('google.com')) {
+      
+      // Try to link Google if not already linked
+      if (methods.includes('google.com') && !user.providerData.some(p => p.providerId === 'google.com')) {
         // Try to sign in with Google to get credential
         const googleResult = await signInWithPopup(auth, googleProvider);
         if (googleResult.user) {
           // Get Google credential and link it
           const googleCredential = GoogleAuthProvider.credentialFromResult(googleResult);
           if (googleCredential) {
-            await linkWithCredential(result.user, googleCredential);
+            await linkWithCredential(user, googleCredential);
           }
         }
       }
     } catch (linkError) {
       console.error('Error attempting to link Google:', linkError);
-      // Don't throw error - user is still signed in with Facebook
+      // Return warning but don't fail - user is still signed in with Facebook
+      return { 
+        user: result.user, 
+        error: { 
+          code: 'auth/link-warning',
+          message: 'Successfully signed in with Facebook, but couldn\'t link Google account.' 
+        }
+      };
     }
     return { user: result.user, error: null };
   } catch (error) {
