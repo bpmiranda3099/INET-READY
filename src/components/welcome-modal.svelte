@@ -359,6 +359,7 @@
         gap: 1rem;
         margin: 0.5rem 1rem;
         cursor: pointer;
+        justify-content: center;
     }
     
     .dont-show-option input[type="checkbox"] {
