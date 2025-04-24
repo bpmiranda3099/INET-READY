@@ -1076,7 +1076,7 @@
 		background: #dd815e;
 		color: white;
 		padding: 0.35rem 1rem;
-		border-radius: 16px 16px 0 0;
+		border-radius: 8px 8px 0 0;
 		position: relative;
 		overflow: hidden;
 		text-align: center;
