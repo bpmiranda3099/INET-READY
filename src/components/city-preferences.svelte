@@ -129,7 +129,10 @@
             );
 
             saved = true;
-            setTimeout(() => saved = false, 3000);
+            setTimeout(() => {
+                saved = false;
+                location.reload(); // Reload the page after saving
+            }, 2500); // Wait 1 second before reload (adjust as needed)
         } catch (err) {
             showNotification(
                 "Failed to save your city preferences. Please try again.",
