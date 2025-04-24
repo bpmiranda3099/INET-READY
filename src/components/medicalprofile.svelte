@@ -520,7 +520,14 @@
                                 <div class="water-level-info">
                                     <span class="cups-value">{mlToCups(totalFluidIntake)} cups</span>
                                     <span class="daily-target">
-                                        Target: {maxCups} cups ({maxMl} ml)
+                                        Target: 
+                                        {#if gender === 'male'}
+                                            15.5 cups (3674 ml)
+                                        {:else if gender === 'female'}
+                                            11.5 cups (2726 ml)
+                                        {:else}
+                                            13.5 cups (3199 ml)
+                                        {/if}
                                     </span>
                                 </div>
                             </div>
