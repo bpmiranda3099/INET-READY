@@ -648,6 +648,20 @@
             return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
         }
     }
+
+    // Calculate max cups based on gender
+    $: maxCups = (() => {
+        const gender = medicalData.demographics.gender;
+        if (gender === 'male') return 15.5;
+        if (gender === 'female') return 11.5;
+        return 13.5; // non-binary or prefer-not-to-say
+    })();
+
+    // Calculate total cups selected
+    $: totalCups = drinkTypes.reduce((sum, drink) => sum + Number(medicalData.fluid_intake[drink.id + '_cups'] || 0), 0) + (medicalData.fluid_intake.other.has_other ? Number(medicalData.fluid_intake.other.cups || 0) : 0);
+
+    // Show warning if limit reached
+    $: fluidIntakeWarning = totalCups >= maxCups ? `You have reached the recommended daily fluid intake limit (${maxCups} cups).` : '';
 </script>
 
 <div class="medical-form-container"></div>
@@ -865,7 +879,12 @@
             </div>
             <div class="section-body">
                 <div class="section-info">Adjust the sliders to indicate how many cups you drink of each fluid type</div>
-                
+                {#if fluidIntakeWarning}
+                    <div class="alert error-alert" style="margin-bottom:1rem;">
+                        <div class="alert-icon">⚠️</div>
+                        <div class="alert-content">{fluidIntakeWarning}</div>
+                    </div>
+                {/if}
                 <div class="fluid-sliders">
                     {#each drinkTypes as drink}
                         {@const fieldName = drink.id + '_cups'}
@@ -883,9 +902,10 @@
                                     id={fieldName} 
                                     bind:value={medicalData.fluid_intake[fieldName]} 
                                     min="0" 
-                                    max="10"
+                                    max={Math.min(10, Number(medicalData.fluid_intake[fieldName]) + (maxCups - totalCups))}
                                     step="0.5"
                                     class="modern-slider" 
+                                    disabled={fluidIntakeWarning && Number(medicalData.fluid_intake[fieldName]) === 0}
                                 />
                                 <div class="slider-track">
                                     <div class="slider-progress" style="width: {(medicalData.fluid_intake[fieldName] / 10) * 100}%"></div>
@@ -926,9 +946,10 @@
                                         id="other_cups" 
                                         bind:value={medicalData.fluid_intake.other.cups} 
                                         min="0" 
-                                        max="10"
+                                        max={Math.min(10, Number(medicalData.fluid_intake.other.cups) + (maxCups - totalCups))}
                                         step="0.5"
                                         class="modern-slider" 
+                                        disabled={fluidIntakeWarning && Number(medicalData.fluid_intake.other.cups) === 0}
                                     />
                                     <div class="slider-track">
                                         <div class="slider-progress" style="width: {(medicalData.fluid_intake.other.cups / 10) * 100}%"></div>
@@ -938,6 +959,13 @@
                         {/if}
                     </div>
                 </div>
+
+                {#if fluidIntakeWarning}
+                    <div class="alert warning-alert">
+                        <div class="alert-icon">⚠️</div>
+                        <div class="alert-content">{fluidIntakeWarning}</div>
+                    </div>
+                {/if}
             </div>
         </div>
         
@@ -1483,6 +1511,7 @@
     }
     
     .modern-slider {
+        appearance: none;
         -webkit-appearance: none;
         width: 100%;
         height: 6px;
