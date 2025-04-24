@@ -570,7 +570,7 @@
                                 <button 
                                     type="submit" 
                                     class="submit-btn subtitle mb-3" 
-                                    style="background-color: #dd815e; font-size: 1rem; color: white; margin-top: 1rem; text-decoration: none;"
+                                    style="background-color: #dd815e; font-size: 1rem; color: white; text-decoration: none;"
                                     disabled={loading || !validateForm()}
                                 >
                                     {#if loading}
@@ -690,7 +690,7 @@
                             <button
                                 type="submit" 
                                 class="submit-btn subtitle mb-3" 
-                                style="background-color: #dd815e; font-size: 1rem; color: white; margin-top: 1rem; text-decoration: none;"
+                                style="background-color: #dd815e; font-size: 1rem; color: white; text-decoration: none;"
                                 disabled={loading || !email || !password}
                             >
                                 {#if loading}
@@ -995,7 +995,6 @@
         text-decoration: underline;
     }    .submit-btn {
         width: 100%;
-        padding: 0.75rem;
         border: none;
         border-radius: 8px;
         font-family: inherit;
