@@ -888,6 +888,8 @@
                 <div class="fluid-sliders">
                     {#each drinkTypes as drink}
                         {@const fieldName = drink.id + '_cups'}
+                        {@const sliderMin = 0}
+                        {@const sliderMax = Math.min(10, Number(medicalData.fluid_intake[fieldName]) + (maxCups - totalCups))}
                         <div class="fluid-slider-item">
                             <div class="slider-header">
                                 <div class="drink-info">
@@ -901,19 +903,24 @@
                                     type="range" 
                                     id={fieldName} 
                                     bind:value={medicalData.fluid_intake[fieldName]} 
-                                    min="0" 
-                                    max={Math.min(10, Number(medicalData.fluid_intake[fieldName]) + (maxCups - totalCups))}
+                                    min={sliderMin} 
+                                    max={sliderMax}
                                     step="0.5"
                                     class="modern-slider" 
                                     disabled={fluidIntakeWarning && Number(medicalData.fluid_intake[fieldName]) === 0}
                                 />
                                 <div class="slider-track">
-                                    <div class="slider-progress" style="width: {(medicalData.fluid_intake[fieldName] / 10) * 100}%"></div>
+                                    <div 
+                                        class="slider-progress" 
+                                        style="width: {sliderMax > sliderMin 
+                                            ? ((Number(medicalData.fluid_intake[fieldName]) - sliderMin) / (sliderMax - sliderMin)) * 100 
+                                            : 0}%">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     {/each}
-                    
+
                     <!-- Other fluid with slider -->
                     <div class="other-fluid">
                         <label class="other-checkbox">
@@ -929,6 +936,8 @@
                         </label>
                         
                         {#if medicalData.fluid_intake.other.has_other}
+                            {@const otherSliderMin = 0}
+                            {@const otherSliderMax = Math.min(10, Number(medicalData.fluid_intake.other.cups) + (maxCups - totalCups))}
                             <div class="other-fluid-details">
                                 <input 
                                     type="text" 
@@ -945,20 +954,24 @@
                                         type="range" 
                                         id="other_cups" 
                                         bind:value={medicalData.fluid_intake.other.cups} 
-                                        min="0" 
-                                        max={Math.min(10, Number(medicalData.fluid_intake.other.cups) + (maxCups - totalCups))}
+                                        min={otherSliderMin} 
+                                        max={otherSliderMax}
                                         step="0.5"
                                         class="modern-slider" 
                                         disabled={fluidIntakeWarning && Number(medicalData.fluid_intake.other.cups) === 0}
                                     />
                                     <div class="slider-track">
-                                        <div class="slider-progress" style="width: {(medicalData.fluid_intake.other.cups / 10) * 100}%"></div>
+                                        <div 
+                                            class="slider-progress" 
+                                            style="width: {otherSliderMax > otherSliderMin 
+                                                ? ((Number(medicalData.fluid_intake.other.cups) - otherSliderMin) / (otherSliderMax - otherSliderMin)) * 100 
+                                                : 0}%">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         {/if}
                     </div>
-                </div>
 
                 {#if fluidIntakeWarning}
                     <div class="alert warning-alert">
@@ -1708,5 +1721,8 @@
     /* Hide the checkboxes */
     .hidden-checkbox {
         display: none;
+    }
+    .hidden-checkbox:checked + .modern-checkbox .checkbox-indicator {
+    opacity: 1;
     }
 </style>
