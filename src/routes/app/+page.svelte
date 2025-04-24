@@ -600,15 +600,16 @@
                                 <div class="divider">
                                     <span>or</span>
                                 </div>
-                                  <button 
-                                type="button" 
-                                class="google-btn" 
-                                on:click={handleGoogleSignup}
-                                disabled={loading}
-                            >
-                                <i class="bi bi-google" style="font-size: 1.2rem;"></i>
-                                <span>Sign in with Google</span>
-                            </button>
+                                <button 
+                                    type="button" 
+                                    class="google-btn"
+                                    on:click={handleGoogleSignup}
+                                    disabled={loading}
+                                    style="margin-bottom: 1rem;"
+                                >
+                                    <i class="bi bi-google" style="font-size: 1.2rem;"></i>
+                                    <span>Sign in with Google</span>
+                                </button>
 
                                 <button 
                                 type="button" 
@@ -727,14 +728,11 @@
                                 class="google-btn" 
                                 on:click={handleGoogleLogin}
                                 disabled={loading}
+                                style="margin-bottom: 1rem;"
                             >
                                 <i class="bi bi-google" style="font-size: 1.2rem;"></i>
                                 <span>Sign in with Google</span>
                             </button>
-
-                            <div class="divider">
-                                <span>or</span>
-                            </div>
 
                             <button 
                                 type="button" 
