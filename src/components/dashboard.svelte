@@ -1129,9 +1129,7 @@
             class="nav-item" 
             class:active={activeTab === 'dashboard'}
             on:click={() => {
-                if (activeTab === 'dashboard') {
-                    dashboardRefreshKey += 1; // Force dashboard section to reload
-                }
+                dashboardRefreshKey += 1; // Always increment to force reload
                 activeTab = 'dashboard';
                 if (showMedicalForm) showMedicalForm = false;
             }}
