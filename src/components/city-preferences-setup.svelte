@@ -82,10 +82,6 @@
     </div>
 
     <main class="city-pref-main">
-        <div class="setup-header">
-            <p>Help us provide location-specific heat stress alerts by setting your home city and cities you frequently visit.</p>
-        </div>
-
         {#if error}
             <div class="error-message">
                 <p><i class="bi bi-exclamation-triangle"></i> {error}</p>
@@ -276,7 +272,6 @@
         margin: 0 auto;
         background: white;
         border-radius: 8px;
-        margin-top: -32px;
         z-index: 2;
         position: relative;
     }
@@ -309,7 +304,6 @@
     }
     .preference-header {
         display: flex;
-        margin-bottom: 1.25rem;
         align-items: center;
     }
     .preference-icon {
