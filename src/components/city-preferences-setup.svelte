@@ -49,6 +49,7 @@
                 )
             });
             onComplete();
+            location.reload(); // Add this line to reload the page
         } catch (err) {
             console.error("Error saving city preferences:", err);
             error = "Failed to save your city preferences.";
