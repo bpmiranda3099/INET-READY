@@ -789,17 +789,16 @@
         font-size: 1.5rem;
         margin: 0;
         font-weight: 600;
-    }
-
-    .content-area {
+    }    .content-area {
         flex: 1;
-        padding: 1rem;
+        padding: 1rem 0;
+        margin-top: 1rem;
     }    .section-container {
         background: white;
-        border-radius: 16px;
+        border-radius: 0;
         overflow: hidden;
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-        max-width: 500px;
+        width: 100%;
         margin: 0 auto;
     }
 
