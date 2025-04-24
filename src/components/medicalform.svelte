@@ -619,6 +619,7 @@
             await saveMedicalData(processedData);
             success = true;
             dispatch('completed', { success: true });
+            window.location.reload();
         } catch (err) {
             console.error("Error saving medical data:", err);
             error = err?.message || "An unexpected error occurred. Please try again.";
@@ -1636,7 +1637,10 @@
         display: flex;
         justify-content: flex-end;
         gap: 1rem;
-        margin-top: 2rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
     }
     
     .cancel-btn, .submit-btn {
