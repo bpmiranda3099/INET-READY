@@ -279,6 +279,7 @@
             );
         }
     }
+
 </script>
 
 <div class="medical-profile">
@@ -456,21 +457,45 @@
     <div class="section-container">
         <div class="section-header header-fluid-intake">
             <h3>Daily Fluid Intake</h3>
-            <div class="fluid-header-info">
-                <span class={['fluid-status',
-                    totalFluidIntake < (medicalData?.biometrics?.weight * 35) && 'low',
-                    totalFluidIntake >= (medicalData?.biometrics?.weight * 35) &&
-                    totalFluidIntake <= (medicalData?.biometrics?.weight * 70) && 'optimal',
-                    totalFluidIntake > (medicalData?.biometrics?.weight * 70) && 'excessive'
-                    ].filter(Boolean).join(' ')}>
-                    {#if totalFluidIntake < (medicalData?.biometrics?.weight * 35)}
-                        Low
-                    {:else if totalFluidIntake > (medicalData?.biometrics?.weight * 70)}
-                        Excessive
-                    {:else}
-                        Optimal
-                    {/if}
-                </span>
+            <script>
+            // Ensure medicalData and totalFluidIntake are defined and accessible
+            const weight = medicalData?.biometrics?.weight; // in kg
+            const height = medicalData?.biometrics?.height; // in cm
+            const totalFluidIntake = /* your logic to obtain totalFluidIntake */;
+
+            // Calculate BMI
+            const bmi = weight / ((height / 100) ** 2);
+
+            // Determine multiplier based on BMI category
+            let multiplier;
+            if (bmi < 18.5) {
+                multiplier = 35; // Underweight
+            } else if (bmi >= 18.5 && bmi < 25) {
+                multiplier = 40; // Normal weight
+            } else if (bmi >= 25 && bmi < 30) {
+                multiplier = 45; // Overweight
+            } else {
+                multiplier = 50; // Obese
+            }
+
+            // Calculate thresholds
+            const lowThreshold = weight * multiplier;
+            const optimalThreshold = weight * (multiplier + 10);
+            </script>
+
+            <span class={['fluid-status',
+            totalFluidIntake < lowThreshold && 'low',
+            totalFluidIntake >= lowThreshold && totalFluidIntake <= optimalThreshold && 'optimal',
+            totalFluidIntake > optimalThreshold && 'excessive'
+            ].filter(Boolean).join(' ')}>
+            {#if totalFluidIntake < lowThreshold}
+                Low
+            {:else if totalFluidIntake > optimalThreshold}
+                Excessive
+            {:else}
+                Optimal
+            {/if}
+            </span>
                 <span class="total-ml">{totalFluidIntake} ml</span>
             </div>
         </div>

@@ -878,7 +878,6 @@
                 <h3>Average Daily Fluid Intake</h3>
             </div>
             <div class="section-body">
-                <div class="section-info">Adjust the sliders to indicate how many cups you drink of each fluid type</div>
                 {#if fluidIntakeWarning}
                     <div class="alert error-alert" style="margin-bottom:1rem;">
                         <div class="alert-icon">⚠️</div>
@@ -1177,7 +1176,7 @@
         margin-bottom: 0.5rem;
         color: #000;
         font-weight: 600;
-        font-size: 2rem;
+        font-size: 1.5rem;
         text-align: center;
     }
     
