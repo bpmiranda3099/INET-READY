@@ -862,7 +862,7 @@
                                             <h3><i class="bi bi-trash"></i> Confirm Deletion</h3>
                                         </div>
                                         <div class="section-body">
-                                            <p>Are you sure you want to permanently delete your medical data? This action cannot be undone.</p>
+                                            <p style="margin: 16px 0px">Are you sure you want to permanently delete your medical data? This action cannot be undone.</p>
                                             {#if deleteError}
                                                 <div class="error">{deleteError}</div>
                                             {/if}
@@ -2024,7 +2024,6 @@
     .modal-dialog {
         background: white;
         border-radius: 12px;
-        padding: 2rem 1.5rem;
         box-shadow: 0 8px 32px rgba(0,0,0,0.18);
         max-width: 350px;
         width: 100%;
@@ -2037,6 +2036,11 @@
         gap: 1rem;
         justify-content: center;
         margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        justify-content: center;
+        flex-direction: column;
     }
     .success-message {
         background: #e8f5e9;
