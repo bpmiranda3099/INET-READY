@@ -1008,7 +1008,11 @@
         justify-content: space-between;
         align-items: center;
     }
-
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Optional: adds space between checkbox and text */
+}
     .checkbox-container input:checked ~ .checkmark {
     background-color: #dd815e;
     border-color: #dd815e;
