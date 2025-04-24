@@ -1728,7 +1728,7 @@
 	}
 	.ai-chat-btn {
 		background: #fffbe7;
-		color: #b35d3a;
+		color: #2ecc71;
 		border: none;
 		border-radius: 12px;
 		box-shadow: 0 2px 6px rgba(0,0,0,0.05);
