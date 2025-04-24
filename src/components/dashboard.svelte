@@ -581,6 +581,10 @@
             deleteSuccess = true;
             medicalRecordExists = false;
             showDeleteConfirm = false;
+            // Reload the page after a short delay to show the success message
+            setTimeout(() => {
+                location.reload();
+            }, 2500); 
         } catch (err) {
             deleteError = err?.message || 'Failed to delete medical data.';
         } finally {
