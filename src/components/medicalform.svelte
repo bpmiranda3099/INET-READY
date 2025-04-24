@@ -434,10 +434,22 @@
                     const validation = await validateMedicalProfileOtherFields(otherFields);
                     let validationWarnings = [];
                     let hasValidEntries = false;
-                    
-                    // Update medical conditions with corrections or remove if invalid
+                      // Update medical conditions with corrections or remove if invalid
                     if (medicalData.medical_conditions.other.has_other) {
-                        if (!validation.conditions?.isValid) {
+                        // Check if the condition matches any predefined conditions first
+                        const matchingCondition = medicalConditionCategories.flatMap(cat => cat.conditions)
+                            .find(cond => cond.label.toLowerCase() === (validation.conditions?.cleanedText || '').toLowerCase());
+                          // Check both original and corrected text against predefined conditions
+                        const matchingOriginal = medicalConditionCategories.flatMap(cat => cat.conditions)
+                            .find(cond => cond.label.toLowerCase() === medicalData.medical_conditions.other.description.toLowerCase());
+                            
+                        if (matchingOriginal || matchingCondition) {
+                            // If either original or corrected text matches a predefined condition, mark as invalid
+                            const matchedLabel = (matchingOriginal || matchingCondition).label;
+                            medicalData.medical_conditions.other.has_other = false;
+                            medicalData.medical_conditions.other.description = '';
+                            validationWarnings.push(`Invalid medical condition: Please use the "${matchedLabel}" option from the list above instead`);
+                        } else if (!validation.conditions?.isValid) {
                             medicalData.medical_conditions.other.has_other = false;
                             medicalData.medical_conditions.other.description = '';
                             if (validation.conditions?.reason) {
@@ -452,7 +464,20 @@
                         }
                     }                    // Update medications with corrections or remove if invalid
                     if (medicalData.medications.other.has_other) {
-                        if (!validation.medications?.isValid) {
+                        // Check if the medication matches any predefined medications first
+                        const matchingMedication = medicationCategories.flatMap(cat => cat.medications)
+                            .find(med => med.label.toLowerCase() === (validation.medications?.cleanedText || '').toLowerCase());
+                          // Check both original and corrected text against predefined medications
+                        const matchingOriginal = medicationCategories.flatMap(cat => cat.medications)
+                            .find(med => med.label.toLowerCase() === medicalData.medications.other.description.toLowerCase());
+                            
+                        if (matchingOriginal || matchingMedication) {
+                            // If either original or corrected text matches a predefined medication, mark as invalid
+                            const matchedLabel = (matchingOriginal || matchingMedication).label;
+                            medicalData.medications.other.has_other = false;
+                            medicalData.medications.other.description = '';
+                            validationWarnings.push(`Invalid medication: Please use the "${matchedLabel}" option from the list above instead`);
+                        } else if (!validation.medications?.isValid) {
                             medicalData.medications.other.has_other = false;
                             medicalData.medications.other.description = '';
                             if (validation.medications?.reason) {
@@ -465,11 +490,23 @@
                             }
                             medicalData.medications.other.description = validation.medications.cleanedText;
                         }
-                    }
-
-                    // Update fluids with corrections or remove if invalid
+                    }                    // Update fluids with corrections or remove if invalid
                     if (medicalData.fluid_intake.other.has_other) {
-                        if (!validation.fluids?.isValid) {
+                        // Check if the fluid matches any predefined fluid types first
+                        const matchingFluid = drinkTypes.find(drink => 
+                            drink.label.toLowerCase() === (validation.fluids?.cleanedText || '').toLowerCase());
+                          // Check both original and corrected text against predefined fluids
+                        const matchingOriginal = drinkTypes.find(drink => 
+                            drink.label.toLowerCase() === medicalData.fluid_intake.other.name.toLowerCase());
+                            
+                        if (matchingOriginal || matchingFluid) {
+                            // If either original or corrected text matches a predefined fluid, mark as invalid
+                            const matchedLabel = (matchingOriginal || matchingFluid).label;
+                            medicalData.fluid_intake.other.has_other = false;
+                            medicalData.fluid_intake.other.name = '';
+                            medicalData.fluid_intake.other.cups = 0;
+                            validationWarnings.push(`Invalid fluid: Please use the "${matchedLabel}" option from the list above instead`);
+                        } else if (!validation.fluids?.isValid) {
                             medicalData.fluid_intake.other.has_other = false;
                             medicalData.fluid_intake.other.name = '';
                             medicalData.fluid_intake.other.cups = 0;
