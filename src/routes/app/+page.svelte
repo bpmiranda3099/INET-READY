@@ -438,7 +438,7 @@
 
         <div class="content-area">
             <div class="section-container">                <div class="section-header">
-                    <h3>{showRegister ? 'Create Your Account' : 'Welcome Back'}</h3>
+                    <h3>{showRegister ? 'Create Your Account' : 'Sign In To Your Account'}</h3>
                 </div>
                 <div class="section-body">
                     {#if showRegister}
@@ -704,21 +704,14 @@
                             <div class="divider">
                                 <span>or</span>
                             </div>
-                            
-                            <button 
+                              <button 
                                 type="button" 
                                 class="google-btn" 
                                 on:click={handleGoogleLogin}
                                 disabled={loading}
                             >
-                                <img 
-                                    src="https://upload.wikimedia.org/wikipedia/commons/archive/c/c1/20190923152039%21Google_%22G%22_logo.svg" 
-                                    alt="Google Logo" 
-                                    width="18" 
-                                    height="18"
-                                    style="margin-bottom: 3rem;"
-                                />
-                                <span style="margin-bottom: 3rem;">Sign in with Google</span>
+                                <i class="bi bi-google" style="font-size: 1.2rem;"></i>
+                                <span>Sign in with Google</span>
                             </button>
                         </form>
                     {/if}
@@ -795,7 +788,7 @@
         margin-top: 1rem;
     }    .section-container {
         background: white;
-        border-radius: 0;
+        border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         width: 100%;
@@ -1000,13 +993,12 @@
 
     .forgot-password:hover {
         text-decoration: underline;
-    }
-
-    .submit-btn {
+    }    .submit-btn {
         width: 100%;
         padding: 0.75rem;
         border: none;
         border-radius: 8px;
+        font-family: inherit;
         font-weight: 600;
         cursor: pointer;
         transition: opacity 0.2s;
@@ -1035,24 +1027,26 @@
         padding: 0 10px;
         color: #666;
         font-size: 0.9rem;
-    }
-
-    .google-btn {
+    }    .google-btn {
         width: 100%;
         padding: 0.75rem;
-        border: 1px solid #ddd;
+        border: none;
         border-radius: 8px;
-        background: white;
+        background: #dc3545;
+        color: white;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: background-color 0.2s;
+        transition: opacity 0.2s;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 1rem;
     }
 
     .google-btn:hover {
-        background-color: #f5f5f5;
+        opacity: 0.9;
     }
 
     .google-btn:disabled {
