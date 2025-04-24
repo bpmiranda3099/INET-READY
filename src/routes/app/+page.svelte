@@ -1,13 +1,13 @@
 <script>
     import { onMount } from 'svelte';
-    import { hasMedicalRecord } from '../../lib/services/medical-api.js';
-    import { 
+    import { hasMedicalRecord } from '../../lib/services/medical-api.js';    import { 
         subscribeToAuthChanges, 
         getCurrentUser,
         isEmailVerified as isUserEmailVerified,
         loginWithEmailAndPassword,
         registerWithEmailAndPassword,
         signInWithGoogle,
+        signInWithFacebook,
         sendPasswordReset,
         sendVerificationEmail
     } from '$lib/firebase/auth';
@@ -125,9 +125,7 @@
         } finally {
             loading = false;
         }
-    }
-
-    async function handleGoogleLogin() {
+    }    async function handleGoogleLogin() {
         error = null;
         loading = true;
         unverifiedUser = null;
@@ -139,6 +137,24 @@
             }
         } catch (err) {
             console.error("Google login error:", err);
+            error = "An unexpected error occurred. Please try again";
+        } finally {
+            loading = false;
+        }
+    }
+
+    async function handleFacebookLogin() {
+        error = null;
+        loading = true;
+        unverifiedUser = null;
+        
+        try {
+            const { user: authUser, error: facebookError } = await signInWithFacebook();
+            if (facebookError) {
+                error = facebookError.message || "Facebook login failed. Please try again";
+            }
+        } catch (err) {
+            console.error("Facebook login error:", err);
             error = "An unexpected error occurred. Please try again";
         } finally {
             loading = false;
@@ -584,22 +600,29 @@
                                 <div class="divider">
                                     <span>or</span>
                                 </div>
-                                
+                                  <button 
+                                type="button" 
+                                class="google-btn" 
+                                on:click={handleGoogleSignup}
+                                disabled={loading}
+                            >
+                                <i class="bi bi-google" style="font-size: 1.2rem;"></i>
+                                <span>Sign in with Google</span>
+                            </button>
+
+                                <div class="divider">
+                                    <span>or</span>
+                                </div>
+
                                 <button 
-                                    type="button" 
-                                    class="google-btn" 
-                                    on:click={handleGoogleSignup}
-                                    disabled={loading}
-                                >
-                                    <img 
-                                        src="https://upload.wikimedia.org/wikipedia/commons/archive/c/c1/20190923152039%21Google_%22G%22_logo.svg" 
-                                        alt="Google Logo" 
-                                        width="18" 
-                                        height="18"
-                                        style="margin-bottom: 3rem;"
-                                    />
-                                    <span style="margin-bottom: 3rem;">Sign in with Google</span>
-                                </button>
+                                type="button" 
+                                class="facebook-btn" 
+                                on:click={handleFacebookLogin}
+                                disabled={loading}
+                            >
+                                <i class="bi bi-facebook" style="font-size: 1.2rem;"></i>
+                                <span>Sign in with Facebook</span>
+                            </button>
                             </form>
                         {/if}
                     {:else}
@@ -703,8 +726,7 @@
                             
                             <div class="divider">
                                 <span>or</span>
-                            </div>
-                              <button 
+                            </div>                              <button 
                                 type="button" 
                                 class="google-btn" 
                                 on:click={handleGoogleLogin}
@@ -712,6 +734,20 @@
                             >
                                 <i class="bi bi-google" style="font-size: 1.2rem;"></i>
                                 <span>Sign in with Google</span>
+                            </button>
+
+                            <div class="divider">
+                                <span>or</span>
+                            </div>
+
+                            <button 
+                                type="button" 
+                                class="facebook-btn" 
+                                on:click={handleFacebookLogin}
+                                disabled={loading}
+                            >
+                                <i class="bi bi-facebook" style="font-size: 1.2rem;"></i>
+                                <span>Sign in with Facebook</span>
                             </button>
                         </form>
                     {/if}
@@ -1045,9 +1081,34 @@
 
     .google-btn:hover {
         opacity: 0.9;
+    }    .google-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
     }
 
-    .google-btn:disabled {
+    .facebook-btn {
+        width: 100%;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 8px;
+        background: #1877f2;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .facebook-btn:hover {
+        opacity: 0.9;
+    }
+
+    .facebook-btn:disabled {
         opacity: 0.7;
         cursor: not-allowed;
     }

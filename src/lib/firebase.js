@@ -13,7 +13,8 @@ import auth, {
   sendPasswordReset,
   signInWithGoogle,
   sendVerificationEmail,
-  isEmailVerified
+  isEmailVerified,
+  signInWithFacebook
 } from './firebase/auth';
 import medicalService, {
   hasMedicalRecord,
@@ -37,8 +38,8 @@ export {
   loginWithEmailAndPassword,
   logoutUser,
   getCurrentUser,
-  sendPasswordReset,
-  signInWithGoogle,
+  sendPasswordReset,  signInWithGoogle,
+  signInWithFacebook,
   sendVerificationEmail,
   isEmailVerified,
   medicalService,
