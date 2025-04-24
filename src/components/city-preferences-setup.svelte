@@ -258,7 +258,6 @@
         position: fixed;
         top: 80px;
         left: 0;
-        z-index: 1;
     }
     .setup-header h2 {
         margin-bottom: 0.5rem;
