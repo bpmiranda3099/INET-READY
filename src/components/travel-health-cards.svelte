@@ -738,7 +738,7 @@
 					bind:this={cardElements[i]}
 				>
 					<div class="card-header">
-            			<h2 class="section-title">DESTINATION</h2>
+            			<h4 class="section-title">DESTINATION</h4>
 						<span class="city-name">{card.toCity}</span>
 					</div>
 
@@ -913,7 +913,7 @@
 								<div class="tile-row sub-row">
 									<!-- AI Chatbot Button -->
 									<button class="tile ai-chat-btn safetrip-ai-btn"
-										style="background: #dd815e; color: #fff; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 1rem;"
+										style="background: #2ecc71; color: #fff; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 1rem;"
 										on:click={() => showChatbot = true}
 										aria-label="Ask AI Chatbot"
 									>
