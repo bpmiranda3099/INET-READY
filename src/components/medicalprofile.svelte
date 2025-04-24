@@ -457,15 +457,18 @@
         <div class="section-header header-fluid-intake">
             <h3>Daily Fluid Intake</h3>
             <div class="fluid-header-info">
-                <span class="fluid-status" class:low={hydrationStatus?.status === 'concern'} class:optimal={hydrationStatus?.status === 'good'} class:excessive={totalFluidIntake > (medicalData?.biometrics?.weight * 50)}>
-                    {#if hydrationStatus?.status === 'concern'}
+                <span class={['fluid-status',
+                    totalFluidIntake < (medicalData?.biometrics?.weight * 35) && 'low',
+                    totalFluidIntake >= (medicalData?.biometrics?.weight * 35) &&
+                    totalFluidIntake <= (medicalData?.biometrics?.weight * 70) && 'optimal',
+                    totalFluidIntake > (medicalData?.biometrics?.weight * 70) && 'excessive'
+                    ].filter(Boolean).join(' ')}>
+                    {#if totalFluidIntake < (medicalData?.biometrics?.weight * 35)}
                         Low
-                    {:else if totalFluidIntake > (medicalData?.biometrics?.weight * 50)}
+                    {:else if totalFluidIntake > (medicalData?.biometrics?.weight * 70)}
                         Excessive
-                    {:else if hydrationStatus?.status === 'good'}
-                        Optimal
                     {:else}
-                        Moderate
+                        Optimal
                     {/if}
                 </span>
                 <span class="total-ml">{totalFluidIntake} ml</span>
