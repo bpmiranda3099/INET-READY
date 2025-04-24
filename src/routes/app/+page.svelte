@@ -610,10 +610,6 @@
                                 <span>Sign in with Google</span>
                             </button>
 
-                                <div class="divider">
-                                    <span>or</span>
-                                </div>
-
                                 <button 
                                 type="button" 
                                 class="facebook-btn" 
