@@ -688,7 +688,7 @@
                                 <div class="issue-header creative">
                                     <span class="issue-icon heat-survivor">🔥</span>
                                     <span class="issue-title">Heat Survivor</span>
-                                    <span class="issue-badge">Caution: Past Heat Events</span>
+                                    <span class="issue-badge">Caution</span>
                                 </div>
                                 <div class="issue-story">
                                     <span class="story-quote">“{medicalData.activity.heat_issues_details || 'You have experienced heat-related health issues in the past. Stay vigilant in hot weather!'}”</span>
@@ -704,11 +704,11 @@
                                     <span class="issue-badge safe">Cool & Clear</span>
                                 </div>
                                 <div class="issue-story">
-                                    <span class="story-quote">“No significant heat-related health events reported. Keep up the good habits!”</span>
+                                    <span class="story-quote">“No significant heat-related health events reported.”</span>
                                 </div>
                                 <div class="issue-tip">
                                     <span class="tip-icon">👍</span>
-                                    <span class="tip-text">Continue staying cool and hydrated for a healthy summer.</span>
+                                    <span class="tip-text">Stay cool and hydrated.</span>
                                 </div>
                             {/if}
                         </div>
