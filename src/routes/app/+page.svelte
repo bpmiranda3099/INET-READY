@@ -9,7 +9,8 @@
         signInWithGoogle,
         signInWithFacebook,
         sendPasswordReset,
-        sendVerificationEmail
+        sendVerificationEmail,
+        handleRedirectResult
     } from '$lib/firebase/auth';
     
     import Dashboard from '../../components/dashboard.svelte';
@@ -323,6 +324,13 @@
             // This means the user just clicked a verification link
             justVerified = true;
         }
+
+        // Handle any pending redirect results (for mobile auth)
+        handleRedirectResult().then(({user: redirectUser, error: redirectError}) => {
+            if (redirectError) {
+                error = redirectError.message || "Authentication failed after redirect";
+            }
+        });
         
         // Subscribe to authentication state changes
         const unsubscribe = subscribeToAuthChanges(async (authUser) => {

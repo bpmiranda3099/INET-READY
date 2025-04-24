@@ -6,7 +6,9 @@ import {
     onAuthStateChanged, 
     GoogleAuthProvider, 
     FacebookAuthProvider, 
-    signInWithPopup, 
+    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     sendPasswordResetEmail, 
     setPersistence, 
     browserLocalPersistence, 
@@ -26,6 +28,13 @@ googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 // Initialize Facebook Auth Provider
 const facebookProvider = new FacebookAuthProvider();
+
+// Check if device is mobile
+const isMobileDevice = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    typeof navigator !== 'undefined' ? navigator.userAgent : ''
+  );
+};
 
 // Auth state observer
 export const subscribeToAuthChanges = (callback) => {
@@ -157,8 +166,18 @@ export const signInWithGoogle = async () => {
 // Sign in with Facebook
 export const signInWithFacebook = async () => {
   try {
-    const result = await signInWithPopup(auth, facebookProvider);
-    const user = result.user;
+    let user;
+    let result;
+    
+    // Use redirect for mobile, popup for desktop
+    if (isMobileDevice()) {
+      await signInWithRedirect(auth, facebookProvider);
+      // The result will be handled by getRedirectResult in the auth state observer
+      return { user: null, error: null }; // Return early as redirect will happen
+    } else {
+      result = await signInWithPopup(auth, facebookProvider);
+      user = result.user;
+    }
     
     // After successful Facebook sign in, try to get Google credential if available
     try {
@@ -188,7 +207,7 @@ export const signInWithFacebook = async () => {
         }
       };
     }
-    return { user: result.user, error: null };
+    return { user, error: null };
   } catch (error) {
     if (error.code === 'auth/account-exists-with-different-credential') {
       try {
@@ -233,6 +252,21 @@ export const signInWithFacebook = async () => {
         return { user: null, error: linkError };
       }
     }
+    return { user: null, error };
+  }
+};
+
+// Handle redirect result
+export const handleRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth);
+    if (result) {
+      // Successfully signed in
+      return { user: result.user, error: null };
+    }
+    return { user: null, error: null };
+  } catch (error) {
+    console.error('Error handling redirect result:', error);
     return { user: null, error };
   }
 };
