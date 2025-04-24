@@ -79,17 +79,6 @@
             <small class="app-title">INET-READY</small>
             <h2 class="section-title">City Preferences</h2>
         </div>
-        <button 
-            class="save-btn"
-            on:click={savePreferences}
-            disabled={isSaving || loadingCities || !homeCity}
-        >
-            {#if isSaving}
-                <span class="spinner-small"></span> Saving...
-            {:else}
-                <i class="bi bi-check-lg"></i> Save Preferences
-            {/if}
-        </button>
     </div>
 
     <main class="city-pref-main">
@@ -200,6 +189,21 @@
             {/if}
         </div>
     </main>
+
+    <!-- Bottom Nav Bar for Save Preferences -->
+    <div class="city-pref-bottom-nav">
+        <button 
+            class="save-btn"
+            on:click={savePreferences}
+            disabled={isSaving || loadingCities || !homeCity}
+        >
+            {#if isSaving}
+                <span class="spinner-small"></span> Saving...
+            {:else}
+                <i class="bi bi-check-lg"></i> Save Preferences
+            {/if}
+        </button>
+    </div>
 </div>
 
 <style>
@@ -239,44 +243,6 @@
         font-size: 1.5rem;
         margin: 0;
         font-weight: 600;
-    }
-    .save-btn {
-        background-color: #fff;
-        color: #dd815e;
-        border: none;
-        padding: 0.65rem 1.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        transition: background 0.2s, color 0.2s;
-    }
-    .save-btn:disabled {
-        background: #f5f5f5;
-        color: #bbb;
-        cursor: not-allowed;
-    }
-    .save-btn:hover:not(:disabled) {
-        background: #ffe5db;
-        color: #c26744;
-    }
-    .spinner-small {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        border: 2px solid rgba(221,129,94,0.2);
-        border-top-color: #dd815e;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-right: 6px;
-        vertical-align: middle;
-    }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
     }
     .city-pref-main {
         flex: 1;
@@ -488,5 +454,56 @@
         margin-bottom: 1rem;
         margin-top: 1rem;
         text-align: center;
+    }
+    .city-pref-bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+        border-top: 1px solid #eee;
+        padding: 1rem 0;
+        display: flex;
+        justify-content: center;
+        z-index: 1001;
+        box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+    }
+    .save-btn {
+        background-color: #dd815e;
+        color: #fff;
+        border: none;
+        padding: 0.85rem 2.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: background 0.2s, color 0.2s;
+    }
+    .save-btn:disabled {
+        background: #f5f5f5;
+        color: #bbb;
+        cursor: not-allowed;
+    }
+    .save-btn:hover:not(:disabled) {
+        background: #e67c4a;
+        color: #fff;
+    }
+    .spinner-small {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(221,129,94,0.2);
+        border-top-color: #dd815e;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 6px;
+        vertical-align: middle;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 </style>
