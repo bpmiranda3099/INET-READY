@@ -738,7 +738,7 @@
 					bind:this={cardElements[i]}
 				>
 					<div class="card-header">
-            			<h4 class="section-title">DESTINATION</h4>
+            			<h6 class="section-title">DESTINATION</h6>
 						<span class="city-name">{card.toCity}</span>
 					</div>
 
