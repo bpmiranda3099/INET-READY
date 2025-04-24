@@ -1218,7 +1218,6 @@
         background: white;
         border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         margin-bottom: 1.5rem;
     }
     
