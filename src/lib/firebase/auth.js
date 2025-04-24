@@ -77,7 +77,7 @@ export const loginWithEmailAndPassword = async (email, password, rememberMe = fa
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    // After successful Google sign in, try to get Facebook credential if available
+   // After successful Google sign in, try to get Facebook credential if available
     try {
       const email = result.user.email;
       const methods = await fetchSignInMethodsForEmail(auth, email);

@@ -18,6 +18,10 @@
     import { hasMedicalRecord, getMedicalData, deleteMedicalData } from '$lib/services/medical-api.js';
     import { syncCityInsightsToDashboard } from '$lib/services/city-insight-sync';
     import { saveDashboardCache, loadDashboardCache, clearDashboardCache } from '$lib/services/dashboard-cache';
+    import { 
+        signInWithGoogle,
+        signInWithFacebook
+    } from '$lib/firebase/auth';
     
     // Components
     import MedicalProfile from './medicalprofile.svelte';
@@ -582,6 +586,32 @@
             deletingMedicalData = false;
         }
     }
+
+    async function handleLinkGoogle() {
+        try {
+            const { user: authUser, error } = await signInWithGoogle();
+            if (error) {
+                showNotification(error.message || "Failed to link Google account", "error");
+            } else {
+                showNotification("Successfully linked Google account", "success");
+            }
+        } catch (err) {
+            showNotification("Failed to link Google account", "error");
+        }
+    }
+
+    async function handleLinkFacebook() {
+        try {
+            const { user: authUser, error } = await signInWithFacebook();
+            if (error) {
+                showNotification(error.message || "Failed to link Facebook account", "error");
+            } else {
+                showNotification("Successfully linked Facebook account", "success");
+            }
+        } catch (err) {
+            showNotification("Failed to link Facebook account", "error");
+        }
+    }
 </script>
 
 <div class="dashboard">    <!-- App Bar -->    <div class="app-bar">
@@ -761,8 +791,42 @@
                                         {/if}
                                     </span>
                                 </div>
+                            </div>                            <hr class="preference-divider" />
+                            <!-- Linked Accounts -->
+                            {#if !user.providerData.some(provider => provider.providerId === 'facebook.com')}
+                            <div class="account-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-facebook"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Facebook Account</span>
+                                    <span class="setting-description">Link your Facebook account for easier sign-in</span>
+                                </div>
+                                <div class="setting-action">
+                                    <button class="enable-btn facebook" on:click={handleLinkFacebook}>
+                                        Link Account
+                                    </button>
+                                </div>
                             </div>
                             <hr class="preference-divider" />
+                            {/if}
+                            {#if !user.providerData.some(provider => provider.providerId === 'google.com')}
+                            <div class="account-header">
+                                <div class="preference-icon">
+                                    <i class="bi bi-google"></i>
+                                </div>
+                                <div class="preference-title">
+                                    <span class="setting-label">Google Account</span>
+                                    <span class="setting-description">Link your Google account for easier sign-in</span>
+                                </div>
+                                <div class="setting-action">
+                                    <button class="enable-btn google" on:click={handleLinkGoogle}>
+                                        Link Account
+                                    </button>
+                                </div>
+                            </div>
+                            <hr class="preference-divider" />
+                            {/if}
                             <!-- Account Created Date -->
                             <div class="account-header">
                                 <div class="preference-icon">
@@ -2016,5 +2080,20 @@
     align-items: center;
     padding: .75rem .5rem .5rem;
     position: relative;
+    }
+    .enable-btn.facebook {
+        background-color: #1877f2;
+    }
+    
+    .enable-btn.facebook:hover {
+        background-color: #1464cf;
+    }
+    
+    .enable-btn.google {
+        background-color: #dc3545;
+    }
+    
+    .enable-btn.google:hover {
+        background-color: #bb2d3b;
     }
 </style>
