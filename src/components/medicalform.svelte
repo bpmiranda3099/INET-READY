@@ -767,7 +767,6 @@
                 <h3>Medical Conditions</h3>
             </div>
             <div class="section-body">
-                <div class="section-info">Select any conditions that apply to you</div>
                 
                 {#each medicalConditionCategories as category}
                     <div class="condition-category">
@@ -824,7 +823,6 @@
                 <h3>Medications</h3>
             </div>
             <div class="section-body">
-                <div class="section-info">Select any medications that you are currently taking</div>
                 
                 {#each medicationCategories as category}
                     <div class="medication-grid">
@@ -987,7 +985,6 @@
                 <h3>Heat-Related Conditions</h3>
             </div>
             <div class="section-body">
-                <div class="section-info">Select any conditions you have experienced</div>
                 
                 <div class="heat-condition-grid">
                     <label class="heat-condition-card" class:selected={medicalData.heat_conditions.mild_dehydration}>
