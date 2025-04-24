@@ -83,7 +83,6 @@
 
     <main class="city-pref-main">
         <div class="setup-header">
-            <h2>Set Your City Preferences</h2>
             <p>Help us provide location-specific heat stress alerts by setting your home city and cities you frequently visit.</p>
         </div>
 
@@ -251,7 +250,7 @@
         align-items: center;
     }
     .setup-header {
-        padding: 2rem 1.5rem 1rem 1.5rem;
+        padding: 0rem 1.5rem 2rem;
         text-align: center;
         background-color: #dd815e;
         color: white;
@@ -289,7 +288,6 @@
         background: white;
         border-radius: 16px;
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-        padding: 2rem 1.5rem 1.5rem 1.5rem;
         margin-top: -32px;
         z-index: 2;
         position: relative;
