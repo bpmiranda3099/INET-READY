@@ -208,7 +208,6 @@
 
 <style>
     .city-pref-page {
-        min-height: 100vh;
         background: #f5f6fa;
         display: flex;
         flex-direction: column;
@@ -246,7 +245,6 @@
     }
     .city-pref-main {
         flex: 1;
-        margin-top: 80px;
         padding: 0;
         display: flex;
         flex-direction: column;
