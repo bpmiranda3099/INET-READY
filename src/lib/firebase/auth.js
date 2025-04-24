@@ -77,6 +77,25 @@ export const loginWithEmailAndPassword = async (email, password, rememberMe = fa
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
+    // After successful Google sign in, try to get Facebook credential if available
+    try {
+      const email = result.user.email;
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      if (methods.includes('facebook.com')) {
+        // Try to sign in with Facebook to get credential
+        const fbResult = await signInWithPopup(auth, facebookProvider);
+        if (fbResult.user) {
+          // Get Facebook credential and link it
+          const fbCredential = FacebookAuthProvider.credentialFromResult(fbResult);
+          if (fbCredential) {
+            await linkWithCredential(result.user, fbCredential);
+          }
+        }
+      }
+    } catch (linkError) {
+      console.error('Error attempting to link Facebook:', linkError);
+      // Don't throw error - user is still signed in with Google
+    }
     return { user: result.user, error: null };
   } catch (error) {
     if (error.code === 'auth/account-exists-with-different-credential') {
@@ -85,6 +104,14 @@ export const signInWithGoogle = async () => {
         const email = error.customData.email;
         const providers = await fetchSignInMethodsForEmail(auth, email);
         
+        // Map provider IDs to friendly names
+        const providerNames = {
+          'google.com': 'Google',
+          'facebook.com': 'Facebook',
+          'password': 'Email/Password',
+          'phone': 'Phone',
+        };
+
         if (providers[0] === 'facebook.com') {
           // The user has a Facebook account with the same email
           // Sign in with Facebook to get credentials
@@ -99,11 +126,12 @@ export const signInWithGoogle = async () => {
         }
         
         // Handle other providers if needed
+        const providerName = providerNames[providers[0]] || 'your existing account';
         return { 
           user: null, 
           error: {
             code: 'auth/needs-linking',
-            message: `This email is already associated with a ${providers[0]} account. Please sign in with ${providers[0]} first.`
+            message: `This email is already associated with ${providerName}. Please sign in with ${providerName} first.`
           }
         };
       } catch (linkError) {
@@ -119,6 +147,25 @@ export const signInWithGoogle = async () => {
 export const signInWithFacebook = async () => {
   try {
     const result = await signInWithPopup(auth, facebookProvider);
+    // After successful Facebook sign in, try to get Google credential if available
+    try {
+      const email = result.user.email;
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      if (methods.includes('google.com')) {
+        // Try to sign in with Google to get credential
+        const googleResult = await signInWithPopup(auth, googleProvider);
+        if (googleResult.user) {
+          // Get Google credential and link it
+          const googleCredential = GoogleAuthProvider.credentialFromResult(googleResult);
+          if (googleCredential) {
+            await linkWithCredential(result.user, googleCredential);
+          }
+        }
+      }
+    } catch (linkError) {
+      console.error('Error attempting to link Google:', linkError);
+      // Don't throw error - user is still signed in with Facebook
+    }
     return { user: result.user, error: null };
   } catch (error) {
     if (error.code === 'auth/account-exists-with-different-credential') {
@@ -127,6 +174,16 @@ export const signInWithFacebook = async () => {
         const email = error.customData.email;
         const providers = await fetchSignInMethodsForEmail(auth, email);
         
+        // Map provider IDs to friendly names
+        const providerNames = {
+          'google.com': 'Google',
+          'facebook.com': 'Facebook',
+          'password': 'Email/Password',
+          'phone': 'Phone',
+          'microsoft.com': 'Microsoft',
+          'apple.com': 'Apple'
+        };
+
         if (providers[0] === 'google.com') {
           // The user has a Google account with the same email
           // Sign in with Google to get credentials
@@ -141,11 +198,12 @@ export const signInWithFacebook = async () => {
         }
         
         // Handle other providers if needed
+        const providerName = providerNames[providers[0]] || 'your existing account';
         return { 
           user: null, 
           error: {
             code: 'auth/needs-linking',
-            message: `This email is already associated with a ${providers[0]} account. Please sign in with ${providers[0]} first.`
+            message: `This email is already associated with ${providerName}. Please sign in with ${providerName} first.`
           }
         };
       } catch (linkError) {
