@@ -122,28 +122,51 @@
             <WelcomeModal {user} showAlways={false} />
         {/if}
     {:else}
-        <div class="auth-container">
-            <div class="container">
-				<div class="row justify-content-center">
-					<div class="col-md-10">
-                        <div class="d-flex justify-content-center">
-                            <i class="bi bi-sun-fill" style="font-size: 10rem; color: #e0b76b; clip-path: inset(0 0 40% 0);"></i>
-                        </div>
-						<h1 class="display-1 fw-bold mb-4" style="font-size: 3rem; margin-top: -6rem;">INET-READY</h1>
-                        <div class="d-flex justify-content-center">
-                            <p class="subtitle mb-3" style="font-size: 1.25rem; margin-top: -1rem;">Your Heat Check for Safe and Informed Travel</p>
-                        </div>
-					</div>
-				</div>
-			</div>
-            
-            {#if !showRegister}
-                <Login />
-                <p>Don't have an account? <button on:click={toggleForm}>Register</button></p>
-            {:else}
-                <Register />
-                <p>Already have an account? <button on:click={toggleForm}>Login</button></p>
-            {/if}
+        <div class="dashboard" style="min-height: 100vh; padding-bottom: 70px; padding-top: 80px;">
+            <!-- App Bar -->
+            <div class="app-bar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <img src="/app-icon.png" alt="INET-READY Logo" style="height: 48px; width: 48px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); background: white;" />
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="app-title" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">INET-READY</span>
+                        <span style="font-size: 1.1rem; color: white; font-weight: 500;">Your Heat Check for Safe and Informed Travel</span>
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="max-width: 100%; margin: 0 auto; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh;">
+                <div style="width: 100%; max-width: 420px; margin: 0 auto;">
+                    {#if !showRegister}
+                        <Login />
+                        <p style="text-align: center; margin-top: 1.5rem;">Don't have an account? <button on:click={toggleForm}>Register</button></p>
+                    {:else}
+                        <Register />
+                        <p style="text-align: center; margin-top: 1.5rem;">Already have an account? <button on:click={toggleForm}>Login</button></p>
+                    {/if}
+                </div>
+            </div>
+            <!-- Bottom Navigation Bar -->
+            <div class="bottom-nav">
+                <button class="nav-item active" style="pointer-events: none;">
+                    <i class="bi bi-house"></i>
+                    <span>Home</span>
+                </button>
+                <button class="nav-item" style="pointer-events: none;">
+                    <i class="bi bi-heart-pulse"></i>
+                    <span>Medical</span>
+                </button>
+                <button class="nav-item" style="pointer-events: none;">
+                    <i class="bi bi-bell"></i>
+                    <span>Notifications</span>
+                </button>
+                <button class="nav-item" style="pointer-events: none;">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </button>
+                <button class="nav-item" style="pointer-events: none;">
+                    <i class="bi bi-person"></i>
+                    <span>Account</span>
+                </button>
+            </div>
         </div>
     {/if}
 </div>
