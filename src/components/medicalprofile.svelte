@@ -161,29 +161,52 @@
         return `${ml} ml (${cups} ${cups === 1 ? 'cup' : 'cups'})`;
     }
     
+    // Gender-based max cups per day
+    function getMaxCupsByGender(gender) {
+        if (gender === 'male') return 15.5;
+        if (gender === 'female') return 11.5;
+        return 13.5; // non-binary or prefer-not-to-say
+    }
+
+    function getMaxMlByGender(gender) {
+        return getMaxCupsByGender(gender) * ML_PER_CUP;
+    }
+
+    // Gender from profile
+    $: gender = medicalData?.demographics?.gender || 'prefer-not-to-say';
+    $: maxCups = getMaxCupsByGender(gender);
+    $: maxMl = getMaxMlByGender(gender);
+
+    // Fluid status based on gender-based max
+    $: fluidStatus = (() => {
+        if (!medicalData) return '';
+        if (totalFluidIntake < maxMl * 0.7) return 'low';
+        if (totalFluidIntake > maxMl * 1.1) return 'excessive';
+        return 'optimal';
+    })();
+
     // Calculate if user drinks enough water per day (simple estimate)
     function getHydrationStatus() {
-        if (!medicalData?.biometrics?.weight || !medicalData?.fluid_intake) return null;
-        
-        // Simple estimate: Person should drink ~30ml per kg of body weight
-        const recommendedTotal = medicalData.biometrics.weight * 30;
-        const waterAmount = medicalData.fluid_intake.water_amount || 0;
-        const totalFluid = getTotalFluidIntake();
-        
-        if (waterAmount < recommendedTotal * 0.5) {
+        if (!medicalData?.fluid_intake) return null;
+        if (totalFluidIntake < maxMl * 0.7) {
             return {
                 status: 'concern',
-                message: 'You may not be drinking enough water. Consider increasing your daily water intake.'
+                message: `Your fluid intake is below the recommended daily amount for your gender (${maxCups} cups).`
             };
-        } else if (totalFluid < recommendedTotal) {
+        } else if (totalFluidIntake < maxMl) {
             return {
                 status: 'warning',
-                message: 'Your total fluid intake is below the recommended amount. Try to drink more fluids throughout the day.'
+                message: `Your fluid intake is slightly below the recommended daily amount for your gender (${maxCups} cups).`
+            };
+        } else if (totalFluidIntake > maxMl * 1.1) {
+            return {
+                status: 'warning',
+                message: `Your fluid intake is above the recommended daily amount for your gender (${maxCups} cups).`
             };
         } else {
             return {
                 status: 'good',
-                message: 'Your hydration level appears adequate based on your weight.'
+                message: 'Your hydration level appears adequate based on your gender.'
             };
         }
     }
@@ -458,15 +481,10 @@
         <div class="section-header header-fluid-intake">
             <h3>Daily Fluid Intake</h3>
             <div class="fluid-header-info">
-                <span class={['fluid-status',
-                    totalFluidIntake < (medicalData?.biometrics?.weight * 35) && 'low',
-                    totalFluidIntake >= (medicalData?.biometrics?.weight * 35) &&
-                    totalFluidIntake <= (medicalData?.biometrics?.weight * 70) && 'optimal',
-                    totalFluidIntake > (medicalData?.biometrics?.weight * 70) && 'excessive'
-                    ].filter(Boolean).join(' ')}>
-                    {#if totalFluidIntake < (medicalData?.biometrics?.weight * 35)}
+                <span class={["fluid-status", fluidStatus].filter(Boolean).join(' ')}>
+                    {#if fluidStatus === 'low'}
                         Low
-                    {:else if totalFluidIntake > (medicalData?.biometrics?.weight * 70)}
+                    {:else if fluidStatus === 'excessive'}
                         Excessive
                     {:else}
                         Optimal
@@ -497,16 +515,12 @@
                             <!-- Water level visualization -->
                             <div class="water-level-container">
                                 <div class="water-level-visual">
-                                    <div class="water-level" style="height: {Math.min(100, Math.max(5, (totalFluidIntake / (medicalData?.biometrics?.weight * 35)) * 100))}%"></div>
+                                    <div class="water-level" style="height: {Math.min(100, Math.max(5, (totalFluidIntake / maxMl) * 100))}%"></div>
                                 </div>
                                 <div class="water-level-info">
                                     <span class="cups-value">{mlToCups(totalFluidIntake)} cups</span>
                                     <span class="daily-target">
-                                        {#if medicalData?.biometrics?.weight}
-                                            Target: {mlToCups(medicalData.biometrics.weight * 30)} cups
-                                        {:else}
-                                            Set weight for target
-                                        {/if}
+                                        Target: {maxCups} cups ({maxMl} ml)
                                     </span>
                                 </div>
                             </div>

@@ -793,6 +793,7 @@
                                 </div>
                             </div>                            <hr class="preference-divider" />
                             <!-- Linked Accounts -->
+                            <!--
                             {#if !user.providerData.some(provider => provider.providerId === 'facebook.com')}
                             <div class="account-header">
                                 <div class="preference-icon">
@@ -800,7 +801,7 @@
                                 </div>
                                 <div class="preference-title">
                                     <span class="setting-label">Facebook Account</span>
-                                    <span class="setting-description">Link your Facebook account for easier sign-in</span>
+                                    <span class="setting-description">Link your Facebook account</span>
                                 </div>
                                 <div class="setting-action">
                                     <button class="enable-btn facebook" on:click={handleLinkFacebook}>
@@ -810,6 +811,7 @@
                             </div>
                             <hr class="preference-divider" />
                             {/if}
+                            -->
                             {#if !user.providerData.some(provider => provider.providerId === 'google.com')}
                             <div class="account-header">
                                 <div class="preference-icon">
@@ -817,7 +819,7 @@
                                 </div>
                                 <div class="preference-title">
                                     <span class="setting-label">Google Account</span>
-                                    <span class="setting-description">Link your Google account for easier sign-in</span>
+                                    <span class="setting-description">Link your Google account</span>
                                 </div>
                                 <div class="setting-action">
                                     <button class="enable-btn google" on:click={handleLinkGoogle}>
