@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
     import { saveMedicalData } from '$lib/services/medical-api.js';
+    import { validateMedicalProfileOtherFields } from '$lib/services/gemini-service';
     
     export let initialData: any = null;
     export let isEditing: boolean = false;
@@ -407,8 +408,7 @@
         
         return true;
     }
-    
-    // Handle form submission
+      // Handle form submission
     async function handleSubmit() {
         error = null;
         success = false;
@@ -418,6 +418,62 @@
         loading = true;
         
         try {
+            // Validate "other" fields if they exist
+            if (medicalData.medical_conditions.other.has_other || 
+                medicalData.medications.other.has_other || 
+                medicalData.fluid_intake.other.has_other) {
+                
+                const otherFields = {
+                    conditions: medicalData.medical_conditions.other.has_other ? 
+                        medicalData.medical_conditions.other.description : null,
+                    medications: medicalData.medications.other.has_other ? 
+                        medicalData.medications.other.description : null,
+                    fluids: medicalData.fluid_intake.other.has_other ? 
+                        medicalData.fluid_intake.other.name : null
+                };
+
+                try {
+                    const validation = await validateMedicalProfileOtherFields(otherFields);
+                    
+                    // Update medical conditions if valid
+                    if (medicalData.medical_conditions.other.has_other) {
+                        if (!validation.conditions.isValid) {
+                            medicalData.medical_conditions.other.has_other = false;
+                            medicalData.medical_conditions.other.description = '';
+                            console.warn('Invalid medical condition removed:', validation.conditions.reason);
+                        } else {
+                            medicalData.medical_conditions.other.description = validation.conditions.cleanedText;
+                        }
+                    }
+
+                    // Update medications if valid
+                    if (medicalData.medications.other.has_other) {
+                        if (!validation.medications.isValid) {
+                            medicalData.medications.other.has_other = false;
+                            medicalData.medications.other.description = '';
+                            console.warn('Invalid medication removed:', validation.medications.reason);
+                        } else {
+                            medicalData.medications.other.description = validation.medications.cleanedText;
+                        }
+                    }
+
+                    // Update fluids if valid
+                    if (medicalData.fluid_intake.other.has_other) {
+                        if (!validation.fluids.isValid) {
+                            medicalData.fluid_intake.other.has_other = false;
+                            medicalData.fluid_intake.other.name = '';
+                            medicalData.fluid_intake.other.cups = 0;
+                            console.warn('Invalid fluid removed:', validation.fluids.reason);
+                        } else {
+                            medicalData.fluid_intake.other.name = validation.fluids.cleanedText;
+                        }
+                    }
+                } catch (validationError) {
+                    console.error('Validation error:', validationError);
+                    // Continue with saving even if validation fails
+                }
+            }
+
             // Convert cups back to milliliters for storage
             const processedFluidIntake: Record<string, any> = {};
             

@@ -180,3 +180,34 @@ export async function askGemini(userMessage, context = {}) {
     return `Sorry, I couldn't process your request. (${error.message || 'Unknown error'})`;
   }
 }
+
+/**
+ * Validate and clean "other" fields in medical profile
+ * @param {object} otherFields - Object containing other fields {conditions, medications, fluids}
+ * @returns {Promise<object>} - Validation results with cleaned data
+ */
+export async function validateMedicalProfileOtherFields(otherFields) {
+  try {
+    const prompt = `As a health data validator, please validate the following "other" fields from a medical profile. For each field:
+1. Check if it contains valid medical/health information
+2. Correct any obvious typos or formatting issues
+3. Return cleaned text if valid, or explain why invalid
+
+Input fields to validate:
+${JSON.stringify(otherFields, null, 2)}
+
+Respond in this exact JSON format:
+{
+  "conditions": {"isValid": boolean, "cleanedText": string, "reason": string},
+  "medications": {"isValid": boolean, "cleanedText": string, "reason": string},
+  "fluids": {"isValid": boolean, "cleanedText": string, "reason": string}
+}`;
+
+    const result = await chatModel.generateContent(prompt);
+    const validation = JSON.parse(result.response.text());
+    return validation;
+  } catch (error) {
+    console.error('Error validating medical profile fields:', error);
+    throw new Error('Failed to validate medical profile fields');
+  }
+}
