@@ -834,8 +834,10 @@
         letter-spacing: 0.3px;
         position: relative;
         z-index: 1;
-    }    .section-body {
-        padding: 1.25rem;
+    }
+
+    .section-body {
+        padding: 2rem;
     }
 
     .bottom-nav {
