@@ -1064,8 +1064,6 @@
         text-align: center;
         padding: 2rem;
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .spinner {
@@ -1287,7 +1285,6 @@
     .header-activity { background: #dc4a4a; }
     /* Creative Previous Heat Issues Styles - Cohesive with App */
     .creative-heat-issues {
-        margin-top: 1.5rem;
         margin-bottom: 1.5rem;
         background: #f9f9f9;
         border-radius: 12px;

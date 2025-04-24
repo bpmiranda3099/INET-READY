@@ -1581,6 +1581,7 @@
         gap: 0.75rem;
         max-height: 70vh;
         overflow-y: auto;
+        flex-wrap: nowrap;
     }
     
     .notification {
@@ -1917,7 +1918,7 @@
     
     .notification-category .section-header h3 {
         margin: 0;
-        font-size: 1rem;
+        font-size: 1.2rem;
         font-weight: 600;
         display: flex;
         align-items: center;
