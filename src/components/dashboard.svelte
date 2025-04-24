@@ -2036,7 +2036,7 @@
         gap: 1rem;
         justify-content: center;
         margin-top: 1.5rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
         margin-left: 1rem;
         margin-right: 1rem;
         justify-content: center;
