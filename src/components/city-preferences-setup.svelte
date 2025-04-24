@@ -258,17 +258,6 @@
         position: relative;
         overflow: hidden;
     }
-    .setup-header::after {
-        content: '';
-        position: absolute;
-        top: -20px;
-        right: -20px;
-        width: 120px;
-        height: 120px;
-        background: rgba(255,255,255,0.08);
-        border-radius: 50%;
-        z-index: 0;
-    }
     .setup-header h2 {
         margin-bottom: 0.5rem;
         position: relative;
@@ -286,8 +275,7 @@
         max-width: 550px;
         margin: 0 auto;
         background: white;
-        border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        border-radius: 8px;
         margin-top: -32px;
         z-index: 2;
         position: relative;
