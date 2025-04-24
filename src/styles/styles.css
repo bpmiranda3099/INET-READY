@@ -253,7 +253,6 @@ main {
 form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
 }
 
 .form-group {
