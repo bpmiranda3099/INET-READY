@@ -166,18 +166,38 @@ export const signInWithGoogle = async () => {
 // Sign in with Facebook
 export const signInWithFacebook = async () => {
   try {
-    let user;
-    let result;
+    // Check if mobile device
+    const isMobile = isMobileDevice();
+    console.log('Device type:', isMobile ? 'mobile' : 'desktop');
     
-    // Use redirect for mobile, popup for desktop
-    if (isMobileDevice()) {
-      await signInWithRedirect(auth, facebookProvider);
-      // The result will be handled by getRedirectResult in the auth state observer
-      return { user: null, error: null }; // Return early as redirect will happen
-    } else {
-      result = await signInWithPopup(auth, facebookProvider);
-      user = result.user;
+    if (isMobile) {
+      try {
+        // Configure Facebook provider for mobile
+        facebookProvider.setCustomParameters({
+          // Force re-authentication
+          auth_type: 'reauthenticate',
+          // Specify display type
+          display: 'touch'
+        });
+        
+        console.log('Initiating Facebook redirect sign-in...');
+        await signInWithRedirect(auth, facebookProvider);
+        // We won't reach here - redirect happens
+        return { user: null, error: null };
+      } catch (redirectError) {
+        console.error('Facebook redirect error:', {
+          code: redirectError.code,
+          message: redirectError.message,
+          customData: redirectError.customData
+        });
+        return { user: null, error: redirectError };
+      }
     }
+
+    // Desktop flow
+    console.log('Initiating Facebook popup sign-in...');
+    const result = await signInWithPopup(auth, facebookProvider);
+    const user = result.user;
     
     // After successful Facebook sign in, try to get Google credential if available
     try {
@@ -209,11 +229,17 @@ export const signInWithFacebook = async () => {
     }
     return { user, error: null };
   } catch (error) {
+    console.error('Facebook sign-in error:', {
+      code: error.code,
+      message: error.message,
+      customData: error.customData
+    });
+    
     if (error.code === 'auth/account-exists-with-different-credential') {
       try {
         // Get sign-in methods for this email
         const email = error.customData.email;
-        const providers = await fetchSignInMethodsForEmail(auth, email);
+        const methods = await fetchSignInMethodsForEmail(auth, email);
         
         // Map provider IDs to friendly names
         const providerNames = {
@@ -225,7 +251,7 @@ export const signInWithFacebook = async () => {
           'apple.com': 'Apple'
         };
 
-        if (providers[0] === 'google.com') {
+        if (methods[0] === 'google.com') {
           // The user has a Google account with the same email
           // Sign in with Google to get credentials
           const googleResult = await signInWithPopup(auth, googleProvider);
@@ -239,7 +265,7 @@ export const signInWithFacebook = async () => {
         }
         
         // Handle other providers if needed
-        const providerName = providerNames[providers[0]] || 'your existing account';
+        const providerName = providerNames[methods[0]] || 'your existing account';
         return { 
           user: null, 
           error: {
@@ -259,14 +285,78 @@ export const signInWithFacebook = async () => {
 // Handle redirect result
 export const handleRedirectResult = async () => {
   try {
+    console.log('Checking for redirect result...', {
+      url: typeof window !== 'undefined' ? window.location.href : 'SSR',
+      timestamp: new Date().toISOString()
+    });
+
     const result = await getRedirectResult(auth);
+    
     if (result) {
-      // Successfully signed in
+      console.log('Redirect result found:', {
+        userId: result.user?.uid,
+        providerId: result.providerId,
+        operationType: result.operationType,
+        email: result.user?.email,
+        providerData: result.user?.providerData
+      });
+
+      // If we got here, the sign-in was successful
+      if (result.user) {
+        // Try to link with other providers if needed
+        try {
+          const email = result.user.email;
+          const methods = await fetchSignInMethodsForEmail(auth, email);
+          
+          // Try to link Google if not already linked
+          if (methods.includes('google.com') && !result.user.providerData.some(p => p.providerId === 'google.com')) {
+            console.log('Attempting to link Google account after redirect...');
+            const googleResult = await signInWithPopup(auth, googleProvider);
+            if (googleResult.user) {
+              const googleCredential = GoogleAuthProvider.credentialFromResult(googleResult);
+              if (googleCredential) {
+                await linkWithCredential(result.user, googleCredential);
+                console.log('Successfully linked Google account');
+              }
+            }
+          }
+        } catch (linkError) {
+          console.warn('Non-critical error linking accounts after redirect:', linkError);
+          // Don't fail the sign-in, just return with a warning
+          return {
+            user: result.user,
+            error: {
+              code: 'auth/link-warning',
+              message: 'Successfully signed in with Facebook, but couldn\'t link other accounts.'
+            }
+          };
+        }
+      }
+      
       return { user: result.user, error: null };
     }
+    
+    console.log('No redirect result found');
     return { user: null, error: null };
   } catch (error) {
-    console.error('Error handling redirect result:', error);
+    console.error('Error handling redirect result:', {
+      code: error.code,
+      message: error.message,
+      stack: error.stack,
+      customData: error.customData
+    });
+
+    // Handle specific error cases
+    if (error.code === 'auth/popup-closed-by-user') {
+      return {
+        user: null,
+        error: {
+          code: error.code,
+          message: 'The sign in was cancelled. Please try again.'
+        }
+      };
+    }
+
     return { user: null, error };
   }
 };
