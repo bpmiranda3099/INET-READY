@@ -45,6 +45,7 @@
     let deleteError = null;
     let showDeleteConfirm = false;
     let deleteSuccess = false;
+    let dashboardRefreshKey = 0;
     
     // City preferences state
     let hasCityPreferences = false;
@@ -676,18 +677,20 @@
     <!-- Main Content Area -->
     <div class="content-area">
         {#if activeTab === 'dashboard'}
-            <div class="dashboard-section">
-                  <!-- Travel Health Cards - Only show if user has city preferences -->
-                {#if hasCityPreferences && preferredCities.length > 0}
-                    <TravelHealthCards 
-                        homeCity={homeCity}
-                        preferredCities={preferredCities}
-                        useCurrentLocation={true}
-                        currentLocation={currentLocationName}
-                    />
-                {/if}
-            </div>        
-            {:else if activeTab === 'notifications'}            
+            {#key dashboardRefreshKey}
+                <div class="dashboard-section">
+                    <!-- Travel Health Cards - Only show if user has city preferences -->
+                    {#if hasCityPreferences && preferredCities.length > 0}
+                        <TravelHealthCards 
+                            homeCity={homeCity}
+                            preferredCities={preferredCities}
+                            useCurrentLocation={true}
+                            currentLocation={currentLocationName}
+                        />
+                    {/if}
+                </div>
+            {/key}
+        {:else if activeTab === 'notifications'}            
             <div class="notifications-section">
                 {#if notifications.length === 0}
                     <div class="card">
@@ -1126,6 +1129,9 @@
             class="nav-item" 
             class:active={activeTab === 'dashboard'}
             on:click={() => {
+                if (activeTab === 'dashboard') {
+                    dashboardRefreshKey += 1; // Force dashboard section to reload
+                }
                 activeTab = 'dashboard';
                 if (showMedicalForm) showMedicalForm = false;
             }}
