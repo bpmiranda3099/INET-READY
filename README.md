@@ -99,19 +99,38 @@ INET-READY is a modern, privacy-focused platform for safe and informed travel. I
 - `public/data/historical_weather_data.csv` — Historical weather (OpenMeteo)
 - `public/data/predicted_heat_index/*.csv` — Daily predictions and metrics
 
----
+## 🌟 Features
 
-## 🚀 Features
-
-- **User Authentication**: Secure login via Firebase (email, Google, Facebook).
-- **Personal Medical Profiles**: Store, update, and manage health data securely.
-- **Heat Index & Weather Forecasts**: Real-time and predictive analytics for cities worldwide.
-- **Personalized Health Alerts**: Push notifications based on user preferences, location, and medical risk.
-- **Travel Health Cards**: Generate and view digital health summaries for travel.
-- **Interactive Dashboard**: Visualize weather, health risks, and travel tips.
-- **Chatbot Assistant**: AI-powered travel and health Q&A (Gemini integration).
-- **Data Privacy Controls**: Full data deletion and privacy management.
-- **Admin & Analytics**: Usage analytics and admin tools (Firebase, Vercel, Aptible).
+- **Authentication & Account Management**
+  - User registration and login (email, Google, Facebook)
+  - Email verification, password reset, logout, and linked accounts
+- **Dashboard & Navigation**
+  - Tabbed dashboard, bottom navigation, app bar
+- **City Preferences & Location**
+  - City selection, preferences, location tracking, permissions
+- **Medical Profile & Form**
+  - Medical data entry, profile display, health insights, visualizations
+- **Travel Health Cards**
+  - Dynamic cards for weather, heat index, health status, hospitals, advice
+- **Notifications**
+  - Real-time push notifications, notification history, permission management
+- **Chatbot Assistant (SafeTrip AI)**
+  - AI-powered travel and health Q&A, context-aware, mobile-friendly
+- **Permissions & Settings**
+  - Permissions panel, display preferences, privacy controls
+- **Onboarding & Welcome**
+  - Welcome modal, onboarding steps, user greeting
+- **Visual & UI Components**
+  - Cards, banners, responsive design, modals, tooltips
+- **Data & Integration**
+  - Weather, heat index, geospatial, and medical data integration
+  - Service worker for offline support and notifications
+- **Automated Data Collection**
+  - Automated scripts for weather and heat index updates (see [CI/CD & GitHub Workflows](#️-cicd--github-workflows))
+- **Deployment & Security**
+  - Automated deployment, secure credentials, manual workflow triggers (see [Deployment](#-deployment) and [CI/CD & GitHub Workflows](#️-cicd--github-workflows))
+- **Miscellaneous**
+  - Admin tools, analytics, FAQ, logout/session management
 
 ---
 
@@ -384,20 +403,13 @@ INET-READY uses GitHub Actions for automated data collection, processing, and de
 ### Automated Workflows
 
 - **Hourly Weather Update**
-
-  - Runs every hour to collect current weather data.
-  - Updates Firebase with the latest conditions.
+  - Runs every hour to collect current weather data and update Firebase.
   - Script: `src/scripts/hourly_heat_index_api.py`
-
 - **Daily Historical Weather Update**
-
-  - Runs daily at midnight UTC.
-  - Updates historical weather records and commits changes to the repository.
+  - Runs daily at midnight UTC to update historical weather records and commit changes.
   - Script: `src/scripts/daily_historical_weather_data.py`
-
 - **Daily Heat Index Forecast**
-  - Runs daily at 4:00 AM UTC.
-  - Generates future heat index predictions and updates Firebase and the repository.
+  - Runs daily at 4:00 AM UTC to generate future heat index predictions and update Firebase.
   - Script: `src/scripts/heat_index_forecast_api.py`
 
 ### Configuration & Security
@@ -411,7 +423,7 @@ INET-READY uses GitHub Actions for automated data collection, processing, and de
 
 ### Data Sources
 
-- Weather data is collected from reliable meteorological sources and processed for accuracy.
+- Weather data is collected from reliable meteorological sources and processed for accuracy. See [Data Sources: OpenMeteo API](#-data-sources-openmeteo-api) for details.
 
 ---
 
