@@ -89,7 +89,6 @@ main {
   margin: 0 auto;
   padding: 0;
   width: 100%;
-  display: flex;
   flex-direction: column;
   align-items: center;
 }

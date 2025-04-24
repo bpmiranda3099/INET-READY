@@ -128,24 +128,9 @@
                 <div class="app-bar-main">
                     <img src="/app-icon.png" alt="INET-READY" class="app-logo" />
                     <div class="app-titles">
-                        <small class="app-title">Your Heat Check for Safe and Informed Travel</small>
                         <h2 class="section-title">INET-READY</h2>
+                        <small class="app-title">Your Heat Check for Safe and Informed Travel</small>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="content-area">
-            <div class="section-container">
-                <div class="section-body">
-                    {#if !showRegister}
-                        <Login />
-                        <p class="toggle-text">Don't have an account? <button on:click={toggleForm}>Register</button></p>
-                    {:else}
-                        <Register />
-                        <p class="toggle-text">Already have an account? <button on:click={toggleForm}>Login</button></p>
-                    {/if}
                 </div>
             </div>
         </div>
@@ -211,8 +196,8 @@
     }
 
     .app-logo {
-        width: 48px;
-        height: 48px;
+        width: 35px;
+        height: 35px;
         object-fit: contain;
     }
 

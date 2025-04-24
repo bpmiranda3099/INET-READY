@@ -139,7 +139,6 @@
 </script>
 
 <form on:submit|preventDefault={handleLogin} novalidate>
-    <h2 class="subtitle mb-3" style="color: black; font-size: 2rem; margin-top: -1rem;">Login</h2>
     
     {#if error}
         <div class="error">{error}</div>

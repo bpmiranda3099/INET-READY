@@ -180,7 +180,6 @@
     </div>
 {:else}
     <form on:submit|preventDefault={handleRegister} novalidate>
-        <h2 class="subtitle mb-3" style="color: black; font-size: 2rem; margin-top: -1rem;">Create Account</h2>
         
         {#if error}
             <div class="error">{error}</div>
