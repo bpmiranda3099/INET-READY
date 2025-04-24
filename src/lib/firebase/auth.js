@@ -1,4 +1,20 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, sendPasswordResetEmail, setPersistence, browserLocalPersistence, browserSessionPersistence, sendEmailVerification } from "firebase/auth";
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged, 
+    GoogleAuthProvider, 
+    FacebookAuthProvider, 
+    signInWithPopup, 
+    sendPasswordResetEmail, 
+    setPersistence, 
+    browserLocalPersistence, 
+    browserSessionPersistence, 
+    sendEmailVerification,
+    fetchSignInMethodsForEmail,
+    linkWithCredential
+} from "firebase/auth";
 import app from './app';
 
 // Initialize Firebase Auth
@@ -63,6 +79,38 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     return { user: result.user, error: null };
   } catch (error) {
+    if (error.code === 'auth/account-exists-with-different-credential') {
+      try {
+        // Get sign-in methods for this email
+        const email = error.customData.email;
+        const providers = await fetchSignInMethodsForEmail(auth, email);
+        
+        if (providers[0] === 'facebook.com') {
+          // The user has a Facebook account with the same email
+          // Sign in with Facebook to get credentials
+          const facebookResult = await signInWithPopup(auth, facebookProvider);
+          
+          // Get Google credential
+          const googleCredential = GoogleAuthProvider.credentialFromError(error);
+          
+          // Link Google credential to the Facebook account
+          await linkWithCredential(facebookResult.user, googleCredential);
+          return { user: facebookResult.user, error: null };
+        }
+        
+        // Handle other providers if needed
+        return { 
+          user: null, 
+          error: {
+            code: 'auth/needs-linking',
+            message: `This email is already associated with a ${providers[0]} account. Please sign in with ${providers[0]} first.`
+          }
+        };
+      } catch (linkError) {
+        console.error('Error during account linking:', linkError);
+        return { user: null, error: linkError };
+      }
+    }
     return { user: null, error };
   }
 };
@@ -73,6 +121,38 @@ export const signInWithFacebook = async () => {
     const result = await signInWithPopup(auth, facebookProvider);
     return { user: result.user, error: null };
   } catch (error) {
+    if (error.code === 'auth/account-exists-with-different-credential') {
+      try {
+        // Get sign-in methods for this email
+        const email = error.customData.email;
+        const providers = await fetchSignInMethodsForEmail(auth, email);
+        
+        if (providers[0] === 'google.com') {
+          // The user has a Google account with the same email
+          // Sign in with Google to get credentials
+          const googleResult = await signInWithPopup(auth, googleProvider);
+          
+          // Get Facebook credential
+          const facebookCredential = FacebookAuthProvider.credentialFromError(error);
+          
+          // Link Facebook credential to the Google account
+          await linkWithCredential(googleResult.user, facebookCredential);
+          return { user: googleResult.user, error: null };
+        }
+        
+        // Handle other providers if needed
+        return { 
+          user: null, 
+          error: {
+            code: 'auth/needs-linking',
+            message: `This email is already associated with a ${providers[0]} account. Please sign in with ${providers[0]} first.`
+          }
+        };
+      } catch (linkError) {
+        console.error('Error during account linking:', linkError);
+        return { user: null, error: linkError };
+      }
+    }
     return { user: null, error };
   }
 };
