@@ -1009,12 +1009,37 @@
         align-items: center;
     }
 
-    .checkbox-container {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-    }
+    .checkbox-container input:checked ~ .checkmark {
+    background-color: #dd815e;
+    border-color: #dd815e;
+}
+.checkbox-container .checkmark {
+    position: relative;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    display: inline-block;
+    margin-right: 8px;
+    transition: background 0.2s, border 0.2s;
+}
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+.checkbox-container .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    border-radius: 1px;
+    transform: rotate(45deg);
+}
 
     .forgot-password {
         background: none;
