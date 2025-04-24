@@ -255,7 +255,7 @@
         background-color: #dd815e;
         color: white;
         width: 100%;
-        position: fixed;
+        position: relative;
         overflow: hidden;
     }
     .setup-header h2 {
