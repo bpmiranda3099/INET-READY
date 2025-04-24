@@ -2,6 +2,7 @@
     import { createEventDispatcher } from 'svelte';
     import { saveMedicalData } from '$lib/services/medical-api.js';
     import { validateMedicalProfileOtherFields } from '$lib/services/gemini-service';
+    import { showNotification } from '$lib/services/notification-service';
     
     export let initialData: any = null;
     export let isEditing: boolean = false;
@@ -483,12 +484,33 @@
                             medicalData.fluid_intake.other.name = validation.fluids.cleanedText;
                         }}                    // Handle validation results
                     if (validationWarnings.length > 0) {
-                        // Display validation warnings
-                        error = validationWarnings.join("\n• ");
+                        // Group warnings by type
+                        const corrections = validationWarnings.filter(msg => msg.includes('corrected'));
+                        const removals = validationWarnings.filter(msg => msg.includes('Invalid'));
+                        
+                        // Show corrections notification
+                        if (corrections.length > 0) {
+                            showNotification(
+                                "Some entries were corrected:\n• " + corrections.join("\n• "),
+                                'info',
+                                8000,
+                                'Medical Profile Corrections'
+                            );
+                        }
+                        
+                        // Show removals notification
+                        if (removals.length > 0) {
+                            showNotification(
+                                "Invalid entries were removed:\n• " + removals.join("\n• "),
+                                'warning',
+                                8000,
+                                'Invalid Medical Entries'
+                            );
+                        }
                         
                         // If no valid entries remain, prevent form submission
                         if (!hasValidEntries) {
-                            error = "All entries were invalid. Please correct and try again:\n• " + error;
+                            error = "All entries were invalid. Please correct and try again.";
                             loading = false;
                             return;
                         }
