@@ -705,10 +705,22 @@
 />
 
 {#if loading && !cardsGenerated}
-	<div class="loading-container">
-		<div class="loading-spinner"></div>
-		<p>Loading travel cards...</p>
-	</div>
+    <!-- Lottie spinner replacement -->
+    <script
+      src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
+      type="module"
+    ></script>
+    <div class="loading-container">
+        <dotlottie-player
+            src="https://lottie.host/84d1af88-e233-4f6c-9e90-215e78a342cd/irsoJpd7tz.lottie"
+            background="transparent"
+            speed="1"
+            style="width: 300px; height: 300px"
+            loop
+            autoplay
+        ></dotlottie-player>
+        <p>Loading travel cards...</p>
+    </div>
 {:else if error}
 	<div class="error-container">
 		<p class="error-message">{error}</p>
