@@ -938,12 +938,14 @@
         color: #666;
         cursor: pointer;
         padding: 5px;
-    }    .password-strength-container {
-        margin-top: 0.25rem;
+    }
+
+    .password-strength-container {
+        margin-top: 0.5rem;
     }
 
     .password-strength-bar {
-        height: 3px;
+        height: 4px;
         background-color: #eee;
         border-radius: 2px;
         overflow: hidden;
