@@ -436,26 +436,28 @@
                     
                     // Update medical conditions with corrections or remove if invalid
                     if (medicalData.medical_conditions.other.has_other) {
-                        if (!validation.conditions.isValid) {
+                        if (!validation.conditions?.isValid) {
                             medicalData.medical_conditions.other.has_other = false;
                             medicalData.medical_conditions.other.description = '';
-                            validationWarnings.push(`Invalid medical condition removed: ${validation.conditions.reason}`);
-                        } else {
+                            if (validation.conditions?.reason) {
+                                validationWarnings.push(`Invalid medical condition "${medicalData.medical_conditions.other.description}": ${validation.conditions.reason}`);
+                            }
+                        } else if (validation.conditions?.cleanedText) {
                             hasValidEntries = true;
                             if (validation.conditions.cleanedText !== medicalData.medical_conditions.other.description) {
                                 validationWarnings.push(`Medical condition corrected: "${medicalData.medical_conditions.other.description}" → "${validation.conditions.cleanedText}"`);
                             }
                             medicalData.medical_conditions.other.description = validation.conditions.cleanedText;
                         }
-                    }
-
-                    // Update medications with corrections or remove if invalid
+                    }                    // Update medications with corrections or remove if invalid
                     if (medicalData.medications.other.has_other) {
-                        if (!validation.medications.isValid) {
+                        if (!validation.medications?.isValid) {
                             medicalData.medications.other.has_other = false;
                             medicalData.medications.other.description = '';
-                            validationWarnings.push(`Invalid medication removed: ${validation.medications.reason}`);
-                        } else {
+                            if (validation.medications?.reason) {
+                                validationWarnings.push(`Invalid medication "${medicalData.medications.other.description}": ${validation.medications.reason}`);
+                            }
+                        } else if (validation.medications?.cleanedText) {
                             hasValidEntries = true;
                             if (validation.medications.cleanedText !== medicalData.medications.other.description) {
                                 validationWarnings.push(`Medication corrected: "${medicalData.medications.other.description}" → "${validation.medications.cleanedText}"`);
@@ -466,31 +468,35 @@
 
                     // Update fluids with corrections or remove if invalid
                     if (medicalData.fluid_intake.other.has_other) {
-                        if (!validation.fluids.isValid) {
+                        if (!validation.fluids?.isValid) {
                             medicalData.fluid_intake.other.has_other = false;
                             medicalData.fluid_intake.other.name = '';
                             medicalData.fluid_intake.other.cups = 0;
-                            validationWarnings.push(`Invalid fluid removed: ${validation.fluids.reason}`);
-                        } else {
+                            if (validation.fluids?.reason) {
+                                validationWarnings.push(`Invalid fluid "${medicalData.fluid_intake.other.name}": ${validation.fluids.reason}`);
+                            }
+                        } else if (validation.fluids?.cleanedText) {
                             hasValidEntries = true;
                             if (validation.fluids.cleanedText !== medicalData.fluid_intake.other.name) {
                                 validationWarnings.push(`Fluid name corrected: "${medicalData.fluid_intake.other.name}" → "${validation.fluids.cleanedText}"`);
                             }
                             medicalData.fluid_intake.other.name = validation.fluids.cleanedText;
-                        }                    }
-
-                    // If there were any corrections or invalid entries, show them to the user
+                        }}                    // Handle validation results
                     if (validationWarnings.length > 0) {
-                        error = "Some entries were corrected or removed:\n• " + validationWarnings.join("\n• ");
-                        // Only return early if there are no valid entries
+                        // Display validation warnings
+                        error = validationWarnings.join("\n• ");
+                        
+                        // If no valid entries remain, prevent form submission
                         if (!hasValidEntries) {
+                            error = "All entries were invalid. Please correct and try again:\n• " + error;
                             loading = false;
                             return;
                         }
                     }
                 } catch (validationError) {
                     console.error('Validation error:', validationError);
-                    error = "Error validating entries. Please check your input and try again.";
+                    // Show detailed validation error if available
+                    error = validationError?.message || "Error validating entries. Please check your input and try again.";
                     loading = false;
                     return;
                 }
