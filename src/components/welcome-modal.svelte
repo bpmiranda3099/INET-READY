@@ -1,21 +1,18 @@
 <script>
     import { onMount, createEventDispatcher } from 'svelte';
     import { fly, fade } from 'svelte/transition';
-      export let user = {};
+    export let user = {};
     export let showAlways = false;
-    
+
     const dispatch = createEventDispatcher();
-    let showWelcome = true;
+    // Set initial value based on localStorage
+    let showWelcome = !(localStorage.getItem('inet-ready-hide-welcome') === 'true') || showAlways;
     let doNotShowAgain = false;
-    
+
     onMount(() => {
-        // Check local storage to see if the user has chosen to hide the welcome message
-        const hideWelcome = localStorage.getItem('inet-ready-hide-welcome');
-        if (hideWelcome === 'true' && !showAlways) {
-            showWelcome = false;
-        }
+        // No need to set showWelcome here anymore
     });
-    
+
     function closeWelcome() {
         if (doNotShowAgain) {
             localStorage.setItem('inet-ready-hide-welcome', 'true');
