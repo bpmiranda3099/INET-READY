@@ -437,7 +437,9 @@
         </div>
 
         <div class="content-area">
-            <div class="section-container">
+            <div class="section-container">                <div class="section-header">
+                    <h3>{showRegister ? 'Create Your Account' : 'Welcome Back'}</h3>
+                </div>
                 <div class="section-body">
                     {#if showRegister}
                         {#if registrationSuccess}
@@ -792,15 +794,46 @@
     .content-area {
         flex: 1;
         padding: 1rem;
-    }
-
-    .section-container {
+    }    .section-container {
         background: white;
         border-radius: 16px;
         overflow: hidden;
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         max-width: 500px;
         margin: 0 auto;
+    }
+
+    .section-container .section-header {
+        background: #dd815e;
+        color: white;
+        padding: 1rem;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .section-container .section-header::after {
+        content: '';
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        width: 120px;
+        height: 120px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .section-container .section-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        position: relative;
+        z-index: 1;
     }
 
     .section-body {
@@ -848,27 +881,7 @@
 
     .nav-item:not(.active):hover {
         color: #dd815e;
-    }
-
-    .toggle-text {
-        text-align: center;
-        margin-top: 1rem;
-    }
-
-    .toggle-text button {
-        background: none;
-        border: none;
-        color: #dd815e;
-        font-weight: 600;
-        cursor: pointer;
-        padding: 0.25rem;
-    }
-
-    .toggle-text button:hover {
-        text-decoration: underline;
-    }
-
-    .loading-container {
+    }    .loading-container {
         display: flex;
         flex-direction: column;
         align-items: center;
