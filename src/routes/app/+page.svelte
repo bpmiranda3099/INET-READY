@@ -590,13 +590,15 @@
                                     class="google-btn" 
                                     on:click={handleGoogleSignup}
                                     disabled={loading}
-                                >                                    <img 
+                                >
+                                    <img 
                                         src="https://upload.wikimedia.org/wikipedia/commons/archive/c/c1/20190923152039%21Google_%22G%22_logo.svg" 
                                         alt="Google Logo" 
                                         width="18" 
                                         height="18"
+                                        style="margin-bottom: 3rem;"
                                     />
-                                    <span>Sign in with Google</span>
+                                    <span style="margin-bottom: 3rem;">Sign in with Google</span>
                                 </button>
                             </form>
                         {/if}
