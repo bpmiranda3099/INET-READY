@@ -171,113 +171,53 @@ export const signInWithFacebook = async () => {
     console.log('Device type:', isMobile ? 'mobile' : 'desktop');
     
     if (isMobile) {
-      try {
-        // Configure Facebook provider for mobile
-        facebookProvider.setCustomParameters({
-          // Force re-authentication
-          auth_type: 'reauthenticate',
-          // Specify display type
-          display: 'touch'
-        });
-        
-        console.log('Initiating Facebook redirect sign-in...');
-        await signInWithRedirect(auth, facebookProvider);
-        // We won't reach here - redirect happens
-        return { user: null, error: null };
-      } catch (redirectError) {
-        console.error('Facebook redirect error:', {
-          code: redirectError.code,
-          message: redirectError.message,
-          customData: redirectError.customData
-        });
-        return { user: null, error: redirectError };
-      }
+      // Configure Facebook provider for mobile
+      facebookProvider.setCustomParameters({
+        // Force re-authentication
+        auth_type: 'reauthenticate',
+        // Optimize for mobile
+        display: 'touch',
+        // Request email permission
+        scope: 'email'
+      });
+      
+      console.log('Initiating Facebook redirect sign-in...');
+      await signInWithRedirect(auth, facebookProvider);
+      // Redirect will happen here
+      return { user: null, error: null };
     }
 
-    // Desktop flow
+    // Desktop flow - use popup
     console.log('Initiating Facebook popup sign-in...');
     const result = await signInWithPopup(auth, facebookProvider);
-    const user = result.user;
     
-    // After successful Facebook sign in, try to get Google credential if available
+    // After successful Facebook sign in, try to link with Google if available
     try {
-      const email = user.email;
+      const email = result.user.email;
       const methods = await fetchSignInMethodsForEmail(auth, email);
       
-      // Try to link Google if not already linked
-      if (methods.includes('google.com') && !user.providerData.some(p => p.providerId === 'google.com')) {
-        // Try to sign in with Google to get credential
+      if (methods.includes('google.com') && !result.user.providerData.some(p => p.providerId === 'google.com')) {
         const googleResult = await signInWithPopup(auth, googleProvider);
         if (googleResult.user) {
-          // Get Google credential and link it
           const googleCredential = GoogleAuthProvider.credentialFromResult(googleResult);
           if (googleCredential) {
-            await linkWithCredential(user, googleCredential);
+            await linkWithCredential(result.user, googleCredential);
           }
         }
       }
     } catch (linkError) {
       console.error('Error attempting to link Google:', linkError);
-      // Return warning but don't fail - user is still signed in with Facebook
       return { 
         user: result.user, 
         error: { 
           code: 'auth/link-warning',
-          message: 'Successfully signed in with Facebook, but couldn\'t link Google account.' 
+          message: 'Successfully signed in with Facebook, but couldn\'t link Google account.'
         }
       };
     }
-    return { user, error: null };
+    return { user: result.user, error: null };
   } catch (error) {
-    console.error('Facebook sign-in error:', {
-      code: error.code,
-      message: error.message,
-      customData: error.customData
-    });
-    
-    if (error.code === 'auth/account-exists-with-different-credential') {
-      try {
-        // Get sign-in methods for this email
-        const email = error.customData.email;
-        const methods = await fetchSignInMethodsForEmail(auth, email);
-        
-        // Map provider IDs to friendly names
-        const providerNames = {
-          'google.com': 'Google',
-          'facebook.com': 'Facebook',
-          'password': 'Email/Password',
-          'phone': 'Phone',
-          'microsoft.com': 'Microsoft',
-          'apple.com': 'Apple'
-        };
-
-        if (methods[0] === 'google.com') {
-          // The user has a Google account with the same email
-          // Sign in with Google to get credentials
-          const googleResult = await signInWithPopup(auth, googleProvider);
-          
-          // Get Facebook credential
-          const facebookCredential = FacebookAuthProvider.credentialFromError(error);
-          
-          // Link Facebook credential to the Google account
-          await linkWithCredential(googleResult.user, facebookCredential);
-          return { user: googleResult.user, error: null };
-        }
-        
-        // Handle other providers if needed
-        const providerName = providerNames[methods[0]] || 'your existing account';
-        return { 
-          user: null, 
-          error: {
-            code: 'auth/needs-linking',
-            message: `This email is already associated with ${providerName}. Please sign in with ${providerName} first.`
-          }
-        };
-      } catch (linkError) {
-        console.error('Error during account linking:', linkError);
-        return { user: null, error: linkError };
-      }
-    }
+    console.error('Facebook sign-in error:', error);
     return { user: null, error };
   }
 };
@@ -296,9 +236,7 @@ export const handleRedirectResult = async () => {
       console.log('Redirect result found:', {
         userId: result.user?.uid,
         providerId: result.providerId,
-        operationType: result.operationType,
-        email: result.user?.email,
-        providerData: result.user?.providerData
+        operationType: result.operationType
       });
 
       // If we got here, the sign-in was successful
@@ -311,52 +249,46 @@ export const handleRedirectResult = async () => {
           // Try to link Google if not already linked
           if (methods.includes('google.com') && !result.user.providerData.some(p => p.providerId === 'google.com')) {
             console.log('Attempting to link Google account after redirect...');
-            const googleResult = await signInWithPopup(auth, googleProvider);
-            if (googleResult.user) {
-              const googleCredential = GoogleAuthProvider.credentialFromResult(googleResult);
-              if (googleCredential) {
-                await linkWithCredential(result.user, googleCredential);
-                console.log('Successfully linked Google account');
+            try {
+              const googleResult = await signInWithPopup(auth, googleProvider);
+              if (googleResult.user) {
+                const googleCredential = GoogleAuthProvider.credentialFromResult(googleResult);
+                if (googleCredential) {
+                  await linkWithCredential(result.user, googleCredential);
+                  console.log('Successfully linked Google account');
+                }
               }
+            } catch (linkError) {
+              console.warn('Non-critical error linking Google account:', linkError);
+              // Don't fail the sign-in
+              return {
+                user: result.user,
+                error: {
+                  code: 'auth/link-warning',
+                  message: 'Successfully signed in, but couldn\'t link Google account.'
+                }
+              };
             }
           }
-        } catch (linkError) {
-          console.warn('Non-critical error linking accounts after redirect:', linkError);
-          // Don't fail the sign-in, just return with a warning
-          return {
+          return { user: result.user, error: null };
+        } catch (error) {
+          console.error('Error handling account linking after redirect:', error);
+          // Still return the user since auth was successful
+          return { 
             user: result.user,
             error: {
-              code: 'auth/link-warning',
-              message: 'Successfully signed in with Facebook, but couldn\'t link other accounts.'
+              code: 'auth/link-error',
+              message: 'Sign in successful, but there was an error linking accounts.'
             }
           };
         }
       }
-      
-      return { user: result.user, error: null };
     }
     
     console.log('No redirect result found');
     return { user: null, error: null };
   } catch (error) {
-    console.error('Error handling redirect result:', {
-      code: error.code,
-      message: error.message,
-      stack: error.stack,
-      customData: error.customData
-    });
-
-    // Handle specific error cases
-    if (error.code === 'auth/popup-closed-by-user') {
-      return {
-        user: null,
-        error: {
-          code: error.code,
-          message: 'The sign in was cancelled. Please try again.'
-        }
-      };
-    }
-
+    console.error('Error handling redirect result:', error);
     return { user: null, error };
   }
 };

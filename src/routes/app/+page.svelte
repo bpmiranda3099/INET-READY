@@ -329,9 +329,13 @@
         handleRedirectResult().then(({user: redirectUser, error: redirectError}) => {
             if (redirectError) {
                 error = redirectError.message || "Authentication failed after redirect";
+            } else if (redirectUser) {
+                // Handle successful redirect sign-in
+                console.log("Successfully signed in after redirect");
+                // The auth state change will handle the rest
             }
         });
-        
+
         // Subscribe to authentication state changes
         const unsubscribe = subscribeToAuthChanges(async (authUser) => {
             if (authUser) {
