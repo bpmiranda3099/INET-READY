@@ -670,7 +670,7 @@
         <h2>{isEditing ? 'Update Medical Information' : 'Complete Your Medical Profile'}</h2>
         {#if !isEditing}
             <p class="form-intro">
-                To help us provide personalized insights about your hydration needs, please
+                To help us provide personalized insights, please
                 fill out the following health information. Your data is kept private and secure.
             </p>
         {/if}
