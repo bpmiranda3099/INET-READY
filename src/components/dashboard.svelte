@@ -978,7 +978,13 @@
                                     <div class="preference-title">
                                         <span class="setting-label">Last Updated</span>
                                         <span class="setting-description">
-                                            {new Date(locationData.timestamp).toLocaleString()}
+                                            {new Date(locationData.timestamp).toLocaleString(undefined, {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
                                         </span>
                                     </div>
                                 </div>
