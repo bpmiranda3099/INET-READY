@@ -636,8 +636,13 @@
 
 <div class="dashboard">    <!-- App Bar -->    <div class="app-bar">
         <div class="app-bar-content">
-            <small class="app-title">INET-READY</small>
-            <h2 class="section-title">{getSectionTitle(activeTab)}</h2>
+            <div class="app-bar-main">
+                <img src="/app-icon.png" alt="INET-READY" class="app-logo" />
+                <div class="app-titles">
+                    <small class="app-title">INET-READY</small>
+                    <h2 class="section-title">{getSectionTitle(activeTab)}</h2>
+                </div>
+            </div>
         </div>
         <!-- Edit Medical Profile Button (only shows when on medical tab and not already editing) -->
         {#if activeTab === 'medical' && !showMedicalForm}
@@ -1288,13 +1293,25 @@
         flex-direction: column;
         justify-content: center;
     }
+
+    .app-bar-main {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
     
+
     .app-title {
         text-transform: uppercase;
         font-size: 0.7rem;
         letter-spacing: 1px;
         opacity: 0.8;
         margin: 0;
+    }
+
+    .app-titles {
+        display: flex;
+        flex-direction: column;
     }
     
     .section-title {
