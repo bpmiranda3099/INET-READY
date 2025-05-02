@@ -172,13 +172,6 @@
 			<img src="/svelte-icon.png" alt="Svelte" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
 			<img src="/firebase-icon.png" alt="Firebase" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
 			<img src="/aptible-icon.png" alt="Aptible" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
-<style>
-.tech-logo {
-  height: 60px;
-  width: auto;
-  object-fit: contain;
-}
-</style>
 		  </div>
 		</div>
 	  </div>
