@@ -268,31 +268,31 @@
 		  </div>
 		</div>
 	<!-- Powered By Column -->
-	<div class="col-12 col-md-3 text-center text-md-end d-flex flex-column align-items-center align-items-md-end">
-	  <div class="mb-2 fw-bold" style="color:#fff; letter-spacing:1px; font-size:1.1rem;">Powered by</div>
-	  <div class="d-flex flex-column align-items-center align-items-md-end gap-2">
-		<div class="d-flex align-items-center" style="gap:0.5rem;">
-		  <img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
-		  <span style="color:#fff; font-size:1rem;">OpenMeteo</span>
-		</div>
-		<div class="d-flex align-items-center" style="gap:0.5rem;">
-		  <img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
-		  <span style="color:#fff; font-size:1rem;">Mapbox</span>
-		</div>
-		<div class="d-flex align-items-center" style="gap:0.5rem;">
-		  <img src="/svelte-icon.png" alt="Svelte" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
-		  <span style="color:#fff; font-size:1rem;">SvelteKit</span>
-		</div>
-		<div class="d-flex align-items-center" style="gap:0.5rem;">
-		  <img src="/firebase-icon.png" alt="Firebase" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
-		  <span style="color:#fff; font-size:1rem;">Firebase</span>
-		</div>
-		<div class="d-flex align-items-center" style="gap:0.5rem;">
-		  <img src="/aptible-icon.png" alt="Aptible" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
-		  <span style="color:#fff; font-size:1rem;">Aptible</span>
-		</div>
+  <div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
+	<div class="mb-2 fw-bold" style="color:#fff; letter-spacing:1px; font-size:1.1rem;">Powered by</div>
+	<div class="d-flex flex-column align-items-start gap-2">
+	  <div class="d-flex align-items-center" style="gap:0.5rem;">
+		<img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
+		<span style="color:#fff; font-size:1rem;">OpenMeteo</span>
+	  </div>
+	  <div class="d-flex align-items-center" style="gap:0.5rem;">
+		<img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
+		<span style="color:#fff; font-size:1rem;">Mapbox</span>
+	  </div>
+	  <div class="d-flex align-items-center" style="gap:0.5rem;">
+		<img src="/svelte-icon.png" alt="Svelte" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
+		<span style="color:#fff; font-size:1rem;">SvelteKit</span>
+	  </div>
+	  <div class="d-flex align-items-center" style="gap:0.5rem;">
+		<img src="/firebase-icon.png" alt="Firebase" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
+		<span style="color:#fff; font-size:1rem;">Firebase</span>
+	  </div>
+	  <div class="d-flex align-items-center" style="gap:0.5rem;">
+		<img src="/aptible-icon.png" alt="Aptible" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
+		<span style="color:#fff; font-size:1rem;">Aptible</span>
 	  </div>
 	</div>
+  </div>
 	  </div>
 	  <hr style="border-color:rgba(255,255,255,0.2); margin:2rem 0 1rem 0;" />
 	  <div class="text-center small" style="color:#fff;">© 2025 INET-READY. All rights reserved.</div>
