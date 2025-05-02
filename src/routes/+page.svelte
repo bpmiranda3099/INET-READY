@@ -170,7 +170,7 @@
 			<img src="/open-meteo-icon.png" alt="OpenMeteo" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 			<img src="/mapbox-icon.png" alt="Mapbox" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 			<img src="/svelte-icon.png" alt="Svelte" width="48" height="48" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-<img src="/firebase-icon.png" alt="Firebase" width="60" height="60" style="border-radius:12px; background:transparent;" />
+			<img src="/firebase-icon.png" alt="Firebase" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 			<img src="/aptible-icon.png" alt="Aptible" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 		  </div>
 		</div>
