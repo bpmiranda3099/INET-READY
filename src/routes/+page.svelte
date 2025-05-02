@@ -90,7 +90,7 @@
 			<a class="nav-link" href="#about" style="color:#fff;">About</a>
 		  </li>
 		  <!-- Contact Dropdown -->
-		  <li class="nav-item dropdown">
+		  <li class="nav-item dropdown hover-dropdown">
 			<a class="nav-link dropdown-toggle" href="#" id="navbarContactDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;">
 			  Contact
 			</a>
@@ -101,7 +101,7 @@
 			</ul>
 		  </li>
 		  <!-- Support Dropdown -->
-		  <li class="nav-item dropdown">
+		  <li class="nav-item dropdown hover-dropdown">
 			<a class="nav-link dropdown-toggle" href="#" id="navbarSupportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;">
 			  Support
 			</a>
@@ -118,6 +118,18 @@
 	  </div>
 	</div>
   </nav>
+  <style>
+	/* Dropdown on hover for desktop */
+	@media (min-width: 992px) {
+	  .hover-dropdown:hover > .dropdown-menu {
+		display: block;
+		margin-top: 0;
+	  }
+	  .hover-dropdown > .dropdown-toggle:active {
+		pointer-events: none;
+	  }
+	}
+  </style>
 
   <!-- HERO SECTION -->
   <section class="hero d-flex align-items-center justify-content-center text-center px-3" style="background:#fff; min-height:70vh;">
