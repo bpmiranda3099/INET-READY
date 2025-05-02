@@ -166,6 +166,41 @@
 	</div>
   </section>
 
+  <!-- TERMS, PRIVACY, DATA DELETION SECTION -->
+  <section class="legal-section py-5" style="background:#fff;">
+	<div class="container">
+	  <div class="row g-4 justify-content-center">
+		<div class="col-12 col-md-4">
+		  <div class="card h-100 border-0 shadow-sm text-center">
+			<div class="card-body">
+			  <h5 class="card-title fw-bold mb-3" style="color:#dd815e;">Terms of Service</h5>
+			  <p class="card-text" style="color:#555;">Read our terms to understand your rights and responsibilities when using INET-READY.</p>
+			  <a href="/terms" class="btn btn-sm" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:600;">View Terms</a>
+			</div>
+		  </div>
+		</div>
+		<div class="col-12 col-md-4">
+		  <div class="card h-100 border-0 shadow-sm text-center">
+			<div class="card-body">
+			  <h5 class="card-title fw-bold mb-3" style="color:#dd815e;">Privacy Policy</h5>
+			  <p class="card-text" style="color:#555;">Your privacy matters. Learn how we protect and use your data at INET-READY.</p>
+			  <a href="/privacy" class="btn btn-sm" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:600;">View Privacy Policy</a>
+			</div>
+		  </div>
+		</div>
+		<div class="col-12 col-md-4">
+		  <div class="card h-100 border-0 shadow-sm text-center">
+			<div class="card-body">
+			  <h5 class="card-title fw-bold mb-3" style="color:#dd815e;">Data Deletion</h5>
+			  <p class="card-text" style="color:#555;">Request deletion of your account and personal data at any time for full control.</p>
+			  <a href="/data-deletion" class="btn btn-sm" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:600;">Request Data Deletion</a>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </section>
+
   <!-- CONTACT/FOOTER -->
   <footer id="contact" class="border-0 py-4 mt-5" style="background:#dd815e;">
 	<div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
