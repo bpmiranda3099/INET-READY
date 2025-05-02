@@ -74,7 +74,8 @@
 	<div class="container-fluid">
 	  <a class="navbar-brand d-flex align-items-center gap-2" href="#" style="color:#fff;">
 		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px;" />
-		<span class="fw-bold" style="color:#fff;">INET-READY: </span><span style="color:#fff;">Your Heat Check for Safe and Informed Travel</span>
+		<span class="fw-bold" style="color:#fff;">INET-READY</span>
+		<span class="d-none d-md-inline" style="color:#fff;">: Your Heat Check for Safe and Informed Travel</span>
 	  </a>
 	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color:#fff;">
 		<span class="navbar-toggler-icon" style="filter:invert(1);"></span>
@@ -237,28 +238,27 @@
 			<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; background:transparent;" />
 			<span class="fw-bold" style="color:#fff; font-size:1.2rem;">INET-READY</span>
 		  </div>
-		  <div class="small mt-2 mt-md-3" style="color:#fff;">&copy; {new Date().getFullYear()} INET-READY. All rights reserved.</div>
 		</div>
 		<!-- Links Section -->
-	<div class="col-12 col-md-4 text-center mb-3 mb-md-0 d-flex flex-column align-items-center justify-content-center">
-	  <div class="row w-100">
-		<div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3">
-		  <a href="/terms" class="text-decoration-none" style="color:#fff;">Terms</a>
-		  <a href="/privacy" class="text-decoration-none" style="color:#fff;">Privacy</a>
-		  <a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
+		<div class="col-12 col-md-4 text-center mb-3 mb-md-0 d-flex flex-column align-items-center justify-content-center">
+		  <div class="row w-100">
+			<div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3">
+			  <a href="/terms" class="text-decoration-none" style="color:#fff;">Terms</a>
+			  <a href="/privacy" class="text-decoration-none" style="color:#fff;">Privacy</a>
+			  <a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
+			</div>
+			<div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3 mt-2 mt-md-3">
+			  <a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
+			  <a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
+			</div>
+			<div class="col-12 d-flex flex-row justify-content-center align-items-center gap-3 mt-3">
+			  <!-- Social Links -->
+			  <a href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub" style="color:#fff; font-size:1.5rem;"><i class="bi bi-github"></i></a>
+			  <a href="mailto:support@inet-ready.com" target="_blank" rel="noopener" title="Email" aria-label="Email" style="color:#fff; font-size:1.5rem;"><i class="bi bi-envelope-fill"></i></a>
+			  <a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" title="Website" aria-label="Website" style="color:#fff; font-size:1.5rem;"><i class="bi bi-globe2"></i></a>
+			</div>
+		  </div>
 		</div>
-		<div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3 mt-2 mt-md-3">
-		  <a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
-		  <a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
-		</div>
-		<div class="col-12 d-flex flex-row justify-content-center align-items-center gap-3 mt-3">
-		  <!-- Social Links -->
-		  <a href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener" title="GitHub" style="color:#fff; font-size:1.5rem;"><i class="bi bi-github"></i></a>
-		  <a href="mailto:support@inet-ready.com" target="_blank" rel="noopener" title="Email" style="color:#fff; font-size:1.5rem;"><i class="bi bi-envelope-fill"></i></a>
-		  <a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" title="Website" style="color:#fff; font-size:1.5rem;"><i class="bi bi-globe2"></i></a>
-		</div>
-	  </div>
-	</div>
 		<!-- Powered By Section -->
 		<div class="col-12 col-md-4 text-center text-md-end d-flex flex-column align-items-center align-items-md-end">
 		  <div class="mb-2" style="color:#fff; font-weight:600; letter-spacing:1px; font-size:1.1rem;">Powered by:</div>
@@ -271,6 +271,8 @@
 		  </div>
 		</div>
 	  </div>
+	  <hr style="border-color:rgba(255,255,255,0.2); margin:2rem 0 1rem 0;" />
+	  <div class="text-center small" style="color:#fff;">© 2025 INET-READY. All rights reserved.</div>
 	</div>
   </footer>
  </main>
