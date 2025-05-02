@@ -436,29 +436,6 @@ function toggleNavbar() {
   .feature-card p {
 	color: #fff !important;
   }
-  .feature-icon-topright {
-	position: absolute;
-	top: 0.7rem;
-	right: 0.9rem;
-	font-size: 1.1rem;
-	color: #ffb899;
-	background: none;
-	border-radius: 0;
-	padding: 0;
-	box-shadow: none;
-	z-index: 2;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-  }
-  .feature-icon-topright i {
-  color: #fff;
-	font-size: 1.1em;
-	margin: 0;
-	padding: 0;
-	line-height: 1;
-	vertical-align: middle;
-  }
 .tech-logo {
   height: 60px;
   width: auto;
@@ -467,5 +444,8 @@ function toggleNavbar() {
 .white-logo {
   filter: brightness(0) invert(1) !important;
 }
+.feature-icon-topright{
+	font-size: 2rem;
+	color: #fff;
+}
 </style>
-
