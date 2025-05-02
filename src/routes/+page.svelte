@@ -70,6 +70,7 @@
 
 <main>
   <!-- NAVBAR -->
+
   <nav class="navbar navbar-expand-lg shadow-sm py-3" style="background:#dd815e;">
 	<div class="container-fluid">
 	  <a class="navbar-brand d-flex align-items-center gap-2" href="#" style="color:#fff;">
@@ -80,31 +81,41 @@
 	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color:#fff;">
 		<span class="navbar-toggler-icon" style="filter:invert(1);"></span>
 	  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-	<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-	  <li class="nav-item">
-		<a class="nav-link active" aria-current="page" href="#features" style="color:#fff;">Features</a>
-	  </li>
-	  <li class="nav-item">
-		<a class="nav-link" href="#about" style="color:#fff;">About</a>
-	  </li>
-	  <li class="nav-item">
-		<a class="nav-link" href="#contact" style="color:#fff;">Contact</a>
-	  </li>
-	  <li class="nav-item">
-		<a class="nav-link" href="/terms" style="color:#fff;">Terms of Service</a>
-	  </li>
-	  <li class="nav-item">
-		<a class="nav-link" href="/privacy" style="color:#fff;">Privacy Policy</a>
-	  </li>
-	  <li class="nav-item">
-		<a class="nav-link" href="/data-deletion" style="color:#fff;">Data Deletion</a>
-	  </li>
-	  <li class="nav-item">
-		<button class="btn ms-2 px-4" style="background:#fff; color:#dd815e; border:none; border-radius:50px; font-weight:600;" on:click={navigateToApp}>Get Started</button>
-	  </li>
-	</ul>
-  </div>
+	  <div class="collapse navbar-collapse" id="navbarNav">
+		<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+		  <li class="nav-item">
+			<a class="nav-link active" aria-current="page" href="#features" style="color:#fff;">Features</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" href="#about" style="color:#fff;">About</a>
+		  </li>
+		  <!-- Contact Dropdown -->
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarContactDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;">
+			  Contact
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarContactDropdown">
+			  <li><a class="dropdown-item d-flex align-items-center gap-2" href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener"><i class="bi bi-github"></i> GitHub</a></li>
+			  <li><a class="dropdown-item d-flex align-items-center gap-2" href="mailto:info@inet-ready.com"><i class="bi bi-envelope-fill"></i> Email</a></li>
+			  <li><a class="dropdown-item d-flex align-items-center gap-2" href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener"><i class="bi bi-phone"></i> App</a></li>
+			</ul>
+		  </li>
+		  <!-- Support Dropdown -->
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarSupportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;">
+			  Support
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarSupportDropdown">
+			  <li><a class="dropdown-item" href="/terms">Terms of Service</a></li>
+			  <li><a class="dropdown-item" href="/privacy">Privacy Policy</a></li>
+			  <li><a class="dropdown-item" href="/data-deletion">Data Deletion</a></li>
+			</ul>
+		  </li>
+		  <li class="nav-item">
+			<button class="btn ms-2 px-4" style="background:#fff; color:#dd815e; border:none; border-radius:50px; font-weight:600;" on:click={navigateToApp}>Get Started</button>
+		  </li>
+		</ul>
+	  </div>
 	</div>
   </nav>
 
