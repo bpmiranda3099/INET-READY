@@ -282,7 +282,7 @@ function toggleNavbar() {
 		<div class="carousel-item">
 		  <div class="d-flex justify-content-center">
 			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
-			  <div class="feature-icon-topright"><i class="bi bi-cloud-arrow-down"></i></div>
+			  <div class="feature-icon-topright"><i class="bi bi-cloud-arrow-down-fill"></i></div>
 			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Easy Data Access</h5>
 			  <p class="w-100" style="word-break:break-word;">Securely store and access your medical info and travel preferences anytime, anywhere.</p>
 			</div>
