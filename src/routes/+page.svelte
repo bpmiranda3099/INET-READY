@@ -74,7 +74,7 @@
 	<div class="container-fluid">
 	  <a class="navbar-brand d-flex align-items-center gap-2" href="#" style="color:#fff;">
 		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px;" />
-		<span class="fw-bold" style="color:#fff; letter-spacing:1px;">INET-READY</span>
+		<span class="fw-bold" style="color:#fff;">INET-READY: </span><span style="color:#fff;">Your Heat Check for Safe and Informed Travel</span>
 	  </a>
 	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color:#fff;">
 		<span class="navbar-toggler-icon" style="filter:invert(1);"></span>
