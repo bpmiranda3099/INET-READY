@@ -79,22 +79,32 @@
 	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color:#fff;">
 		<span class="navbar-toggler-icon" style="filter:invert(1);"></span>
 	  </button>
-	  <div class="collapse navbar-collapse" id="navbarNav">
-		<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-		  <li class="nav-item">
-			<a class="nav-link active" aria-current="page" href="#features" style="color:#fff;">Features</a>
-		  </li>
-		  <li class="nav-item">
-			<a class="nav-link" href="#about" style="color:#fff;">About</a>
-		  </li>
-		  <li class="nav-item">
-			<a class="nav-link" href="#contact" style="color:#fff;">Contact</a>
-		  </li>
-		  <li class="nav-item">
-			<button class="btn ms-2 px-4" style="background:#fff; color:#dd815e; border:none; border-radius:50px; font-weight:600;" on:click={navigateToApp}>Get Started</button>
-		  </li>
+  <div class="collapse navbar-collapse" id="navbarNav">
+	<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+	  <li class="nav-item">
+		<a class="nav-link active" aria-current="page" href="#features" style="color:#fff;">Features</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="#about" style="color:#fff;">About</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="#contact" style="color:#fff;">Contact</a>
+	  </li>
+	  <li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" href="#" id="navbarLegalDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;">
+		  Legal
+		</a>
+		<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarLegalDropdown">
+		  <li><a class="dropdown-item" href="/terms">Terms of Service</a></li>
+		  <li><a class="dropdown-item" href="/privacy">Privacy Policy</a></li>
+		  <li><a class="dropdown-item" href="/data-deletion">Data Deletion</a></li>
 		</ul>
-	  </div>
+	  </li>
+	  <li class="nav-item">
+		<button class="btn ms-2 px-4" style="background:#fff; color:#dd815e; border:none; border-radius:50px; font-weight:600;" on:click={navigateToApp}>Get Started</button>
+	  </li>
+	</ul>
+  </div>
 	</div>
   </nav>
 
@@ -166,41 +176,6 @@
 	</div>
   </section>
 
-  <!-- TERMS, PRIVACY, DATA DELETION SECTION -->
-  <section class="legal-section py-5" style="background:#fff;">
-	<div class="container">
-	  <div class="row g-4 justify-content-center">
-		<div class="col-12 col-md-4">
-		  <div class="card h-100 border-0 shadow-sm text-center">
-			<div class="card-body">
-			  <h5 class="card-title fw-bold mb-3" style="color:#dd815e;">Terms of Service</h5>
-			  <p class="card-text" style="color:#555;">Read our terms to understand your rights and responsibilities when using INET-READY.</p>
-			  <a href="/terms" class="btn btn-sm" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:600;">View Terms</a>
-			</div>
-		  </div>
-		</div>
-		<div class="col-12 col-md-4">
-		  <div class="card h-100 border-0 shadow-sm text-center">
-			<div class="card-body">
-			  <h5 class="card-title fw-bold mb-3" style="color:#dd815e;">Privacy Policy</h5>
-			  <p class="card-text" style="color:#555;">Your privacy matters. Learn how we protect and use your data at INET-READY.</p>
-			  <a href="/privacy" class="btn btn-sm" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:600;">View Privacy Policy</a>
-			</div>
-		  </div>
-		</div>
-		<div class="col-12 col-md-4">
-		  <div class="card h-100 border-0 shadow-sm text-center">
-			<div class="card-body">
-			  <h5 class="card-title fw-bold mb-3" style="color:#dd815e;">Data Deletion</h5>
-			  <p class="card-text" style="color:#555;">Request deletion of your account and personal data at any time for full control.</p>
-			  <a href="/data-deletion" class="btn btn-sm" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:600;">Request Data Deletion</a>
-			</div>
-		  </div>
-		</div>
-	  </div>
-	</div>
-  </section>
-
   <!-- CONTACT/FOOTER -->
   <footer id="contact" class="border-0 py-4 mt-5" style="background:#dd815e;">
 	<div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
@@ -209,8 +184,11 @@
 		<span class="fw-bold" style="color:#fff;">INET-READY</span>
 	  </div>
 	  <div class="small" style="color:#fff;">&copy; {new Date().getFullYear()} INET-READY. All rights reserved.</div>
-	  <div>
-		<a href="https://inet-ready-v2.vercel.app" class="text-decoration-none me-3" style="color:#fff;">Live Demo</a>
+	  <div class="d-flex flex-wrap align-items-center gap-3">
+		<a href="/terms" class="text-decoration-none" style="color:#fff;">Terms</a>
+		<a href="/privacy" class="text-decoration-none" style="color:#fff;">Privacy</a>
+		<a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
+		<a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
 		<a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
 	  </div>
 	</div>
