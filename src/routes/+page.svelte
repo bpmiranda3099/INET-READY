@@ -75,7 +75,7 @@
 	  <a class="navbar-brand d-flex align-items-center gap-2" href="#" style="color:#fff;">
 		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px;" />
 		<span class="fw-bold align-items-center d-flex" style="color:#fff; height:36px; line-height:36px; font-size:1.2rem;">INET-READY</span>
-		<span class="d-none d-md-inline align-items-center d-flex" style="color:#fff; height:36px; line-height:36px;">: Your Heat Check for Safe and Informed Travel</span>
+		<span class="d-none d-md-inline align-items-center d-flex" style="color:#fff; height:36px; line-height:36px;"> Your Heat Check for Safe and Informed Travel</span>
 	  </a>
 	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color:#fff;">
 		<span class="navbar-toggler-icon" style="filter:invert(1);"></span>
@@ -238,7 +238,7 @@
 		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; background:transparent;" />
 		<span class="fw-bold align-items-center d-flex" style="color:#fff; font-size:1.2rem; height:36px; line-height:36px;">INET-READY</span>
 		  </div>
-		  <div class="col-12 d-flex flex-row justify-content-center align-items-center gap-3 mt-3">
+		  <div class="col-12 d-flex flex-row align-items-center gap-3 mt-3">
 			  <!-- Social Links -->
 			  <a href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub" style="color:#fff; font-size:1.5rem;"><i class="bi bi-github"></i></a>
 			  <a href="mailto:support@inet-ready.com" target="_blank" rel="noopener" title="Email" aria-label="Email" style="color:#fff; font-size:1.5rem;"><i class="bi bi-envelope-fill"></i></a>
