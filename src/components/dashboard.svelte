@@ -931,6 +931,7 @@
                                 </div>
                                 <hr class="preference-divider" />
                                 <!-- Coordinates -->
+                                <!--
                                 <div class="account-header">
                                     <div class="preference-icon">
                                         <i class="bi bi-pin-map-fill"></i>
@@ -943,6 +944,7 @@
                                     </div>
                                 </div>
                                 <hr class="preference-divider" />
+                                -->
                                 <!-- Last Updated -->
                                 <div class="account-header">
                                     <div class="preference-icon">
