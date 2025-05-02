@@ -240,19 +240,25 @@
 		  <div class="small mt-2 mt-md-3" style="color:#fff;">&copy; {new Date().getFullYear()} INET-READY. All rights reserved.</div>
 		</div>
 		<!-- Links Section -->
-		<div class="col-12 col-md-4 text-center mb-3 mb-md-0 d-flex flex-column align-items-center justify-content-center">
-		  <div class="row w-100">
-			<div class="col-6 col-md-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3">
-			  <a href="/terms" class="text-decoration-none" style="color:#fff;">Terms</a>
-			  <a href="/privacy" class="text-decoration-none" style="color:#fff;">Privacy</a>
-			  <a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
-			</div>
-			<div class="col-6 col-md-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3 mt-2 mt-md-3">
-			  <a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
-			  <a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
-			</div>
-		  </div>
+	<div class="col-12 col-md-4 text-center mb-3 mb-md-0 d-flex flex-column align-items-center justify-content-center">
+	  <div class="row w-100">
+		<div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3">
+		  <a href="/terms" class="text-decoration-none" style="color:#fff;">Terms</a>
+		  <a href="/privacy" class="text-decoration-none" style="color:#fff;">Privacy</a>
+		  <a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
 		</div>
+		<div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3 mt-2 mt-md-3">
+		  <a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
+		  <a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
+		</div>
+		<div class="col-12 d-flex flex-row justify-content-center align-items-center gap-3 mt-3">
+		  <!-- Social Links -->
+		  <a href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener" title="GitHub" style="color:#fff; font-size:1.5rem;"><i class="bi bi-github"></i></a>
+		  <a href="mailto:support@inet-ready.com" target="_blank" rel="noopener" title="Email" style="color:#fff; font-size:1.5rem;"><i class="bi bi-envelope-fill"></i></a>
+		  <a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" title="Website" style="color:#fff; font-size:1.5rem;"><i class="bi bi-globe2"></i></a>
+		</div>
+	  </div>
+	</div>
 		<!-- Powered By Section -->
 		<div class="col-12 col-md-4 text-center text-md-end d-flex flex-column align-items-center align-items-md-end">
 		  <div class="mb-2" style="color:#fff; font-weight:600; letter-spacing:1px; font-size:1.1rem;">Powered by:</div>
