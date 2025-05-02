@@ -239,12 +239,22 @@
 			<span class="fw-bold align-items-center d-flex" style="color:#fff; font-size:1.6rem; height:45px; line-height:36px;">INET-READY</span>
 		  </div>
 		</div>
-		<!-- Contact Column -->
-		<div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
-		  <div class="fw-bold mb-2" style="color:#fff;">Contact</div>
-		  <a href="mailto:info@inet-ready.com" class="text-decoration-none mb-1" style="color:#fff;">info@inet-ready.com</a>
-		  <a href="https://inet-ready-v2.vercel.app" class="text-decoration-none mb-1" style="color:#fff;">Live Demo</a>
-		</div>
+	<!-- Contact Column -->
+	<div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
+	  <div class="fw-bold mb-2" style="color:#fff;">Contact</div>
+	  <div class="d-flex align-items-center mb-2" style="gap:0.5rem;">
+		<i class="bi bi-github" style="color:#fff; font-size:1.3rem;"></i>
+		<a href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener" class="text-decoration-none" style="color:#fff;">GitHub</a>
+	  </div>
+	  <div class="d-flex align-items-center mb-2" style="gap:0.5rem;">
+		<i class="bi bi-envelope-fill" style="color:#fff; font-size:1.3rem;"></i>
+		<a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">info@inet-ready.com</a>
+	  </div>
+	  <div class="d-flex align-items-center mb-2" style="gap:0.5rem;">
+		<i class="bi bi-globe2" style="color:#fff; font-size:1.3rem;"></i>
+		<a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" class="text-decoration-none" style="color:#fff;">Website</a>
+	  </div>
+	</div>
 		<!-- Support Column -->
 		<div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
 		  <div class="fw-bold mb-2" style="color:#fff;">Support</div>
@@ -257,17 +267,32 @@
 			<a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" title="Website" aria-label="Website" style="color:#fff; font-size:1.5rem;"><i class="bi bi-globe2"></i></a>
 		  </div>
 		</div>
-		<!-- Powered By Column -->
-		<div class="col-12 col-md-3 text-center text-md-end d-flex flex-column align-items-center align-items-md-end">
-		  <div class="mb-2 fw-bold" style="color:#fff; letter-spacing:1px; font-size:1.1rem;">Powered by</div>
-		  <div class="d-flex justify-content-center justify-content-md-end align-items-center gap-2 flex-wrap">
-			<img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-			<img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-			<img src="/svelte-icon.png" alt="Svelte" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-			<img src="/firebase-icon.png" alt="Firebase" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-			<img src="/aptible-icon.png" alt="Aptible" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-		  </div>
+	<!-- Powered By Column -->
+	<div class="col-12 col-md-3 text-center text-md-end d-flex flex-column align-items-center align-items-md-end">
+	  <div class="mb-2 fw-bold" style="color:#fff; letter-spacing:1px; font-size:1.1rem;">Powered by</div>
+	  <div class="d-flex flex-column align-items-center align-items-md-end gap-2">
+		<div class="d-flex align-items-center" style="gap:0.5rem;">
+		  <img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
+		  <span style="color:#fff; font-size:1rem;">OpenMeteo</span>
 		</div>
+		<div class="d-flex align-items-center" style="gap:0.5rem;">
+		  <img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
+		  <span style="color:#fff; font-size:1rem;">Mapbox</span>
+		</div>
+		<div class="d-flex align-items-center" style="gap:0.5rem;">
+		  <img src="/svelte-icon.png" alt="Svelte" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
+		  <span style="color:#fff; font-size:1rem;">SvelteKit</span>
+		</div>
+		<div class="d-flex align-items-center" style="gap:0.5rem;">
+		  <img src="/firebase-icon.png" alt="Firebase" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
+		  <span style="color:#fff; font-size:1rem;">Firebase</span>
+		</div>
+		<div class="d-flex align-items-center" style="gap:0.5rem;">
+		  <img src="/aptible-icon.png" alt="Aptible" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="28" />
+		  <span style="color:#fff; font-size:1rem;">Aptible</span>
+		</div>
+	  </div>
+	</div>
 	  </div>
 	  <hr style="border-color:rgba(255,255,255,0.2); margin:2rem 0 1rem 0;" />
 	  <div class="text-center small" style="color:#fff;">© 2025 INET-READY. All rights reserved.</div>
