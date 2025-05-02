@@ -110,7 +110,7 @@
   <!-- HERO SECTION -->
   <section class="hero d-flex align-items-center justify-content-center text-center px-3" style="background:#fff; min-height:70vh;">
 	<div class="hero-content w-100">
-<video src="https://cdnl.iconscout.com/lottie/premium/thumb/avoid-direct-sun-animation-download-in-lottie-json-gif-static-svg-file-formats--cooling-air-herself-fan-waving-heat-stroke-danger-pack-people-animations-9123129.mp4" autoplay loop muted playsinline style="max-width:400px; width:100%; height:auto; margin-bottom:1.5rem; border:none; background:transparent; box-shadow:none;"></video>
+<video src="https://cdnl.iconscout.com/lottie/premium/thumb/avoid-direct-sun-animation-download-in-lottie-json-gif-static-svg-file-formats--cooling-air-herself-fan-waving-heat-stroke-danger-pack-people-animations-9123129.mp4" autoplay loop muted playsinline style="max-width:600px; width:100%; height:auto; margin-bottom:1.5rem; border:none; background:transparent; box-shadow:none;"></video>
 	  <h1 style="color:#dd815e; font-size:2.7rem; font-weight:700;">Travel Safer. Travel Smarter. <br> Your Heat & Health Companion</h1>
 	  <p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto;">INET-READY helps you stay safe and healthy on every journey with real-time heat index alerts, personalized health insights, and secure medical data management—all in one easy-to-use platform.</p>
 	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
@@ -254,6 +254,17 @@
 		<a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
 		<a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
 		<a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
+	  </div>
+	</div>
+	<!-- Powered By Section (inside footer) -->
+	<div class="container text-center mt-4">
+	  <div class="mb-2" style="color:#fff; font-weight:600; letter-spacing:1px; font-size:1.1rem;">Powered by:</div>
+	  <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
+		<img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo" style="border-radius:12px; background:transparent; filter:invert(1) brightness(1.2);" height="48" />
+		<img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo" style="border-radius:12px; background:transparent; filter:invert(1) brightness(1.2);" height="48" />
+		<img src="/svelte-icon.png" alt="Svelte" class="tech-logo" style="border-radius:12px; background:transparent; filter:invert(1) brightness(1.2);" height="48" />
+		<img src="/firebase-icon.png" alt="Firebase" class="tech-logo" style="border-radius:12px; background:transparent; filter:invert(1) brightness(1.2);" height="48" />
+		<img src="/aptible-icon.png" alt="Aptible" class="tech-logo" style="border-radius:12px; background:transparent; filter:invert(1) brightness(1.2);" height="48" />
 	  </div>
 	</div>
   </footer>
