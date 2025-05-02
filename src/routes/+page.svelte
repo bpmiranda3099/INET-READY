@@ -113,13 +113,6 @@
 	  <h1 style="color:#dd815e; font-size:2.7rem; font-weight:700;">Travel Safer. Travel Smarter. <br> Your Heat & Health Companion</h1>
 	  <p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto;">INET-READY helps you stay safe and healthy on every journey with real-time heat index alerts, personalized health insights, and secure medical data management—all in one easy-to-use platform.</p>
 	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
-	<div class="mt-4 d-flex justify-content-center align-items-center gap-3 flex-wrap">
-	  <img src="/open-meteo-icon.png" alt="OpenMeteo" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-	  <img src="/mapbox-logo.png" alt="Mapbox" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-	  <img src="/svelte-logo.png" alt="Svelte" width="48" height="48" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-	  <img src="/firebase-logo.png" alt="Firebase" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-	  <img src="/aptible-logo.png" alt="Aptible" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-	</div>
 	</div>
   </section>
 
@@ -173,9 +166,12 @@
 	  </ul>
 	  <div class="row justify-content-center align-items-center mb-4">
 		<div class="col-12 col-md-8">
-		  <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
-			<img src="/app-icon.png" alt="INET-READY App Icon" width="48" height="48" style="border-radius:8px; background:#fff;" />
-			<img src="/open-meteo-icon.png" alt="OpenMeteo" width="48" height="48" style="border-radius:8px; background:#fff;" />
+		  <div class="mt-4 d-flex justify-content-center align-items-center gap-3 flex-wrap">
+			<img src="/open-meteo-icon.png" alt="OpenMeteo" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
+			<img src="/mapbox-icon.png" alt="Mapbox" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
+			<img src="/svelte-icon.png" alt="Svelte" width="48" height="48" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
+			<img src="/firebase-icon.png" alt="Firebase" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
+			<img src="/aptible-icon.png" alt="Aptible" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 		  </div>
 		</div>
 	  </div>
