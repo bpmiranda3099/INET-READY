@@ -232,218 +232,73 @@ function toggleNavbar() {
   <section id="features" class="features py-5" style="background:#f5f5f7;">
   <div class="container">
 	<h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">How INET-READY Helps You</h2>
-	<div class="feature-carousel-outer">
-	  <button class="carousel-arrow left" on:click={prevFeature} aria-label="Previous feature">&#8249;</button>
-	  <div class="feature-carousel-track-wrapper">
-		<div class="feature-carousel-track" style="transform:translateX({-activeIndex * (cardWidth + cardGap)}px); transition:transform 0.6s cubic-bezier(.7,0,.3,1);">
-		  {#each features as feature, i}
-			<div class="feature-card inet-orange {i === activeIndex ? 'active' : 'inactive'} d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative"
-			  style="min-width:{cardWidth}px; max-width:{cardWidth}px; margin:0 {cardGap/2}px; min-height:320px; opacity:{i === activeIndex ? 1 : 0.6}; filter:{i === activeIndex ? 'none' : 'blur(0.5px)'}; z-index:{i === activeIndex ? 2 : 1}; scale:{i === activeIndex ? 1 : 0.92};">
-			  <div class="feature-icon-topright"><i class={feature.icon}></i></div>
-			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">{feature.title}</h5>
-			  <p class="w-100" style="word-break:break-word;">{feature.desc}</p>
+	<div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+	  <div class="carousel-inner">
+		<div class="carousel-item active">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
+			  <div class="feature-icon-topright"><i class="bi bi-thermometer-sun"></i></div>
+			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Real-Time Heat Index</h5>
+			  <p class="w-100" style="word-break:break-word;">Get up-to-date heat index forecasts for your city, powered by OpenMeteo and geospatial data.</p>
 			</div>
-		  {/each}
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
+			  <div class="feature-icon-topright"><i class="bi bi-heart-pulse"></i></div>
+			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Personalized Health Insights</h5>
+			  <p class="w-100" style="word-break:break-word;">Receive tailored health risk insights and travel advice based on your medical profile and location.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
+			  <div class="feature-icon-topright"><i class="bi bi-shield-lock"></i></div>
+			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Privacy & Security</h5>
+			  <p class="w-100" style="word-break:break-word;">Your medical data is encrypted and securely managed—privacy is our top priority.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
+			  <div class="feature-icon-topright"><i class="bi bi-bell-fill"></i></div>
+			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Instant Notifications</h5>
+			  <p class="w-100" style="word-break:break-word;">Receive timely alerts about heat risks and health reminders wherever you are.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
+			  <div class="feature-icon-topright"><i class="bi bi-geo-alt-fill"></i></div>
+			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Location-Based Advice</h5>
+			  <p class="w-100" style="word-break:break-word;">Get personalized travel health tips based on your current or planned destinations.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
+			  <div class="feature-icon-topright"><i class="bi bi-cloud-arrow-down"></i></div>
+			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Easy Data Access</h5>
+			  <p class="w-100" style="word-break:break-word;">Securely store and access your medical info and travel preferences anytime, anywhere.</p>
+			</div>
+		  </div>
 		</div>
 	  </div>
-	  <button class="carousel-arrow right" on:click={nextFeature} aria-label="Next feature">&#8250;</button>
-	</div>
-	<div class="carousel-indicators mt-3">
-	  {#each features as _, i}
-		<span class="indicator-dot {i === activeIndex ? 'active' : ''}" on:click={() => goToFeature(i)}></span>
-	  {/each}
+	  <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
+		<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+		<span class="visually-hidden">Previous</span>
+	  </button>
+	  <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
+		<span class="carousel-control-next-icon" aria-hidden="true"></span>
+		<span class="visually-hidden">Next</span>
+	  </button>
 	</div>
   </div>
-
-// Feature carousel logic
-import { onMount, onDestroy } from 'svelte';
-let features = [
-  {
-	icon: 'bi bi-thermometer-sun',
-	title: 'Real-Time Heat Index',
-	desc: 'Get up-to-date heat index forecasts for your city, powered by OpenMeteo and geospatial data.'
-  },
-  {
-	icon: 'bi bi-heart-pulse',
-	title: 'Personalized Health Insights',
-	desc: 'Receive tailored health risk insights and travel advice based on your medical profile and location.'
-  },
-  {
-	icon: 'bi bi-shield-lock',
-	title: 'Privacy & Security',
-	desc: 'Your medical data is encrypted and securely managed—privacy is our top priority.'
-  },
-  {
-	icon: 'bi bi-bell-fill',
-	title: 'Instant Notifications',
-	desc: 'Receive timely alerts about heat risks and health reminders wherever you are.'
-  },
-  {
-	icon: 'bi bi-geo-alt-fill',
-	title: 'Location-Based Advice',
-	desc: 'Get personalized travel health tips based on your current or planned destinations.'
-  },
-  {
-	icon: 'bi bi-cloud-arrow-down',
-	title: 'Easy Data Access',
-	desc: 'Securely store and access your medical info and travel preferences anytime, anywhere.'
-  }
-];
-let activeIndex = 0;
-let intervalId;
-const cardWidth = 360; // px
-const cardGap = 32; // px (1rem each side)
-
-function nextFeature() {
-  activeIndex = (activeIndex + 1) % features.length;
-  resetInterval();
-}
-function prevFeature() {
-  activeIndex = (activeIndex - 1 + features.length) % features.length;
-  resetInterval();
-}
-function goToFeature(i) {
-  activeIndex = i;
-  resetInterval();
-}
-function resetInterval() {
-  clearInterval(intervalId);
-  intervalId = setInterval(() => {
-	activeIndex = (activeIndex + 1) % features.length;
-  }, 5000);
-}
-onMount(() => {
-  intervalId = setInterval(() => {
-	activeIndex = (activeIndex + 1) % features.length;
-  }, 5000);
-});
-onDestroy(() => {
-  clearInterval(intervalId);
-});
-	.feature-carousel-outer {
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  position: relative;
-	  width: 100%;
-	  max-width: 1100px;
-	  margin: 0 auto 2rem auto;
-	  padding: 0 0.5rem;
-	  overflow: visible;
-	}
-	.feature-carousel-track-wrapper {
-	  overflow: visible;
-	  width: 100%;
-	  max-width: 900px;
-	  display: flex;
-	  justify-content: center;
-	  align-items: center;
-	}
-	.feature-carousel-track {
-	  display: flex;
-	  align-items: center;
-	  transition: transform 0.6s cubic-bezier(.7,0,.3,1);
-	  will-change: transform;
-	  padding: 2rem 0;
-	}
-	.feature-card {
-	  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.07);
-	  background: #dd815e;
-	  color: #fff;
-	  position: relative;
-	  transition: scale 0.3s, opacity 0.3s, filter 0.3s;
-	  border: none;
-	  outline: none;
-	  cursor: grab;
-	  user-select: none;
-	  overflow: hidden;
-	  text-align: center;
-	  display: flex;
-	  flex-direction: column;
-	  justify-content: center;
-	  align-items: center;
-	}
-	.feature-card .feature-icon-topright {
-	  position: absolute;
-	  top: 1rem;
-	  right: 1rem;
-	  font-size: 1.5rem;
-	  color: #fff;
-	  background: none;
-	  z-index: 3;
-	}
-	.feature-card.active {
-	  box-shadow: 0 4px 24px 0 rgba(221,129,94,0.18);
-	  scale: 1;
-	  opacity: 1;
-	  filter: none;
-	}
-	.feature-card.inactive {
-	  scale: 0.92;
-	  opacity: 0.6;
-	  filter: blur(0.5px);
-	}
-	.carousel-arrow {
-	  background: #fff;
-	  color: #dd815e;
-	  border: none;
-	  border-radius: 50%;
-	  width: 2.5rem;
-	  height: 2.5rem;
-	  font-size: 2rem;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-	  cursor: pointer;
-	  position: relative;
-	  z-index: 10;
-	  margin: 0 0.5rem;
-	  transition: background 0.2s;
-	}
-	.carousel-arrow:hover {
-	  background: #ffe5d7;
-	}
-	.carousel-arrow.left {
-	  left: 0;
-	}
-	.carousel-arrow.right {
-	  right: 0;
-	}
-	.carousel-indicators {
-	  display: flex;
-	  justify-content: center;
-	  align-items: center;
-	  gap: 0.5rem;
-	  margin-top: 1rem;
-	}
-	.indicator-dot {
-	  width: 10px;
-	  height: 10px;
-	  border-radius: 50%;
-	  background: #fff;
-	  opacity: 0.5;
-	  transition: opacity 0.2s, background 0.2s;
-	  cursor: pointer;
-	  display: inline-block;
-	}
-	.indicator-dot.active {
-	  background: #dd815e;
-	  opacity: 1;
-	}
-	@media (max-width: 700px) {
-	  .feature-carousel-outer {
-		max-width: 100vw;
-		padding: 0;
-	  }
-	  .feature-carousel-track-wrapper {
-		max-width: 100vw;
-	  }
-	  .feature-card {
-		min-width: 90vw !important;
-		max-width: 90vw !important;
-	  }
-	}
   </section>
   <!-- SOCIAL PROOF SECTION -->
   <section class="py-5" style="background:#fff;">
