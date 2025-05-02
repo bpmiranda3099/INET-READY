@@ -232,36 +232,34 @@
   <footer id="contact" class="border-0 py-4 mt-5" style="background:#dd815e;">
 	<div class="container">
 	  <div class="row gy-4">
-		<!-- Brand/Logo Section -->
-		<div class="col-12 col-md-4 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
+		<!-- Title Column -->
+		<div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
 		  <div class="d-flex align-items-center gap-2 mb-2 mb-md-0">
-		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; background:transparent;" />
-		<span class="fw-bold align-items-center d-flex" style="color:#fff; font-size:1.6rem; height:45px; line-height:36px;">INET-READY</span>
-		  </div>
-		  <div class="col-12 d-flex flex-row align-items-center gap-3 mt-3">
-			  <!-- Social Links -->
-			  <a href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub" style="color:#fff; font-size:1.5rem;"><i class="bi bi-github"></i></a>
-			  <a href="mailto:support@inet-ready.com" target="_blank" rel="noopener" title="Email" aria-label="Email" style="color:#fff; font-size:1.5rem;"><i class="bi bi-envelope-fill"></i></a>
-			  <a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" title="Website" aria-label="Website" style="color:#fff; font-size:1.5rem;"><i class="bi bi-globe2"></i></a>
-			</div>
-		</div>
-		<!-- Links Section -->
-		<div class="col-12 col-md-4 text-center mb-3 mb-md-0 d-flex flex-column align-items-center justify-content-center">
-		  <div class="row w-100">
-			<div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3">
-			  <a href="/terms" class="text-decoration-none" style="color:#fff;">Terms</a>
-			  <a href="/privacy" class="text-decoration-none" style="color:#fff;">Privacy</a>
-			  <a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
-			</div>
-			<div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3 mt-2 mt-md-3">
-			  <a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
-			  <a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
-			</div>
+			<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; background:transparent;" />
+			<span class="fw-bold align-items-center d-flex" style="color:#fff; font-size:1.6rem; height:45px; line-height:36px;">INET-READY</span>
 		  </div>
 		</div>
-		<!-- Powered By Section -->
-		<div class="col-12 col-md-4 text-center text-md-end d-flex flex-column align-items-center align-items-md-end">
-		  <div class="mb-2" style="color:#fff; font-weight:600; letter-spacing:1px; font-size:1.1rem;">Powered by:</div>
+		<!-- Contact Column -->
+		<div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
+		  <div class="fw-bold mb-2" style="color:#fff;">Contact</div>
+		  <a href="mailto:info@inet-ready.com" class="text-decoration-none mb-1" style="color:#fff;">info@inet-ready.com</a>
+		  <a href="https://inet-ready-v2.vercel.app" class="text-decoration-none mb-1" style="color:#fff;">Live Demo</a>
+		</div>
+		<!-- Support Column -->
+		<div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
+		  <div class="fw-bold mb-2" style="color:#fff;">Support</div>
+		  <a href="/terms" class="text-decoration-none mb-1" style="color:#fff;">Terms</a>
+		  <a href="/privacy" class="text-decoration-none mb-1" style="color:#fff;">Privacy</a>
+		  <a href="/data-deletion" class="text-decoration-none mb-1" style="color:#fff;">Data Deletion</a>
+		  <div class="d-flex flex-row align-items-center gap-3 mt-2">
+			<a href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub" style="color:#fff; font-size:1.5rem;"><i class="bi bi-github"></i></a>
+			<a href="mailto:support@inet-ready.com" target="_blank" rel="noopener" title="Email" aria-label="Email" style="color:#fff; font-size:1.5rem;"><i class="bi bi-envelope-fill"></i></a>
+			<a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" title="Website" aria-label="Website" style="color:#fff; font-size:1.5rem;"><i class="bi bi-globe2"></i></a>
+		  </div>
+		</div>
+		<!-- Powered By Column -->
+		<div class="col-12 col-md-3 text-center text-md-end d-flex flex-column align-items-center align-items-md-end">
+		  <div class="mb-2 fw-bold" style="color:#fff; letter-spacing:1px; font-size:1.1rem;">Powered by</div>
 		  <div class="d-flex justify-content-center justify-content-md-end align-items-center gap-2 flex-wrap">
 			<img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
 			<img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
