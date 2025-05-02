@@ -223,7 +223,7 @@ function toggleNavbar() {
 	<div class="hero-content w-100">
 <video src="https://cdnl.iconscout.com/lottie/premium/thumb/avoid-direct-sun-animation-download-in-lottie-json-gif-static-svg-file-formats--cooling-air-herself-fan-waving-heat-stroke-danger-pack-people-animations-9123129.mp4" autoplay loop muted playsinline style="max-width:600px; width:100%; height:auto; border:none; background:transparent; box-shadow:none;"></video>
 	  <h1 style="color:#dd815e; font-size:2.7rem; font-weight:700;">Travel Safer. Travel Smarter. <br> Your Heat-Health Companion</h1>
-<p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto; font-family:'Segoe UI', Arial, sans-serif; line-height:1.5;">INET-READY helps you stay safe and healthy on every journey with real-time heat index alerts, personalized health insights, and secure medical data management—all in one easy-to-use platform.</p>
+<p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto; font-family:'Segoe UI', Arial, sans-serif; line-height:1.5;">INET-READY keeps you safe and healthy on the go with real-time heat alerts, personalized health insights, and secure medical data—all in one easy-to-use platform.</p>
 	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
 	</div>
   </section>
@@ -233,48 +233,48 @@ function toggleNavbar() {
 	<div class="container">
 	  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">How INET-READY Helps You</h2>
 	  <ul class="list-unstyled row g-4 feature-cards justify-content-center mb-5" style="padding:0;">
-		<li class="col-12 col-md-4">
-		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
-			<div class="icon mb-3" style="color:#ff6933; font-size:2.2rem;"><i class="bi bi-thermometer-sun"></i></div>
-			<h5 class="fw-bold mb-2">Real-Time Heat Index</h5>
-			<p>Get up-to-date heat index forecasts for your city, powered by OpenMeteo and geospatial data.</p>
-		  </div>
-		</li>
-		<li class="col-12 col-md-4">
-		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
-			<div class="icon mb-3" style="color:#4285F4; font-size:2.2rem;"><i class="bi bi-heart-pulse"></i></div>
-			<h5 class="fw-bold mb-2">Personalized Health Insights</h5>
-			<p>Receive tailored health risk insights and travel advice based on your medical profile and location.</p>
-		  </div>
-		</li>
-		<li class="col-12 col-md-4">
-		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
-			<div class="icon mb-3" style="color:#dd815e; font-size:2.2rem;"><i class="bi bi-shield-lock"></i></div>
-			<h5 class="fw-bold mb-2">Privacy & Security</h5>
-			<p>Your medical data is encrypted and securely managed—privacy is our top priority.</p>
-		  </div>
-		</li>
-		<li class="col-12 col-md-4">
-		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
-			<div class="icon mb-3" style="color:#1976d2; font-size:2.2rem;"><i class="bi bi-bell-fill"></i></div>
-			<h5 class="fw-bold mb-2">Instant Notifications</h5>
-			<p>Receive timely alerts about heat risks and health reminders wherever you are.</p>
-		  </div>
-		</li>
-		<li class="col-12 col-md-4">
-		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
-			<div class="icon mb-3" style="color:#ff6933; font-size:2.2rem;"><i class="bi bi-geo-alt-fill"></i></div>
-			<h5 class="fw-bold mb-2">Location-Based Advice</h5>
-			<p>Get personalized travel health tips based on your current or planned destinations.</p>
-		  </div>
-		</li>
-		<li class="col-12 col-md-4">
-		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
-			<div class="icon mb-3" style="color:#4285F4; font-size:2.2rem;"><i class="bi bi-cloud-arrow-down"></i></div>
-			<h5 class="fw-bold mb-2">Easy Data Access</h5>
-			<p>Securely store and access your medical info and travel preferences anytime, anywhere.</p>
-		  </div>
-		</li>
+	<li class="col-12 col-md-4">
+	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
+		<div class="feature-icon-topright"><i class="bi bi-thermometer-sun"></i></div>
+		<h5 class="fw-bold mb-2">Real-Time Heat Index</h5>
+		<p>Get up-to-date heat index forecasts for your city, powered by OpenMeteo and geospatial data.</p>
+	  </div>
+	</li>
+	<li class="col-12 col-md-4">
+	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
+		<div class="feature-icon-topright"><i class="bi bi-heart-pulse"></i></div>
+		<h5 class="fw-bold mb-2">Personalized Health Insights</h5>
+		<p>Receive tailored health risk insights and travel advice based on your medical profile and location.</p>
+	  </div>
+	</li>
+	<li class="col-12 col-md-4">
+	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
+		<div class="feature-icon-topright"><i class="bi bi-shield-lock"></i></div>
+		<h5 class="fw-bold mb-2">Privacy & Security</h5>
+		<p>Your medical data is encrypted and securely managed—privacy is our top priority.</p>
+	  </div>
+	</li>
+	<li class="col-12 col-md-4">
+	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
+		<div class="feature-icon-topright"><i class="bi bi-bell-fill"></i></div>
+		<h5 class="fw-bold mb-2">Instant Notifications</h5>
+		<p>Receive timely alerts about heat risks and health reminders wherever you are.</p>
+	  </div>
+	</li>
+	<li class="col-12 col-md-4">
+	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
+		<div class="feature-icon-topright"><i class="bi bi-geo-alt-fill"></i></div>
+		<h5 class="fw-bold mb-2">Location-Based Advice</h5>
+		<p>Get personalized travel health tips based on your current or planned destinations.</p>
+	  </div>
+	</li>
+	<li class="col-12 col-md-4">
+	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
+		<div class="feature-icon-topright"><i class="bi bi-cloud-arrow-down"></i></div>
+		<h5 class="fw-bold mb-2">Easy Data Access</h5>
+		<p>Securely store and access your medical info and travel preferences anytime, anywhere.</p>
+	  </div>
+	</li>
 	  </ul>
 
 	</div>
@@ -405,7 +405,39 @@ function toggleNavbar() {
   </footer>
  </main>
 
-<style>
+  <style>
+  .inet-orange {
+	background: #dd815e !important;
+	color: #fff !important;
+	box-shadow: 0 2px 8px rgba(221,129,94,0.10);
+  }
+  .feature-card h5,
+  .feature-card p {
+	color: #fff !important;
+  }
+  .feature-icon-topright {
+	position: absolute;
+	top: 0.7rem;
+	right: 0.9rem;
+	font-size: 1.6rem;
+	color: #fff;
+	background: rgba(255,255,255,0.08);
+	border-radius: 50%;
+	padding: 0.3rem 0.4rem 0.2rem 0.4rem;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  .feature-icon-topright i {
+	color: #ffb899;
+	font-size: 1.4em;
+	margin: 0;
+	padding: 0;
+	line-height: 1;
+	vertical-align: middle;
+  }
 .tech-logo {
   height: 60px;
   width: auto;
