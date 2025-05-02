@@ -113,10 +113,13 @@
 	  <h1 style="color:#dd815e; font-size:2.7rem; font-weight:700;">Travel Safer. Travel Smarter. <br> Your Heat & Health Companion</h1>
 	  <p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto;">INET-READY helps you stay safe and healthy on every journey with real-time heat index alerts, personalized health insights, and secure medical data management—all in one easy-to-use platform.</p>
 	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
-	  <div class="mt-4 d-flex justify-content-center align-items-center gap-3 flex-wrap">
-		<img src="/app-icon.png" alt="INET-READY App Icon" width="60" height="60" style="border-radius:12px; box-shadow:0 2px 8px #f5c2b7; background:#fff;" />
-		<img src="/open-meteo-icon.png" alt="OpenMeteo" width="60" height="60" style="border-radius:12px; background:#fff;" />
-	  </div>
+	<div class="mt-4 d-flex justify-content-center align-items-center gap-3 flex-wrap">
+	  <img src="/app-icon.png" alt="INET-READY App Icon" width="60" height="60" style="border-radius:12px; box-shadow:0 2px 8px #f5c2b7; background:#fff;" />
+	  <img src="/open-meteo-icon.png" alt="OpenMeteo" width="60" height="60" style="border-radius:12px; background:#fff;" />
+	  <img src="/mapbox-logo.png" alt="Mapbox" width="60" height="60" style="border-radius:12px; background:#fff;" />
+	  <img src="/svelte-logo.png" alt="Svelte" width="48" height="48" style="border-radius:12px; background:#fff;" />
+	  <img src="/firebase-logo.png" alt="Firebase" width="60" height="60" style="border-radius:12px; background:#fff;" />
+	</div>
 	</div>
   </section>
 
@@ -173,7 +176,6 @@
 		  <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
 			<img src="/app-icon.png" alt="INET-READY App Icon" width="48" height="48" style="border-radius:8px; background:#fff;" />
 			<img src="/open-meteo-icon.png" alt="OpenMeteo" width="48" height="48" style="border-radius:8px; background:#fff;" />
-			<span class="fw-bold" style="color:#4285F4;">Powered by SvelteKit, Firebase, Mapbox, OpenMeteo</span>
 		  </div>
 		</div>
 	  </div>
@@ -244,6 +246,10 @@
 	  <div class="d-flex align-items-center gap-2">
 		<img src="/app-icon.png" alt="INET-READY" width="32" height="32" style="border-radius:8px;" />
 		<span class="fw-bold" style="color:#fff;">INET-READY</span>
+		<img src="/firebase-logo.png" alt="Firebase" width="28" height="28" style="border-radius:6px; background:#fff; margin-left:8px;" />
+		<img src="/mapbox-logo.png" alt="Mapbox" width="28" height="28" style="border-radius:6px; background:#fff; margin-left:4px;" />
+		<img src="/open-meteo-icon.png" alt="OpenMeteo" width="28" height="28" style="border-radius:6px; background:#fff; margin-left:4px;" />
+		<img src="/svelte-logo.png" alt="Svelte" width="22" height="22" style="border-radius:6px; background:#fff; margin-left:4px;" />
 	  </div>
 	  <div class="small" style="color:#fff;">&copy; {new Date().getFullYear()} INET-READY. All rights reserved.</div>
 	  <div class="d-flex flex-wrap align-items-center gap-3">
