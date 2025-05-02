@@ -140,14 +140,15 @@
 	  display: block;
 	  width: 0;
 	  height: 2px;
-	  background: #fff;
-	  transition: width 0.2s;
+	background: transparent;
+	transition: width 0.2s, background 0.2s;
 	  position: absolute;
 	  left: 0;
 	  bottom: 0.2em;
 	}
 	.navbar-nav .nav-link:hover::after, .navbar-nav .dropdown-toggle:hover::after {
 	  width: 100%;
+	  background: #fff;
 	}
   }
   @media (max-width: 991.98px) {
