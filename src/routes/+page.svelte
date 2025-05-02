@@ -167,11 +167,19 @@
 	  <div class="row justify-content-center align-items-center mb-4">
 		<div class="col-12 col-md-8">
 		  <div class="mt-4 d-flex justify-content-center align-items-center gap-3 flex-wrap">
-			<img src="/open-meteo-icon.png" alt="OpenMeteo" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-			<img src="/mapbox-icon.png" alt="Mapbox" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-			<img src="/svelte-icon.png" alt="Svelte" width="48" height="48" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-			<img src="/firebase-icon.png" alt="Firebase" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-			<img src="/aptible-icon.png" alt="Aptible" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
+			<img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
+			<img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
+			<img src="/svelte-icon.png" alt="Svelte" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
+			<img src="/firebase-icon.png" alt="Firebase" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
+			<img src="/aptible-icon.png" alt="Aptible" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
+</style>
+<style>
+.tech-logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+</style>
 		  </div>
 		</div>
 	  </div>
@@ -253,5 +261,13 @@
 	  </div>
 	</div>
   </footer>
-</main>
+ </main>
+
+<style>
+.tech-logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+</style>
 
