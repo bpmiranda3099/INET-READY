@@ -632,12 +632,26 @@
         if (uid.length <= 4) return uid[0] + '***' + uid[uid.length - 1];
         return uid.slice(0, 2) + '***' + uid.slice(-2);
     }
+
+    let logoRotating = false;
+    let previousTab = activeTab;
+
+    $: if (activeTab !== previousTab) {
+        previousTab = activeTab;
+        logoRotating = true;
+        setTimeout(() => logoRotating = false, 600); // match animation duration
+    }
 </script>
 
 <div class="dashboard">    <!-- App Bar -->    <div class="app-bar">
         <div class="app-bar-content">
             <div class="app-bar-main">
-                <img src="/app-icon.png" alt="INET-READY" class="app-logo" />
+                <img 
+                    src="/app-icon.png" 
+                    alt="INET-READY" 
+                    class="app-logo {logoRotating ? 'rotating' : ''}" 
+                    on:animationend={() => logoRotating = false}
+                />
                 <div class="app-titles">
                     <small class="app-title">INET-READY</small>
                     <h2 class="section-title">{getSectionTitle(activeTab)}</h2>
@@ -1318,6 +1332,15 @@
         width: 35px;
         height: 35px;
         object-fit: contain;
+        transition: transform 0.2s;
+    }
+    .app-logo.rotating {
+        animation: rotate-logo 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+    @keyframes rotate-logo {
+        0% { transform: rotate(0deg);}
+        80% { transform: rotate(360deg);}
+        100% { transform: rotate(360deg);}
     }
     
     .section-title {
