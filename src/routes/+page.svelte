@@ -143,35 +143,40 @@ function toggleNavbar() {
   <style>
   /* Dropdown on hover for desktop */
   @media (min-width: 992px) {
-	.hover-dropdown:hover > .dropdown-menu {
-	  display: block;
-	  margin-top: 0;
-	}
-	.hover-dropdown > .dropdown-toggle:active {
-	  pointer-events: none;
-	}
-	.navbar-nav .nav-link, .navbar-nav .dropdown-toggle {
-	  position: relative;
-	  transition: color 0.2s;
-	}
-	.navbar-nav .nav-link:hover, .navbar-nav .dropdown-toggle:hover {
-	  text-decoration: none;
-	}
-	.navbar-nav .nav-link::after, .navbar-nav .dropdown-toggle::after {
-	  content: '';
-	  display: block;
-	  width: 0;
-	  height: 2px;
+  .hover-dropdown:hover > .dropdown-menu {
+	display: block;
+	margin-top: 0;
+  }
+  .hover-dropdown > .dropdown-toggle:active {
+	pointer-events: none;
+  }
+  .navbar-nav .nav-link, .navbar-nav .dropdown-toggle {
+	position: relative;
+	transition: color 0.2s;
+  }
+  .navbar-nav .nav-link:hover, .navbar-nav .dropdown-toggle:hover {
+	text-decoration: none;
+  }
+  .navbar-nav .nav-link::after, .navbar-nav .dropdown-toggle::after {
+	content: '';
+	display: block;
+	width: 0;
+	height: 1.5px; /* Thinner underline for all links */
 	background: transparent;
 	transition: width 0.2s, background 0.2s;
-	  position: absolute;
-	  left: 0;
-	  bottom: 0.2em;
-	}
-	.navbar-nav .nav-link:hover::after, .navbar-nav .dropdown-toggle:hover::after {
-	  width: 100%;
-	  background: #fff;
-	}
+	position: absolute;
+	left: 0;
+	bottom: 0.2em;
+  }
+  .navbar-nav .nav-link:hover::after, .navbar-nav .dropdown-toggle:hover::after {
+	width: 100%;
+	background: #fff;
+	height: 1.5px; /* Ensure hover underline is also thin */
+  }
+  /* Hide dropdown arrow for Contact and Support */
+  .navbar-nav .dropdown-toggle::after {
+	display: none !important;
+  }
   }
   @media (max-width: 991.98px) {
 	.navbar-collapse {
