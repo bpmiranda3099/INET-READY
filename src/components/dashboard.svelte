@@ -1129,13 +1129,18 @@
     </div>
       <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
-        <button 
+       <button 
             class="nav-item" 
             class:active={activeTab === 'dashboard'}
             on:click={() => {
-                dashboardRefreshKey += 1; // Always increment to force reload
-                activeTab = 'dashboard';
-                if (showMedicalForm) showMedicalForm = false;
+                if (activeTab !== 'dashboard') {
+                    window.location.reload();
+                }
+            }}
+            on:touchend={() => {
+                if (activeTab !== 'dashboard') {
+                    window.location.reload();
+                }
             }}
         >
             <i class="bi bi-house"></i>
