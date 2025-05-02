@@ -750,7 +750,7 @@
 					bind:this={cardElements[i]}
 				>
 					<div class="card-header">
-						<h6 class="section-title" style="font-style: italic;">LOCATION</h6>
+						<h6 class="section-title location-label">travelling to</h6>
 						<span class="city-name">{card.toCity}</span>
 					</div>
 
@@ -1913,6 +1913,17 @@
 
 .inet-not-ready {
     font-size: 1.3rem; /* Slightly reduced size */
+}
+
+.location-label {
+    font-size: 0.7rem !important;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.1rem;
+    font-weight: 500;
+    opacity: 0.85;
+    line-height: 1.1;
+    padding: 0;
 }
 
 /* Responsive adjustments for smaller screens */
