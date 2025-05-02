@@ -617,6 +617,21 @@
             showNotification("Failed to link Facebook account", "error");
         }
     }
+
+    function redactEmail(email) {
+        if (!email) return '';
+        const [name, domain] = email.split('@');
+        if (name.length <= 2) {
+            return name[0] + '***@' + domain;
+        }
+        return name[0] + '***' + name[name.length - 1] + '@' + domain;
+    }
+
+    function redactUid(uid) {
+        if (!uid) return '';
+        if (uid.length <= 4) return uid[0] + '***' + uid[uid.length - 1];
+        return uid.slice(0, 2) + '***' + uid.slice(-2);
+    }
 </script>
 
 <div class="dashboard">    <!-- App Bar -->    <div class="app-bar">
@@ -768,7 +783,7 @@
                                 </div>
                                 <div class="preference-title">
                                     <span class="setting-label">Email Address</span>
-                                    <span class="setting-description">{user.email}</span>
+                                    <span class="setting-description">{redactEmail(user.email)}</span>
                                 </div>
                             </div>
                             <hr class="preference-divider" />
@@ -779,7 +794,7 @@
                                 </div>
                                 <div class="preference-title">
                                     <span class="setting-label">User ID</span>
-                                    <span class="setting-description">{user.uid}</span>
+                                    <span class="setting-description">{redactUid(user.uid)}</span>
                                 </div>
                             </div>
                             <hr class="preference-divider" />
@@ -843,7 +858,17 @@
                                 </div>
                                 <div class="preference-title">
                                     <span class="setting-label">Account Created</span>
-                                    <span class="setting-description">{user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleString() : 'Unknown'}</span>
+                                    <span class="setting-description">
+                                        {user.metadata?.creationTime
+                                            ? new Date(user.metadata.creationTime).toLocaleString(undefined, {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })
+                                            : 'Unknown'}
+                                    </span>
                                 </div>
                             </div>
                             <hr class="preference-divider" />
@@ -1055,6 +1080,7 @@
                             </div>
                             <hr class="preference-divider" />
                             <!-- Service Worker Status -->
+                            <!--
                             <div class="account-header">
                                 <div class="preference-icon">
                                     <i class="bi bi-hdd-network"></i>
@@ -1073,6 +1099,7 @@
                                     {/if}
                                 </div>
                             </div>
+                            -->
                         </div>
                     </div>
                 </div>
