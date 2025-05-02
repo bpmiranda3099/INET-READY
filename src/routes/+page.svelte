@@ -229,7 +229,7 @@
   </section>
 
   <!-- CONTACT/FOOTER -->
-  <footer id="contact" class="border-0 py-5 mt-5" style="background:#dd815e;">
+  <footer id="contact" class="border-0 py-4 mt-5" style="background:#dd815e;">
 	<div class="container">
 	  <div class="row gy-4">
 		<!-- Brand/Logo Section -->
