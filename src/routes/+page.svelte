@@ -246,7 +246,7 @@ function toggleNavbar() {
 		<div class="carousel-item">
 		  <div class="d-flex justify-content-center">
 			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
-			  <div class="feature-icon-topright"><i class="bi bi-heart-pulse"></i></div>
+			  <div class="feature-icon-topright"><i class="bi bi-heart-pulse-fill"></i></div>
 			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Personalized Health Insights</h5>
 			  <p class="w-100" style="word-break:break-word;">Receive tailored health risk insights and travel advice based on your medical profile and location.</p>
 			</div>
@@ -255,7 +255,7 @@ function toggleNavbar() {
 		<div class="carousel-item">
 		  <div class="d-flex justify-content-center">
 			<div class="feature-card inet-orange d-flex flex-column justify-content-center align-items-center text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem; min-height:320px;">
-			  <div class="feature-icon-topright"><i class="bi bi-shield-lock"></i></div>
+			  <div class="feature-icon-topright"><i class="bi bi-shield-lock-fill"></i></div>
 			  <h5 class="fw-bold mb-2 w-100" style="word-break:break-word;">Privacy & Security</h5>
 			  <p class="w-100" style="word-break:break-word;">Your medical data is encrypted and securely managed—privacy is our top priority.</p>
 			</div>
@@ -445,7 +445,7 @@ function toggleNavbar() {
   filter: brightness(0) invert(1) !important;
 }
 .feature-icon-topright{
-	font-size: 2rem;
+	font-size: 3rem;
 	color: #fff;
 }
 </style>
