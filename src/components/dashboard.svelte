@@ -1313,6 +1313,12 @@
         display: flex;
         flex-direction: column;
     }
+
+    .app-logo {
+        width: 35px;
+        height: 35px;
+        object-fit: contain;
+    }
     
     .section-title {
         font-size: 1.5rem;
