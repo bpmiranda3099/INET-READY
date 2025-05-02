@@ -7,6 +7,28 @@
 	let firestoreConnected = false;
 	let activeAccordion = null;
 
+// For navbar collapse toggle
+let navbarCollapse;
+function toggleNavbar() {
+  if (navbarCollapse) {
+	// Use Bootstrap's Collapse API if available (ignore TS error)
+	// @ts-ignore
+	const collapse = window.bootstrap?.Collapse || window.Collapse;
+	if (typeof collapse === 'function') {
+	  // @ts-ignore
+	  let bsCollapse = collapse.getInstance(navbarCollapse);
+	  if (!bsCollapse) {
+		// @ts-ignore
+		bsCollapse = new collapse(navbarCollapse, {toggle: false});
+	  }
+	  bsCollapse.toggle();
+	} else {
+	  // Fallback: toggle class manually
+	  navbarCollapse.classList.toggle('show');
+	}
+  }
+}
+
 	onMount(async () => {
 		// Register service worker
 		if ('serviceWorker' in navigator) {
@@ -73,15 +95,15 @@
 
   <nav class="navbar navbar-expand-lg shadow-sm py-3" style="background:#dd815e;">
 	<div class="container-fluid">
-	  <a class="navbar-brand d-flex align-items-center gap-2" href="#" style="color:#fff;">
+	  <a class="navbar-brand d-flex align-items-center gap-2" href="/" style="color:#fff;">
 		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px;" />
 		<span class="fw-bold align-items-center d-flex" style="color:#fff; height:45px; line-height:36px; font-size:1.6rem;">INET-READY</span>
 		<span class="d-none d-md-inline align-items-center d-flex" style="color:#fff; height:36px; line-height:36px;"> Your Heat Check for Safe and Informed Travel</span>
 	  </a>
-	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color:#fff;">
+	  <button class="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color:#fff;" on:click={toggleNavbar}>
 		<span class="navbar-toggler-icon" style="filter:invert(1);"></span>
 	  </button>
-	  <div class="collapse navbar-collapse" id="navbarNav">
+	  <div class="collapse navbar-collapse" id="navbarNav" bind:this={navbarCollapse}>
 		<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 		  <li class="nav-item">
 			<a class="nav-link active" aria-current="page" href="#features" style="color:#fff;">Features</a>
@@ -90,10 +112,10 @@
 			<a class="nav-link" href="#about" style="color:#fff;">About</a>
 		  </li>
 		  <!-- Contact Dropdown -->
-		  <li class="nav-item dropdown hover-dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarContactDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;">
-			  Contact
-			</a>
+	  <li class="nav-item dropdown hover-dropdown">
+		<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;" tabindex="0">
+		  Contact
+		</a>
 			<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarContactDropdown">
 			  <li><a class="dropdown-item d-flex align-items-center gap-2" href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener"><i class="bi bi-github"></i> GitHub</a></li>
 			  <li><a class="dropdown-item d-flex align-items-center gap-2" href="mailto:info@inet-ready.com"><i class="bi bi-envelope-fill"></i> Email</a></li>
@@ -101,10 +123,10 @@
 			</ul>
 		  </li>
 		  <!-- Support Dropdown -->
-		  <li class="nav-item dropdown hover-dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarSupportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;">
-			  Support
-			</a>
+	  <li class="nav-item dropdown hover-dropdown">
+		<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;" tabindex="0">
+		  Support
+		</a>
 			<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarSupportDropdown">
 			  <li><a class="dropdown-item" href="/terms">Terms of Service</a></li>
 			  <li><a class="dropdown-item" href="/privacy">Privacy Policy</a></li>
