@@ -119,42 +119,63 @@
 	</div>
   </nav>
   <style>
-	/* Dropdown on hover for desktop */
-	@media (min-width: 992px) {
-	  .hover-dropdown:hover > .dropdown-menu {
-		display: block;
-		margin-top: 0;
-	  }
-	  .hover-dropdown > .dropdown-toggle:active {
-		pointer-events: none;
-	  }
+  /* Dropdown on hover for desktop */
+  @media (min-width: 992px) {
+	.hover-dropdown:hover > .dropdown-menu {
+	  display: block;
+	  margin-top: 0;
 	}
-	@media (max-width: 991.98px) {
-	  .navbar-collapse {
-		background: #dd815e;
-		padding: 1rem 0;
-	  }
-	  .navbar-nav .nav-item {
-		border-bottom: 1px solid rgba(255,255,255,0.08);
-	  }
-	  .navbar-nav .nav-link, .navbar-nav .dropdown-toggle {
-		color: #fff !important;
-		font-size: 1.1rem;
-		padding: 0.75rem 1.5rem;
-	  }
-	  .navbar-nav .dropdown-menu {
-		background: #fff;
-		border-radius: 0 0 8px 8px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-	  }
-	  .navbar-nav .dropdown-item {
-		color: #dd815e;
-		font-weight: 500;
-	  }
-	  .navbar-toggler {
-		border: none;
-	  }
+	.hover-dropdown > .dropdown-toggle:active {
+	  pointer-events: none;
 	}
+	.navbar-nav .nav-link, .navbar-nav .dropdown-toggle {
+	  position: relative;
+	  transition: color 0.2s;
+	}
+	.navbar-nav .nav-link:hover, .navbar-nav .dropdown-toggle:hover {
+	  text-decoration: none;
+	}
+	.navbar-nav .nav-link::after, .navbar-nav .dropdown-toggle::after {
+	  content: '';
+	  display: block;
+	  width: 0;
+	  height: 2px;
+	  background: #fff;
+	  transition: width 0.2s;
+	  position: absolute;
+	  left: 0;
+	  bottom: 0.2em;
+	}
+	.navbar-nav .nav-link:hover::after, .navbar-nav .dropdown-toggle:hover::after {
+	  width: 100%;
+	}
+  }
+  @media (max-width: 991.98px) {
+	.navbar-collapse {
+	  background: #dd815e;
+	  padding: 1rem 0.5rem 0.5rem;
+	}
+	.navbar-nav .nav-item {
+	  border-bottom: 1px solid rgba(255,255,255,0.08);
+	}
+	.navbar-nav .nav-link, .navbar-nav .dropdown-toggle {
+	  color: #fff !important;
+	  font-size: 1.1rem;
+	  padding: 0.75rem 1.5rem;
+	}
+	.navbar-nav .dropdown-menu {
+	  background: #fff;
+	  border-radius: 0 0 8px 8px;
+	  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+	}
+	.navbar-nav .dropdown-item {
+	  color: #dd815e;
+	  font-weight: 500;
+	}
+	.navbar-toggler {
+	  border: none;
+	}
+  }
   </style>
   <style>
 	/* Dropdown on hover for desktop */
