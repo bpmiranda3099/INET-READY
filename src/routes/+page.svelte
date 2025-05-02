@@ -68,151 +68,117 @@
 	}
 </script>
 
-<main class="pb-5">
-	<!-- Hero Section with Bootstrap -->
-	<section class="hero">
-		<div class="hero-content">
-			<div class="container">
-				<div class="row justify-content-center">
-					<div class="col-md-10">
-						<i class="bi bi-sun-fill" style="font-size: 15rem; color: #e0b76b; clip-path: inset(0 0 40% 0);"></i>
-						<h1 class="display-1 fw-bold mb-4" style="font-size: 5rem; margin-top: -9rem;">INET-READY</h1>
-						<p class="subtitle mb-3" style="font-size: 1.25rem;">Your Heat Check for Safe and Informed Travel</p>
-						<button class="cta-button btn btn-lg" style="background-color: #dd815e; font-size: 1rem; color: white; margin-top: 1rem;" on:click={navigateToApp}>GET STARTED</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="text-center mt-4"></div>
-	</section>
+<main>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+	<div class="container-fluid">
+	  <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px;" />
+		<span class="fw-bold" style="color:#dd815e; letter-spacing:1px;">INET-READY</span>
+	  </a>
+	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarNav">
+		<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+		  <li class="nav-item">
+			<a class="nav-link active" aria-current="page" href="#features">Features</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" href="#about">About</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" href="#contact">Contact</a>
+		  </li>
+		  <li class="nav-item">
+			<button class="btn btn-primary ms-2 px-4" style="background:#dd815e; border:none; border-radius:50px; font-weight:600;" on:click={navigateToApp}>Get Started</button>
+		  </li>
+		</ul>
+	  </div>
+	</div>
+  </nav>
 
-	<!-- Features Section Enhanced with Bootstrap -->
-	<section class="features py-5 bg-white">
-		<div class="container">
-			<div class="row text-center mb-5">
-				<div class="col">
-					<h2 class="display-5 fw-bold" style="font-size: 4rem; margin-bottom: 1rem;">Features</h2>
-					<p class="subtitle lead text-black" style="margin: 0rem 0;">Providing a comprehensive solution for monitoring heat related health risks.</p>
-				</div>
-			</div>
-			<div class="row g-4">
-				<div class="col-md-6 col-lg-3">
-					<div class="feature-card h-100 shadow-m rounded text-center" style="background-color: #70a1a8;">
-						<div class="icon mb-3">
-							<i class="bi bi-shield-check" style="font-size: 3rem; color: #e0b76b;"></i>
-						</div>
-						<h3>Health and Safety Guidelines</h3>
-						<p class="subtitle lead text-white" style="margin: 1rem 0;">Provides guidelines for managing heat exposure, including prevention, symptoms, and recommendations for vulnerable groups.</p>
-					</div>
-				</div>
-				<div class="col-md-6 col-lg-3">
-					<div class="feature-card h-100 shadow-m rounded text-center" style="background-color: #70a1a8;">
-						<div class="icon mb-3">
-							<i class="bi bi-bell" style="font-size: 3rem; color: #e0b76b;"></i>
-						</div>
-						<h3>Real-time Alerts</h3>
-						<p class="subtitle lead text-white" style="margin: 1rem 0;">Sends real-time notifications when heat index levels are dangerous.</p>
-					</div>
-				</div>
-				<div class="col-md-6 col-lg-3">
-					<div class="feature-card h-100 shadow-m rounded text-center" style="background-color: #70a1a8;">
-						<div class="icon mb-3">
-							<i class="bi bi-thermometer-sun" style="font-size: 3rem; color: #e0b76b;"></i>
-						</div>
-						<h3>Heat Index Monitoring</h3>
-						<p class="subtitle lead text-white" style="margin: 1rem 0;">Gathers and displays real-time weather data to calculate the heat index, informing users of immediate risks.</p>
-					</div>
-				</div>
-				<div class="col-md-6 col-lg-3">
-					<div class="feature-card h-100 shadow-m rounded text-center" style="background-color: #70a1a8;">
-						<div class="icon mb-3">
-							<i class="bi bi-heart-pulse" style="font-size: 3rem; color: #e0b76b;"></i>
-						</div>
-						<h3>Health Risk Assessment</h3>
-						<p class="subtitle lead text-white" style="margin: 1rem 0;">Assesses health risks based on heat index and user data, providing personalized health advisories.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+  <!-- HERO SECTION -->
+  <section class="hero d-flex align-items-center justify-content-center" style="background:#fff;">
+	<div class="hero-content">
+	  <h1 style="color:#dd815e; font-size:3rem; font-weight:700;">Your Heat Check for Safe and Informed Travel</h1>
+	  <p class="subtitle mb-4" style="font-size:1.3rem;">Stay safe, healthy, and ready for your next adventure with real-time heat index, health insights, and secure medical data.</p>
+	  <button class="cta-button" style="background:#dd815e;" on:click={navigateToApp}>Get Started</button>
+	</div>
+  </section>
 
-	<!-- FAQ Section -->
-	<section class="testimonials py-5">
-		<div class="faq-container">
-			<div class="faq-title">
-				<h2 class="display-5 fw-bold text-center text-white">Frequently Asked Questions</h2>
-				<p class="subtitle lead text-muted">Find answers to common questions about INET-READY</p>
-			</div>
-			
-			<div class="accordion subtitle lead" id="faqAccordion" style="max-width: 600px; margin: 0 auto;">
-				{#each [
-					{ q: "How does INET-READY calculate the heat index?", a: "Using temperature and humidity data with standardized formulas." },
-					{ q: "Can I customize my notification preferences?", a: "Yes, you can set custom thresholds and choose alert types." },
-					{ q: "Is my health data secure?", a: "Yes, all personal health information is encrypted and stored securely." },
-					{ q: "How often is the weather data updated?", a: "Every 15 minutes, with more frequent updates during extreme weather." }
-				] as faqs, i}
-					<div class="accordion-item mb-3 border rounded shadow-sm">
-						<h2 class="accordion-header" id="heading{i}">
-							<button 
-								class="accordion-header border-0 bg-white w-100 text-start py-3 px-4 d-flex justify-content-between align-items-center"
-								type="button" 
-								on:click={() => toggleAccordion(i)}
-							>
-								<span class="fs-5">{faqs.q}</span>
-								<span>{activeAccordion === i ? '−' : '+'}</span>
-							</button>
-						</h2>
-						<div class="accordion-collapse collapse {activeAccordion === i ? 'show' : ''}" id="collapse{i}">
-							<div class="accordion-body p-4 fs-6">
-								{faqs.a}
-							</div>
-						</div>
-					</div>
-				{/each}
-			</div>
+  <!-- FEATURES SECTION -->
+  <section id="features" class="features py-5" style="background:#f5f5f7;">
+	<div class="container">
+	  <h2 class="mb-5" style="color:#dd815e; font-weight:700;">Why Choose INET-READY?</h2>
+	  <div class="row g-4 feature-cards justify-content-center">
+		<div class="col-12 col-md-4">
+		  <div class="feature-card h-100 text-center p-4">
+			<div class="icon mb-3" style="color:#ff6933;"><i class="bi bi-thermometer-sun"></i></div>
+			<h5 class="fw-bold mb-2">Real-Time Heat Index</h5>
+			<p>Get up-to-date heat index forecasts for your city, powered by OpenMeteo and geospatial data.</p>
+		  </div>
 		</div>
-	</section>
+		<div class="col-12 col-md-4">
+		  <div class="feature-card h-100 text-center p-4">
+			<div class="icon mb-3" style="color:#4285F4;"><i class="bi bi-heart-pulse"></i></div>
+			<h5 class="fw-bold mb-2">Personalized Health Insights</h5>
+			<p>Receive tailored health risk insights and travel advice based on your medical profile and location.</p>
+		  </div>
+		</div>
+		<div class="col-12 col-md-4">
+		  <div class="feature-card h-100 text-center p-4">
+			<div class="icon mb-3" style="color:#dd815e;"><i class="bi bi-shield-lock"></i></div>
+			<h5 class="fw-bold mb-2">Privacy & Security</h5>
+			<p>Your medical data is encrypted and securely managed—privacy is our top priority.</p>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </section>
 
-	<!-- Call to Action Section -->
-	<section class="get-started py-5  text-center">
-		<div class="container">
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<h2 class="display-5 fw-bold mb-3">Ready to get started?</h2>
-			<button class="cta-button btn btn-lg" style="background-color: #dd815e; font-size: 1rem;" on:click={navigateToApp}>GO TO DASHBOARD</button>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
+  <!-- ABOUT SECTION -->
+  <section id="about" class="py-5">
+	<div class="container">
+	  <div class="row align-items-center">
+		<div class="col-md-6 mb-4 mb-md-0">
+		  <img src="/app-icon.png" alt="INET-READY Logo" class="img-fluid rounded shadow-sm" style="max-width:180px; background:#fff;" />
 		</div>
-	</section>
-	
-	<!-- Footer Section -->
-	<footer class="footer">
-		<div class="footer-container">
-			<div class="footer-brand" style="margin-top: 1rem; margin-left: 1rem;">
-				<div class="footer-logo" style="font-size: 2rem;">INET-READY</div>
-				<p class="subtitle lead text-muted">Your Heat Check for Safe and Informed Travel</p>
-				<div class="social-links">
-					<a href="https://github.com/bpmiranda3099/inet-ready-v2" class="social-link text-white"><i class="bi bi-github"></i></a>
-				</div>
-			</div>
+		<div class="col-md-6">
+		  <h3 style="color:#dd815e; font-weight:700;">About INET-READY</h3>
+		  <p style="font-size:1.1rem; color:#555;">INET-READY is a modern, privacy-focused platform for travelers. We combine real-time weather, health risk insights, and secure data management to help you travel smarter and safer—whether for business or leisure.</p>
+		  <ul class="list-unstyled mt-3" style="color:#4285F4;">
+			<li><i class="bi bi-check-circle-fill me-2"></i> Trusted by travelers and families</li>
+			<li><i class="bi bi-check-circle-fill me-2"></i> Powered by SvelteKit, Firebase, and Mapbox</li>
+			<li><i class="bi bi-check-circle-fill me-2"></i> No technical skills required—just sign up and go!</li>
+		  </ul>
 		</div>
-		<div class="copyright">
-			&copy; {new Date().getFullYear()} INET-READY. All rights reserved.
-		</div>
-	</footer>
+	  </div>
+	</div>
+  </section>
+
+  <!-- CALL TO ACTION -->
+  <section class="get-started py-5" style="background:#fff;">
+	<div class="container text-center">
+	  <h2 style="color:#dd815e; font-weight:700;">Ready to travel safer?</h2>
+	  <p class="mb-4" style="font-size:1.1rem; color:#555;">Create your free account and get instant access to personalized travel health tools and notifications.</p>
+	  <button class="cta-button" style="background:#dd815e;" on:click={navigateToApp}>Get Started</button>
+	</div>
+  </section>
+
+  <!-- CONTACT/FOOTER -->
+  <footer id="contact" class="bg-white border-top py-4 mt-5">
+	<div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+	  <div class="d-flex align-items-center gap-2">
+		<img src="/app-icon.png" alt="INET-READY" width="32" height="32" style="border-radius:8px;" />
+		<span class="fw-bold" style="color:#dd815e;">INET-READY</span>
+	  </div>
+	  <div class="text-muted small">&copy; {new Date().getFullYear()} INET-READY. All rights reserved.</div>
+	  <div>
+		<a href="https://inet-ready-v2.vercel.app" class="text-decoration-none me-3" style="color:#4285F4;">Live Demo</a>
+		<a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#4285F4;">Contact</a>
+	  </div>
+	</div>
+  </footer>
 </main>
 
-<!-- Add Bootstrap Icons -->
-<svelte:head>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-</svelte:head>
