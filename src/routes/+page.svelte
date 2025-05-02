@@ -230,34 +230,38 @@
   <!-- CONTACT/FOOTER -->
   <footer id="contact" class="border-0 py-5 mt-5" style="background:#dd815e;">
 	<div class="container">
-	  <div class="row align-items-center gy-4">
-		<!-- Brand and Copyright -->
-		<div class="col-12 col-md-4 text-center text-md-start mb-3 mb-md-0">
-		  <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2 mb-md-0">
+	  <div class="row gy-4">
+		<!-- Brand/Logo Section -->
+		<div class="col-12 col-md-4 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
+		  <div class="d-flex align-items-center gap-2 mb-2 mb-md-0">
 			<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; background:transparent;" />
 			<span class="fw-bold" style="color:#fff; font-size:1.2rem;">INET-READY</span>
 		  </div>
 		  <div class="small mt-2 mt-md-3" style="color:#fff;">&copy; {new Date().getFullYear()} INET-READY. All rights reserved.</div>
 		</div>
-		<!-- Footer Links -->
-		<div class="col-12 col-md-4 text-center mb-3 mb-md-0">
-		  <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3">
-			<a href="/terms" class="text-decoration-none" style="color:#fff;">Terms</a>
-			<a href="/privacy" class="text-decoration-none" style="color:#fff;">Privacy</a>
-			<a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
-			<a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
-			<a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
+		<!-- Links Section -->
+		<div class="col-12 col-md-4 text-center mb-3 mb-md-0 d-flex flex-column align-items-center justify-content-center">
+		  <div class="row w-100">
+			<div class="col-6 col-md-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3">
+			  <a href="/terms" class="text-decoration-none" style="color:#fff;">Terms</a>
+			  <a href="/privacy" class="text-decoration-none" style="color:#fff;">Privacy</a>
+			  <a href="/data-deletion" class="text-decoration-none" style="color:#fff;">Data Deletion</a>
+			</div>
+			<div class="col-6 col-md-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 gap-md-3 mt-2 mt-md-3">
+			  <a href="https://inet-ready-v2.vercel.app" class="text-decoration-none" style="color:#fff;">Live Demo</a>
+			  <a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Contact</a>
+			</div>
 		  </div>
 		</div>
-		<!-- Powered By -->
-		<div class="col-12 col-md-4 text-center text-md-end">
+		<!-- Powered By Section -->
+		<div class="col-12 col-md-4 text-center text-md-end d-flex flex-column align-items-center align-items-md-end">
 		  <div class="mb-2" style="color:#fff; font-weight:600; letter-spacing:1px; font-size:1.1rem;">Powered by:</div>
 		  <div class="d-flex justify-content-center justify-content-md-end align-items-center gap-2 flex-wrap">
-<img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-<img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-<img src="/svelte-icon.png" alt="Svelte" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-<img src="/firebase-icon.png" alt="Firebase" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
-<img src="/aptible-icon.png" alt="Aptible" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
+			<img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
+			<img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
+			<img src="/svelte-icon.png" alt="Svelte" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
+			<img src="/firebase-icon.png" alt="Firebase" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
+			<img src="/aptible-icon.png" alt="Aptible" class="tech-logo white-logo" style="border-radius:12px; background:transparent;" height="36" />
 		  </div>
 		</div>
 	  </div>
