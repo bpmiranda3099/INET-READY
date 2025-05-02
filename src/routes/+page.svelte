@@ -232,7 +232,7 @@ function toggleNavbar() {
   <section id="features" class="features py-5" style="background:#f5f5f7;">
 	<div class="container">
 	  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">How INET-READY Helps You</h2>
-	  <ul class="list-unstyled row g-4 feature-cards justify-content-center mb-5" style="padding:0;">
+  <ul class="list-unstyled row feature-cards justify-content-center mb-5" style="padding:0 1rem; gap:1rem;">
 	<li class="col-12 col-md-4">
 	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
 		<div class="feature-icon-topright"><i class="bi bi-thermometer-sun"></i></div>
@@ -431,7 +431,7 @@ function toggleNavbar() {
 	justify-content: center;
   }
   .feature-icon-topright i {
-	color: #ffb899;
+  color: #fff;
 	font-size: 1.1em;
 	margin: 0;
 	padding: 0;
