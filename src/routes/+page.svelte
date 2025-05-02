@@ -230,54 +230,75 @@ function toggleNavbar() {
 
   <!-- BENEFITS/FEATURES SECTION -->
   <section id="features" class="features py-5" style="background:#f5f5f7;">
-	<div class="container">
-	  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">How INET-READY Helps You</h2>
-  <ul class="list-unstyled row feature-cards justify-content-center mb-5" style="padding:0 1rem; gap:1rem;">
-	<li class="col-12 col-md-4">
-	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
-		<div class="feature-icon-topright"><i class="bi bi-thermometer-sun"></i></div>
-		<h5 class="fw-bold mb-2">Real-Time Heat Index</h5>
-		<p>Get up-to-date heat index forecasts for your city, powered by OpenMeteo and geospatial data.</p>
+  <div class="container">
+	<h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">How INET-READY Helps You</h2>
+	<div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+	  <div class="carousel-inner">
+		<div class="carousel-item active">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem;">
+			  <div class="feature-icon-topright"><i class="bi bi-thermometer-sun"></i></div>
+			  <h5 class="fw-bold mb-2">Real-Time Heat Index</h5>
+			  <p>Get up-to-date heat index forecasts for your city, powered by OpenMeteo and geospatial data.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem;">
+			  <div class="feature-icon-topright"><i class="bi bi-heart-pulse"></i></div>
+			  <h5 class="fw-bold mb-2">Personalized Health Insights</h5>
+			  <p>Receive tailored health risk insights and travel advice based on your medical profile and location.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem;">
+			  <div class="feature-icon-topright"><i class="bi bi-shield-lock"></i></div>
+			  <h5 class="fw-bold mb-2">Privacy & Security</h5>
+			  <p>Your medical data is encrypted and securely managed—privacy is our top priority.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem;">
+			  <div class="feature-icon-topright"><i class="bi bi-bell-fill"></i></div>
+			  <h5 class="fw-bold mb-2">Instant Notifications</h5>
+			  <p>Receive timely alerts about heat risks and health reminders wherever you are.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem;">
+			  <div class="feature-icon-topright"><i class="bi bi-geo-alt-fill"></i></div>
+			  <h5 class="fw-bold mb-2">Location-Based Advice</h5>
+			  <p>Get personalized travel health tips based on your current or planned destinations.</p>
+			</div>
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="d-flex justify-content-center">
+			<div class="feature-card inet-orange text-center p-4 rounded position-relative" style="min-width:300px; max-width:400px; width:100%; margin:0 1rem;">
+			  <div class="feature-icon-topright"><i class="bi bi-cloud-arrow-down"></i></div>
+			  <h5 class="fw-bold mb-2">Easy Data Access</h5>
+			  <p>Securely store and access your medical info and travel preferences anytime, anywhere.</p>
+			</div>
+		  </div>
+		</div>
 	  </div>
-	</li>
-	<li class="col-12 col-md-4">
-	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
-		<div class="feature-icon-topright"><i class="bi bi-heart-pulse"></i></div>
-		<h5 class="fw-bold mb-2">Personalized Health Insights</h5>
-		<p>Receive tailored health risk insights and travel advice based on your medical profile and location.</p>
-	  </div>
-	</li>
-	<li class="col-12 col-md-4">
-	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
-		<div class="feature-icon-topright"><i class="bi bi-shield-lock"></i></div>
-		<h5 class="fw-bold mb-2">Privacy & Security</h5>
-		<p>Your medical data is encrypted and securely managed—privacy is our top priority.</p>
-	  </div>
-	</li>
-	<li class="col-12 col-md-4">
-	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
-		<div class="feature-icon-topright"><i class="bi bi-bell-fill"></i></div>
-		<h5 class="fw-bold mb-2">Instant Notifications</h5>
-		<p>Receive timely alerts about heat risks and health reminders wherever you are.</p>
-	  </div>
-	</li>
-	<li class="col-12 col-md-4">
-	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
-		<div class="feature-icon-topright"><i class="bi bi-geo-alt-fill"></i></div>
-		<h5 class="fw-bold mb-2">Location-Based Advice</h5>
-		<p>Get personalized travel health tips based on your current or planned destinations.</p>
-	  </div>
-	</li>
-	<li class="col-12 col-md-4">
-	  <div class="feature-card inet-orange h-100 text-center p-4 rounded position-relative">
-		<div class="feature-icon-topright"><i class="bi bi-cloud-arrow-down"></i></div>
-		<h5 class="fw-bold mb-2">Easy Data Access</h5>
-		<p>Securely store and access your medical info and travel preferences anytime, anywhere.</p>
-	  </div>
-	</li>
-	  </ul>
-
+	  <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
+		<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+		<span class="visually-hidden">Previous</span>
+	  </button>
+	  <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
+		<span class="carousel-control-next-icon" aria-hidden="true"></span>
+		<span class="visually-hidden">Next</span>
+	  </button>
 	</div>
+  </div>
   </section>
   <!-- SOCIAL PROOF SECTION -->
   <section class="py-5" style="background:#fff;">
