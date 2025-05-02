@@ -110,7 +110,7 @@
   <!-- HERO SECTION -->
   <section class="hero d-flex align-items-center justify-content-center text-center px-3" style="background:#fff; min-height:70vh;">
 	<div class="hero-content w-100">
-<video src="https://cdnl.iconscout.com/lottie/premium/thumb/avoid-direct-sun-animation-download-in-lottie-json-gif-static-svg-file-formats--cooling-air-herself-fan-waving-heat-stroke-danger-pack-people-animations-9123129.mp4" autoplay loop muted playsinline style="max-width:400px; width:100%; height:auto; margin-bottom:1.5rem; border-radius:18px; box-shadow:0 4px 24px rgba(0,0,0,0.07); background:transparent; border:none;"></video>
+<video src="https://cdnl.iconscout.com/lottie/premium/thumb/avoid-direct-sun-animation-download-in-lottie-json-gif-static-svg-file-formats--cooling-air-herself-fan-waving-heat-stroke-danger-pack-people-animations-9123129.mp4" autoplay loop muted playsinline style="max-width:400px; width:100%; height:auto; margin-bottom:1.5rem; border:none; background:transparent; box-shadow:none;"></video>
 	  <h1 style="color:#dd815e; font-size:2.7rem; font-weight:700;">Travel Safer. Travel Smarter. <br> Your Heat & Health Companion</h1>
 	  <p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto;">INET-READY helps you stay safe and healthy on every journey with real-time heat index alerts, personalized health insights, and secure medical data management—all in one easy-to-use platform.</p>
 	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
@@ -212,7 +212,7 @@
 		  </ul>
 		</div>
 		<div class="col-md-6 mb-4 mb-md-0 text-center">
-		  <img src="/app-icon.png" alt="INET-READY Logo" class="img-fluid rounded shadow-sm" style="max-width:180px; background:#fff;" />
+<img src="/app-icon.png" alt="INET-READY Logo" class="img-fluid rounded" style="max-width:180px; background:transparent; border:none;" />
 		</div>
 	  </div>
 	</div>
