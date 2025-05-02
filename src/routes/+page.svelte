@@ -170,7 +170,7 @@
 			<img src="/open-meteo-icon.png" alt="OpenMeteo" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 			<img src="/mapbox-icon.png" alt="Mapbox" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 			<img src="/svelte-icon.png" alt="Svelte" width="48" height="48" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-			<img src="/firebase-icon.png" alt="Firebase" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
+<img src="/firebase-icon.png" alt="Firebase" width="60" height="60" style="border-radius:12px; background:transparent;" />
 			<img src="/aptible-icon.png" alt="Aptible" width="60" height="60" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 		  </div>
 		</div>
@@ -240,12 +240,8 @@
   <footer id="contact" class="border-0 py-4 mt-5" style="background:#dd815e;">
 	<div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
 	  <div class="d-flex align-items-center gap-2">
-		<img src="/app-icon.png" alt="INET-READY" width="32" height="32" style="border-radius:8px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
+		<img src="/app-icon.png" alt="INET-READY" width="32" height="32" style="border-radius:8px; background:transparent;" />
 		<span class="fw-bold" style="color:#fff;">INET-READY</span>
-		<img src="/firebase-logo.png" alt="Firebase" width="28" height="28" style="border-radius:6px; background:transparent; margin-left:8px; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-		<img src="/mapbox-logo.png" alt="Mapbox" width="28" height="28" style="border-radius:6px; background:transparent; margin-left:4px; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-		<img src="/open-meteo-icon.png" alt="OpenMeteo" width="28" height="28" style="border-radius:6px; background:transparent; margin-left:4px; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
-		<img src="/svelte-logo.png" alt="Svelte" width="22" height="22" style="border-radius:6px; background:transparent; margin-left:4px; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" />
 	  </div>
 	  <div class="small" style="color:#fff;">&copy; {new Date().getFullYear()} INET-READY. All rights reserved.</div>
 	  <div class="d-flex flex-wrap align-items-center gap-3">
