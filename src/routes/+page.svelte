@@ -419,12 +419,12 @@ function toggleNavbar() {
 	position: absolute;
 	top: 0.7rem;
 	right: 0.9rem;
-	font-size: 1.6rem;
-	color: #fff;
-	background: rgba(255,255,255,0.08);
-	border-radius: 50%;
-	padding: 0.3rem 0.4rem 0.2rem 0.4rem;
-	box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+	font-size: 1.1rem;
+	color: #ffb899;
+	background: none;
+	border-radius: 0;
+	padding: 0;
+	box-shadow: none;
 	z-index: 2;
 	display: flex;
 	align-items: center;
@@ -432,7 +432,7 @@ function toggleNavbar() {
   }
   .feature-icon-topright i {
 	color: #ffb899;
-	font-size: 1.4em;
+	font-size: 1.1em;
 	margin: 0;
 	padding: 0;
 	line-height: 1;
