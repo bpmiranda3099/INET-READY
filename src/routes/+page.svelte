@@ -74,7 +74,7 @@
 	<div class="container-fluid">
 	  <a class="navbar-brand d-flex align-items-center gap-2" href="#" style="color:#fff;">
 		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px;" />
-		<span class="fw-bold align-items-center d-flex" style="color:#fff; height:45px; line-height:36px; font-size:1.2rem;">INET-READY</span>
+		<span class="fw-bold align-items-center d-flex" style="color:#fff; height:45px; line-height:36px; font-size:1.6rem;">INET-READY</span>
 		<span class="d-none d-md-inline align-items-center d-flex" style="color:#fff; height:36px; line-height:36px;"> Your Heat Check for Safe and Informed Travel</span>
 	  </a>
 	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border-color:#fff;">
@@ -236,7 +236,7 @@
 		<div class="col-12 col-md-4 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
 		  <div class="d-flex align-items-center gap-2 mb-2 mb-md-0">
 		<img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; background:transparent;" />
-		<span class="fw-bold align-items-center d-flex" style="color:#fff; font-size:1.2rem; height:45px; line-height:36px;">INET-READY</span>
+		<span class="fw-bold align-items-center d-flex" style="color:#fff; font-size:1.6rem; height:45px; line-height:36px;">INET-READY</span>
 		  </div>
 		  <div class="col-12 d-flex flex-row align-items-center gap-3 mt-3">
 			  <!-- Social Links -->
