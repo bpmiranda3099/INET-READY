@@ -108,38 +108,101 @@
   </nav>
 
   <!-- HERO SECTION -->
-  <section class="hero d-flex align-items-center justify-content-center text-center px-3" style="background:#fff; min-height:60vh;">
+  <section class="hero d-flex align-items-center justify-content-center text-center px-3" style="background:#fff; min-height:70vh;">
 	<div class="hero-content w-100">
-	  <h1 style="color:#dd815e; font-size:2.5rem; font-weight:700;">Your Heat Check for Safe and Informed Travel</h1>
-	  <p class="subtitle mb-4" style="font-size:1.2rem; color:#555;">Stay safe, healthy, and ready for your next adventure with real-time heat index, health insights, and secure medical data.</p>
-	  <button class="btn px-4 py-2" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:600; font-size:1.1rem;" on:click={navigateToApp}>Get Started</button>
+	  <h1 style="color:#dd815e; font-size:2.7rem; font-weight:700;">Travel Safer. Travel Smarter. <br> Your Heat & Health Companion</h1>
+	  <p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto;">INET-READY helps you stay safe and healthy on every journey with real-time heat index alerts, personalized health insights, and secure medical data management—all in one easy-to-use platform.</p>
+	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
+	  <div class="mt-4 d-flex justify-content-center align-items-center gap-3 flex-wrap">
+		<img src="/app-icon.png" alt="INET-READY App Icon" width="60" height="60" style="border-radius:12px; box-shadow:0 2px 8px #f5c2b7; background:#fff;" />
+		<img src="/open-meteo-icon.png" alt="OpenMeteo" width="60" height="60" style="border-radius:12px; background:#fff;" />
+	  </div>
 	</div>
   </section>
 
-  <!-- FEATURES SECTION -->
+  <!-- BENEFITS/FEATURES SECTION -->
   <section id="features" class="features py-5" style="background:#f5f5f7;">
 	<div class="container">
-	  <h2 class="mb-5 text-center" style="color:#dd815e; font-weight:700;">Why Choose INET-READY?</h2>
-	  <div class="row g-4 feature-cards justify-content-center">
-		<div class="col-12 col-md-4">
+	  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">How INET-READY Helps You</h2>
+	  <ul class="list-unstyled row g-4 feature-cards justify-content-center mb-5" style="padding:0;">
+		<li class="col-12 col-md-4">
 		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
 			<div class="icon mb-3" style="color:#ff6933; font-size:2.2rem;"><i class="bi bi-thermometer-sun"></i></div>
 			<h5 class="fw-bold mb-2">Real-Time Heat Index</h5>
 			<p>Get up-to-date heat index forecasts for your city, powered by OpenMeteo and geospatial data.</p>
 		  </div>
-		</div>
-		<div class="col-12 col-md-4">
+		</li>
+		<li class="col-12 col-md-4">
 		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
 			<div class="icon mb-3" style="color:#4285F4; font-size:2.2rem;"><i class="bi bi-heart-pulse"></i></div>
 			<h5 class="fw-bold mb-2">Personalized Health Insights</h5>
 			<p>Receive tailored health risk insights and travel advice based on your medical profile and location.</p>
 		  </div>
-		</div>
-		<div class="col-12 col-md-4">
+		</li>
+		<li class="col-12 col-md-4">
 		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
 			<div class="icon mb-3" style="color:#dd815e; font-size:2.2rem;"><i class="bi bi-shield-lock"></i></div>
 			<h5 class="fw-bold mb-2">Privacy & Security</h5>
 			<p>Your medical data is encrypted and securely managed—privacy is our top priority.</p>
+		  </div>
+		</li>
+		<li class="col-12 col-md-4">
+		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
+			<div class="icon mb-3" style="color:#1976d2; font-size:2.2rem;"><i class="bi bi-bell-fill"></i></div>
+			<h5 class="fw-bold mb-2">Instant Notifications</h5>
+			<p>Receive timely alerts about heat risks and health reminders wherever you are.</p>
+		  </div>
+		</li>
+		<li class="col-12 col-md-4">
+		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
+			<div class="icon mb-3" style="color:#ff6933; font-size:2.2rem;"><i class="bi bi-geo-alt-fill"></i></div>
+			<h5 class="fw-bold mb-2">Location-Based Advice</h5>
+			<p>Get personalized travel health tips based on your current or planned destinations.</p>
+		  </div>
+		</li>
+		<li class="col-12 col-md-4">
+		  <div class="feature-card h-100 text-center p-4 bg-white rounded shadow-sm">
+			<div class="icon mb-3" style="color:#4285F4; font-size:2.2rem;"><i class="bi bi-cloud-arrow-down"></i></div>
+			<h5 class="fw-bold mb-2">Easy Data Access</h5>
+			<p>Securely store and access your medical info and travel preferences anytime, anywhere.</p>
+		  </div>
+		</li>
+	  </ul>
+	  <div class="row justify-content-center align-items-center mb-4">
+		<div class="col-12 col-md-8">
+		  <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
+			<img src="/app-icon.png" alt="INET-READY App Icon" width="48" height="48" style="border-radius:8px; background:#fff;" />
+			<img src="/open-meteo-icon.png" alt="OpenMeteo" width="48" height="48" style="border-radius:8px; background:#fff;" />
+			<span class="fw-bold" style="color:#4285F4;">Powered by SvelteKit, Firebase, Mapbox, OpenMeteo</span>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </section>
+  <!-- SOCIAL PROOF SECTION -->
+  <section class="py-5" style="background:#fff;">
+	<div class="container">
+	  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">What Our Users Say</h2>
+	  <div class="row justify-content-center g-4">
+		<div class="col-12 col-md-4">
+		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
+			<div class="mb-3"><i class="bi bi-chat-quote" style="font-size:2rem; color:#4285F4;"></i></div>
+			<blockquote class="blockquote mb-2" style="font-size:1.1rem;">“INET-READY gave me peace of mind on my trip. The heat alerts and health tips were spot on!”</blockquote>
+			<footer class="blockquote-footer">Anna, Frequent Traveler</footer>
+		  </div>
+		</div>
+		<div class="col-12 col-md-4">
+		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
+			<div class="mb-3"><i class="bi bi-chat-quote" style="font-size:2rem; color:#dd815e;"></i></div>
+			<blockquote class="blockquote mb-2" style="font-size:1.1rem;">“I love how easy it is to keep my medical info safe and get travel advice for my family.”</blockquote>
+			<footer class="blockquote-footer">Miguel, Parent</footer>
+		  </div>
+		</div>
+		<div class="col-12 col-md-4">
+		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
+			<div class="mb-3"><i class="bi bi-chat-quote" style="font-size:2rem; color:#ff6933;"></i></div>
+			<blockquote class="blockquote mb-2" style="font-size:1.1rem;">“The notifications are super helpful. I feel safer traveling for work now.”</blockquote>
+			<footer class="blockquote-footer">Sarah, Business Traveler</footer>
 		  </div>
 		</div>
 	  </div>
@@ -155,7 +218,7 @@
 		  <p style="font-size:1.1rem; color:#555;">INET-READY is a modern, privacy-focused platform for travelers. We combine real-time weather, health risk insights, and secure data management to help you travel smarter and safer—whether for business or leisure.</p>
 		  <ul class="list-unstyled mt-3" style="color:#4285F4;">
 			<li><i class="bi bi-check-circle-fill me-2"></i> Trusted by travelers and families</li>
-			<li><i class="bi bi-check-circle-fill me-2"></i> Powered by SvelteKit, Firebase, and Mapbox</li>
+			<li><i class="bi bi-check-circle-fill me-2"></i> Powered by SvelteKit, Firebase, Mapbox, and OpenMeteo</li>
 			<li><i class="bi bi-check-circle-fill me-2"></i> No technical skills required—just sign up and go!</li>
 		  </ul>
 		</div>
@@ -171,7 +234,7 @@
 	<div class="container text-center">
 	  <h2 style="color:#dd815e; font-weight:700;">Ready to travel safer?</h2>
 	  <p class="mb-4" style="font-size:1.1rem; color:#555;">Create your free account and get instant access to personalized travel health tools and notifications.</p>
-	  <button class="btn px-4 py-2" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:600; font-size:1.1rem;" on:click={navigateToApp}>Get Started</button>
+	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
 	</div>
   </section>
 
