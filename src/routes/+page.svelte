@@ -248,11 +248,11 @@
 	  </div>
 	  <div class="d-flex align-items-center mb-2" style="gap:0.5rem;">
 		<i class="bi bi-envelope-fill" style="color:#fff; font-size:1.3rem;"></i>
-		<a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">info@inet-ready.com</a>
+		<a href="mailto:info@inet-ready.com" class="text-decoration-none" style="color:#fff;">Email</a>
 	  </div>
 	  <div class="d-flex align-items-center mb-2" style="gap:0.5rem;">
-		<i class="bi bi-globe2" style="color:#fff; font-size:1.3rem;"></i>
-		<a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" class="text-decoration-none" style="color:#fff;">Website</a>
+		<i class="bi bi-phone" style="color:#fff; font-size:1.3rem;"></i>
+		<a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" class="text-decoration-none" style="color:#fff;">App</a>
 	  </div>
 	</div>
 		<!-- Support Column -->
@@ -261,11 +261,6 @@
 		  <a href="/terms" class="text-decoration-none mb-1" style="color:#fff;">Terms</a>
 		  <a href="/privacy" class="text-decoration-none mb-1" style="color:#fff;">Privacy</a>
 		  <a href="/data-deletion" class="text-decoration-none mb-1" style="color:#fff;">Data Deletion</a>
-		  <div class="d-flex flex-row align-items-center gap-3 mt-2">
-			<a href="https://github.com/bpmiranda3099/inet-ready-v2" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub" style="color:#fff; font-size:1.5rem;"><i class="bi bi-github"></i></a>
-			<a href="mailto:support@inet-ready.com" target="_blank" rel="noopener" title="Email" aria-label="Email" style="color:#fff; font-size:1.5rem;"><i class="bi bi-envelope-fill"></i></a>
-			<a href="https://inet-ready-v2.vercel.app" target="_blank" rel="noopener" title="Website" aria-label="Website" style="color:#fff; font-size:1.5rem;"><i class="bi bi-globe2"></i></a>
-		  </div>
 		</div>
 	<!-- Powered By Column -->
   <div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
