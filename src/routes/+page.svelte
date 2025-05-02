@@ -90,15 +90,14 @@
 	  <li class="nav-item">
 		<a class="nav-link" href="#contact" style="color:#fff;">Contact</a>
 	  </li>
-	  <li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" href="#" id="navbarLegalDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#fff;">
-		  Legal
-		</a>
-		<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarLegalDropdown">
-		  <li><a class="dropdown-item" href="/terms">Terms of Service</a></li>
-		  <li><a class="dropdown-item" href="/privacy">Privacy Policy</a></li>
-		  <li><a class="dropdown-item" href="/data-deletion">Data Deletion</a></li>
-		</ul>
+	  <li class="nav-item">
+		<a class="nav-link" href="/terms" style="color:#fff;">Terms of Service</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="/privacy" style="color:#fff;">Privacy Policy</a>
+	  </li>
+	  <li class="nav-item">
+		<a class="nav-link" href="/data-deletion" style="color:#fff;">Data Deletion</a>
 	  </li>
 	  <li class="nav-item">
 		<button class="btn ms-2 px-4" style="background:#fff; color:#dd815e; border:none; border-radius:50px; font-weight:600;" on:click={navigateToApp}>Get Started</button>
