@@ -227,19 +227,6 @@
 	</div>
   </section>
 
-  <!-- POWERED BY SECTION -->
-  <section class="powered-by py-4" style="background:#f5f5f7;">
-	<div class="container text-center">
-	  <div class="mb-2" style="color:#888; font-weight:600; letter-spacing:1px; font-size:1.1rem;">Powered by:</div>
-	  <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
-		<img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
-		<img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
-		<img src="/svelte-icon.png" alt="Svelte" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
-		<img src="/firebase-icon.png" alt="Firebase" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
-		<img src="/aptible-icon.png" alt="Aptible" class="tech-logo" style="border-radius:12px; background:transparent; filter:brightness(0) saturate(100%) invert(41%) sepia(97%) saturate(749%) hue-rotate(-13deg) brightness(1.05);" height="60" />
-	  </div>
-	</div>
-  </section>
   <!-- CONTACT/FOOTER -->
   <footer id="contact" class="border-0 py-5 mt-5" style="background:#dd815e;">
 	<div class="container">
