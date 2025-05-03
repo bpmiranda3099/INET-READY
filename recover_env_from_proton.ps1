@@ -23,7 +23,7 @@ foreach ($line in $remoteFilesRaw) {
     if ($line -match "^(\.env_[^;]+\.gpg);([0-9\-: ]+)$") {
         $file = $matches[1]
         $time = Get-Date $matches[2]
-        if ($latestTime -eq $null -or $time -gt $latestTime) {
+        if ($null -eq $latestTime -or $time -gt $latestTime) {
             $latestTime = $time
             $latestFile = $file
         }
@@ -44,12 +44,15 @@ if (-not (Test-Path $gpgFile)) {
     exit 1
 }
 
-Write-Host "Decrypting $gpgFile to .env ..."
-gpg --output .env --decrypt $gpgFile
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Successfully decrypted to .env"
-}
-else {
-    Write-Error "GPG decryption failed. Check your GPG key and passphrase."
+# Show file size for diagnostics
+$gpgInfo = Get-Item $gpgFile
+Write-Host "Downloaded file size: $($gpgInfo.Length) bytes"
+if ($gpgInfo.Length -eq 0) {
+    Write-Error "Downloaded GPG file is empty. Aborting."
     exit 1
 }
+
+
+# Decryption is now handled by a separate script (decrypt_latest_env.ps1)
+Write-Host "Download complete. To decrypt, run:"
+Write-Host "    .\\decrypt_latest_env.ps1"
