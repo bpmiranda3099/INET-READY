@@ -578,7 +578,7 @@
 	}
 
 	/**
-	 * Handle keyboard navigation
+	 * Handle keyboard navigations
 	 */
 	function handleKeydown(event) {
 		if (event.key === 'ArrowRight') {
