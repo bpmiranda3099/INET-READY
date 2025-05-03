@@ -16,6 +16,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create .env from secret
+        if: ${{ secrets.ENV_CONTENTS != '' }}
+        run: echo "${{ secrets.ENV_CONTENTS }}" > .env
+
       - name: Install rclone
         run: |
           curl https://rclone.org/install.sh | sudo bash
