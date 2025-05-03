@@ -17,7 +17,7 @@ Write-LogMessage "Starting update_env_secret.ps1 script."
 if (Test-Path $envFile) {
     Write-LogMessage ".env file found. Reading contents."
     $envContent = Get-Content $envFile -Raw
-    $envHash = [System.BitConverter]::ToString((Get-FileHash $envFile -Algorithm SHA256).Hash).Replace("-", "")
+    $envHash = (Get-FileHash $envFile -Algorithm SHA256).Hash
     Write-LogMessage "Current .env SHA256: $envHash"
     try {
         gh secret set $secretName --body "$envContent"
