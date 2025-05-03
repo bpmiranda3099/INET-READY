@@ -38,7 +38,6 @@ if (-not $latestFile) {
 Write-Host "Downloading $latestFile from Proton Drive..."
 rclone copy "protondrive:backups/inet-ready/$latestFile" $gpgDir --progress
 
-# Decrypt the file to .env in the repo root
 $gpgFile = Join-Path $gpgDir $latestFile
 if (-not (Test-Path $gpgFile)) {
     Write-Error "Failed to download $latestFile."
