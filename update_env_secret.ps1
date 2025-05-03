@@ -20,28 +20,15 @@ if (Test-Path $envFile) {
     $envHash = (Get-FileHash $envFile -Algorithm SHA256).Hash
     Write-LogMessage "Current .env SHA256: $envHash"
     try {
-        # Dynamically determine the current repo in 'owner/name' format
-        try {
-            $repoInfo = gh repo view --json name, owner, url | ConvertFrom-Json
-            $repo = "{0}/{1}" -f $repoInfo.owner.login, $repoInfo.name
-            $repoUrl = $repoInfo.url
+        # Read GITHUB_REPO from .env
+        $githubRepo = ($envContent -split "`n" | Where-Object { $_ -match '^GITHUB_REPO=' }) -replace '^GITHUB_REPO=', '' | Select-Object -First 1
+        if (-not $githubRepo) {
+            throw "GITHUB_REPO is not set in .env"
         }
-        catch {
-            # Fallback: use git remote
-            $remoteUrl = git config --get remote.origin.url
-            if ($remoteUrl -match "github.com[:/](.+/.+?)(\\.git)?$") {
-                $repo = $Matches[1]
-                $repoUrl = $remoteUrl
-            }
-            else {
-                throw "Could not determine GitHub repository name."
-            }
-        }
+        Write-LogMessage "Using GITHUB_REPO from .env: $githubRepo"
         $ghAuth = gh auth status 2>&1
         Write-LogMessage "gh auth status: $ghAuth"
-        Write-LogMessage "repo: $repo"
-        Write-LogMessage "repoUrl: $repoUrl"
-        $ghOutput = gh secret set $secretName --repo $repo --body "$envContent" 2>&1
+        $ghOutput = gh secret set $secretName --repo $githubRepo --body "$envContent" 2>&1
         Write-Host $ghOutput
         Write-LogMessage "gh output: $ghOutput"
         Write-Host "✅ Updated GitHub secret '$secretName' with latest .env contents."
