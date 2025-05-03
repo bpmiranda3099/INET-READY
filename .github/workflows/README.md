@@ -36,11 +36,24 @@ INET-READY uses GitHub Actions for automated data collection, processing, notifi
 - Credentials are decoded and used only during workflow runs.
 -
 - #### Backing up .env to Proton Drive
-  - Sensitive files like `.env` are excluded from git but can be securely backed up to Proton Drive using [rclone](https://rclone.org/protondrive/).
-  - Use the provided `backup_env_to_proton.ps1` script to encrypt and upload `.env` to Proton Drive. This can be run manually or integrated into CI/CD.
-  - Proton Drive remote must be configured in rclone (see project root script for details).
-  - The GitHub Actions workflow `.github/workflows/backup_env_to_proton.yml` automates this process and runs on every push.
-    - Requires repository secrets `RCLONE_CONFIG` (your rclone.conf contents) and `GPG_PASSPHRASE` (your encryption passphrase).
+
+  - Sensitive files like `.env` are excluded from git but are securely backed up to Proton Drive using [rclone](https://rclone.org/protondrive/) and GPG encryption.
+  - The `backup_env_to_proton.ps1` script in the project root encrypts `.env` with AES256 (via GPG) and uploads it to Proton Drive using rclone. You can run this script manually on Windows/PowerShell, or integrate it into your workflow.
+  - Before using, ensure your Proton Drive remote is configured in your `rclone.conf` (see the script for details). The script will prompt for a GPG passphrase if not provided.
+  - For CI/CD and automated backups, the GitHub Actions workflow `.github/workflows/backup_env_to_proton.yml` automates this process on every push (and can be triggered manually).
+
+    - The workflow restores `.env` from the `ENV_CONTENTS` secret, encrypts it with the passphrase from `GPG_PASSPHRASE`, and uploads it to Proton Drive using the `RCLONE_CONFIG` secret for authentication.
+
+    - To keep the backup up-to-date, use the `update_env_secret.ps1` script to update the `ENV_CONTENTS` secret with your latest `.env` before every push (requires GitHub CLI and permissions). You can run this script manually, or set it up as a pre-push git hook by creating a `.git/hooks/pre-push` file that calls this script.
+    - **Example pre-push hook for Windows/PowerShell:**
+      ```sh
+      # .git/hooks/pre-push (make sure this file is executable and uses the correct shell)
+      powershell.exe -ExecutionPolicy Bypass -File "$PWD/update_env_secret.ps1"
+      ```
+    - **Required repository secrets:**
+      - `ENV_CONTENTS`: The contents of your `.env` file (automatically updated by the script or hook)
+      - `RCLONE_CONFIG`: Your rclone configuration for Proton Drive
+      - `GPG_PASSPHRASE`: The passphrase for GPG encryption
 
 ### Manual Triggers
 
