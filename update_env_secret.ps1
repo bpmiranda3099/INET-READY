@@ -1,35 +1,10 @@
-# update_env_secret.ps1
-# Updates the ENV_CONTENTS GitHub secret with the current .env file content
+#!/bin/sh
+# Git pre-push hook to update ENV_CONTENTS secret with latest .env (cross-platform)
 
-$envFile = ".env"
-$secretName = "ENV_CONTENTS"
-$logFile = "update_env_secret.log"
+# Get the repo root (two levels up from hooks dir)
+REPO_ROOT="$(cd \"$(dirname \"$0\")/../..\" && pwd)"
 
-function Write-LogMessage {
-    param([string]$message)
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    $entry = "[$timestamp] $message"
-    Add-Content -Path $logFile -Value $entry
-}
+# Call the PowerShell script using Windows PowerShell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$REPO_ROOT/update_env_secret.ps1"
 
-Write-LogMessage "Starting update_env_secret.ps1 script."
-
-if (Test-Path $envFile) {
-    Write-LogMessage ".env file found. Reading contents."
-    $envContent = Get-Content $envFile -Raw
-    $envHash = [System.BitConverter]::ToString((Get-FileHash $envFile -Algorithm SHA256).Hash).Replace("-", "")
-    Write-LogMessage "Current .env SHA256: $envHash"
-    try {
-        gh secret set $secretName --body "$envContent"
-        Write-Host "✅ Updated GitHub secret '$secretName' with latest .env contents."
-        Write-LogMessage "✅ Updated GitHub secret '$secretName' with latest .env contents. SHA256: $envHash"
-    }
-    catch {
-        Write-Host "❌ Failed to update GitHub secret. $_"
-        Write-LogMessage "❌ Failed to update GitHub secret. $_"
-    }
-}
-else {
-    Write-Host "❌ .env file not found."
-    Write-LogMessage "❌ .env file not found."
-}
+exit $?
