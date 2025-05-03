@@ -1,6 +1,10 @@
 <script>
 	import { onMount, onDestroy, afterUpdate } from 'svelte';
-	import { availableCities, getCityData, getHeatIndexPredictions } from '$lib/services/weather-data-service';
+	import {
+		availableCities,
+		getCityData,
+		getHeatIndexPredictions
+	} from '$lib/services/weather-data-service';
 	import { spring } from 'svelte/motion';
 	import MapBackground from './map-background.svelte';
 	import { getCityCoords } from '$lib/services/city-coords';
@@ -9,7 +13,11 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import Chatbot from './chatbot.svelte';
 	import { getCurrentUser } from '.././lib/firebase/auth';
-	import { saveTravelCardsCache, loadTravelCardsCache, clearTravelCardsCache } from '$lib/services/travel-cards-cache';
+	import {
+		saveTravelCardsCache,
+		loadTravelCardsCache,
+		clearTravelCardsCache
+	} from '$lib/services/travel-cards-cache';
 	import { fade, scale } from 'svelte/transition';
 
 	export let homeCity;
@@ -63,10 +71,10 @@
 		const cached = loadTravelCardsCache();
 		if (cached && cached.cards && cached.cards.length > 0) {
 			// Restore cards and state
-			travelCards = cached.cards.map(card => ({
+			travelCards = cached.cards.map((card) => ({
 				...card,
 				rowOne: { tiles: [], inetReady: { advice: card.advice, status: card.status } },
-				rowThree: { tiles: [ { pois: card.pois }, { hospitalPOI: card.hospital } ] },
+				rowThree: { tiles: [{ pois: card.pois }, { hospitalPOI: card.hospital }] },
 				timestamp: card.timestamp
 			}));
 			totalCards = travelCards.length;
@@ -184,11 +192,16 @@
 	}
 
 	// Helper: fetch nearby POIs using Mapbox Search Box API
-	async function fetchNearbyPOIs({ lat, lng, types = ["cafe", "mall", "establishment", "restaurant", "shopping", "museum"], limit = 10 }) {
+	async function fetchNearbyPOIs({
+		lat,
+		lng,
+		types = ['cafe', 'mall', 'establishment', 'restaurant', 'shopping', 'museum'],
+		limit = 10
+	}) {
 		// @ts-ignore
-		const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN; 
+		const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 		if (!accessToken) {
-			console.warn("Mapbox access token missing");
+			console.warn('Mapbox access token missing');
 			return [];
 		}
 
@@ -198,7 +211,7 @@
 			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=${limit}&access_token=${accessToken}`;
 			try {
 				const res = await fetch(url);
-				if (!res.ok) throw new Error("Mapbox API error");
+				if (!res.ok) throw new Error('Mapbox API error');
 				const data = await res.json();
 				const features = data.features || [];
 				for (const f of features) {
@@ -252,7 +265,10 @@
 			origin = `${pins[0].lat},${pins[0].lng}`;
 		}
 		// Build waypoints (all but last POI)
-		const waypoints = pins.slice(0, -1).map(poi => `${poi.lat},${poi.lng}`).join('|');
+		const waypoints = pins
+			.slice(0, -1)
+			.map((poi) => `${poi.lat},${poi.lng}`)
+			.join('|');
 		// Destination is last POI
 		const destination = pins[pins.length - 1];
 		const destStr = `${destination.lat},${destination.lng}`;
@@ -269,25 +285,38 @@
 		// @ts-ignore
 		const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 		if (!accessToken) {
-			console.warn("Mapbox access token missing");
+			console.warn('Mapbox access token missing');
 			return null;
 		}
 		// Only use emergency-related categories
-		const types = ["emergency", "hospital", "emergency_room", "urgent_care"]; // prioritize emergency care
+		const types = ['emergency', 'hospital', 'emergency_room', 'urgent_care']; // prioritize emergency care
 		for (const category of types) {
 			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=8&access_token=${accessToken}`;
 			try {
 				const res = await fetch(url);
-				if (!res.ok) throw new Error("Mapbox API error");
+				if (!res.ok) throw new Error('Mapbox API error');
 				const data = await res.json();
 				const features = data.features || [];
 				for (const f of features) {
 					const props = f.properties || {};
 					const phone = props.metadata?.phone || props.phone || null;
-					const categories = (props.poi_category_ids || []).map(x => x.toLowerCase());
+					const categories = (props.poi_category_ids || []).map((x) => x.toLowerCase());
 					// Filter out maternity, dental, physical therapy, and non-emergency clinics
-					const isEmergency = categories.some(cat => ["emergency", "hospital", "urgent_care", "emergency_room"].includes(cat.toLowerCase()));
-					const isNonEmergency = categories.some(cat => ["maternity", "obstetric", "dental", "physical_therapy", "rehabilitation", "optical", "spa", "wellness"].includes(cat.toLowerCase()));
+					const isEmergency = categories.some((cat) =>
+						['emergency', 'hospital', 'urgent_care', 'emergency_room'].includes(cat.toLowerCase())
+					);
+					const isNonEmergency = categories.some((cat) =>
+						[
+							'maternity',
+							'obstetric',
+							'dental',
+							'physical_therapy',
+							'rehabilitation',
+							'optical',
+							'spa',
+							'wellness'
+						].includes(cat.toLowerCase())
+					);
 					if (phone && isEmergency && !isNonEmergency) {
 						return {
 							title: props.name || '',
@@ -348,25 +377,27 @@
 			}
 
 			// Generate basic travel cards for each city pair
-			travelCards = await Promise.all(destinations.map(async (toCity) => {
-				// For each card, get POIs near the destination city (or refCoords)
-				let coords = getCityCoords(toCity) || refCoords;
-				let pois = [];
-				let hospitalPOI = null;
-				if (coords) {
-					pois = await fetchNearbyPOIs({ lat: coords.lat, lng: coords.lng });
-					hospitalPOI = await fetchNearestHospitalPOI({ lat: coords.lat, lng: coords.lng });
-				}
-				return {
-					fromCity,
-					toCity,
-					timestamp: new Date(),
-					rowOne: { tiles: [] },
-					rowTwo: { tiles: [] },
-					rowThree: { tiles: [{ pois }, { hospitalPOI }] }, // POIs in col 1, hospital in col 2
-					rowFour: { tiles: [] }
-				};
-			}));
+			travelCards = await Promise.all(
+				destinations.map(async (toCity) => {
+					// For each card, get POIs near the destination city (or refCoords)
+					let coords = getCityCoords(toCity) || refCoords;
+					let pois = [];
+					let hospitalPOI = null;
+					if (coords) {
+						pois = await fetchNearbyPOIs({ lat: coords.lat, lng: coords.lng });
+						hospitalPOI = await fetchNearestHospitalPOI({ lat: coords.lat, lng: coords.lng });
+					}
+					return {
+						fromCity,
+						toCity,
+						timestamp: new Date(),
+						rowOne: { tiles: [] },
+						rowTwo: { tiles: [] },
+						rowThree: { tiles: [{ pois }, { hospitalPOI }] }, // POIs in col 1, hospital in col 2
+						rowFour: { tiles: [] }
+					};
+				})
+			);
 
 			totalCards = travelCards.length;
 
@@ -413,54 +444,62 @@
 			console.error('Failed to fetch heat index predictions:', e);
 		}
 
-		await Promise.all(cards.map(async (card) => {
-			const cityData = await getCityData(card.toCity);
-			if (!cityData) {
-				console.warn(`No data found for city: ${card.toCity}`);
-				return;
-			}
-
-			const heatIndex = cityData?.heat_index ?? null;
-			const temperature = cityData?.temperature ?? null;
-			const humidity = cityData?.humidity ?? null;
-
-			// Find tomorrow's predicted heat index for this city
-			let tomorrowPrediction = null;
-			if (predictions.cities && predictions.cities[card.toCity]) {
-				const forecastArr = predictions.cities[card.toCity];
-				if (Array.isArray(forecastArr)) {
-					const tomorrow = new Date();
-					tomorrow.setDate(tomorrow.getDate() + 1);
-					const tomorrowStr = tomorrow.toISOString().slice(0, 10);
-					tomorrowPrediction = forecastArr.find(f => f.date === tomorrowStr)?.heat_index ?? null;
+		await Promise.all(
+			cards.map(async (card) => {
+				const cityData = await getCityData(card.toCity);
+				if (!cityData) {
+					console.warn(`No data found for city: ${card.toCity}`);
+					return;
 				}
-			}
 
-			card.rowOne.tiles = [{
-				heatIndex,
-				tomorrowPrediction,
-				color: getHeatIndexColor(heatIndex),
-				temperature,
-				humidity
-			}];
+				const heatIndex = cityData?.heat_index ?? null;
+				const temperature = cityData?.temperature ?? null;
+				const humidity = cityData?.humidity ?? null;
 
-			// Pass already-fetched data to getInetReadyStatus
-			const inetResult = await getInetReadyStatus({
-				fromCity: card.fromCity,
-				toCity: card.toCity,
-				medicalData,
-				fromHeat: cityData?.heat_index, // Pass heat index directly
-				toHeat: heatIndex // Use fetched heat index
-			});
+				// Find tomorrow's predicted heat index for this city
+				let tomorrowPrediction = null;
+				if (predictions.cities && predictions.cities[card.toCity]) {
+					const forecastArr = predictions.cities[card.toCity];
+					if (Array.isArray(forecastArr)) {
+						const tomorrow = new Date();
+						tomorrow.setDate(tomorrow.getDate() + 1);
+						const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+						tomorrowPrediction =
+							forecastArr.find((f) => f.date === tomorrowStr)?.heat_index ?? null;
+					}
+				}
 
-			card.rowOne.inetReady = inetResult;
-		}));
+				card.rowOne.tiles = [
+					{
+						heatIndex,
+						tomorrowPrediction,
+						color: getHeatIndexColor(heatIndex),
+						temperature,
+						humidity
+					}
+				];
+
+				// Pass already-fetched data to getInetReadyStatus
+				const inetResult = await getInetReadyStatus({
+					fromCity: card.fromCity,
+					toCity: card.toCity,
+					medicalData,
+					fromHeat: cityData?.heat_index, // Pass heat index directly
+					toHeat: heatIndex // Use fetched heat index
+				});
+
+				card.rowOne.inetReady = inetResult;
+			})
+		);
 	}
 
 	// Helper: split advice into lines for display (handles periods and newlines)
 	function getAdviceLines(advice) {
 		if (!advice) return [];
-		return advice.split(/\n|(?<=\.) /g).map(l => l.trim()).filter(Boolean);
+		return advice
+			.split(/\n|(?<=\.) /g)
+			.map((l) => l.trim())
+			.filter(Boolean);
 	}
 
 	// Group advice lines by type: warning, positive, info, disclaimer
@@ -468,11 +507,23 @@
 		const lines = getAdviceLines(advice);
 		const groups = { warning: [], positive: [], info: [], disclaimer: [] };
 		for (const line of lines) {
-			if (/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i.test(line)) {
+			if (
+				/informational purposes only|constitute medical advice|consult a licensed healthcare professional|privacy is protected/i.test(
+					line
+				)
+			) {
 				groups.disclaimer.push(line);
-			} else if (/(avoid|warning|caution|not recommended|danger|risk|emergency|heat|hydrate|stay indoors|limit outdoor|seek shade|call|hospital|clinic|doctor|medical|urgent|critical|alert|high|postpone|unsafe|worsen|dehydration|heat stress|dizziness|headache|nausea|rest often|extra care|combined risk|especially unsafe|monitor for signs|travel is highly discouraged|very long trip|conditions worsen|traveling a long distance in dangerous heat|postpone your trip|no heat index data|data unavailable|general heat safety precautions|higher risk|sensitive to heat|children are more sensitive|older adults are at higher risk|extra caution|monitor for changes)/i.test(line)) {
+			} else if (
+				/(avoid|warning|caution|not recommended|danger|risk|emergency|heat|hydrate|stay indoors|limit outdoor|seek shade|call|hospital|clinic|doctor|medical|urgent|critical|alert|high|postpone|unsafe|worsen|dehydration|heat stress|dizziness|headache|nausea|rest often|extra care|combined risk|especially unsafe|monitor for signs|travel is highly discouraged|very long trip|conditions worsen|traveling a long distance in dangerous heat|postpone your trip|no heat index data|data unavailable|general heat safety precautions|higher risk|sensitive to heat|children are more sensitive|older adults are at higher risk|extra caution|monitor for changes)/i.test(
+					line
+				)
+			) {
 				groups.warning.push(line);
-			} else if (/(recommended|safe|good|ok|fine|clear|all set|ready|approved|can travel|proceed|no issues|no problem|healthy|normal|low risk|go ahead|suitable|safest|best|ideal|excellent|positive|yes|enjoy|ideal conditions|favorable|minimal risk|quick trip|conditions are good|weather is favorable|enjoy your day|it will be cooler|conditions improve|short trip|minimal travel risk|very short trip|minimal risk|conditions are good|ideal conditions for a quick trip)/i.test(line)) {
+			} else if (
+				/(recommended|safe|good|ok|fine|clear|all set|ready|approved|can travel|proceed|no issues|no problem|healthy|normal|low risk|go ahead|suitable|safest|best|ideal|excellent|positive|yes|enjoy|ideal conditions|favorable|minimal risk|quick trip|conditions are good|weather is favorable|enjoy your day|it will be cooler|conditions improve|short trip|minimal travel risk|very short trip|minimal risk|conditions are good|ideal conditions for a quick trip)/i.test(
+					line
+				)
+			) {
 				groups.positive.push(line);
 			} else {
 				groups.info.push(line);
@@ -692,7 +743,7 @@
 	// Helper: get coordinates for a city name
 	function getCoordsForCity(cityName) {
 		const coords = getCityCoords(cityName);
-		if (!coords) return [120.9842, 14.5995]; // fallback: Manila
+		if (!coords) return [120.9842, 14.5995]; // fallback
 		return [coords.lng, coords.lat];
 	}
 </script>
@@ -705,22 +756,22 @@
 />
 
 {#if loading && !cardsGenerated}
-    <!-- Lottie spinner replacement -->
-    <script
-      src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
-      type="module"
-    ></script>
-    <div class="loading-container">
-        <dotlottie-player
-            src="https://lottie.host/84d1af88-e233-4f6c-9e90-215e78a342cd/irsoJpd7tz.lottie"
-            background="transparent"
-            speed="1"
-            style="width: 300px; height: 300px"
-            loop
-            autoplay
-        ></dotlottie-player>
-        <p>Loading travel cards...</p>
-    </div>
+	<!-- Lottie spinner replacement -->
+	<script
+		src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
+		type="module"
+	></script>
+	<div class="loading-container">
+		<dotlottie-player
+			src="https://lottie.host/84d1af88-e233-4f6c-9e90-215e78a342cd/irsoJpd7tz.lottie"
+			background="transparent"
+			speed="1"
+			style="width: 300px; height: 300px"
+			loop
+			autoplay
+		></dotlottie-player>
+		<p>Loading travel cards...</p>
+	</div>
 {:else if error}
 	<div class="error-container">
 		<p class="error-message">{error}</p>
@@ -764,63 +815,92 @@
 									</div>
 								{:else}
 									{#each card.rowOne.tiles.slice(0, 1) as tile}
-                                        <div class="tile weather-tile" style="background-color: {tile.color}; color: white; padding: 0.8rem; align-items: stretch;">
-                                            <div class="weather-left">
-                                                <div class="temp-main">
-                                                    {tile.heatIndex !== null ? tile.heatIndex.toFixed(0) + '°C' : 'N/A'}
-                                                    <span class="temp-label">HI</span>
-                                                </div>
-                                                {#if tile.tomorrowPrediction !== undefined}
-                                                    <div class="temp-tomorrow">
-                                                        Tomorrow {tile.tomorrowPrediction !== null ? tile.tomorrowPrediction.toFixed(0) + '°' : 'N/A'}
-                                                    </div>
-                                                {/if}
-                                            </div>
-                                            <div class="weather-right">
-                                                <div class="weather-detail">
-                                                    <i class="bi bi-thermometer-half weather-detail-icon" title="Temperature"></i>
-                                                    <span>{tile.temperature !== null && tile.temperature !== undefined ? tile.temperature.toFixed(0) + '°' : 'N/A'}</span>
-                                                </div>
-                                                <div class="weather-detail">
-                                                    <i class="bi bi-droplet-half weather-detail-icon" title="Humidity"></i>
-                                                    <span>{tile.humidity !== null && tile.humidity !== undefined ? tile.humidity.toFixed(0) + '%' : 'N/A'}</span>
-                                                </div>
-                                                <div class="weather-detail">
-                                                    <i class="bi bi-speedometer2 weather-detail-icon" title="Intensity"></i>
-                                                    <span class="intensity-level">
-                                                        {tile.heatIndex !== null
-                                                            ? (tile.heatIndex < 27 ? 'Safe' : tile.heatIndex < 33 ? 'Caution' : tile.heatIndex < 42 ? 'Warning' : tile.heatIndex < 52 ? 'Danger' : 'Extreme')
-                                                            : 'N/A'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {/each}
+										<div
+											class="tile weather-tile"
+											style="background-color: {tile.color}; color: white; padding: 0.8rem; align-items: stretch;"
+										>
+											<div class="weather-left">
+												<div class="temp-main">
+													{tile.heatIndex !== null ? tile.heatIndex.toFixed(0) + '°C' : 'N/A'}
+													<span class="temp-label">HI</span>
+												</div>
+												{#if tile.tomorrowPrediction !== undefined}
+													<div class="temp-tomorrow">
+														Tomorrow {tile.tomorrowPrediction !== null
+															? tile.tomorrowPrediction.toFixed(0) + '°'
+															: 'N/A'}
+													</div>
+												{/if}
+											</div>
+											<div class="weather-right">
+												<div class="weather-detail">
+													<i class="bi bi-thermometer-half weather-detail-icon" title="Temperature"
+													></i>
+													<span
+														>{tile.temperature !== null && tile.temperature !== undefined
+															? tile.temperature.toFixed(0) + '°'
+															: 'N/A'}</span
+													>
+												</div>
+												<div class="weather-detail">
+													<i class="bi bi-droplet-half weather-detail-icon" title="Humidity"></i>
+													<span
+														>{tile.humidity !== null && tile.humidity !== undefined
+															? tile.humidity.toFixed(0) + '%'
+															: 'N/A'}</span
+													>
+												</div>
+												<div class="weather-detail">
+													<i class="bi bi-speedometer2 weather-detail-icon" title="Intensity"></i>
+													<span class="intensity-level">
+														{tile.heatIndex !== null
+															? tile.heatIndex < 27
+																? 'Safe'
+																: tile.heatIndex < 33
+																	? 'Caution'
+																	: tile.heatIndex < 42
+																		? 'Warning'
+																		: tile.heatIndex < 52
+																			? 'Danger'
+																			: 'Extreme'
+															: 'N/A'}
+													</span>
+												</div>
+											</div>
+										</div>
+									{/each}
 								{/if}
 							</div>
 							<div class="tile-column column-40">
-                                {#if !card.rowOne.inetReady}
-                                    <div class="tile empty-tile">
-                                        <div class="tile-placeholder">INET-READY Status</div>
-                                    </div>
-                                {:else}
-                                    <div class="tile inet-status-tile" style="background-color: {card.rowOne.inetReady.status === 'INET-READY' ? '#43a047' : '#e53935'}; color: white; position: relative; flex-direction: column; justify-content: center; align-items: center; padding: 0.5rem;">
-                                        {#if card.rowOne.inetReady.status === 'INET-READY'}
-                                            <i class="bi bi-check-circle-fill inet-status-icon"></i>
-                                            <span class="inet-status-text inet-ready">INET-READY</span>
-                                        {:else}
-                                            <i class="bi bi-exclamation-triangle-fill inet-status-icon"></i>
-                                            <span class="inet-status-text not-ready-label">NOT</span>
-                                            <span class="inet-status-text inet-not-ready">INET-READY</span>
-                                        {/if}
-                                    </div>
-                                {/if}
-                            </div>
+								{#if !card.rowOne.inetReady}
+									<div class="tile empty-tile">
+										<div class="tile-placeholder">INET-READY Status</div>
+									</div>
+								{:else}
+									<div
+										class="tile inet-status-tile"
+										style="background-color: {card.rowOne.inetReady.status === 'INET-READY'
+											? '#43a047'
+											: '#e53935'}; color: white; position: relative; flex-direction: column; justify-content: center; align-items: center; padding: 0.5rem;"
+									>
+										{#if card.rowOne.inetReady.status === 'INET-READY'}
+											<i class="bi bi-check-circle-fill inet-status-icon"></i>
+											<span class="inet-status-text inet-ready">INET-READY</span>
+										{:else}
+											<i class="bi bi-exclamation-triangle-fill inet-status-icon"></i>
+											<span class="inet-status-text not-ready-label">NOT</span>
+											<span class="inet-status-text inet-not-ready">INET-READY</span>
+										{/if}
+									</div>
+								{/if}
+							</div>
 						</div>
 
 						<!-- Row 2: Advice -->
-						<div class="tile advice-tile"
-							class:no-scroll={adviceScrollableRef && adviceScrollableRef.scrollHeight <= adviceScrollableRef.clientHeight}
+						<div
+							class="tile advice-tile"
+							class:no-scroll={adviceScrollableRef &&
+								adviceScrollableRef.scrollHeight <= adviceScrollableRef.clientHeight}
 						>
 							{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
 								{@const grouped = groupAdviceLines(card.rowOne.inetReady.advice)}
@@ -828,13 +908,17 @@
 									<div class="advice-list">
 										{#each grouped.warning as adviceLine (adviceLine)}
 											<div class="advice-item">
-												<i class="bi bi-exclamation-triangle-fill advice-icon warning" style="color: #fff;"></i>
+												<i
+													class="bi bi-exclamation-triangle-fill advice-icon warning"
+													style="color: #fff;"
+												></i>
 												<span class="advice-text">{adviceLine}</span>
 											</div>
 										{/each}
 										{#each grouped.positive as adviceLine (adviceLine)}
 											<div class="advice-item">
-												<i class="bi bi-check-circle-fill advice-icon positive" style="color: #fff;"></i>
+												<i class="bi bi-check-circle-fill advice-icon positive" style="color: #fff;"
+												></i>
 												<span class="advice-text">{adviceLine}</span>
 											</div>
 										{/each}
@@ -866,10 +950,13 @@
 										<div class="tile-placeholder">Nearby Cafes, Malls, Establishments</div>
 									</div>
 								{:else}
-									<div class="tile poi-tile-purple"
-									  on:click={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
-									  on:touchend={(e) => openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
-									  style="cursor: pointer;"
+									<div
+										class="tile poi-tile-purple"
+										on:click={(e) =>
+											openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
+										on:touchend={(e) =>
+											openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
+										style="cursor: pointer;"
 									>
 										<div class="poi-tile-title center">Nearby Cool Indoor Areas</div>
 										<ul class="poi-list">
@@ -894,24 +981,37 @@
 							<div class="tile-column column-40">
 								<div class="tile-row sub-row">
 									{#if card.rowThree.tiles[1] && card.rowThree.tiles[1].hospitalPOI && card.rowThree.tiles[1].hospitalPOI.phone}
-										<div class="tile hospital-tile"
-										  on:click={() => {
-											const phone = card.rowThree.tiles[1].hospitalPOI.phone;
-											if (phone) window.open(`tel:${phone.replace(/[^\d+]/g, '')}`);
-										  }}
-										  on:touchend={() => {
-											const phone = card.rowThree.tiles[1].hospitalPOI.phone;
-											if (phone) window.open(`tel:${phone.replace(/[^\d+]/g, '')}`);
-										  }}
+										<div
+											class="tile hospital-tile"
+											on:click={() => {
+												const phone = card.rowThree.tiles[1].hospitalPOI.phone;
+												if (phone) window.open(`tel:${phone.replace(/[^\d+]/g, '')}`);
+											}}
+											on:touchend={() => {
+												const phone = card.rowThree.tiles[1].hospitalPOI.phone;
+												if (phone) window.open(`tel:${phone.replace(/[^\d+]/g, '')}`);
+											}}
 										>
 											{#if showHospitalPhoneIcon[i]}
-												<div class="hospital-phone-anim" in:fade={{duration:300}} out:fade={{duration:300}}>
+												<div
+													class="hospital-phone-anim"
+													in:fade={{ duration: 300 }}
+													out:fade={{ duration: 300 }}
+												>
 													<i class="bi bi-telephone-fill hospital-anim-icon"></i>
 												</div>
 											{:else}
-												<div class="hospital-tile-content" in:fade={{duration:300}} out:fade={{duration:300}}>
-													<span class="hospital-tile-title">{card.rowThree.tiles[1].hospitalPOI.title}</span>
-													<span class="hospital-tile-phone">{card.rowThree.tiles[1].hospitalPOI.phone}</span>
+												<div
+													class="hospital-tile-content"
+													in:fade={{ duration: 300 }}
+													out:fade={{ duration: 300 }}
+												>
+													<span class="hospital-tile-title"
+														>{card.rowThree.tiles[1].hospitalPOI.title}</span
+													>
+													<span class="hospital-tile-phone"
+														>{card.rowThree.tiles[1].hospitalPOI.phone}</span
+													>
 												</div>
 											{/if}
 										</div>
@@ -921,16 +1021,22 @@
 										</div>
 									{/if}
 								</div>
-								
+
 								<div class="tile-row sub-row">
 									<!-- AI Chatbot Button -->
-									<button class="tile ai-chat-btn safetrip-ai-btn"
+									<button
+										class="tile ai-chat-btn safetrip-ai-btn"
 										style="background: #2ecc71; color: #fff; font-weight: 600; font-size: 1rem; width: 100%; height: 100%; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 1rem;"
-										on:click={() => showChatbot = true}
+										on:click={() => (showChatbot = true)}
 										aria-label="Ask AI Chatbot"
 									>
-										<i class="bi bi-robot safetrip-ai-icon" style="position: absolute; top: 0.1rem; right: 0.6rem; font-size: 1.5rem; color: #fff;"></i>
-										<span style="font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em;">SafeTrip AI</span>
+										<i
+											class="bi bi-robot safetrip-ai-icon"
+											style="position: absolute; top: 0.1rem; right: 0.6rem; font-size: 1.5rem; color: #fff;"
+										></i>
+										<span style="font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em;"
+											>SafeTrip AI</span
+										>
 									</button>
 								</div>
 							</div>
@@ -971,7 +1077,7 @@
 
 {#if showChatbot}
 	<div class="chatbot-overlay">
-		<Chatbot onClose={() => showChatbot = false} {user} />
+		<Chatbot onClose={() => (showChatbot = false)} {user} />
 	</div>
 {/if}
 
@@ -1060,26 +1166,26 @@
 		-webkit-user-select: none;
 		-webkit-touch-callout: none;
 	}
-	    .travel-card {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-        transition:
-            transform 0.05s ease-out,
-            opacity 0.2s ease;
-        will-change: transform, opacity;
-        touch-action: pan-y;
-        max-width: 100%; /* Ensure card doesn't exceed container width */
-        height: 100%; /* Make the card take up the full height of its parent */
-        display: flex;
-        flex-direction: column;
-		max-height: calc(100vh - 250px); 
-    }
+	.travel-card {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		background: white;
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+		transition:
+			transform 0.05s ease-out,
+			opacity 0.2s ease;
+		will-change: transform, opacity;
+		touch-action: pan-y;
+		max-width: 100%; /* Ensure card doesn't exceed container width */
+		height: 100%; /* Make the card take up the full height of its parent */
+		display: flex;
+		flex-direction: column;
+		max-height: calc(100vh - 250px);
+	}
 
 	.travel-card.active {
 		z-index: 10;
@@ -1234,13 +1340,13 @@
         color: white;
     } */
 	.card-body {
-        padding: 0.5rem;
-        display: flex;
-        flex-direction: column;
-        flex: 1; /* Take up remaining space */
-        overflow-y: auto; /* Add scroll if content overflows */
+		padding: 0.5rem;
+		display: flex;
+		flex-direction: column;
+		flex: 1; /* Take up remaining space */
+		overflow-y: auto; /* Add scroll if content overflows */
 		max-height: calc(100vh - 250px);
-    }
+	}
 
 	/* Windows 10 Start Menu style tile rows */
 	.tile-row {
@@ -1436,7 +1542,7 @@
 	/* Card footer styling */
 	.card-footer {
 		background: #fafafa;
-		padding: .5rem .75rem;
+		padding: 0.5rem 0.75rem;
 		border-top: 1px solid #f0f0f0;
 		font-size: 0.8rem;
 		color: #777;
@@ -1743,7 +1849,7 @@
 		color: #2ecc71;
 		border: none;
 		border-radius: 12px;
-		box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 		transition: all 0.2s;
 		display: flex;
 		align-items: center;
@@ -1761,553 +1867,573 @@
 		left: 0;
 		width: 100vw;
 		height: 100vh;
-		background: rgba(0,0,0,0.25);
+		background: rgba(0, 0, 0, 0.25);
 		z-index: 2000;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 	.tile.weather-tile {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Align items vertically */
-    gap: 0.8rem;
-    padding: 0.8rem; /* Add padding */
-    flex-wrap: nowrap; /* Prevent wrapping for main sections */
-    overflow: hidden; /* Prevent content spilling out */
-}
+		display: flex;
+		justify-content: space-between;
+		align-items: center; /* Align items vertically */
+		gap: 0.8rem;
+		padding: 0.8rem; /* Add padding */
+		flex-wrap: nowrap; /* Prevent wrapping for main sections */
+		overflow: hidden; /* Prevent content spilling out */
+	}
 
-.weather-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Center content vertically */
-    text-align: center;
-    flex-shrink: 0; /* Prevent shrinking */
-}
+	.weather-left {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center; /* Center content vertically */
+		text-align: center;
+		flex-shrink: 0; /* Prevent shrinking */
+	}
 
-.weather-icon {
-    font-size: 2.5rem; /* Adjust icon size */
-    margin-bottom: 0.2rem;
-    opacity: 0.9;
-}
+	.weather-icon {
+		font-size: 2.5rem; /* Adjust icon size */
+		margin-bottom: 0.2rem;
+		opacity: 0.9;
+	}
 
-.temp-main {
-    font-size: 2.4rem; /* Larger temperature */
-    font-weight: bold;
-    line-height: 1;
-    display: flex;
-    align-items: baseline; /* Align °C and HI */
-    white-space: nowrap; /* Prevent main temp from wrapping */
-}
+	.temp-main {
+		font-size: 2.4rem; /* Larger temperature */
+		font-weight: bold;
+		line-height: 1;
+		display: flex;
+		align-items: baseline; /* Align °C and HI */
+		white-space: nowrap; /* Prevent main temp from wrapping */
+	}
 
-.temp-label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-left: 0.2rem;
-    opacity: 0.8;
-}
+	.temp-label {
+		font-size: 0.9rem;
+		font-weight: 500;
+		margin-left: 0.2rem;
+		opacity: 0.8;
+	}
 
-.temp-tomorrow {
-    font-size: 0.9rem;
-    margin-top: 0.1rem;
-    opacity: 0.9;
-    white-space: nowrap; /* Prevent tomorrow's temp from wrapping */
-}
+	.temp-tomorrow {
+		font-size: 0.9rem;
+		margin-top: 0.1rem;
+		opacity: 0.9;
+		white-space: nowrap; /* Prevent tomorrow's temp from wrapping */
+	}
 
-.weather-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center content vertically */
-    flex-grow: 1; /* Allow this section to take remaining space */
-    font-size: 0.9rem;
-    gap: 0.3rem; /* Space between detail lines */
-    min-width: 0; /* Allow shrinking if needed */
-    overflow: hidden; /* Hide overflow within this section */
-}
-.weather-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center content vertically */
-    flex-grow: 1; /* Allow this section to take remaining space */
-    font-size: 0.9rem;
-    gap: 0.3rem; /* Space between detail lines */
-    min-width: 0; /* Allow shrinking if needed */
-    overflow: hidden; /* Hide overflow within this section */
-}
+	.weather-right {
+		display: flex;
+		flex-direction: column;
+		justify-content: center; /* Center content vertically */
+		flex-grow: 1; /* Allow this section to take remaining space */
+		font-size: 0.9rem;
+		gap: 0.3rem; /* Space between detail lines */
+		min-width: 0; /* Allow shrinking if needed */
+		overflow: hidden; /* Hide overflow within this section */
+	}
+	.weather-right {
+		display: flex;
+		flex-direction: column;
+		justify-content: center; /* Center content vertically */
+		flex-grow: 1; /* Allow this section to take remaining space */
+		font-size: 0.9rem;
+		gap: 0.3rem; /* Space between detail lines */
+		min-width: 0; /* Allow shrinking if needed */
+		overflow: hidden; /* Hide overflow within this section */
+	}
 
-.weather-detail {
-    display: flex;
-    /* Removed justify-content: space-between; - let icon/span spacing handle it */
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
-    padding-bottom: 0.2rem;
-    white-space: nowrap; /* Prevent wrapping within a detail line initially */
-    overflow: hidden; /* Hide overflow */
-}
+	.weather-detail {
+		display: flex;
+		/* Removed justify-content: space-between; - let icon/span spacing handle it */
+		align-items: center;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
+		padding-bottom: 0.2rem;
+		white-space: nowrap; /* Prevent wrapping within a detail line initially */
+		overflow: hidden; /* Hide overflow */
+	}
 
-.weather-detail:last-child {
-    border-bottom: none; /* Remove border from last item */
-}
+	.weather-detail:last-child {
+		border-bottom: none; /* Remove border from last item */
+	}
 
-.weather-detail-icon {
-    font-size: 1rem; /* Adjust icon size as needed */
-    opacity: 0.85;
-    margin-right: 0.5rem; /* Space between icon and value */
-    flex-shrink: 0; /* Prevent icon from shrinking */
-    width: 1.2em; /* Give icon a consistent width */
-    text-align: center;
-}
+	.weather-detail-icon {
+		font-size: 1rem; /* Adjust icon size as needed */
+		opacity: 0.85;
+		margin-right: 0.5rem; /* Space between icon and value */
+		flex-shrink: 0; /* Prevent icon from shrinking */
+		width: 1.2em; /* Give icon a consistent width */
+		text-align: center;
+	}
 
-.weather-detail span {
-    /* Styles previously applied to :last-child now apply to the only span */
-    font-weight: 500;
-    text-align: right;
-    flex-grow: 1; /* Allow span to take remaining space */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Add ellipsis if text still overflows */
-    display: block; /* Ensure spans behave predictably */
-}
+	.weather-detail span {
+		/* Styles previously applied to :last-child now apply to the only span */
+		font-weight: 500;
+		text-align: right;
+		flex-grow: 1; /* Allow span to take remaining space */
+		overflow: hidden; /* Hide overflow */
+		text-overflow: ellipsis; /* Add ellipsis if text still overflows */
+		display: block; /* Ensure spans behave predictably */
+	}
 
-.intensity-level {
-    font-weight: bold;
-}
+	.intensity-level {
+		font-weight: bold;
+	}
 
-.inet-status-tile {
-    text-align: center;
-    line-height: 1.2; /* Adjusted line height */
-    overflow: hidden; /* Prevent content spillover */
-    display: flex; /* Use flexbox for better control */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0.5rem; /* Ensure some padding */
-}
+	.inet-status-tile {
+		text-align: center;
+		line-height: 1.2; /* Adjusted line height */
+		overflow: hidden; /* Prevent content spillover */
+		display: flex; /* Use flexbox for better control */
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 0.5rem; /* Ensure some padding */
+	}
 
-.inet-status-icon {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.7rem;
-    font-size: 1.5rem; /* Adjust size as needed */
-    opacity: 0.9;
-    flex-shrink: 0; /* Prevent icon from shrinking */
-}
-
-.inet-status-text {
-    display: block;
-    font-weight: bold;
-    white-space: normal; /* Allow text wrapping */
-    word-wrap: break-word; /* Break long words if necessary */
-    max-width: 100%; /* Ensure text doesn't exceed tile width */
-}
-
-.inet-ready {
-    font-size: 1.3rem; /* Slightly reduced size for better fit */
-}
-
-.not-ready-label {
-    font-size: 0.85rem; /* Slightly reduced size */
-    font-weight: 500;
-    margin-bottom: -0.1rem; /* Adjust spacing */
-}
-
-.inet-not-ready {
-    font-size: 1.3rem; /* Slightly reduced size */
-}
-
-.location-label {
-    font-size: 0.7rem !important;
-    font-style: italic;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.1rem;
-    font-weight: 500;
-    opacity: 0.85;
-    line-height: 1.1;
-    padding: 0;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 400px) {
-    .tile.weather-tile {
-        gap: 0.4rem;
-        padding: 0.6rem;
-    }
-
-    .weather-icon {
-        font-size: 2rem;
-    }
-
-    .temp-main {
-        font-size: 1.8rem; /* Reduced font size */
-    }
-
-    .temp-label {
-        font-size: 0.75rem;
-    }
-
-    .temp-tomorrow {
-        font-size: 0.75rem;
-    }
-
-    .weather-right {
-        font-size: 0.8rem; /* Reduced font size */
-        gap: 0.15rem;
-    }
-
-    .weather-detail span:first-child {
-        margin-right: 0.3rem;
-    }
 	.inet-status-icon {
-        font-size: 1.3rem; /* Smaller icon on small screens */
-        top: 0.4rem;
-        right: 0.5rem;
-    }
+		position: absolute;
+		top: 0.5rem;
+		right: 0.7rem;
+		font-size: 1.5rem; /* Adjust size as needed */
+		opacity: 0.9;
+		flex-shrink: 0; /* Prevent icon from shrinking */
+	}
 
-    .inet-ready,
-    .inet-not-ready {
-        font-size: 1.1rem; /* Smaller text on small screens */
-    }
+	.inet-status-text {
+		display: block;
+		font-weight: bold;
+		white-space: normal; /* Allow text wrapping */
+		word-wrap: break-word; /* Break long words if necessary */
+		max-width: 100%; /* Ensure text doesn't exceed tile width */
+	}
 
-    .not-ready-label {
-        font-size: 0.75rem;
-    }
-}
+	.inet-ready {
+		font-size: 1.3rem; /* Slightly reduced size for better fit */
+	}
 
+	.not-ready-label {
+		font-size: 0.85rem; /* Slightly reduced size */
+		font-weight: 500;
+		margin-bottom: -0.1rem; /* Adjust spacing */
+	}
 
-@media (max-width: 350px) {
-    .temp-main {
-        font-size: 1.6rem;
-    }
-    .weather-icon {
-        font-size: 1.8rem;
-    }
-    .weather-right {
-        font-size: 0.75rem;
-    }
-    .weather-detail span:first-child {
-        min-width: 30px; /* Further reduce min-width */
-    }
-	
-}
-.advice-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: stretch;
-  background: skyblue;
-  color: #fff;
-  width: 100%;
-  min-height: 100px;
-  height: 100%;
-  padding: 0;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
-}
-.advice-scrollable {
-  flex: 1 1 auto;
-  width: 100%;
-  max-height: none;
-  min-height: 0;
-  overflow-y: auto;
-  margin-bottom: 0;
-  padding: 1.1rem 0.8rem 2.1rem 0.8rem;
-  scrollbar-width: thin;
-  scrollbar-color: #b3e0ff transparent;
-  transition: box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 100%;
-  box-sizing: border-box;
-}
-.advice-tile.no-scroll .advice-scrollable {
-  justify-content: center;
-}
-.advice-list {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex: 1 1 auto;
-  justify-content: flex-start;
-}
-.advice-disclaimer-fixed {
-  position: absolute;
-  left: 0.9rem;
-  right: 0.9rem;
-  bottom: 0.5rem;
-  font-size: 0.68rem;
-  color: #fff;
-  opacity: 0.95;
-  font-style: italic;
-  max-width: unset;
-  white-space: normal;
-  pointer-events: none;
-  background: rgba(0,0,0,0.18);
-  padding: 0.25em 0.7em 0.25em 0.5em;
-  border-radius: 8px;
-  z-index: 2;
-  box-sizing: border-box;
-}
-@media (max-width: 600px) {
-  .advice-tile {
-    padding: 0;
-  }
-  .advice-scrollable {
-    padding: 0.7rem 0.5rem 1.5rem 0.5rem;
-  }
-  .advice-disclaimer-fixed {
-    left: 0.5rem;
-    right: 0.5rem;
-    bottom: 0.3rem;
-  }
-}
-@media (max-width: 400px) {
-  .advice-disclaimer-fixed {
-    left: 0.3rem;
-    right: 0.3rem;
-    bottom: 0.2rem;
-  }
-}
-.advice-icon.warning,
-.advice-icon.positive,
-.advice-icon.info {
-  color: #fff !important;
-}
-.safetrip-ai-btn {
-  background: #2ecc71 !important;
-  color: #fff !important;
-  font-weight: 600;
-  font-size: 1rem;
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-}
-.safetrip-ai-btn:hover {
-  background: #c26744 !important;
-  color: #fff !important;
-}
-.safetrip-ai-icon {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 1.5rem;
-  color: #fff;
-  opacity: 0.95;
-  margin: 0;
-}
-.hospital-tile {
-  position: relative;
-  background: #e53935;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0.5rem;
-  min-height: 60px;
-  width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-.hospital-phone-anim {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  min-height: 48px;
-  min-width: 48px;
-  animation: hospital-phone-fadein 0.3s, hospital-phone-fadeout 0.3s 1.7s;
-}
-.hospital-anim-icon {
-  color: #fff;
-  font-size: 2.2rem;
-  animation: hospital-vibrate 0.18s linear 0s 8;
-}
-@keyframes hospital-vibrate {
-  0% { transform: translate(0, 0); }
-  20% { transform: translate(-2px, 1px); }
-  40% { transform: translate(-1px, -2px); }
-  60% { transform: translate(2px, 1px); }
-  80% { transform: translate(1px, -1px); }
-  100% { transform: translate(0, 0); }
-}
-@keyframes hospital-phone-fadein {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes hospital-phone-fadeout {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-.hospital-phone-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: transparent;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 2.3rem;
-  height: 0rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: none;
-  cursor: pointer;
-  font-size: 1rem;
-  z-index: 2;
-}
-.hospital-phone-btn i {
-  color: #fff;
-  font-size: 1.1rem;
-}
-.hospital-tile-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  text-align: center;
-  word-break: break-word;
-}
-.hospital-tile-title {
-  font-weight: 700;
-  font-size: 0.95rem;
-  margin-bottom: 0.18rem;
-  color: #fff;
-  display: block;
-}
-.hospital-tile-phone {
-  font-size: 0.78rem;
-  color: #fff;
-  font-weight: 400;
-  display: block;
-  word-break: break-all;
-}
-@media (max-width: 600px) {
-  .hospital-tile {
-    padding: 0.5rem;
-    min-height: 48px;
-  }
-  .safetrip-ai-btn {
-    padding: 0.5rem;
-  }
-  .hospital-tile-title {
-    font-size: 0.85rem;
-  }
-  .hospital-tile-phone {
-    font-size: 0.7rem;
-  }
-  .hospital-phone-btn {
-    width: 1.3rem;
-    height: 1.3rem;
-    font-size: 0.9rem;
-    top: 0;
-    right: 0;
-  }
-  .safetrip-ai-icon {
-    font-size: 1.2rem;
-    top: 0;
-    right: 0;
-    margin: 0;
-  }
-}
-.poi-tile-purple {
-  background: #7c3aed; /* Modern purple */
-  color: #fff;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0.7rem 0.7rem 0.7rem 0.7rem;
-  min-height: 120px;
-  width: 100%;
-  border-radius: 8px;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-.poi-tile-title {
-  font-weight: 700;
-  font-size: 1.05rem;
-  margin-bottom: 0.4rem;
-  color: #fff;
-  letter-spacing: 0.01em;
-}
-.poi-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-.poi-list-item {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 0.2rem;
-  flex-wrap: nowrap;
-  word-break: break-word;
-}
-.poi-list-item:last-child {
-  margin-bottom: 0;
-}
-.poi-location-icon {
-  color: #fff;
-  font-size: 1rem;
-  margin-right: 0.5em;
-  flex-shrink: 0;
-  margin-top: 0.1em;
-}
-.poi-info-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 0.1em;
-}
-.poi-name {
-  font-size: 0.93rem;
-  font-weight: 500;
-  color: #fff;
-  line-height: 1.2;
-  margin-bottom: 0.08em;
-}
-.poi-address {
-  font-size: 0.75rem;
-  color: #e0e7ff;
-  margin-left: 0;
-  display: block;
-  line-height: 1.2;
-  word-break: break-word;
-  margin-top: 0.01em;
-}
-.poi-divider {
-  border: none;
-  border-top: 1px solid #a78bfa;
-  margin: 0.3rem 0 0.3rem 1.5em;
-  width: calc(100% - 1.5em);
-  opacity: 0.5;
-}
-.poi-tile-title.center {
-  text-align: center;
-  width: 100%;
-  display: block;
-}
-@media (max-width: 600px) {
-  .poi-tile-title {
-    font-size: 0.95rem;
-  }
-  .poi-name {
-    font-size: 0.85rem;
-  }
-  .poi-address {
-    font-size: 0.68rem;
-  }
-  .poi-tile-purple {
-    min-height: 70px;
-    padding: 0.4rem 0.4rem 0.4rem 0.4rem;
-  }
-}
+	.inet-not-ready {
+		font-size: 1.3rem; /* Slightly reduced size */
+	}
+
+	.location-label {
+		font-size: 0.7rem !important;
+		font-style: italic;
+		letter-spacing: 0.08em;
+		margin-bottom: 0.1rem;
+		font-weight: 500;
+		opacity: 0.85;
+		line-height: 1.1;
+		padding: 0;
+	}
+
+	/* Responsive adjustments for smaller screens */
+	@media (max-width: 400px) {
+		.tile.weather-tile {
+			gap: 0.4rem;
+			padding: 0.6rem;
+		}
+
+		.weather-icon {
+			font-size: 2rem;
+		}
+
+		.temp-main {
+			font-size: 1.8rem; /* Reduced font size */
+		}
+
+		.temp-label {
+			font-size: 0.75rem;
+		}
+
+		.temp-tomorrow {
+			font-size: 0.75rem;
+		}
+
+		.weather-right {
+			font-size: 0.8rem; /* Reduced font size */
+			gap: 0.15rem;
+		}
+
+		.weather-detail span:first-child {
+			margin-right: 0.3rem;
+		}
+		.inet-status-icon {
+			font-size: 1.3rem; /* Smaller icon on small screens */
+			top: 0.4rem;
+			right: 0.5rem;
+		}
+
+		.inet-ready,
+		.inet-not-ready {
+			font-size: 1.1rem; /* Smaller text on small screens */
+		}
+
+		.not-ready-label {
+			font-size: 0.75rem;
+		}
+	}
+
+	@media (max-width: 350px) {
+		.temp-main {
+			font-size: 1.6rem;
+		}
+		.weather-icon {
+			font-size: 1.8rem;
+		}
+		.weather-right {
+			font-size: 0.75rem;
+		}
+		.weather-detail span:first-child {
+			min-width: 30px; /* Further reduce min-width */
+		}
+	}
+	.advice-tile {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: stretch;
+		background: skyblue;
+		color: #fff;
+		width: 100%;
+		min-height: 100px;
+		height: 100%;
+		padding: 0;
+		box-sizing: border-box;
+		position: relative;
+		overflow: hidden;
+	}
+	.advice-scrollable {
+		flex: 1 1 auto;
+		width: 100%;
+		max-height: none;
+		min-height: 0;
+		overflow-y: auto;
+		margin-bottom: 0;
+		padding: 1.1rem 0.8rem 2.1rem 0.8rem;
+		scrollbar-width: thin;
+		scrollbar-color: #b3e0ff transparent;
+		transition: box-shadow 0.2s;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		height: 100%;
+		box-sizing: border-box;
+	}
+	.advice-tile.no-scroll .advice-scrollable {
+		justify-content: center;
+	}
+	.advice-list {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		flex: 1 1 auto;
+		justify-content: flex-start;
+	}
+	.advice-disclaimer-fixed {
+		position: absolute;
+		left: 0.9rem;
+		right: 0.9rem;
+		bottom: 0.5rem;
+		font-size: 0.68rem;
+		color: #fff;
+		opacity: 0.95;
+		font-style: italic;
+		max-width: unset;
+		white-space: normal;
+		pointer-events: none;
+		background: rgba(0, 0, 0, 0.18);
+		padding: 0.25em 0.7em 0.25em 0.5em;
+		border-radius: 8px;
+		z-index: 2;
+		box-sizing: border-box;
+	}
+	@media (max-width: 600px) {
+		.advice-tile {
+			padding: 0;
+		}
+		.advice-scrollable {
+			padding: 0.7rem 0.5rem 1.5rem 0.5rem;
+		}
+		.advice-disclaimer-fixed {
+			left: 0.5rem;
+			right: 0.5rem;
+			bottom: 0.3rem;
+		}
+	}
+	@media (max-width: 400px) {
+		.advice-disclaimer-fixed {
+			left: 0.3rem;
+			right: 0.3rem;
+			bottom: 0.2rem;
+		}
+	}
+	.advice-icon.warning,
+	.advice-icon.positive,
+	.advice-icon.info {
+		color: #fff !important;
+	}
+	.safetrip-ai-btn {
+		background: #2ecc71 !important;
+		color: #fff !important;
+		font-weight: 600;
+		font-size: 1rem;
+		border: none;
+		border-radius: 12px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+		transition: all 0.2s;
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+	}
+	.safetrip-ai-btn:hover {
+		background: #c26744 !important;
+		color: #fff !important;
+	}
+	.safetrip-ai-icon {
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-size: 1.5rem;
+		color: #fff;
+		opacity: 0.95;
+		margin: 0;
+	}
+	.hospital-tile {
+		position: relative;
+		background: #e53935;
+		color: #fff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		padding: 0.5rem;
+		min-height: 60px;
+		width: 100%;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+	.hospital-phone-anim {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+		min-height: 48px;
+		min-width: 48px;
+		animation:
+			hospital-phone-fadein 0.3s,
+			hospital-phone-fadeout 0.3s 1.7s;
+	}
+	.hospital-anim-icon {
+		color: #fff;
+		font-size: 2.2rem;
+		animation: hospital-vibrate 0.18s linear 0s 8;
+	}
+	@keyframes hospital-vibrate {
+		0% {
+			transform: translate(0, 0);
+		}
+		20% {
+			transform: translate(-2px, 1px);
+		}
+		40% {
+			transform: translate(-1px, -2px);
+		}
+		60% {
+			transform: translate(2px, 1px);
+		}
+		80% {
+			transform: translate(1px, -1px);
+		}
+		100% {
+			transform: translate(0, 0);
+		}
+	}
+	@keyframes hospital-phone-fadein {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+	@keyframes hospital-phone-fadeout {
+		from {
+			opacity: 1;
+		}
+		to {
+			opacity: 0;
+		}
+	}
+	.hospital-phone-btn {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background: transparent;
+		color: #fff;
+		border: none;
+		border-radius: 50%;
+		width: 2.3rem;
+		height: 0rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: none;
+		cursor: pointer;
+		font-size: 1rem;
+		z-index: 2;
+	}
+	.hospital-phone-btn i {
+		color: #fff;
+		font-size: 1.1rem;
+	}
+	.hospital-tile-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		text-align: center;
+		word-break: break-word;
+	}
+	.hospital-tile-title {
+		font-weight: 700;
+		font-size: 0.95rem;
+		margin-bottom: 0.18rem;
+		color: #fff;
+		display: block;
+	}
+	.hospital-tile-phone {
+		font-size: 0.78rem;
+		color: #fff;
+		font-weight: 400;
+		display: block;
+		word-break: break-all;
+	}
+	@media (max-width: 600px) {
+		.hospital-tile {
+			padding: 0.5rem;
+			min-height: 48px;
+		}
+		.safetrip-ai-btn {
+			padding: 0.5rem;
+		}
+		.hospital-tile-title {
+			font-size: 0.85rem;
+		}
+		.hospital-tile-phone {
+			font-size: 0.7rem;
+		}
+		.hospital-phone-btn {
+			width: 1.3rem;
+			height: 1.3rem;
+			font-size: 0.9rem;
+			top: 0;
+			right: 0;
+		}
+		.safetrip-ai-icon {
+			font-size: 1.2rem;
+			top: 0;
+			right: 0;
+			margin: 0;
+		}
+	}
+	.poi-tile-purple {
+		background: #7c3aed; /* Modern purple */
+		color: #fff;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 0.7rem 0.7rem 0.7rem 0.7rem;
+		min-height: 120px;
+		width: 100%;
+		border-radius: 8px;
+		overflow: hidden;
+		box-sizing: border-box;
+	}
+	.poi-tile-title {
+		font-weight: 700;
+		font-size: 1.05rem;
+		margin-bottom: 0.4rem;
+		color: #fff;
+		letter-spacing: 0.01em;
+	}
+	.poi-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		width: 100%;
+	}
+	.poi-list-item {
+		display: flex;
+		align-items: flex-start;
+		margin-bottom: 0.2rem;
+		flex-wrap: nowrap;
+		word-break: break-word;
+	}
+	.poi-list-item:last-child {
+		margin-bottom: 0;
+	}
+	.poi-location-icon {
+		color: #fff;
+		font-size: 1rem;
+		margin-right: 0.5em;
+		flex-shrink: 0;
+		margin-top: 0.1em;
+	}
+	.poi-info-col {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		margin-left: 0.1em;
+	}
+	.poi-name {
+		font-size: 0.93rem;
+		font-weight: 500;
+		color: #fff;
+		line-height: 1.2;
+		margin-bottom: 0.08em;
+	}
+	.poi-address {
+		font-size: 0.75rem;
+		color: #e0e7ff;
+		margin-left: 0;
+		display: block;
+		line-height: 1.2;
+		word-break: break-word;
+		margin-top: 0.01em;
+	}
+	.poi-divider {
+		border: none;
+		border-top: 1px solid #a78bfa;
+		margin: 0.3rem 0 0.3rem 1.5em;
+		width: calc(100% - 1.5em);
+		opacity: 0.5;
+	}
+	.poi-tile-title.center {
+		text-align: center;
+		width: 100%;
+		display: block;
+	}
+	@media (max-width: 600px) {
+		.poi-tile-title {
+			font-size: 0.95rem;
+		}
+		.poi-name {
+			font-size: 0.85rem;
+		}
+		.poi-address {
+			font-size: 0.68rem;
+		}
+		.poi-tile-purple {
+			min-height: 70px;
+			padding: 0.4rem 0.4rem 0.4rem 0.4rem;
+		}
+	}
 </style>
