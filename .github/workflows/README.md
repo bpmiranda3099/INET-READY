@@ -1,39 +1,47 @@
 ## GitHub Workflows
 
-### Hourly Weather Update
+INET-READY uses GitHub Actions for automated data collection, processing, notifications, repository mirroring, and secure backup of sensitive files:
 
-- Runs every hour to collect current weather data
-- Updates Firebase with latest conditions
-- Script: `src/scripts/hourly_heat_index_api.py`
+### Automated Workflows
 
-### Daily Historical Weather Update
+- **Hourly Weather Update**
+  - Runs every hour to collect current weather data and update Firebase.
+  - Script: `src/scripts/hourly_heat_index_api.py`
+- **Daily Historical Weather Update**
+  - Runs daily at midnight UTC to update historical weather records and commit changes.
+  - Script: `src/scripts/daily_historical_weather_data.py`
+- **Daily Heat Index Forecast**
+  - Runs daily at 4:00 AM UTC to generate future heat index predictions and update Firebase.
+  - Script: `src/scripts/heat_index_forecast_api.py`
+- **Daily Weather Insights**
+  - Runs daily at 6:00 AM UTC to generate weather insights and send notifications.
+  - Script: `src/scripts/daily_weather_insights.py`
+- **Heat Index Change Notifications**
 
-- Runs once per day (at midnight UTC)
-- Updates historical weather records
-- Commits changes to the repository
-- Script: `src/scripts/daily_historical_weather_data.py`
+  - Runs after the hourly weather update to send notifications if significant heat index changes are detected.
+  - Script: `src/scripts/heat_index_alert_service.py`
 
-### Daily Heat Index Forecast
+- **GitLab Mirror**
 
-- Runs daily at 4:00 AM UTC
-- Generates predictions for future heat index values
-- Updates Firebase and repository with forecast data
-- Script: `src/scripts/heat_index_forecast_api.py`
+  - On every push to GitHub, runs CI steps and then mirrors all changes (branches, tags, deletions) to a linked GitLab repository.
 
-## Configuration
+- **.env Backup to Proton Drive**
+  - On every push (and manually), encrypts the `.env` file and uploads it to Proton Drive using rclone and GPG.
+  - Workflow: `.github/workflows/backup_env_to_proton.yml`
+  - Script: `backup_env_to_proton.ps1`
 
-The system relies on GitHub Secrets for secure credential management:
+### Configuration & Security
 
-- `FIREBASE_SERVICE_ACCOUNT_JSON`: Base64-encoded Firebase service account JSON
+- Uses GitHub Secrets for secure credential management (e.g., `FIREBASE_SERVICE_ACCOUNT_JSON`, `GITLAB_URL`, `GITLAB_USERNAME`, `GITLAB_TOKEN`, `RCLONE_CONFIG`, `GPG_PASSPHRASE`).
+- Credentials are decoded and used only during workflow runs.
+-
+- #### Backing up .env to Proton Drive
+  - Sensitive files like `.env` are excluded from git but can be securely backed up to Proton Drive using [rclone](https://rclone.org/protondrive/).
+  - Use the provided `backup_env_to_proton.ps1` script to encrypt and upload `.env` to Proton Drive. This can be run manually or integrated into CI/CD.
+  - Proton Drive remote must be configured in rclone (see project root script for details).
+  - The GitHub Actions workflow `.github/workflows/backup_env_to_proton.yml` automates this process and runs on every push.
+    - Requires repository secrets `RCLONE_CONFIG` (your rclone.conf contents) and `GPG_PASSPHRASE` (your encryption passphrase).
 
-## Usage
+### Manual Triggers
 
-The system runs automatically via GitHub Actions. To manually trigger any workflow:
-
-1. Navigate to the Actions tab in your GitHub repository
-2. Select the desired workflow
-3. Click "Run workflow" button
-
-## Data Sources
-
-Weather data is collected from reliable meteorological sources and processed to ensure consistency and accuracy.
+- All workflows can be triggered manually from the GitHub Actions tab.
