@@ -52,7 +52,19 @@ if ($gpgInfo.Length -eq 0) {
     exit 1
 }
 
-
-# Decryption is now handled by a separate script (decrypt_latest_env.ps1)
-Write-Host "Download complete. To decrypt, run:"
-Write-Host "    .\\decrypt_latest_env.ps1"
+# Automatically decrypt the latest file after download
+$latestGpg = Get-ChildItem $gpgDir -Filter ".env_*.gpg" | Sort-Object LastWriteTime | Select-Object -Last 1
+if (-not $latestGpg) {
+    Write-Error "No .env_*.gpg files found in $gpgDir after download."
+    exit 1
+}
+Write-Host "Decrypting $($latestGpg.Name) to .env ..."
+gpg --yes --output .env --decrypt $latestGpg.FullName
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Successfully decrypted to .env"
+    exit 0
+}
+else {
+    Write-Error "GPG decryption failed. Check your GPG key and passphrase."
+    exit 1
+}
