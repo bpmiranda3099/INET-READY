@@ -13,7 +13,8 @@ if (-not (Get-Command gpg -ErrorAction SilentlyContinue)) {
 }
 
 $envFile = ".env"
-$encryptedFile = ".env.gpg"
+$hash = $(git rev-parse --short HEAD)
+$encryptedFile = ".env_$hash.gpg"
 $protonRemote = "protondrive:backups/inet-ready/"
 
 if (-not (Test-Path $envFile)) {
@@ -21,8 +22,14 @@ if (-not (Test-Path $envFile)) {
     exit 1
 }
 
+
 # Encrypt the .env file (prompt for passphrase)
 gpg --batch --yes --symmetric --cipher-algo AES256 $envFile
+if (-not (Test-Path ".env.gpg")) {
+    Write-Error "Failed to create encrypted .env.gpg file."
+    exit 1
+}
+Rename-Item ".env.gpg" $encryptedFile -Force
 
 if (-not (Test-Path $encryptedFile)) {
     Write-Error "Failed to create encrypted .env.gpg file."
