@@ -1,5 +1,5 @@
 # update_env_secret.ps1
-# Updates the ENV_CONTENTS GitHub secret with the current .env file contents
+# Updates the ENV_CONTENTS GitHub secret with the current .env file content
 
 $envFile = ".env"
 $secretName = "ENV_CONTENTS"
