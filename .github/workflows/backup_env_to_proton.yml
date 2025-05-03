@@ -37,19 +37,19 @@ jobs:
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          if [ -f .env ]; then \
-            echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 .env; \
-          else \
-            echo ".env file not found, skipping encryption and upload." && exit 0; \
+          if [ -f .env ]; then
+            export HASH=$(git rev-parse --short HEAD)
+            echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 .env
+            mv .env.gpg ".env_$HASH.gpg"
+          else
+            echo ".env file not found, skipping encryption and upload." && exit 0;
           fi
 
       - name: Upload encrypted .env to Proton Drive
         run: |
-          if [ -f .env.gpg ]; then \
-            rclone copy .env.gpg protondrive:backups/inet-ready/; \
-          else \
-            echo ".env.gpg not found, skipping upload." && exit 0; \
-          fi
+          for f in .env_*.gpg; do
+            [ -f "$f" ] && rclone copy "$f" protondrive:backups/inet-ready/;
+          done
 
-      - name: Clean up encrypted file
-        run: rm -f .env.gpg
+      - name: Clean up encrypted files
+        run: rm -f .env_*.gpg
