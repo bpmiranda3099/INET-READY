@@ -655,7 +655,7 @@
                 <div class="app-titles">
                     <small class="app-title">INET-READY</small>
                     <h2 class="section-title">
-                        {activeTab === 'medical' && showMedicalForm ? 'Edit Medical Profile' : getSectionTitle(activeTab)}
+                        {activeTab === 'medical' && showMedicalForm ? 'Update Medical Profile' : getSectionTitle(activeTab)}
                     </h2>
                 </div>
             </div>
@@ -717,8 +717,7 @@
     <!-- Main Content Area -->
     <div class="content-area">
         {#if activeTab === 'dashboard'}
-            {#key dashboardRefreshKey}
-                <div class="dashboard-section">
+            {#key dashboardRefreshKey}                <div class="dashboard-section">
                     <!-- Travel Health Cards - Only show if user has city preferences -->
                     {#if hasCityPreferences && preferredCities.length > 0}
                         <TravelHealthCards 
@@ -727,6 +726,11 @@
                             useCurrentLocation={true}
                             currentLocation={currentLocationName}
                         />
+                        <div class="attribution-link">
+                            <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" class="open-meteo-link">
+                                Weather data by Open-Meteo.com
+                            </a>
+                        </div>
                     {/if}
                 </div>
             {/key}
