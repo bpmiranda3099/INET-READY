@@ -960,20 +960,25 @@
 									>
 										<div class="poi-tile-title center">Nearby Cool Indoor Areas</div>
 										<ul class="poi-list">
-											{#each card.rowThree.tiles[0].pois.slice(0, 3) as poi, j (poi.id || j)}
-												<li class="poi-list-item">
-													<i class="bi bi-geo-alt-fill poi-location-icon"></i>
-													<div class="poi-info-col">
-														<span class="poi-name">{poi.title}</span>
-														{#if poi.address}
-															<span class="poi-address">{poi.address}</span>
-														{/if}
-													</div>
-												</li>
-												{#if j < Math.min(card.rowThree.tiles[0].pois.length, 3) - 1}
-													<hr class="poi-divider" />
-												{/if}
-											{/each}
+											{#if card.rowThree.tiles[0].pois}
+												{@const cafe = card.rowThree.tiles[0].pois.find(p => (p.category || '').toLowerCase().includes('cafe'))}
+												{@const mall = card.rowThree.tiles[0].pois.find(p => (p.category || '').toLowerCase().includes('mall'))}
+												{@const restaurant = card.rowThree.tiles[0].pois.find(p => (p.category || '').toLowerCase().includes('restaurant'))}
+												{#each [cafe, mall, restaurant].filter(Boolean) as poi, j (poi.id || j)}
+													<li class="poi-list-item">
+														<i class="bi bi-geo-alt-fill poi-location-icon"></i>
+														<div class="poi-info-col">
+															<span class="poi-name">{poi.title}</span>
+															{#if poi.address}
+																<span class="poi-address">{poi.address}</span>
+															{/if}
+														</div>
+													</li>
+													{#if j < [cafe, mall, restaurant].filter(Boolean).length - 1}
+														<hr class="poi-divider" />
+													{/if}
+												{/each}
+											{/if}
 										</ul>
 									</div>
 								{/if}
