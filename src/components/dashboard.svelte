@@ -1400,21 +1400,26 @@
         position: relative;
     }
 
-    .nav-item.active i::after {
+    .nav-item i::after {
         content: '';
         display: block;
         position: absolute;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) scaleX(0);
         bottom: -6px;
-        width: 32px;           /* Make this as wide as the icon or a bit wider */
-        height: 4px;           /* Thin underline */
+        width: 32px;
+        height: 4px;
         background: white;
-        border-radius: 2px;    /* Rounded ends */
+        border-radius: 2px;
         box-shadow: 0 1px 4px rgba(0,0,0,0.10);
-        transition: opacity 0.2s, width 0.2s;
-        opacity: 1;
+        transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
+        opacity: 0;
         pointer-events: none;
+    }
+
+    .nav-item.active i::after {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 1;
     }
     
     .nav-item:not(.active):hover {
