@@ -1197,7 +1197,7 @@
                 }
             }}
         >
-            <i class="bi bi-house"></i>
+            <i class="bi {activeTab === 'dashboard' ? 'bi-house-fill' : 'bi-house'}"></i>
             <span class:hide-label={activeTab === 'dashboard'}>Dashboard</span>
         </button>
         <button 
@@ -1205,7 +1205,7 @@
             class:active={activeTab === 'medical'}
             on:click={() => activeTab = 'medical'}
         >
-            <i class="bi bi-heart-pulse"></i>
+            <i class="bi {activeTab === 'medical' ? 'bi-heart-pulse-fill' : 'bi-heart-pulse'}"></i>
             <span class:hide-label={activeTab === 'medical'}>Medical</span>
         </button>
         <button 
@@ -1216,7 +1216,7 @@
                 if (showMedicalForm) showMedicalForm = false;
             }}
         >
-            <i class="bi bi-bell"></i>
+            <i class="bi {activeTab === 'notifications' ? 'bi-bell-fill' : 'bi-bell'}"></i>
             <span class:hide-label={activeTab === 'notifications'}>Notifications</span>
         </button>
         <button 
@@ -1227,7 +1227,7 @@
                 if (showMedicalForm) showMedicalForm = false;
             }}
         >
-            <i class="bi bi-gear"></i>
+            <i class="bi {activeTab === 'settings' ? 'bi-gear-fill' : 'bi-gear'}"></i>
             <span class:hide-label={activeTab === 'settings'}>Settings</span>
         </button>
         <button 
@@ -1238,7 +1238,7 @@
                 if (showMedicalForm) showMedicalForm = false;
             }}
         >
-            <i class="bi bi-person"></i>
+            <i class="bi {activeTab === 'account' ? 'bi-person-fill' : 'bi-person'}"></i>
             <span class:hide-label={activeTab === 'account'}>Account</span>
         </button>
     </div>
