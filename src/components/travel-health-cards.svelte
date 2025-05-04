@@ -958,12 +958,13 @@
 											openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
 										style="cursor: pointer;"
 									>
-										<div class="poi-tile-title center">Nearby Cool Indoor Areas</div>
-										<ul class="poi-list">
-											{#if card.rowThree.tiles[0].pois}
-												{@const cafe = card.rowThree.tiles[0].pois.find(p => (p.category || '').toLowerCase().includes('cafe'))}
-												{@const mall = card.rowThree.tiles[0].pois.find(p => (p.category || '').toLowerCase().includes('mall'))}
-												{@const restaurant = card.rowThree.tiles[0].pois.find(p => (p.category || '').toLowerCase().includes('restaurant'))}
+										{#if card.rowThree.tiles[0].pois && card.rowThree.tiles[0].pois.length > 0}
+											{@const pois = card.rowThree.tiles[0].pois}
+											{@const cafe = pois.find(p => (p.category || '').toLowerCase().includes('cafe'))}
+											{@const mall = pois.find(p => (p.category || '').toLowerCase().includes('mall'))}
+											{@const restaurant = pois.find(p => (p.category || '').toLowerCase().includes('restaurant'))}
+											<div class="poi-tile-title center">Nearby Cool Indoor Areas</div>
+											<ul class="poi-list">
 												{#each [cafe, mall, restaurant].filter(Boolean) as poi, j (poi.id || j)}
 													<li class="poi-list-item">
 														<i class="bi bi-geo-alt-fill poi-location-icon"></i>
@@ -978,8 +979,8 @@
 														<hr class="poi-divider" />
 													{/if}
 												{/each}
-											{/if}
-										</ul>
+											</ul>
+										{/if}
 									</div>
 								{/if}
 							</div>
