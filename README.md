@@ -2,18 +2,18 @@
 
 <div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Platform](https://img.shields.io/badge/platform-Web-brightgreen)
-![Status](https://img.shields.io/badge/status-Active-success)
-[![Website](https://img.shields.io/website?url=https%3A%2F%2Finet-ready-v2.vercel.app&up_message=live&down_message=offline&timeout=1000&label=Website&color=purple)](https://inet-ready-v2.vercel.app)
-![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2)
-[![Heat Index Forecast Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_heat_index_forecast_update.yml?branch=main&label=Heat%20Index%20Forecast)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_heat_index_forecast_update.yml)
-[![Historical Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_historical_weather_update.yml?branch=main&label=Historical%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_historical_weather_update.yml)
-[![Weather Insights](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_weather_insights.yml?branch=main&label=Weather%20Insights)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_weather_insights.yml)
-[![Heat Index Notifications](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/heat_index_notifications.yml?branch=main&label=Heat%20Index%20Notifications)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/heat_index_notifications.yml)
-[![Hourly Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/hourly_weather_update.yml?branch=main&label=Hourly%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/hourly_weather_update.yml)
-[![EHR Aptible CD](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy.yml?branch=main&label=EHR%20Aptible)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy.yml)
-[![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?logo=open-source-initiative)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-Web-brightgreen?logo=googlechrome)
+![Status](https://img.shields.io/badge/status-Active-success?logo=github)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Finet-ready-v2.vercel.app&up_message=live&down_message=offline&timeout=1000&label=Website&color=purple&logo=vercel)](https://inet-ready-v2.vercel.app)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2&logo=github)
+[![Heat Index Forecast Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_heat_index_forecast_update.yml?branch=main&label=Heat%20Index%20Forecast&logo=python)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_heat_index_forecast_update.yml)
+[![Historical Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_historical_weather_update.yml?branch=main&label=Historical%20Weather&logo=cloud)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_historical_weather_update.yml)
+[![Weather Insights](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_weather_insights.yml?branch=main&label=Weather%20Insights&logo=googlecloud)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_weather_insights.yml)
+[![Heat Index Notifications](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/heat_index_notifications.yml?branch=main&label=Heat%20Index%20Notifications&logo=bell)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/heat_index_notifications.yml)
+[![Hourly Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/hourly_weather_update.yml?branch=main&label=Hourly%20Weather&logo=clock)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/hourly_weather_update.yml)
+[![EHR Aptible CD](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy.yml?branch=main&label=EHR%20Aptible&logo=aptible)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy.yml)
+[![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror&logo=gitlab)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
 
 _*For CI/CD details, see the [CI/CD README](/.github/workflows/README.md).*_
 
@@ -258,24 +258,26 @@ All endpoints require a valid Firebase ID token in the `Authorization: Bearer <t
 
 ---
 
-## 🌤️ Data Sources: OpenMeteo API
+## 📁 Data Sources & Files
 
-INET-READY collects and processes weather and heat index data using the [OpenMeteo API](https://open-meteo.com/):
+INET-READY integrates and processes data from multiple sources to deliver weather, health, and geospatial insights. All data is fetched, validated, and stored in project files for use by the app and backend scripts.
 
-- **Current Weather Data**: Hourly temperature, humidity, and other meteorological variables for supported cities.
-- **Forecast Data**: Multi-day heat index and weather predictions for all tracked locations.
-- **Historical Data**: Daily and hourly weather records for trend analysis and model validation.
-- **City Geolocations**: City coordinates and metadata for mapping and risk calculations.
+- **Weather Data:** Hourly, daily, and historical weather variables (temperature, humidity, wind, solar radiation, etc.) and multi-day heat index forecasts from [OpenMeteo API](https://open-meteo.com/).
+- **Geospatial Data:** City names, coordinates, and metadata from OpenMeteo and [OpenStreetMap Overpass API](https://overpass-api.de/) for mapping and risk calculations.
+- **Medical Data:** User-submitted profiles and health info managed via a secure Aptible-hosted backend.
+- **Map Data:** Interactive maps and points of interest (e.g., hospitals) using [Mapbox API](https://docs.mapbox.com/).
+- **AI Insights:** Weather and health advice generated by [Google Gemini API](https://ai.google.dev/gemini-api/docs).
+- **Notifications & User Data:** Real-time alerts and preferences via Firebase Cloud Messaging (FCM), authentication and user data via Firebase.
+- **Model Metrics & Logs:** Machine learning metrics, validation results, and logs for transparency and monitoring.
 
-## 🗂️ Data Files in This Project
+**Key Data Files:**
 
-- `public/data/city_coords.csv` — City names, latitude, longitude (from OpenMeteo and Overpass APIs)
+- `public/data/city_coords.csv` — City names, latitude, longitude (OpenMeteo & Overpass APIs)
 - `public/data/historical_weather_data.csv` — Historical weather data (OpenMeteo)
 - `public/data/predicted_heat_index/YYYY-MM-DD_heat_index_prediction.csv` — Daily heat index predictions (OpenMeteo forecast + ML)
 - `public/data/predicted_heat_index/YYYY-MM-DD_metrics_comparison_before.csv` — Model metrics before update
 - `public/data/predicted_heat_index/YYYY-MM-DD_metrics_comparison_after.csv` — Model metrics after update
-
-All weather and forecast data is fetched, processed, and validated using OpenMeteo API endpoints, then stored in these files for use by the app and backend scripts.
+- `src/scripts/logs/` — Logs for model training, data processing, and notifications
 
 ---
 
@@ -397,12 +399,6 @@ Logs are automatically created and appended by the scripts. They are essential f
   - All encrypted backups are stored in the `.env_gpg/` folder during recovery.
 
 > See [`backup_env_to_proton.ps1`](backup_env_to_proton.ps1) and [`recover_env_from_proton.ps1`](recover_env_from_proton.ps1) for details on the backup/restore process.
-
----
-
-### Data Sources
-
-- <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>
 
 ---
 
