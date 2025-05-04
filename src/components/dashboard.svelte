@@ -1183,7 +1183,7 @@
     </div>
       <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
-       <button 
+        <button 
             class="nav-item" 
             class:active={activeTab === 'dashboard'}
             on:click={() => {
@@ -1198,7 +1198,7 @@
             }}
         >
             <i class="bi bi-house"></i>
-            <span>Dashboard</span>
+            <span class:hide-label={activeTab === 'dashboard'}>Dashboard</span>
         </button>
         <button 
             class="nav-item" 
@@ -1206,9 +1206,8 @@
             on:click={() => activeTab = 'medical'}
         >
             <i class="bi bi-heart-pulse"></i>
-            <span>Medical</span>
+            <span class:hide-label={activeTab === 'medical'}>Medical</span>
         </button>
-
         <button 
             class="nav-item" 
             class:active={activeTab === 'notifications'}
@@ -1218,9 +1217,8 @@
             }}
         >
             <i class="bi bi-bell"></i>
-            <span>Notifications</span>
+            <span class:hide-label={activeTab === 'notifications'}>Notifications</span>
         </button>
-        
         <button 
             class="nav-item" 
             class:active={activeTab === 'settings'}
@@ -1230,9 +1228,8 @@
             }}
         >
             <i class="bi bi-gear"></i>
-            <span>Settings</span>
+            <span class:hide-label={activeTab === 'settings'}>Settings</span>
         </button>
-        
         <button 
             class="nav-item" 
             class:active={activeTab === 'account'}
@@ -1242,9 +1239,8 @@
             }}
         >
             <i class="bi bi-person"></i>
-            <span>Account</span>
+            <span class:hide-label={activeTab === 'account'}>Account</span>
         </button>
-        
     </div>
 </div>
 
@@ -1382,22 +1378,45 @@
         color: #666;
         font-size: 0.75rem;
         cursor: pointer;
-        transition: color 0.2s;
+        position: relative;
+        transition: background 0.2s, color 0.2s;
     }
     
     .nav-item i {
         font-size: 1.25rem;
         margin-bottom: 0.25rem;
+        transition: font-size 0.3s cubic-bezier(0.4,0,0.2,1), color 0.2s;
     }
     
     .nav-item.active {
         color: white;
+        font-size: 2rem;
         background-color: #dd815e; /* Orange main color */
     }
     
     .nav-item:not(.active):hover {
         color: #dd815e; /* Orange hover color */
     }
+
+    .nav-item span {
+    display: inline-block;
+    transition: 
+        opacity 0.25s cubic-bezier(0.4,0,0.2,1),
+        max-width 0.25s cubic-bezier(0.4,0,0.2,1),
+        margin-left 0.25s cubic-bezier(0.4,0,0.2,1);
+    opacity: 1;
+    max-width: 100px;
+    margin-left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.nav-item .hide-label {
+    opacity: 0;
+    max-width: 0;
+    margin-left: 0;
+    pointer-events: none;
+}
+
       /* Card styles */    .card {
         background: white;
         padding: 1.5rem;
