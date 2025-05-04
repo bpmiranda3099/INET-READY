@@ -7,9 +7,18 @@
 ![Status](https://img.shields.io/badge/status-Active-success)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Finet-ready-v2.vercel.app&up_message=live&down_message=offline&timeout=1000&label=Website&color=purple)](https://inet-ready-v2.vercel.app)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2)
-![Build Status](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-v2/ci.yml?branch=main) <!-- Update this badge URL to match your CI provider -->
+[![GitHub Actions Status (INET-READY)](<https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-v2/ci.yml?branch=main&label=GitHub%20CI%20(v2)>)](https://github.com/bpmiranda3099/inet-ready-v2/actions)
 
 </div>
+
+---
+
+> **Compliance Notice:**  
+> This deployment of INET-READY is intended solely for development and testing purposes. It is **not HIPAA compliant** as it is not running on a dedicated Aptible stack, which is a requirement for production-level HIPAA compliance.  
+> **Do not use this system to store or process real Protected Health Information (PHI) or other sensitive data in a production environment.**
+>
+> **Production Use:**  
+> INET-READY can be configured for HIPAA compliance when deployed on a dedicated Aptible stack, accompanied by appropriate organizational policies and safeguards. For production deployments involving healthcare data, please consult your compliance officer or legal counsel to ensure all regulatory requirements are met.
 
 ---
 
@@ -389,6 +398,20 @@ Logs are automatically created and appended by the scripts. They are essential f
 - **Frontend:** Deploy on [Vercel](https://vercel.com/) or similar static hosting
 - **Backend Scripts:** Deploy Python/Node.js scripts on Aptible or serverless platforms
 - **Firebase Functions:** Deploy from `functions/` directory
+
+---
+
+## 🔄 Continuous Deployment & Secrets Management
+
+- **GitLab Mirror for CD:**  
+  This repository is automatically mirrored to a private GitLab instance for Continuous Deployment (CD). All changes pushed to the main branch are synced to GitLab using a GitHub Actions workflow ([`.github/workflows/gitlab_mirror.yml`](.github/workflows/gitlab_mirror.yml)), which triggers GitLab CI/CD pipelines for deployment.
+
+- **Proton Drive .env Backup/Restore:**  
+  The `.env` file is **encrypted and backed up to Proton Drive** on every push (see [`.git/hooks/pre-push`](.git/hooks/pre-push) and [`backup_env_to_proton.ps1`](backup_env_to_proton.ps1)).
+  - To **restore** the latest `.env`, use [`recover_env_from_proton.ps1`](recover_env_from_proton.ps1), which downloads and decrypts the most recent backup from Proton Drive.
+  - All encrypted backups are stored in the `.env_gpg/` folder during recovery.
+
+> See [`backup_env_to_proton.ps1`](backup_env_to_proton.ps1) and [`recover_env_from_proton.ps1`](recover_env_from_proton.ps1) for details on the backup/restore process.
 
 ---
 
