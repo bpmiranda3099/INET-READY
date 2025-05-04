@@ -7,130 +7,50 @@
 ![Status](https://img.shields.io/badge/status-Active-success)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Finet-ready-v2.vercel.app&up_message=live&down_message=offline&timeout=1000&label=Website&color=purple)](https://inet-ready-v2.vercel.app)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2)
+![Build Status](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-v2/ci.yml?branch=main) <!-- Update this badge URL to match your CI provider -->
 
 </div>
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#-overview)
+- [Demo](#demo)
+- [Tech Stack](#-tech-stack)
+- [Quick Start](#quick-start)
+- [Getting Started](#-getting-started)
+- [APIs Used in INET-READY](#-apis-used-in-inet-ready)
+- [Features](#-features)
+- [Usage](#-usage)
+- [API Endpoints (Medical Data)](#-api-endpoints-medical-data)
+- [Notifications](#-notifications)
+- [Maps & Location](#-maps--location)
+- [Data Files in This Project](#-data-files-in-this-project)
+- [Machine Learning Process & Validation](#-machine-learning-process--validation)
+- [Logs & Monitoring](#-logs--monitoring)
+- [Deployment](#-deployment)
+- [CI/CD & GitHub Workflows](#-cicd--github-workflows)
+- [Dependencies](#-dependencies)
+- [Python Virtual Environment (venv) Setup](#-python-virtual-environment-venv-setup)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Contact](#-contact)
+
+---
+
+## Demo
+
+<!-- Replace with your actual screenshot or GIF -->
+<p align="center">
+  <img src="assets/screenshot.png" alt="INET-READY Demo" width="600"/>
+</p>
 
 ---
 
 ## 📝 Overview
 
 INET-READY is a modern, privacy-focused platform for safe and informed travel. It combines real-time heat index forecasting, personalized health risk insights, and secure medical data management. The system leverages SvelteKit, Firebase, Python, and Node.js to deliver timely notifications and actionable travel health guidance.
-
----
-
-## 🌐 APIs Used in INET-READY
-
-### 1. Internal REST API Endpoints (Medical Data, hosted on Aptible)
-
-- **Base URL:** `https://app-91403.on-aptible.com`
-- **Endpoints:**
-  - `POST /store-medical-data` — Create or update user medical data
-  - `GET /get-medical-data` — Fetch authenticated user's medical data
-  - `DELETE /delete-medical-data` — Delete user's medical data
-
-> All endpoints require a valid Firebase ID token in the `Authorization: Bearer <token>` header.
-
----
-
-### 2. External APIs
-
-#### a. OpenMeteo API
-
-- **Purpose:** Weather, forecast, and historical data for all supported cities
-- **Usage:** Python scripts (`openmeteo_requests`, `requests`) and data ingestion
-- **Docs:** https://open-meteo.com/
-
-#### b. Overpass API (OpenStreetMap)
-
-- **Purpose:** Geospatial data for city coordinates
-- **Usage:** Python scripts via `overpy`
-- **Docs:** https://overpass-api.de/
-
-#### c. Mapbox API
-
-- **Purpose:** Interactive maps and geolocation in the frontend
-- **Usage:** `mapbox-gl` in Svelte components
-- **Docs:** https://docs.mapbox.com/
-
-#### d. Google Gemini API (Generative AI)
-
-- **Purpose:** AI-powered chatbot and medical/travel advice
-- **Usage:** `@google/generative-ai` in `gemini-service.js` (frontend) and via Node.js bridge in backend scripts
-- **Docs:** https://ai.google.dev/gemini-api/docs
-
-#### e. Firebase APIs
-
-- **Purpose:** Authentication, Firestore database, Cloud Messaging (FCM), Analytics
-- **Usage:** Web SDK (`firebase`), backend scripts (`firebase-admin`, `google-cloud-firestore`)
-- **Endpoints/Services:**
-  - Auth: Email/password, Google, Facebook
-  - Firestore: User and weather data storage
-  - Messaging: Push notifications (FCM)
-  - Analytics: Usage tracking
-
-#### f. Google Cloud APIs
-
-- **Purpose:** Used by backend scripts for Firestore and service account access
-- **Usage:** `google-api-python-client`, `google-cloud-firestore`
-
----
-
-### 3. Other Notable Endpoints/Services
-
-- **Firebase Cloud Functions**
-
-  - `functions/sendTestNotification.js` — For sending test push notifications via FCM
-
-- **Vercel Analytics**
-  - `@vercel/speed-insights` — For frontend analytics
-
----
-
-### 4. Service Workers
-
-- **Path:** `/firebase-messaging-sw.js`
-- **Purpose:** Handles push notifications and caching for offline support
-
----
-
-### 5. Data Files (as API-like sources)
-
-- `public/data/city_coords.csv` — City geolocations (from OpenMeteo/Overpass)
-- `public/data/historical_weather_data.csv` — Historical weather (OpenMeteo)
-- `public/data/predicted_heat_index/*.csv` — Daily predictions and metrics
-
-## 🌟 Features
-
-- **Authentication & Account Management**
-  - User registration and login (email, Google, Facebook)
-  - Email verification, password reset, logout, and linked accounts
-- **Dashboard & Navigation**
-  - Tabbed dashboard, bottom navigation, app bar
-- **City Preferences & Location**
-  - City selection, preferences, location tracking, permissions
-- **Medical Profile & Form**
-  - Medical data entry, profile display, health insights, visualizations
-- **Travel Health Cards**
-  - Dynamic cards for weather, heat index, health status, hospitals, advice
-- **Notifications**
-  - Real-time push notifications, notification history, permission management
-- **Chatbot Assistant (SafeTrip AI)**
-  - AI-powered travel and health Q&A, context-aware, mobile-friendly
-- **Permissions & Settings**
-  - Permissions panel, display preferences, privacy controls
-- **Onboarding & Welcome**
-  - Welcome modal, onboarding steps, user greeting
-- **Visual & UI Components**
-  - Cards, banners, responsive design, modals, tooltips
-- **Data & Integration**
-  - Weather, heat index, geospatial, and medical data integration
-  - Service worker for offline support and notifications
-- **Automated Data Collection**
-  - Automated scripts for weather and heat index updates (see [CI/CD & GitHub Workflows](#️-cicd--github-workflows))
-- **Deployment & Security**
-  - Automated deployment, secure credentials, manual workflow triggers (see [Deployment](#-deployment) and [CI/CD & GitHub Workflows](#️-cicd--github-workflows))
-- **Miscellaneous**
-  - Admin tools, analytics, FAQ, logout/session management
 
 ---
 
@@ -145,6 +65,19 @@ INET-READY is a modern, privacy-focused platform for safe and informed travel. I
   <img src="https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white&style=for-the-badge" alt="Vite"/>
   <img src="https://img.shields.io/badge/Aptible-2B2B2B?logo=aptible&logoColor=white&style=for-the-badge" alt="Aptible"/>
 </p>
+
+---
+
+## Quick Start
+
+```sh
+git clone https://github.com/bpmiranda3099/inet-ready-v2.git
+cd inet-ready-v2
+npm install
+npm run dev
+```
+
+Visit [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
@@ -183,12 +116,87 @@ INET-READY is a modern, privacy-focused platform for safe and informed travel. I
      VITE_FIREBASE_VAPID_KEY=...
      VITE_MAPBOX_API_KEY=...
      ```
-   - Place your Firebase service account key in `config/firebase-credentials.json` for backend scripts.
+   - Place your Firebase service account key in [`config/firebase-credentials.json`](config/firebase-credentials.json) for backend scripts.
 
 4. **Install Python dependencies:**
    ```sh
    pip install -r requirements.txt
    ```
+
+---
+
+## 🌐 APIs Used in INET-READY
+
+For a summary of the APIs used, see below. **Detailed API endpoint usage is described in the [API Endpoints (Medical Data)](#-api-endpoints-medical-data) section.**
+
+### External APIs
+
+#### a. OpenMeteo API
+
+- **Purpose:** Weather, forecast, and historical data for all supported cities
+- **Usage:** Python scripts (`openmeteo_requests`, `requests`) and data ingestion
+- **Docs:** https://open-meteo.com/
+
+#### b. Overpass API (OpenStreetMap)
+
+- **Purpose:** Geospatial data for city coordinates
+- **Usage:** Python scripts via `overpy`
+- **Docs:** https://overpass-api.de/
+
+#### c. Mapbox API
+
+- **Purpose:** Interactive maps and geolocation in the frontend
+- **Usage:** `mapbox-gl` in Svelte components
+- **Docs:** https://docs.mapbox.com/
+
+#### d. Google Gemini API (Generative AI)
+
+- **Purpose:** AI-powered chatbot and medical/travel advice
+- **Usage:** `@google/generative-ai` in `gemini-service.js` (frontend) and via Node.js bridge in backend scripts
+- **Docs:** https://ai.google.dev/gemini-api/docs
+
+#### e. Firebase APIs
+
+- **Purpose:** Authentication, Firestore database, Cloud Messaging (FCM), Analytics
+- **Usage:** Web SDK (`firebase`), backend scripts (`firebase-admin`, `google-cloud-firestore`)
+
+#### f. Google Cloud APIs
+
+- **Purpose:** Used by backend scripts for Firestore and service account access
+- **Usage:** `google-api-python-client`, `google-cloud-firestore`
+
+---
+
+### 3. Other Notable Endpoints/Services
+
+- **Firebase Cloud Functions**
+  - `functions/sendTestNotification.js` — For sending test push notifications via FCM (see [Backend Scripts](#-usage))
+- **Vercel Analytics**
+  - `@vercel/speed-insights` — For frontend analytics
+
+---
+
+### 4. Service Workers
+
+- **Path:** `/firebase-messaging-sw.js`
+- **Purpose:** Handles push notifications and caching for offline support (see [Notifications](#-notifications) for user-facing info)
+
+## 🌟 Features
+
+- **Authentication & Account Management**: User registration/login (email, Google, Facebook), email verification, password reset, logout, linked accounts
+- **Dashboard & Navigation**: Tabbed dashboard, bottom navigation, app bar
+- **City Preferences & Location**: City selection, preferences, location tracking, permissions
+- **Medical Profile & Form**: Medical data entry, profile display, health insights, visualizations
+- **Travel Health Cards**: Dynamic cards for weather, heat index, health status, hospitals, advice
+- **Notifications**: Real-time push notifications, notification history, permission management
+- **Chatbot Assistant (SafeTrip AI)**: AI-powered travel and health Q&A, context-aware, mobile-friendly
+- **Permissions & Settings**: Permissions panel, display preferences, privacy controls
+- **Onboarding & Welcome**: Welcome modal, onboarding steps, user greeting
+- **Visual & UI Components**: Cards, banners, responsive design, modals, tooltips
+- **Data & Integration**: Weather, heat index, geospatial, and medical data integration
+- **Automated Data Collection**: Automated scripts for weather and heat index updates (see [CI/CD & GitHub Workflows](#️-cicd--github-workflows))
+- **Deployment & Security**: Automated deployment, secure credentials, manual workflow triggers (see [Deployment](#-deployment) and [CI/CD & GitHub Workflows](#️-cicd--github-workflows))
+- **Miscellaneous**: Admin tools, analytics, FAQ, logout/session management
 
 ---
 
@@ -205,19 +213,13 @@ Visit [http://localhost:5173](http://localhost:5173) in your browser.
 ### Backend Scripts
 
 - **Weather & Heat Index Forecasts:**
-  - `src/scripts/heat_index_forecast_api.py` — Generate and serve forecasts (CLI/API)
-  - `src/scripts/daily_weather_insights.py` — Generate insights, send notifications
-  - `src/scripts/generate_weather_insights.js` — Node.js bridge for Gemini AI
+  - [`src/scripts/heat_index_forecast_api.py`](src/scripts/heat_index_forecast_api.py) — Generate and serve forecasts (CLI/API)
+  - [`src/scripts/daily_weather_insights.py`](src/scripts/daily_weather_insights.py) — Generate insights, send notifications
+  - [`src/scripts/generate_weather_insights.js`](src/scripts/generate_weather_insights.js) — Node.js bridge for Gemini AI
 - **Medical Data API:**
-  - `src/lib/services/medical-api.js` — Communicates with Aptible-hosted Express/Postgres backend
+  - [`src/lib/services/medical-api.js`](src/lib/services/medical-api.js) — Communicates with Aptible-hosted Express/Postgres backend
 - **Notification Service:**
-  - `functions/sendTestNotification.js` — Firebase Cloud Function for push notification testing
-
-### Data Files
-
-- `public/data/city_coords.csv` — City geolocations
-- `public/data/historical_weather_data.csv` — Historical weather
-- `public/data/predicted_heat_index/` — Daily predictions and metrics
+  - [`functions/sendTestNotification.js`](functions/sendTestNotification.js) — Firebase Cloud Function for push notification testing (see [Notifications](#-notifications) for user-facing info)
 
 ---
 
@@ -271,7 +273,7 @@ INET-READY collects and processes weather and heat index data using the [OpenMet
 - **Historical Data**: Daily and hourly weather records for trend analysis and model validation.
 - **City Geolocations**: City coordinates and metadata for mapping and risk calculations.
 
-### Data Files in This Project
+## 🗂️ Data Files in This Project
 
 - `public/data/city_coords.csv` — City names, latitude, longitude (from OpenMeteo and Overpass APIs)
 - `public/data/historical_weather_data.csv` — Historical weather data (OpenMeteo)
@@ -382,12 +384,6 @@ Logs are automatically created and appended by the scripts. They are essential f
 
 ---
 
-## 🧑‍💻 Contributing
-
-Contributions are welcome! Please open issues or submit pull requests for improvements and bug fixes.
-
----
-
 ## 🚀 Deployment
 
 - **Frontend:** Deploy on [Vercel](https://vercel.com/) or similar static hosting
@@ -398,135 +394,30 @@ Contributions are welcome! Please open issues or submit pull requests for improv
 
 ## ⚙️ CI/CD & GitHub Workflows
 
-INET-READY uses GitHub Actions for automated data collection, processing, and deployment:
-
-### Automated Workflows
-
-- **Hourly Weather Update**
-  - Runs every hour to collect current weather data and update Firebase.
-  - Script: `src/scripts/hourly_heat_index_api.py`
-- **Daily Historical Weather Update**
-  - Runs daily at midnight UTC to update historical weather records and commit changes.
-  - Script: `src/scripts/daily_historical_weather_data.py`
-- **Daily Heat Index Forecast**
-  - Runs daily at 4:00 AM UTC to generate future heat index predictions and update Firebase.
-  - Script: `src/scripts/heat_index_forecast_api.py`
-
-### Configuration & Security
-
-- Uses GitHub Secrets for secure credential management (e.g., `FIREBASE_SERVICE_ACCOUNT_JSON`).
-- Credentials are decoded and used only during workflow runs.
-
-### Manual Triggers
-
-- All workflows can be triggered manually from the GitHub Actions tab.
+INET-READY uses GitHub Actions for automated workflows. For detailed information on our CI/CD pipelines, see the [CI/CD README](/.github/workflows/README.md).
 
 ### Data Sources
 
-- Weather data is collected from reliable meteorological sources and processed for accuracy. See [Data Sources: OpenMeteo API](#-data-sources-openmeteo-api) for details.
+- <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>
 
 ---
 
-## 🐍 Python Libraries Used
+## 📦 Dependencies
 
-The backend and data science scripts in INET-READY use the following Python libraries (see `requirements.txt` for full list):
-
-- **numpy** — Numerical operations and array handling
-- **pandas** — Data manipulation and analysis
-- **xgboost** — Gradient boosting for machine learning predictions
-- **scikit-learn (sklearn)** — Model selection, metrics, and validation
-- **loguru** — Advanced logging
-- **requests** — HTTP requests for API calls
-- **requests-cache** — Caching for HTTP requests
-- **openmeteo_requests** — Open-Meteo API client
-- **overpy** — Overpass API for geospatial data (city coordinates)
-- **matplotlib, seaborn** — Data visualization
-- **numba, llvmlite** — High-performance numerical functions
-- **joblib, threadpoolctl, concurrent.futures, multiprocessing** — Parallel and asynchronous execution
-- **tqdm** — Progress bars for scripts
-- **firebase-admin, google-cloud-firestore, google-api-python-client** — Firebase and Google Cloud integration
-- **pythermalcomfort** — Thermal comfort calculations
-- **csv, os, sys, time, tempfile, subprocess** — Standard library modules for file, process, and system management
-
-These libraries are required for weather data collection, prediction, validation, notifications, and integration with external APIs. All are listed in `requirements.txt` for reproducible setup.
-
----
-
-## 📦 Node.js Modules Used
-
-The frontend, backend, and build system use the following Node.js modules (see `package.json` and `package-lock.json` for full details):
-
-### Core Application & Frameworks
-
-- **svelte**, **@sveltejs/kit**, **@sveltejs/adapter-vercel**, **@sveltejs/vite-plugin-svelte** — SvelteKit app framework and Vercel adapter
-- **vite** — Fast frontend build tool
-
-### UI & Utilities
-
-- **@iconify/svelte** — Icon support for Svelte
-- **marked** — Markdown parsing for chat and content
-- **mapbox-gl** — Interactive maps
-- **uuid** — Unique ID generation
-- **dotenv** — Environment variable management
-
-### Cloud & AI
-
-- **firebase** — Firebase web SDK (auth, Firestore, messaging, etc.)
-- **@google/generative-ai** — Gemini AI integration
-- **@vercel/speed-insights** — Vercel analytics
-
-### Linting & Formatting (Dev)
-
-- **eslint**, **eslint-plugin-svelte**, **eslint-config-prettier**, **prettier**, **prettier-plugin-svelte**, **@eslint/js**, **@eslint/compat**, **globals** — Code linting and formatting
-
-### Other Notable Modules
-
-- **all dependencies and devDependencies** are locked and versioned in `package-lock.json` for reproducibility. For a full list, see those files or run:
-
-```sh
-npm ls --all
-```
-
----
-
-## 📦 Node.js Project & venv Structure
-
-- All Node.js dependencies are managed via `npm install` and tracked in `package-lock.json`.
-- Python virtual environments (`venv/`) are recommended for backend scripts (see above).
-- Scripts for activating/deactivating venv are included in the `Scripts/` directory (Windows).
-- For cross-platform venv activation, see the [Python Virtual Environment (venv) Setup](#-python-virtual-environment-venv-setup) section above.
+For a full list of Python libraries, see [`requirements.txt`](requirements.txt).
+For a full list of Node.js modules, see [`package.json`](package.json) and [`package-lock.json`](package-lock.json).
 
 ---
 
 ## 🐍 Python Virtual Environment (venv) Setup
 
-It is strongly recommended to use a Python virtual environment for isolation and reproducibility:
+For instructions on setting up a Python virtual environment, see the official [Python venv documentation](https://docs.python.org/3/library/venv.html).
 
-### Create and Activate venv (Windows)
+---
 
-```sh
-python -m venv venv
-.\venv\Scripts\activate
-```
+## 🧑‍💻 Contributing
 
-### Create and Activate venv (macOS/Linux)
-
-```sh
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### Install All Dependencies
-
-```sh
-pip install -r requirements.txt
-```
-
-### Deactivate venv
-
-```sh
-deactivate
-```
+Contributions are welcome! Please open issues or submit pull requests for improvements and bug fixes.
 
 ---
 
