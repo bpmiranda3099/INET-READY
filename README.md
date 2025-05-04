@@ -30,32 +30,6 @@
 
 ---
 
-## 📑 Table of Contents
-
-- [Overview](#overview)
-- [Demo](#demo)
-- [Tech Stack](#tech-stack)
-- [Quick Start](#quick-start)
-- [Getting Started](#getting-started)
-- [APIs Used in INET-READY](#apis-used-in-inet-ready)
-- [Features](#features)
-- [Usage](#usage)
-- [API Endpoints (Medical Data)](#api-endpoints-medical-data)
-- [Notifications](#notifications)
-- [Maps & Location](#maps--location)
-- [Data Files in This Project](#data-files-in-this-project)
-- [Machine Learning Process & Validation](#machine-learning-process--validation)
-- [Logs & Monitoring](#logs--monitoring)
-- [Deployment](#deployment)
-- [Continuous Deployment & Secrets Management](#continuous-deployment--secrets-management)
-- [Dependencies](#dependencies)
-- [Python Virtual Environment (venv) Setup](#python-virtual-environment-venv-setup)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-
----
-
 ## 📝 Overview
 
 INET-READY is a modern, privacy-focused platform for safe and informed travel. It combines real-time heat index forecasting, personalized health risk insights, and secure medical data management. The system leverages SvelteKit, Firebase, Python, and Node.js to deliver timely notifications and actionable travel health guidance.
