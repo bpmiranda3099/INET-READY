@@ -7,7 +7,7 @@
 ![Status](https://img.shields.io/badge/status-Active-success)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Finet-ready-v2.vercel.app&up_message=live&down_message=offline&timeout=1000&label=Website&color=purple)](https://inet-ready-v2.vercel.app)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2)
-[![GitHub Actions Status (INET-READY)](<https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-v2/ci.yml?branch=main&label=GitHub%20CI%20(v2)>)](https://github.com/bpmiranda3099/inet-ready-v2/actions)
+[![GitHub Actions Status (INET-READY)](<https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/ci.yml?branch=main&label=GitHub%20CI%20(v2)>)](https://github.com/bpmiranda3099/INET-READY/actions)
 
 </div>
 
