@@ -305,6 +305,24 @@
 		}
 		// Only use emergency-related categories
 		const types = ['emergency', 'hospital', 'emergency_room', 'urgent_care']; // prioritize emergency care
+		const exclude = [
+			'maternity',
+			'obstetric',
+			'dental',
+			'physical_therapy',
+			'rehabilitation',
+			'optical',
+			'spa',
+			'wellness',
+			'beauty',
+			'cosmetic',
+			'dermatology',
+			'plastic_surgery',
+			'fitness',
+			'weight_loss',
+			'homeopathy',
+			'chiropractic'
+		];
 		for (const category of types) {
 			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=8&access_token=${accessToken}`;
 			try {
@@ -315,22 +333,15 @@
 				for (const f of features) {
 					const props = f.properties || {};
 					const phone = props.metadata?.phone || props.phone || null;
-					const categories = (props.poi_category_ids || []).map((x) => x.toLowerCase());
-					// Filter out maternity, dental, physical therapy, and non-emergency clinics
+					const categories = [
+						...(props.poi_category_ids || []),
+						...(props.poi_category || [])
+					].map((x) => x.toLowerCase());
 					const isEmergency = categories.some((cat) =>
-						['emergency', 'hospital', 'urgent_care', 'emergency_room'].includes(cat.toLowerCase())
+						['emergency', 'hospital', 'urgent_care', 'emergency_room'].includes(cat)
 					);
 					const isNonEmergency = categories.some((cat) =>
-						[
-							'maternity',
-							'obstetric',
-							'dental',
-							'physical_therapy',
-							'rehabilitation',
-							'optical',
-							'spa',
-							'wellness'
-						].includes(cat.toLowerCase())
+						exclude.includes(cat)
 					);
 					if (phone && isEmergency && !isNonEmergency) {
 						return {
