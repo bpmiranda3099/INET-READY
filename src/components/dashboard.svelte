@@ -1413,7 +1413,7 @@
         background: white;
         border-radius: 2px;
         box-shadow: 0 1px 4px rgba(0,0,0,0.10);
-        transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
+        transition: transform 0.7s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
         opacity: 0;
         pointer-events: none;
     }
