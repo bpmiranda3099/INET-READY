@@ -1383,7 +1383,7 @@
     }
     
     .nav-item i {
-        font-size: 2.4rem;
+        font-size: 1.25rem;
         margin-bottom: 0.25rem;
         transition: font-size 0.3s cubic-bezier(0.4,0,0.2,1), color 0.2s;
     }
@@ -1391,6 +1391,11 @@
     .nav-item.active {
         color: white;
         background-color: #dd815e; /* Orange main color */
+    }
+    .nav-item.active i {
+        font-size: 2.4rem;
+        color: white;
+        transition: font-size 0.35s cubic-bezier(0.4,0,0.2,1), color 0.2s;
     }
     
     .nav-item:not(.active):hover {
