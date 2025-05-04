@@ -1397,6 +1397,24 @@
         font-size: 2.4rem;
         color: white;
         transition: font-size 0.35s cubic-bezier(0.4,0,0.2,1), color 0.2s;
+        position: relative;
+    }
+
+    .nav-item.active i::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -6px;
+        width: 32px;           /* Make this as wide as the icon or a bit wider */
+        height: 4px;           /* Thin underline */
+        background: white;
+        border-radius: 2px;    /* Rounded ends */
+        box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+        transition: opacity 0.2s, width 0.2s;
+        opacity: 1;
+        pointer-events: none;
     }
     
     .nav-item:not(.active):hover {
