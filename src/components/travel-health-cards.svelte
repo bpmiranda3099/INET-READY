@@ -205,7 +205,8 @@
 			return [];
 		}
 
-		const results = [];
+		const categoryResults = {};
+		const allResults = [];
 
 		for (const category of types) {
 			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=${limit}&access_token=${accessToken}`;
@@ -214,34 +215,48 @@
 				if (!res.ok) throw new Error('Mapbox API error');
 				const data = await res.json();
 				const features = data.features || [];
-				for (const f of features) {
+				const pois = features.map((f) => {
 					const props = f.properties || {};
-					// Add lat/lng for Google Maps pins
-					results.push({
+					return {
 						title: props.name || '',
 						address: props.full_address || props.address || '',
-						category: props.poi_category ? props.poi_category[0] : '',
+						category: props.poi_category ? props.poi_category[0] : category,
 						id: props.mapbox_id || '',
 						lat: props.coordinates?.latitude || f.geometry?.coordinates?.[1],
 						lng: props.coordinates?.longitude || f.geometry?.coordinates?.[0]
-					});
-				}
+					};
+				});
+				categoryResults[category] = pois;
+				allResults.push(...pois);
 			} catch (e) {
 				console.error(`Failed to fetch POIs for category ${category} from Mapbox:`, e);
 			}
 		}
 
-		// Remove duplicates by mapbox_id
+		// Pick the top POI from each category for variation
 		const unique = [];
 		const seen = new Set();
-		for (const poi of results) {
-			if (!seen.has(poi.id)) {
-				unique.push(poi);
-				seen.add(poi.id);
+		for (const category of types) {
+			const pois = categoryResults[category] || [];
+			for (const poi of pois) {
+				if (!seen.has(poi.id) && unique.length < 5) {
+					unique.push(poi);
+					seen.add(poi.id);
+					break; // Only one per category for now
+				}
+			}
+		}
+		// If less than 5, fill with remaining unique POIs
+		if (unique.length < 5) {
+			for (const poi of allResults) {
+				if (!seen.has(poi.id) && unique.length < 5) {
+					unique.push(poi);
+					seen.add(poi.id);
+				}
 			}
 		}
 
-		return unique.slice(0, 5);
+		return unique;
 	}
 
 	// Helper to open Google Maps with 5 POIs as route pins, starting from origin/current location/homeCity
@@ -958,29 +973,23 @@
 											openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
 										style="cursor: pointer;"
 									>
-										{#if card.rowThree.tiles[0].pois && card.rowThree.tiles[0].pois.length > 0}
-											{@const pois = card.rowThree.tiles[0].pois}
-											{@const cafe = pois.find(p => (p.category || '').toLowerCase().includes('cafe'))}
-											{@const mall = pois.find(p => (p.category || '').toLowerCase().includes('mall'))}
-											{@const restaurant = pois.find(p => (p.category || '').toLowerCase().includes('restaurant'))}
-											<div class="poi-tile-title center">Nearby Cool Indoor Areas</div>
-											<ul class="poi-list">
-												{#each [cafe, mall, restaurant].filter(Boolean) as poi, j (poi.id || j)}
-													<li class="poi-list-item">
-														<i class="bi bi-geo-alt-fill poi-location-icon"></i>
-														<div class="poi-info-col">
-															<span class="poi-name">{poi.title}</span>
-															{#if poi.address}
-																<span class="poi-address">{poi.address}</span>
-															{/if}
-														</div>
-													</li>
-													{#if j < [cafe, mall, restaurant].filter(Boolean).length - 1}
-														<hr class="poi-divider" />
-													{/if}
-												{/each}
-											</ul>
-										{/if}
+										<div class="poi-tile-title center">Nearby Cool Indoor Areas</div>
+										<ul class="poi-list">
+											{#each card.rowThree.tiles[0].pois.slice(0, 3) as poi, j (poi.id || j)}
+												<li class="poi-list-item">
+													<i class="bi bi-geo-alt-fill poi-location-icon"></i>
+													<div class="poi-info-col">
+														<span class="poi-name">{poi.title}</span>
+														{#if poi.address}
+															<span class="poi-address">{poi.address}</span>
+														{/if}
+													</div>
+												</li>
+												{#if j < Math.min(card.rowThree.tiles[0].pois.length, 3) - 1}
+													<hr class="poi-divider" />
+												{/if}
+											{/each}
+										</ul>
 									</div>
 								{/if}
 							</div>
