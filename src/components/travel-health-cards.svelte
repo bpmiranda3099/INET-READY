@@ -1355,8 +1355,8 @@
 		padding: 0.5rem;
 		display: flex;
 		flex-direction: column;
-		flex: 1; /* Take up remaining space */
-		overflow-y: auto; /* Add scroll if content overflows */
+		flex: 1;
+		overflow-y: auto;
 		max-height: calc(100vh - 250px);
 	}
 
@@ -1368,7 +1368,7 @@
 		margin-bottom: 0; /* Removed margin */
 	}
 
-	/* Adjusted height distribution: 25%, 35%, 40% */
+	/* Adjust height distribution */
 	.row-one {
 		height: 25%;
 		min-height: 100px;
@@ -2113,12 +2113,14 @@
 		background: skyblue;
 		color: #fff;
 		width: 100%;
-		min-height: 100px;
-		height: 100%;
+		min-height: 115px; /* Increased from 100px (15% more) */
+		height: 115%; /* Increased from 100% (15% more) */
 		padding: 0;
 		box-sizing: border-box;
 		position: relative;
 		overflow: hidden;
+		flex-grow: 1.15; /* Add this to make it grow proportionally more */
+		margin: 0.5rem 0; /* Add some vertical margin to emphasize height */
 	}
 	.advice-scrollable {
 		flex: 1 1 auto;
