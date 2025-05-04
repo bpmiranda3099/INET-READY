@@ -1390,7 +1390,7 @@
     
     .nav-item.active {
         color: white;
-        font-size: 2rem;
+        font-size: 3rem;
         background-color: #dd815e; /* Orange main color */
     }
     
