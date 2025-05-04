@@ -15,7 +15,7 @@
 [![EHR Aptible CD](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy.yml?branch=main&label=EHR%20Aptible)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy.yml)
 [![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
 
-> _*For CI/CD details, see the [CI/CD README](/.github/workflows/README.md).*_
+_*For CI/CD details, see the [CI/CD README](/.github/workflows/README.md).*_
 
 </div>
 
