@@ -667,7 +667,9 @@
 
 <div class="medical-form-container"></div>
     <div class="form-header">
-        <h2>{isEditing ? 'Update Medical Information' : 'Complete Your Medical Profile'}</h2>
+        {#if !isEditing}
+            <h2>Complete Your Medical Profile</h2>
+        {/if}
         {#if !isEditing}
             <p class="form-intro">
                 To help us provide personalized insights, please
@@ -1139,6 +1141,16 @@
             </div>
         </div>
         
+        <!-- Powered by attribution -->
+        <div class="powered-by-container">
+            <span class="powered-by-text">Powered by:</span>
+            <img 
+                src="https://framerusercontent.com/images/DuHKZUEtnSMoEul4G8SxQPj2RaM.png" 
+                alt="AI Health Intelligence Provider" 
+                class="powered-by-logo"
+            />
+        </div>
+
         <!-- Form Actions -->
         <div class="form-actions">
             {#if isEditing}
@@ -1723,5 +1735,24 @@
     }
     .hidden-checkbox:checked + .modern-checkbox .checkbox-indicator {
     opacity: 1;
+    }
+
+    .powered-by-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 2rem 0 1.5rem;
+        opacity: 0.8;
+    }
+    
+    .powered-by-text {
+        font-size: 0.85rem;
+        color: #777;
+        margin-right: 0.5rem;
+    }
+    
+    .powered-by-logo {
+        height: 24px;
+        width: auto;
     }
 </style>

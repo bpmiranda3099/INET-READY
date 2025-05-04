@@ -654,7 +654,9 @@
                 />
                 <div class="app-titles">
                     <small class="app-title">INET-READY</small>
-                    <h2 class="section-title">{getSectionTitle(activeTab)}</h2>
+                    <h2 class="section-title">
+                        {activeTab === 'medical' && showMedicalForm ? 'Edit Medical Profile' : getSectionTitle(activeTab)}
+                    </h2>
                 </div>
             </div>
         </div>
