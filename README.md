@@ -15,7 +15,7 @@
 [![EHR Aptible CD](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy.yml?branch=main&label=EHR%20Aptible)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy.yml)
 [![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
 
-> For CI/CD details, see the [CI/CD README](/.github/workflows/README.md).
+> _*For CI/CD details, see the [CI/CD README](/.github/workflows/README.md).*_
 
 </div>
 
@@ -48,7 +48,6 @@
 - [Logs & Monitoring](#logs--monitoring)
 - [Deployment](#deployment)
 - [Continuous Deployment & Secrets Management](#continuous-deployment--secrets-management)
-- [CI/CD & GitHub Workflows](#cicd--github-workflows)
 - [Dependencies](#dependencies)
 - [Python Virtual Environment (venv) Setup](#python-virtual-environment-venv-setup)
 - [Contributing](#contributing)
