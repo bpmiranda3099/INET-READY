@@ -62,7 +62,7 @@ INET-READY is a modern, privacy-focused platform for safe and informed travel. I
 
 ---
 
-## Quick Start
+## ⚡️ Quick Start
 
 ```sh
 git clone https://github.com/bpmiranda3099/inet-ready-v2.git
