@@ -669,8 +669,6 @@
     <div class="form-header">
         {#if !isEditing}
             <h2>Complete Your Medical Profile</h2>
-        {/if}
-        {#if !isEditing}
             <p class="form-intro">
                 To help us provide personalized insights, please
                 fill out the following health information. Your data is kept private and secure.
