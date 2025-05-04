@@ -1391,6 +1391,7 @@
     .nav-item.active {
         color: white;
         background-color: #dd815e; /* Orange main color */
+        border-radius: 16px;
     }
     .nav-item.active i {
         font-size: 2.4rem;
