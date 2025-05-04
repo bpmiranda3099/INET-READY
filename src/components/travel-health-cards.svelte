@@ -2113,7 +2113,7 @@
 		background: skyblue;
 		color: #fff;
 		width: 100%;
-		min-height: 100px;
+		min-height: 115px;
 		height: 100%;
 		padding: 0;
 		box-sizing: border-box;
