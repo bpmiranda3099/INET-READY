@@ -343,17 +343,17 @@
 					].map((x) => x.toLowerCase());
 					const name = (props.name || '').toLowerCase();
 
-					// Must have "hospital" in category or name
-					const isHospital =
-						categories.some((cat) => cat.includes('hospital')) ||
-						name.includes('hospital');
+					// Strict: Must have "hospital" in name or category
+					const hasHospitalKeyword =
+						name.includes('hospital') ||
+						categories.some((cat) => cat.includes('hospital'));
 
 					// Exclude if any unwanted keyword is present in name or category
 					const isExcluded =
 						categories.some((cat) => exclude.some((ex) => cat.includes(ex))) ||
 						exclude.some((ex) => name.includes(ex));
 
-					if (phone && isHospital && !isExcluded) {
+					if (phone && hasHospitalKeyword && !isExcluded) {
 						return {
 							title: props.name || '',
 							address: props.full_address || props.address || '',
