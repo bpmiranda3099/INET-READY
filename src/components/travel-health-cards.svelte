@@ -1067,6 +1067,12 @@
 			</div>
 		{/if}
 
+		<div class="attribution-link">
+			<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" class="open-meteo-link">
+				Weather data by Open-Meteo.com
+			</a>
+		</div>
+
 		<div class="swipe-hint" class:hidden={currentCard > 0}>
 			<div class="swipe-icon">←</div>
 			<div class="swipe-icon">→</div>
