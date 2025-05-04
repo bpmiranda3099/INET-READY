@@ -1046,8 +1046,15 @@
 					<div class="card-footer">
 						{#if card.timestamp}
 							<div class="update-time">
-								<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" class="open-meteo-link">
-									Weather data by Open-Meteo.com
+								Weather data by 
+								<a 
+									href="https://open-meteo.com/" 
+									target="_blank" 
+									rel="noopener noreferrer" 
+									class="open-meteo-link"
+									style="color: orange; text-decoration: underline;"
+								>
+									Open-Meteo.com
 								</a>
 							</div>
 							<div class="update-time">
