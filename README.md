@@ -12,10 +12,10 @@
 [![Weather Insights](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_weather_insights.yml?branch=main&label=Weather%20Insights)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_weather_insights.yml)
 [![Heat Index Notifications](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/heat_index_notifications.yml?branch=main&label=Heat%20Index%20Notifications)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/heat_index_notifications.yml)
 [![Hourly Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/hourly_weather_update.yml?branch=main&label=Hourly%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/hourly_weather_update.yml)
-[![EHR Aptible Deployment](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy_aptible.yml?branch=main&label=EHR%20Aptible%20Deploy)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy_aptible.yml)
+[![EHR Aptible](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy_aptible.yml?branch=main&label=EHR%20Aptible)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy_aptible.yml)
 [![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
 
-> For detailed information on our CI/CD pipelines, see the [CI/CD README](/.github/workflows/README.md).
+> For CI/CD details, see the [CI/CD README](/.github/workflows/README.md).
 
 </div>
 
