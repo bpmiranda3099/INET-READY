@@ -1406,7 +1406,7 @@
         position: absolute;
         left: 50%;
         transform: translateX(-50%) scaleX(0);
-        transform-origin: left; /* Add this line */
+        transform-origin: left;
         bottom: -6px;
         width: 32px;
         height: 4px;
