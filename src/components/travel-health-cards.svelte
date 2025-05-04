@@ -1046,6 +1046,11 @@
 					<div class="card-footer">
 						{#if card.timestamp}
 							<div class="update-time">
+								<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" class="open-meteo-link">
+									Weather data by Open-Meteo.com
+								</a>
+							</div>
+							<div class="update-time">
 								Updated: {new Date(card.timestamp).toLocaleString()}
 							</div>
 						{/if}
@@ -1066,12 +1071,6 @@
 				{/each}
 			</div>
 		{/if}
-
-		<div class="attribution-link">
-			<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" class="open-meteo-link">
-				Weather data by Open-Meteo.com
-			</a>
-		</div>
 
 		<div class="swipe-hint" class:hidden={currentCard > 0}>
 			<div class="swipe-icon">←</div>
