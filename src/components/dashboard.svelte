@@ -1383,14 +1383,13 @@
     }
     
     .nav-item i {
-        font-size: 1.25rem;
+        font-size: 2.4rem;
         margin-bottom: 0.25rem;
         transition: font-size 0.3s cubic-bezier(0.4,0,0.2,1), color 0.2s;
     }
     
     .nav-item.active {
         color: white;
-        font-size: 3rem;
         background-color: #dd815e; /* Orange main color */
     }
     
@@ -1416,7 +1415,6 @@
     margin-left: 0;
     pointer-events: none;
 }
-
       /* Card styles */    .card {
         background: white;
         padding: 1.5rem;
