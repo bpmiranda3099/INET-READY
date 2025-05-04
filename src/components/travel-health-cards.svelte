@@ -958,14 +958,7 @@
 											openGoogleMapsWithPOIs(card.rowThree.tiles[0].pois.slice(0, 3), e)}
 										style="cursor: pointer;"
 									>
-										<div class="poi-tile-title center" style="position: relative;">
-											<img
-												src="/static/mapbox-icon.png"
-												alt="Mapbox"
-												class="mapbox-icon"
-											/>
-											Nearby Cool Indoor Areas
-										</div>
+										<div class="poi-tile-title center">Nearby Cool Indoor Areas</div>
 										<ul class="poi-list">
 											{#each card.rowThree.tiles[0].pois.slice(0, 3) as poi, j (poi.id || j)}
 												<li class="poi-list-item">
@@ -2439,17 +2432,6 @@
 		text-align: center;
 		width: 100%;
 		display: block;
-	}
-	.mapbox-icon {
-		position: absolute;
-		top: 0.1rem;
-		right: 0.6rem;
-		width: 1.5rem;
-		height: 1.5rem;
-		object-fit: contain;
-		opacity: 0.95;
-		margin: 0;
-		pointer-events: none;
 	}
 	@media (max-width: 600px) {
 		.poi-tile-title {
