@@ -22,8 +22,7 @@ INET-READY uses GitHub Actions for automated data collection, processing, notifi
   - Script: `src/scripts/heat_index_alert_service.py`
 
 - **GitLab Mirror**
-
-  - On every push to GitHub, runs CI steps and then mirrors all changes (branches, tags, deletions) to a linked GitLab repository.
+  - Runs daily at midnight UTC after successful build and test steps, pushing all branches and tags to the configured GitLab repository using repository secrets.
 
 ### Manual Triggers
 
