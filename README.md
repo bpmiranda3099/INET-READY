@@ -7,6 +7,15 @@
 ![Status](https://img.shields.io/badge/status-Active-success)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Finet-ready-v2.vercel.app&up_message=live&down_message=offline&timeout=1000&label=Website&color=purple)](https://inet-ready-v2.vercel.app)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2)
+[![Heat Index Forecast Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_heat_index_forecast_update.yml?branch=main&label=Heat%20Index%20Forecast)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_heat_index_forecast_update.yml)
+[![Historical Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_historical_weather_update.yml?branch=main&label=Historical%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_historical_weather_update.yml)
+[![Weather Insights](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_weather_insights.yml?branch=main&label=Weather%20Insights)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_weather_insights.yml)
+[![Heat Index Notifications](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/heat_index_notifications.yml?branch=main&label=Heat%20Index%20Notifications)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/heat_index_notifications.yml)
+[![Hourly Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/hourly_weather_update.yml?branch=main&label=Hourly%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/hourly_weather_update.yml)
+[![EHR Aptible Deployment](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy_aptible.yml?branch=main&label=EHR%20Aptible%20Deploy)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy_aptible.yml)
+[![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
+
+> For detailed information on our CI/CD pipelines, see the [CI/CD README](/.github/workflows/README.md).
 
 </div>
 
@@ -23,27 +32,28 @@
 
 ## 📑 Table of Contents
 
-- [Overview](#-overview)
+- [Overview](#overview)
 - [Demo](#demo)
-- [Tech Stack](#-tech-stack)
+- [Tech Stack](#tech-stack)
 - [Quick Start](#quick-start)
-- [Getting Started](#-getting-started)
-- [APIs Used in INET-READY](#-apis-used-in-inet-ready)
-- [Features](#-features)
-- [Usage](#-usage)
-- [API Endpoints (Medical Data)](#-api-endpoints-medical-data)
-- [Notifications](#-notifications)
-- [Maps & Location](#-maps--location)
-- [Data Files in This Project](#-data-files-in-this-project)
-- [Machine Learning Process & Validation](#-machine-learning-process--validation)
-- [Logs & Monitoring](#-logs--monitoring)
-- [Deployment](#-deployment)
-- [CI/CD & GitHub Workflows](#-cicd--github-workflows)
-- [Dependencies](#-dependencies)
-- [Python Virtual Environment (venv) Setup](#-python-virtual-environment-venv-setup)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Contact](#-contact)
+- [Getting Started](#getting-started)
+- [APIs Used in INET-READY](#apis-used-in-inet-ready)
+- [Features](#features)
+- [Usage](#usage)
+- [API Endpoints (Medical Data)](#api-endpoints-medical-data)
+- [Notifications](#notifications)
+- [Maps & Location](#maps--location)
+- [Data Files in This Project](#data-files-in-this-project)
+- [Machine Learning Process & Validation](#machine-learning-process--validation)
+- [Logs & Monitoring](#logs--monitoring)
+- [Deployment](#deployment)
+- [Continuous Deployment & Secrets Management](#continuous-deployment--secrets-management)
+- [CI/CD & GitHub Workflows](#cicd--github-workflows)
+- [Dependencies](#dependencies)
+- [Python Virtual Environment (venv) Setup](#python-virtual-environment-venv-setup)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ---
 
@@ -413,22 +423,6 @@ Logs are automatically created and appended by the scripts. They are essential f
 > See [`backup_env_to_proton.ps1`](backup_env_to_proton.ps1) and [`recover_env_from_proton.ps1`](recover_env_from_proton.ps1) for details on the backup/restore process.
 
 ---
-
-## ⚙️ CI/CD & GitHub Workflows
-
-INET-READY uses GitHub Actions for automated workflows.
-
-[![Heat Index Forecast Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_heat_index_forecast_update.yml?branch=main&label=Heat%20Index%20Forecast)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_heat_index_forecast_update.yml)
-[![Historical Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_historical_weather_update.yml?branch=main&label=Historical%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_historical_weather_update.yml)
-[![Weather Insights](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_weather_insights.yml?branch=main&label=Weather%20Insights)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_weather_insights.yml)
-[![Heat Index Notifications](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/heat_index_notifications.yml?branch=main&label=Heat%20Index%20Notifications)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/heat_index_notifications.yml)
-[![Hourly Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/hourly_weather_update.yml?branch=main&label=Hourly%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/hourly_weather_update.yml)
-
-[![EHR Aptible Deployment](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy_aptible.yml?branch=main&label=EHR%20Aptible%20Deploy)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy_aptible.yml)
-
-[![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
-
-For detailed information on our CI/CD pipelines, see the [CI/CD README](/.github/workflows/README.md).
 
 ### Data Sources
 
