@@ -7,7 +7,6 @@
 ![Status](https://img.shields.io/badge/status-Active-success)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Finet-ready-v2.vercel.app&up_message=live&down_message=offline&timeout=1000&label=Website&color=purple)](https://inet-ready-v2.vercel.app)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2)
-[![GitHub Actions Status (INET-READY)](<https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/ci.yml?branch=main&label=GitHub%20CI%20(v2)>)](https://github.com/bpmiranda3099/INET-READY/actions)
 
 </div>
 
@@ -417,7 +416,19 @@ Logs are automatically created and appended by the scripts. They are essential f
 
 ## ⚙️ CI/CD & GitHub Workflows
 
-INET-READY uses GitHub Actions for automated workflows. For detailed information on our CI/CD pipelines, see the [CI/CD README](/.github/workflows/README.md).
+INET-READY uses GitHub Actions for automated workflows.
+
+[![Heat Index Forecast Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_heat_index_forecast_update.yml?branch=main&label=Heat%20Index%20Forecast)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_heat_index_forecast_update.yml)
+[![Historical Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_historical_weather_update.yml?branch=main&label=Historical%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_historical_weather_update.yml)
+[![Weather Insights](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_weather_insights.yml?branch=main&label=Weather%20Insights)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_weather_insights.yml)
+[![Heat Index Notifications](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/heat_index_notifications.yml?branch=main&label=Heat%20Index%20Notifications)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/heat_index_notifications.yml)
+[![Hourly Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/hourly_weather_update.yml?branch=main&label=Hourly%20Weather)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/hourly_weather_update.yml)
+
+[![EHR Aptible Deployment](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy_aptible.yml?branch=main&label=EHR%20Aptible%20Deploy)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy_aptible.yml)
+
+[![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
+
+For detailed information on our CI/CD pipelines, see the [CI/CD README](/.github/workflows/README.md).
 
 ### Data Sources
 
