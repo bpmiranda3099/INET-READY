@@ -56,15 +56,6 @@
 
 ---
 
-## Demo
-
-<!-- Replace with your actual screenshot or GIF -->
-<p align="center">
-  <img src="assets/screenshot.png" alt="INET-READY Demo" width="600"/>
-</p>
-
----
-
 ## 📝 Overview
 
 INET-READY is a modern, privacy-focused platform for safe and informed travel. It combines real-time heat index forecasting, personalized health risk insights, and secure medical data management. The system leverages SvelteKit, Firebase, Python, and Node.js to deliver timely notifications and actionable travel health guidance.
@@ -82,6 +73,18 @@ INET-READY is a modern, privacy-focused platform for safe and informed travel. I
   <img src="https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white&style=for-the-badge" alt="Vite"/>
   <img src="https://img.shields.io/badge/Aptible-2B2B2B?logo=aptible&logoColor=white&style=for-the-badge" alt="Aptible"/>
 </p>
+
+---
+
+## 🚧 Demo
+
+> **Work in Progress**  
+> A live demo will be available soon. Check back later for updates.
+
+<!-- Replace with your actual screenshot or GIF when ready -->
+<!-- <p align="center">
+  <img src="assets/screenshot.png" alt="INET-READY Demo" width="600"/>
+</p> -->
 
 ---
 
