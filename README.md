@@ -6,13 +6,13 @@
 ![Platform](https://img.shields.io/badge/platform-Web-brightgreen?logo=google-chrome&logoColor=white)
 ![Status](https://img.shields.io/badge/status-Active-success?logo=checkmarx&logoColor=white)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Finet-ready-v2.vercel.app&up_message=live&down_message=offline&timeout=1000&label=Website&color=purple&logo=vercel&logoColor=white)](https://inet-ready-v2.vercel.app)
-![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2&logo=eye&logoColor=white)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=bpmiranda3099.inet-ready-v2&logo=people&logoColor=white)
 [![Heat Index Forecast Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_heat_index_forecast_update.yml?branch=main&label=Heat%20Index%20Forecast&logo=python)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_heat_index_forecast_update.yml)
 [![Historical Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_historical_weather_update.yml?branch=main&label=Historical%20Weather&logo=python)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_historical_weather_update.yml)
 [![Weather Insights](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/daily_weather_insights.yml?branch=main&label=Weather%20Insights&logo=python)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/daily_weather_insights.yml)
 [![Heat Index Notifications](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/heat_index_notifications.yml?branch=main&label=Heat%20Index%20Notifications&logo=python)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/heat_index_notifications.yml)
 [![Hourly Weather Update](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/hourly_weather_update.yml?branch=main&label=Hourly%20Weather&logo=python)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/hourly_weather_update.yml)
-[![EHR Aptible CD](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy.yml?branch=main&label=EHR%20Aptible&logo=https://raw.githubusercontent.com/bpmiranda3099/inet-ready-v2/main/static/aptible-icon.png)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy.yml)
+[![EHR Aptible CD](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/inet-ready-ehr/deploy.yml?branch=main&label=EHR%20Aptible&logo=medical-cross&logoColor=red)](https://github.com/bpmiranda3099/inet-ready-ehr/actions/workflows/deploy.yml)
 [![GitLab Mirror](https://img.shields.io/github/actions/workflow/status/bpmiranda3099/INET-READY/gitlab_mirror.yml?branch=main&label=GitLab%20Mirror&logo=gitlab&logoColor=%23FC6D26&color=orange)](https://github.com/bpmiranda3099/INET-READY/actions/workflows/gitlab_mirror.yml)
 
 _*For CI/CD details, see the [CI/CD README](/.github/workflows/README.md).*_
