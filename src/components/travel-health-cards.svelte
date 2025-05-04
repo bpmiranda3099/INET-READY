@@ -303,8 +303,7 @@
 			console.warn('Mapbox access token missing');
 			return null;
 		}
-		// Only use emergency-related categories
-		const types = ['emergency', 'hospital', 'emergency_room', 'urgent_care']; // prioritize emergency care
+		const types = ['emergency', 'hospital', 'emergency_room', 'urgent_care'];
 		const exclude = [
 			'maternity',
 			'obstetric',
@@ -321,7 +320,12 @@
 			'fitness',
 			'weight_loss',
 			'homeopathy',
-			'chiropractic'
+			'chiropractic',
+			'drugstore',
+			'pharmacy',
+			'lying-in',
+			'lying in',
+			'clinic'
 		];
 		for (const category of types) {
 			const url = `https://api.mapbox.com/search/searchbox/v1/category/${encodeURIComponent(category)}?proximity=${lng},${lat}&limit=8&access_token=${accessToken}`;
@@ -337,13 +341,19 @@
 						...(props.poi_category_ids || []),
 						...(props.poi_category || [])
 					].map((x) => x.toLowerCase());
-					const isEmergency = categories.some((cat) =>
-						['emergency', 'hospital', 'urgent_care', 'emergency_room'].includes(cat)
-					);
-					const isNonEmergency = categories.some((cat) =>
-						exclude.includes(cat)
-					);
-					if (phone && isEmergency && !isNonEmergency) {
+					const name = (props.name || '').toLowerCase();
+
+					// Must have "hospital" in category or name
+					const isHospital =
+						categories.some((cat) => cat.includes('hospital')) ||
+						name.includes('hospital');
+
+					// Exclude if any unwanted keyword is present in name or category
+					const isExcluded =
+						categories.some((cat) => exclude.some((ex) => cat.includes(ex))) ||
+						exclude.some((ex) => name.includes(ex));
+
+					if (phone && isHospital && !isExcluded) {
 						return {
 							title: props.name || '',
 							address: props.full_address || props.address || '',
