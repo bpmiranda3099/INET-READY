@@ -423,9 +423,9 @@ function toggleNavbar() {
   }
   .img-wrapper.portrait-header {
 	width: 100%;
-	height: 220px;
-	min-height: 220px;
-	max-height: 220px;
+	aspect-ratio: 1.6/1;
+	min-height: 0;
+	height: auto;
 	margin: 0 0 22px 0;
 	border-radius: 18px 18px 0 0;
 	overflow: hidden;
@@ -435,10 +435,13 @@ function toggleNavbar() {
 	align-items: flex-end;
 	justify-content: center;
 	box-shadow: 0 2px 8px rgba(221,129,94,0.10);
+	max-width: 100%;
   }
   .img-wrapper.portrait-header img {
 	width: 100%;
 	height: 100%;
+	min-height: 180px;
+	max-height: 260px;
 	object-fit: cover;
 	display: block;
 	position: absolute;
