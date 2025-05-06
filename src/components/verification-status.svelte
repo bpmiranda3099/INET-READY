@@ -158,8 +158,8 @@
   
   h2, h4, p, ul, div {
     max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 1rem;
+    margin-right: 1rem;
   }
   
   h2 {
