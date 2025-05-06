@@ -236,7 +236,7 @@ function toggleNavbar() {
   <!-- BENEFITS/FEATURES SECTION -->
   <section id="features" class="features py-5" style="background:#f5f5f7;">
   <div class="container">
-	<h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">How INET-READY Helps You</h2>
+  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700; font-size:2.5rem;">How INET-READY Helps You</h2>
 	<div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
 	  <div class="carousel-inner">
 		<div class="carousel-item active">
@@ -511,19 +511,19 @@ function toggleNavbar() {
   </section>
 
   <!-- ABOUT SECTION -->
-  <section id="about" class="py-5">
-	<div class="container">
-	  <div class="row align-items-center flex-column-reverse flex-md-row">
-		<div class="col-md-6 text-center text-md-start">
-		  <h3 style="color:#dd815e; font-weight:700;">About INET-READY</h3>
-		  <p style="font-size:1.1rem; color:#555;">INET-READY is a modern, privacy-focused platform for travelers. We combine real-time weather, health risk insights, and secure data management to help you travel smarter and safer—whether for business or leisure.</p>
-		</div>
-		<div class="col-md-6 mb-4 mb-md-0 text-center">
+  <section id="about" class="py-5" style="background:#dd815e; color:#fff;">
+   <div class="container">
+	 <div class="row align-items-center flex-column-reverse flex-md-row">
+	   <div class="col-md-6 text-center text-md-start">
+		 <h3 style="color:#fff; font-weight:700;">About INET-READY</h3>
+		 <p style="font-size:1.1rem; color:#fff;">INET-READY is a modern, privacy-focused platform for travelers. We combine real-time weather, health risk insights, and secure data management to help you travel smarter and safer—whether for business or leisure.</p>
+	   </div>
+	   <div class="col-md-6 mb-4 mb-md-0 text-center">
 <img src="/app-icon.png" alt="INET-READY Logo" class="img-fluid rounded" style="max-width:180px; background:transparent; border:none;" />
-		</div>
-	  </div>
-	</div>
-  </section>
+	   </div>
+	 </div>
+   </div>
+ </section>
 
   <!-- CALL TO ACTION -->
   <section class="get-started py-5" style="background:#fff;">
