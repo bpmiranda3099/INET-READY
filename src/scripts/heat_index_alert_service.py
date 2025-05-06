@@ -394,33 +394,33 @@ class HeatIndexAlertService:
         """Get users in the specified cities who have enabled notifications"""
         try:
             city_user_tokens = {}
-            
+
             # Get all users with notifications enabled
             users_ref = self.db.collection('users')
             users = users_ref.where('notification_enabled', '==', True).stream()
-            
+
             for user_doc in users:
                 user_data = user_doc.to_dict()
-                
-                # Check if user has location and FCM token
-                if 'location' in user_data and 'fcm_token' in user_data:
+
+                # Accept both snake_case and camelCase for FCM token
+                fcm_token = user_data.get('fcm_token') or user_data.get('fcmToken')
+                if 'location' in user_data and fcm_token:
                     user_city = user_data['location'].get('city')
-                    fcm_token = user_data['fcm_token']
-                    
+
                     # If user is in one of the affected cities
                     if user_city in city_names and fcm_token:
                         if user_city not in city_user_tokens:
                             city_user_tokens[user_city] = []
-                            
+
                         # Add token to the city's list
                         city_user_tokens[user_city].append(fcm_token)
-            
+
             # Count users by city
             for city, tokens in city_user_tokens.items():
                 logger.info(f"Found {len(tokens)} users in {city} with notifications enabled")
-                
+
             return city_user_tokens
-            
+
         except firebase_exceptions.NotFoundError as e:
             logger.error(f"Firebase users collection not found: {e}")
             return {}
