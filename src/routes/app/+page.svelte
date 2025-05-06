@@ -1080,42 +1080,57 @@
         justify-content: space-between;
         align-items: center;
     }
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem; /* Optional: adds space between checkbox and text */
-}
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding-left: 30px; /* Space for the checkbox */
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .checkbox-container input {
+        position: absolute;
+        opacity: 0;
+        height: 0;
+        width: 0;
+        cursor: pointer;
+    }
+
+    .checkbox-container .checkmark {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 18px;
+        width: 18px;
+        background-color: #fff;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        transition: background 0.2s, border 0.2s;
+    }
+
     .checkbox-container input:checked ~ .checkmark {
-    background-color: #dd815e;
-    border-color: #dd815e;
-}
-.checkbox-container .checkmark {
-    position: relative;
-    height: 20px;
-    width: 20px;
-    background-color: #fff;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    display: inline-block;
-    margin-right: 8px;
-    transition: background 0.2s, border 0.2s;
-}
-.checkbox-container input:checked ~ .checkmark:after {
-    display: block;
-}
-.checkbox-container .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid #fff;
-    border-width: 0 3px 3px 0;
-    border-radius: 1px;
-    transform: rotate(45deg);
-}
+        background-color: #dd815e;
+        border-color: #dd815e;
+    }
+
+    .checkbox-container .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+        left: 5px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    .checkbox-container input:checked ~ .checkmark:after {
+        display: block;
+    }
 
     .forgot-password {
         background: none;
@@ -1295,6 +1310,9 @@
 
     .terms-checkbox {
         font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        line-height: 1.4;
     }
 
     .terms-checkbox a {
