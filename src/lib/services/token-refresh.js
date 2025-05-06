@@ -1,5 +1,5 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { getFirestore, doc, updateDoc, setDoc, getDoc} from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc} from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import auth from '../firebase/auth';
 import app from '../firebase/app';
@@ -130,15 +130,17 @@ async function updateTokenInFirestore(token, uid = null) {
     }
 
     // Update the user document with the new token and required fields
-    await setDoc(doc(db, 'users', uid), {
+    const userData = {
       fcmToken: token,
       tokenUpdatedAt: new Date(),
       notification_enabled: true,
       ...(homeCity ? { location: { city: homeCity } } : {})
-    }, { merge: true });
+    };
+    console.log('[updateTokenInFirestore] Writing to users:', uid, userData);
+    await setDoc(doc(db, 'users', uid), userData, { merge: true });
 
     // Also add to a separate tokens collection for easy querying
-    await setDoc(doc(db, 'fcm_tokens', token), {
+    const tokenData = {
       token,
       userId: uid,
       createdAt: new Date(),
@@ -146,7 +148,9 @@ async function updateTokenInFirestore(token, uid = null) {
       isValid: true,
       platform: 'web',
       subscribedTopics: ['daily_weather_insights'] // Default subscription
-    });
+    };
+    console.log('[updateTokenInFirestore] Writing to fcm_tokens:', token, tokenData);
+    await setDoc(doc(db, 'fcm_tokens', token), tokenData);
 
   } catch (error) {
     console.error('Error updating token in Firestore:', error);
