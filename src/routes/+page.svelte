@@ -380,11 +380,11 @@ function toggleNavbar() {
 	width: 320px;
 	min-width: 320px;
 	max-width: 320px;
-	min-height: 420px;
+	min-height: 340px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	background: #dd815e;
 	border-radius: 12px;
 	box-shadow: 0 4px 24px rgba(221,129,94,0.13);
@@ -393,22 +393,26 @@ function toggleNavbar() {
 	text-align: center;
 	color: #fff;
 	overflow: hidden;
+	border: none;
   }
   .card-content {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	flex: 1;
 	width: 100%;
-	height: 100%;
+	height: auto;
+	padding: 18px 0 18px 0;
   }
   .name {
 	color: #dd815e;
-	font-size: 1.3rem;
-	font-weight: 700;
+	font-size: 2.1rem;
+	font-weight: 800;
 	margin: 10px 0 4px 0;
 	text-align: center;
+	line-height: 1.1;
+	letter-spacing: 0.01em;
   }
   .position {
 	color: #fff;
@@ -458,13 +462,19 @@ function toggleNavbar() {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	height: 60%;
+	height: 65%;
 	z-index: 2;
-	background: linear-gradient(to top, rgba(0,0,0,0.62) 70%, rgba(0,0,0,0.18) 100%, rgba(0,0,0,0.01) 100%);
+	background: linear-gradient(
+	  to top,
+	  rgba(0,0,0,0.68) 0%,
+	  rgba(0,0,0,0.38) 40%,
+	  rgba(0,0,0,0.10) 85%,
+	  rgba(0,0,0,0.00) 100%
+	);
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
-	border-radius: 0 0 18px 18px;
+	border-radius: 0;
 	pointer-events: none;
   }
   .portrait-text {
@@ -484,11 +494,13 @@ function toggleNavbar() {
 	pointer-events: none;
   }
   .portrait-text .name {
-	font-size: 1.18rem;
-	font-weight: 700;
+	font-size: 2.1rem;
+	font-weight: 800;
 	color: #fff;
 	margin-bottom: 2px;
 	text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+	line-height: 1.1;
+	letter-spacing: 0.01em;
   }
   .portrait-text .position {
 	font-size: 1.01rem;
