@@ -13,6 +13,15 @@
     let bootstrapCarousel;    onMount(() => {
         // Initialize Bootstrap carousel after the component is mounted
         if (typeof document !== 'undefined') {
+            // Add dotlottie-player script if it doesn't exist
+            if (!document.getElementById('dotlottie-script')) {
+                const dotlottieScript = document.createElement('script');
+                dotlottieScript.id = 'dotlottie-script';
+                dotlottieScript.src = 'https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs';
+                dotlottieScript.type = 'module';
+                document.head.appendChild(dotlottieScript);
+            }
+            
             // Add Bootstrap CSS and JS if they don't exist
             if (!document.getElementById('bootstrap-css')) {
                 const bootstrapCSS = document.createElement('link');
@@ -92,24 +101,45 @@
                             <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
                             <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
                         </div>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
+                        <div class="carousel-inner">                            <div class="carousel-item active">
                                 <div class="feature-card d-block w-100">
-                                    <div class="feature-icon">🧳</div>
+                                    <div class="feature-icon lottie-container">
+                                        <dotlottie-player
+                                            src="https://lottie.host/473dd6d7-be34-477b-bc19-359e1e0ec1c2/54LmSkFvXx.lottie"
+                                            background="transparent"
+                                            speed="1"
+                                            loop
+                                            autoplay
+                                        ></dotlottie-player>
+                                    </div>
                                     <div class="feature-text">Travel Health Cards</div>
                                     <div class="feature-description">Dynamic cards showing weather, heat index, health status, nearby hospitals, and personalized travel advice.</div>
                                 </div>
-                            </div>
-                            <div class="carousel-item">
+                            </div><div class="carousel-item">
                                 <div class="feature-card d-block w-100">
-                                    <div class="feature-icon">🔔</div>
+                                    <div class="feature-icon lottie-container">
+                                        <dotlottie-player
+                                            src="https://lottie.host/d3c42b44-1cbb-43c3-a171-d8291a5b2c96/YfOdd2lY0i.lottie"
+                                            background="transparent"
+                                            speed="1"
+                                            loop
+                                            autoplay
+                                        ></dotlottie-player>
+                                    </div>
                                     <div class="feature-text">Real-time Notifications</div>
                                     <div class="feature-description">Push alerts, notification history, and smart permission management for critical health updates.</div>
                                 </div>
-                            </div>
-                            <div class="carousel-item">
+                            </div>                            <div class="carousel-item">
                                 <div class="feature-card d-block w-100">
-                                    <div class="feature-icon">🤖</div>
+                                    <div class="feature-icon lottie-container">
+                                        <dotlottie-player
+                                            src="https://lottie.host/f2a2bd1f-6659-4ba7-81fc-2dffc81d25fd/c9wrMBW87f.lottie"
+                                            background="transparent"
+                                            speed="1"
+                                            loop
+                                            autoplay
+                                        ></dotlottie-player>
+                                    </div>
                                     <div class="feature-text">SafeTrip AI Chatbot</div>
                                     <div class="feature-description">AI-powered assistant for travel and health questions with context-aware responses optimized for mobile.</div>
                                 </div>
@@ -412,11 +442,27 @@
         background-color: #dd815e;
         transform: scale(1.2);
     }
-    
-    .feature-icon {
+      .feature-icon {
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
-    }    .feature-text {
+    }
+    
+    .lottie-container {
+        width: 1.5in;
+        height: 1.5in;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .lottie-container dotlottie-player {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: none;
+        outline: none;
+    }.feature-text {
         font-size: 1.2rem;
         font-weight: 600;
         color: white;
@@ -438,17 +484,16 @@
         margin: 0 auto;
         padding: 0 5px;
     }
-    
-    /* Buttons container styling */
+      /* Buttons container styling */
     .buttons-container {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
         width: 100%;
-        margin-top: 0.5rem;
+        max-width: 300px;
+        margin: 0.5rem auto;
     }
-    
-    .get-started-button {
+      .get-started-button {
         background: linear-gradient(135deg, #dd815e, #c26744);
         color: white;
         border: none;
@@ -464,6 +509,7 @@
         justify-content: center;
         gap: 0.8rem;
         box-shadow: 0 4px 12px rgba(221, 129, 94, 0.3);
+        margin: 0 auto;
     }
     
     .get-started-button:hover {
