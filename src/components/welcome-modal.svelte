@@ -9,37 +9,58 @@
     let showWelcome = !(localStorage.getItem('inet-ready-hide-welcome') === 'true') || showAlways;
     let doNotShowAgain = false;
     
-    // Carousel state
-    let currentSlide = 0;
-    let totalSlides = 3;
-    
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % totalSlides;
-    }
-    
-    function prevSlide() {
-        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-    }
-    
-    function goToSlide(index) {
-        currentSlide = index;
-    }
-    
-    // Auto advance carousel
-    let carouselInterval;
-    
-    onMount(() => {
-        // Start auto-advancing the carousel
-        carouselInterval = setInterval(() => {
-            nextSlide();
-        }, 5000); // Change slide every 5 seconds
+    // Bootstrap will handle the carousel internally
+    let bootstrapCarousel;    onMount(() => {
+        // Initialize Bootstrap carousel after the component is mounted
+        if (typeof document !== 'undefined') {
+            // Add Bootstrap CSS and JS if they don't exist
+            if (!document.getElementById('bootstrap-css')) {
+                const bootstrapCSS = document.createElement('link');
+                bootstrapCSS.id = 'bootstrap-css';
+                bootstrapCSS.rel = 'stylesheet';
+                bootstrapCSS.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
+                document.head.appendChild(bootstrapCSS);
+            }
+            
+            if (!document.getElementById('bootstrap-js')) {
+                const bootstrapJS = document.createElement('script');
+                bootstrapJS.id = 'bootstrap-js';
+                bootstrapJS.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js';
+                bootstrapJS.onload = () => {
+                    // Initialize the carousel after Bootstrap is loaded
+                    // Use window.bootstrap to access the global bootstrap object
+                    // @ts-ignore
+                    if (window.bootstrap) {
+                        // @ts-ignore
+                        bootstrapCarousel = new window.bootstrap.Carousel(document.getElementById('featureCarousel'), {
+                            interval: 5000,
+                            wrap: true
+                        });
+                    }
+                };
+                document.body.appendChild(bootstrapJS);
+            } else {
+                // If Bootstrap is already loaded, initialize the carousel directly
+                setTimeout(() => {
+                    // @ts-ignore
+                    if (window.bootstrap) {
+                        // @ts-ignore
+                        bootstrapCarousel = new window.bootstrap.Carousel(document.getElementById('featureCarousel'), {
+                            interval: 5000,
+                            wrap: true
+                        });
+                    }
+                }, 100);
+            }
+        }
         
         return () => {
-            // Clear interval when component is destroyed
-            clearInterval(carouselInterval);
-        };
-    });
-
+            // Clean up if needed
+            if (bootstrapCarousel && bootstrapCarousel.dispose) {
+                bootstrapCarousel.dispose();
+            }
+        };    });
+    
     function closeWelcome() {
         if (doNotShowAgain) {
             localStorage.setItem('inet-ready-hide-welcome', 'true');
@@ -64,41 +85,43 @@
                 <div class="welcome-message">
                     <h3>Your Travel Health Companion</h3>
                     <p>INET-READY provides you with personalized insights and recommendations for safer, healthier travels.</p>
-                </div>                <div class="feature-carousel">
-                    <div class="carousel-container">
-                        <div class="carousel-track" style="transform: translateX(-${currentSlide * 100}%)">
-                            <div class="feature-card">
-                                <div class="feature-icon">🧳</div>
-                                <div class="feature-text">Travel Health Cards</div>
-                                <div class="feature-description">Dynamic cards showing weather, heat index, health status, nearby hospitals, and personalized travel advice.</div>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">🔔</div>
-                                <div class="feature-text">Real-time Notifications</div>
-                                <div class="feature-description">Push alerts, notification history, and smart permission management for critical health updates.</div>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">🤖</div>
-                                <div class="feature-text">SafeTrip AI Chatbot</div>
-                                <div class="feature-description">AI-powered assistant for travel and health questions with context-aware responses optimized for mobile.</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-controls">
-                        <button class="carousel-btn prev" on:click={prevSlide} aria-label="Previous feature">
-                            ←
-                        </button>
+                </div>                  <div class="feature-carousel">
+                    <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-indicators">
-                            {#each Array(3) as _, i}
-                                <button 
-                                    class="carousel-indicator {i === currentSlide ? 'active' : ''}" 
-                                    on:click={() => goToSlide(i)}
-                                    aria-label="Go to slide {i+1}"
-                                ></button>
-                            {/each}
+                            <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
                         </div>
-                        <button class="carousel-btn next" on:click={nextSlide} aria-label="Next feature">
-                            →
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="feature-card d-block w-100">
+                                    <div class="feature-icon">🧳</div>
+                                    <div class="feature-text">Travel Health Cards</div>
+                                    <div class="feature-description">Dynamic cards showing weather, heat index, health status, nearby hospitals, and personalized travel advice.</div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="feature-card d-block w-100">
+                                    <div class="feature-icon">🔔</div>
+                                    <div class="feature-text">Real-time Notifications</div>
+                                    <div class="feature-description">Push alerts, notification history, and smart permission management for critical health updates.</div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="feature-card d-block w-100">
+                                    <div class="feature-icon">🤖</div>
+                                    <div class="feature-text">SafeTrip AI Chatbot</div>
+                                    <div class="feature-description">AI-powered assistant for travel and health questions with context-aware responses optimized for mobile.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
                         </button>
                     </div>
                 </div>
@@ -204,6 +227,14 @@
         flex-direction: column;
         align-items: center;
         gap: 0.5rem;
+    }
+    
+    /* Bootstrap overrides */
+    :global(.carousel-item.active),
+    :global(.carousel-item-next),
+    :global(.carousel-item-prev) {
+        display: flex;
+        justify-content: center;
     }
     
     /* Logo styling */
@@ -323,32 +354,27 @@
         margin: 0;
         line-height: 1.5;
         font-size: 1rem;
-    }
-      /* Feature carousel styling */
+    }    /* Feature carousel styling */
     .feature-carousel {
         width: 100%;
         margin: 1rem 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
     }
     
-    .carousel-container {
+    .carousel {
         width: 100%;
         max-width: 300px;
+        border-radius: 16px;
         overflow: hidden;
-        position: relative;
     }
     
-    .carousel-track {
-        display: flex;
-        transition: transform 0.5s ease;
-        width: 300%;
+    .carousel-inner {
+        border-radius: 16px;
     }
     
     .feature-card {
-        flex: 0 0 100%;
         background-color: #f9f9f9;
         border-radius: 16px;
         padding: 1.5rem;
@@ -362,51 +388,52 @@
         justify-content: center;
     }
     
-    .carousel-controls {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-        width: 100%;
-    }
-    
-    .carousel-btn {
+    /* Custom styling for Bootstrap carousel controls */
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 44px;
+        height: 44px;
         background-color: rgba(221, 129, 94, 0.1);
-        color: #dd815e;
-        border: none;
-        width: 36px;
-        height: 36px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: all 0.2s;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 1;
     }
     
-    .carousel-btn:hover {
+    .carousel-control-prev {
+        left: -5px;
+    }
+    
+    .carousel-control-next {
+        right: -5px;
+    }
+    
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
         background-color: rgba(221, 129, 94, 0.2);
-        transform: scale(1.1);
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 1.5rem;
+        height: 1.5rem;
     }
     
     .carousel-indicators {
-        display: flex;
-        gap: 0.5rem;
+        margin-bottom: -1rem;
     }
     
-    .carousel-indicator {
+    .carousel-indicators [data-bs-target] {
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background-color: #ddd;
         border: none;
-        padding: 0;
-        cursor: pointer;
-        transition: all 0.2s;
+        margin: 0 4px;
+        opacity: 1;
     }
     
-    .carousel-indicator.active {
+    .carousel-indicators .active {
         background-color: #dd815e;
         transform: scale(1.2);
     }
