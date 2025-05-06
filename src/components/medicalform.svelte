@@ -1139,33 +1139,36 @@
             </div>
         </div>
         
-        <!-- Powered by attribution -->
-        <div class="powered-by-container">
-            <span class="powered-by-text">Powered by:</span>
-            <img 
-                src="https://framerusercontent.com/images/DuHKZUEtnSMoEul4G8SxQPj2RaM.png" 
-                alt="AI Health Intelligence Provider" 
-                class="powered-by-logo"
-            />
-        </div>
+        <div>
+            <!-- Powered by attribution -->
+            <div class="powered-by-container">
+                <span class="powered-by-text">Powered by:</span>
+                <img 
+                    src="https://framerusercontent.com/images/DuHKZUEtnSMoEul4G8SxQPj2RaM.png" 
+                    alt="AI Health Intelligence Provider" 
+                    class="powered-by-logo"
+                />
+            </div>
 
-        <!-- Form Actions -->
-        <div class="form-actions">
-            {#if isEditing}
-                <button type="button" class="cancel-btn" on:click={handleCancel} disabled={loading}>
-                    Cancel
-                </button>
-            {/if}
-            
-            <button type="submit" class="submit-btn" disabled={loading}>
-                {#if loading}
-                    <span class="spinner"></span>
-                    <span>{isEditing ? 'Updating...' : 'Saving...'}</span>
-                {:else}
-                    <span>{isEditing ? 'Update Profile' : 'Save Profile'}</span>
+            <!-- Form Actions -->
+            <div class="form-actions">
+                {#if isEditing}
+                    <button type="button" class="cancel-btn" on:click={handleCancel} disabled={loading}>
+                        Cancel
+                    </button>
                 {/if}
-            </button>
+                
+                <button type="submit" class="submit-btn" disabled={loading}>
+                    {#if loading}
+                        <span class="spinner"></span>
+                        <span>{isEditing ? 'Updating...' : 'Saving...'}</span>
+                    {:else}
+                        <span>{isEditing ? 'Update Profile' : 'Save Profile'}</span>
+                    {/if}
+                </button>
+            </div>
         </div>
+        
     </form>
     
 <style>
