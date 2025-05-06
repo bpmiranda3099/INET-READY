@@ -21,6 +21,7 @@
     // Import Terms and Privacy content
     import TermsContent from '../terms/+page.svelte';
     import PrivacyContent from '../privacy/+page.svelte';
+    import DataDeletionContent from '../data-deletion/+page.svelte';
 
     let user = null;
     let showRegister = false;
@@ -32,6 +33,8 @@
     // Variables to control Terms and Privacy display
     let showTerms = false;
     let showPrivacy = false;
+    let showDataDeletion = false;
+    let previousView = null; // To track where user came from for back button
 
     // Login variables
     let email = '';
@@ -411,8 +414,38 @@
     }
     
     function goBackToForm() {
+        if (showDataDeletion && previousView) {
+            // Go back to the previous Terms or Privacy view
+            if (previousView === 'terms') {
+                showTerms = true;
+                showPrivacy = false;
+                showDataDeletion = false;
+            } else if (previousView === 'privacy') {
+                showPrivacy = true;
+                showTerms = false;
+                showDataDeletion = false;
+            }
+            previousView = null;
+        } else {
+            // Return to the form
+            showTerms = false;
+            showPrivacy = false;
+            showDataDeletion = false;
+        }
+    }
+    
+    function showDataDeletionFromTerms() {
+        previousView = 'terms';
         showTerms = false;
         showPrivacy = false;
+        showDataDeletion = true;
+    }
+    
+    function showDataDeletionFromPrivacy() {
+        previousView = 'privacy';
+        showTerms = false;
+        showPrivacy = false;
+        showDataDeletion = true;
     }
 
     // Logo rotation animation variables
@@ -449,7 +482,7 @@
     <div class="auth-page">        <!-- App Bar -->        <div class="app-bar">
             <div class="app-bar-content">
                 <div class="app-bar-main">
-                    {#if showTerms || showPrivacy}
+                    {#if showTerms || showPrivacy || showDataDeletion}
                         <img src="/app-icon.png" alt="INET-READY" 
                             class="app-logo {logoRotating ? 'rotating' : ''}" 
                             on:animationend={() => logoRotating = false} />
@@ -472,7 +505,7 @@
                 </div>
             </div>
         </div><!-- Bottom Navigation -->
-        {#if !showTerms && !showPrivacy}
+        {#if !showTerms && !showPrivacy && !showDataDeletion}
             <div class="bottom-nav">
                 <button 
                     class="nav-item" 
@@ -493,7 +526,7 @@
             </div>
         {/if}        <div class="content-area">
             <div class="section-container">
-                {#if showTerms || showPrivacy}
+                {#if showTerms || showPrivacy || showDataDeletion}
                     <!-- No header for Terms/Privacy view -->
                 {:else}
                     <div class="section-header">
@@ -509,6 +542,10 @@
                     {:else if showPrivacy}
                         <div class="terms-privacy-content">
                             <svelte:component this={PrivacyContent} />
+                        </div>
+                    {:else if showDataDeletion}
+                        <div class="terms-privacy-content">
+                            <svelte:component this={DataDeletionContent} />
                         </div>
                     {:else if showRegister}
                         {#if registrationSuccess}
@@ -831,10 +868,25 @@
         margin-bottom: 1rem;
         color: #dd815e;
         font-weight: 600;
-    }
-
-    .terms-privacy-content :global(h2) {
+    }    .terms-privacy-content :global(h2) {
         font-size: 1.1rem;
+    }
+    
+    :global(.data-deletion-link) {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(221,129,94,0.2);
+        text-align: center;
+    }
+    
+    :global(.data-deletion-link a) {
+        color: #dd815e;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+    
+    :global(.data-deletion-link a:hover) {
+        color: #c26744;
     }
 
     .back-button {
