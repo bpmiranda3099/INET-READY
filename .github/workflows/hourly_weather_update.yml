@@ -40,7 +40,8 @@ jobs:
       # Step 5: Run the weather update script
       - name: Run weather update script
         env:
-          FIREBASE_SERVICE_ACCOUNT: ./firebase_service_account.json # Use correct file path
+          FIREBASE_SERVICE_ACCOUNT: ./firebase_service_account.json
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
         run: python src/scripts/hourly_heat_index_api.py
 
       # Step 6: Clean up credentials file
