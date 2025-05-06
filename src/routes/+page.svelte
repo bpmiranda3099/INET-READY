@@ -101,8 +101,7 @@ function toggleNavbar() {
   <nav class="navbar navbar-expand-lg shadow-sm py-3 fixed-top" style="background:#dd815e; z-index:1050;">
 	<div class="container-fluid">
 	<a class="navbar-brand d-flex align-items-center gap-2" href="/" style="color:#fff;">
-	  <i id="navbar-sun" class="bi bi-sun-fill" style="font-size:2rem; color:#fff; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);"></i>
-	  <img src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px;" />
+	  <img id="navbar-appicon" src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);" />
 	  <span class="fw-bold align-items-center d-flex" style="color:#fff; height:45px; line-height:36px; font-size:1.6rem;">INET-READY</span>
 	  <span class="d-none d-md-inline align-items-center d-flex" style="color:#fff; height:36px; line-height:36px;"> Your Heat Check for Safe and Informed Travel</span>
 	</a>
@@ -239,10 +238,10 @@ function toggleNavbar() {
 <script>
   import { onMount } from 'svelte';
   let intervalId;
+  let showingSmarter = false;
   onMount(() => {
 	const el = document.getElementById('safer-smarter');
 	if (!el) return;
-	let showingSmarter = false;
 	intervalId = setInterval(() => {
 	  showingSmarter = !showingSmarter;
 	  el.classList.add('fade-out');
@@ -253,18 +252,18 @@ function toggleNavbar() {
 	}, 2200);
 	return () => clearInterval(intervalId);
   });
-// Sun icon scroll animation: clockwise on scroll down, counterclockwise on scroll up
+// App icon scroll animation: clockwise on scroll down, counterclockwise on scroll up
 let lastScrollY = 0;
-let sunRotation = 0;
+let appIconRotation = 0;
 onMount(() => {
-  const sun = document.getElementById('navbar-sun');
+  const appIcon = document.getElementById('navbar-appicon');
   function handleScroll() {
-	if (!sun) return;
+	if (!appIcon) return;
 	const currentY = window.scrollY;
 	const delta = currentY - lastScrollY;
 	// Each scroll pixel rotates 0.6deg, direction based on scroll
-	sunRotation += delta * 0.6;
-	sun.style.transform = `rotate(${sunRotation}deg)`;
+	appIconRotation += delta * 0.6;
+	appIcon.style.transform = `rotate(${appIconRotation}deg)`;
 	lastScrollY = currentY;
   }
   window.addEventListener('scroll', handleScroll);
