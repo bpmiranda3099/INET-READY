@@ -256,18 +256,29 @@ function toggleNavbar() {
 let lastScrollY = 0;
 let appIconRotation = 0;
 onMount(() => {
-  function handleScroll() {
+  // Wait for DOM to be ready to ensure the app icon is present
+  let rafId;
+  function setupScrollHandler() {
 	const appIcon = document.getElementById('navbar-appicon');
-	if (!appIcon) return;
-	const currentY = window.scrollY;
-	const delta = currentY - lastScrollY;
-	appIconRotation += delta * 0.6;
-	appIcon.style.transform = `rotate(${appIconRotation}deg)`;
-	lastScrollY = currentY;
+	if (!appIcon) {
+	  rafId = requestAnimationFrame(setupScrollHandler);
+	  return;
+	}
+	function handleScroll() {
+	  const currentY = window.scrollY;
+	  const delta = currentY - lastScrollY;
+	  appIconRotation += delta * 0.6;
+	  appIcon.style.transform = `rotate(${appIconRotation}deg)`;
+	  lastScrollY = currentY;
+	}
+	window.addEventListener('scroll', handleScroll);
+	// Clean up
+	return () => {
+	  window.removeEventListener('scroll', handleScroll);
+	  if (rafId) cancelAnimationFrame(rafId);
+	};
   }
-  window.addEventListener('scroll', handleScroll);
-  // Clean up
-  return () => window.removeEventListener('scroll', handleScroll);
+  return setupScrollHandler();
 });
 </script>
 <style>
