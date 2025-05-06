@@ -389,9 +389,10 @@ function toggleNavbar() {
 	border-radius: 12px;
 	box-shadow: 0 4px 24px rgba(221,129,94,0.13);
 	margin-bottom: 1.5rem;
-	padding: 30px 25px 40px 25px;
+	padding: 0;
 	text-align: center;
 	color: #fff;
+	overflow: hidden;
   }
   .card-content {
 	display: flex;
@@ -428,15 +429,15 @@ function toggleNavbar() {
 	aspect-ratio: 1.6/1;
 	min-height: 0;
 	height: auto;
-	margin: 0 0 22px 0;
-	border-radius: 18px 18px 0 0;
+	margin: 0;
+	border-radius: 0;
 	overflow: hidden;
 	background: #f5f5f7;
 	position: relative;
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
-	box-shadow: 0 2px 8px rgba(221,129,94,0.10);
+	box-shadow: none;
 	max-width: 100%;
   }
   .img-wrapper.portrait-header img {
@@ -446,10 +447,11 @@ function toggleNavbar() {
 	max-height: 260px;
 	object-fit: cover;
 	display: block;
-	position: absolute;
+	position: relative;
 	left: 0;
 	top: 0;
 	z-index: 1;
+	border-radius: 0;
   }
   .vignette {
 	position: absolute;
