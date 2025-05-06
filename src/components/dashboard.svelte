@@ -22,6 +22,11 @@
         signInWithGoogle,
         signInWithFacebook
     } from '$lib/firebase/auth';
+    import { setupTokenRefreshService } from '$lib/services/token-refresh.js';
+
+    onMount(() => {
+    setupTokenRefreshService();
+    });
     
     // Components
     import MedicalProfile from './medicalprofile.svelte';
