@@ -1653,7 +1653,6 @@
         margin-bottom: 1rem;
         margin-left: 1rem;
         margin-right: 1rem;
-        background-color: #1A1A1A;
     }
     
     .cancel-btn, .submit-btn {
@@ -1745,7 +1744,6 @@
         justify-content: center;
         margin: 2rem 0 1.5rem;
         opacity: 0.8;
-        background-color: #1A1A1A;
     }
     
     .powered-by-text {
