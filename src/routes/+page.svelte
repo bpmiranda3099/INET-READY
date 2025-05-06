@@ -133,6 +133,19 @@ function toggleAccordion(index) {
 	activeAccordion = index;
   }
 }
+
+// Vibrate Get Started buttons every 5 seconds
+import { onMount as onMountVibrate } from 'svelte';
+onMountVibrate(() => {
+const vibrateButtons = document.querySelectorAll('.get-started-vibrate');
+let vibrateInterval = setInterval(() => {
+	vibrateButtons.forEach(btn => {
+	btn.classList.add('vibrating');
+	setTimeout(() => btn.classList.remove('vibrating'), 400);
+	});
+}, 5000);
+return () => clearInterval(vibrateInterval);
+});
 </script>
 
 <main>
@@ -179,7 +192,7 @@ function toggleAccordion(index) {
 			</ul>
 		  </li>
 		  <li class="nav-item">
-			<button class="btn ms-2 px-4" style="background:#fff; color:#dd815e; border:none; border-radius:50px; font-weight:600;" on:click={navigateToApp}>Get Started</button>
+  <button class="btn ms-2 px-4 get-started-vibrate" style="background:#fff; color:#dd815e; border:none; border-radius:50px; font-weight:600;" on:click={navigateToApp}>Get Started</button>
 		  </li>
 		</ul>
 	  </div>
@@ -287,7 +300,7 @@ function toggleAccordion(index) {
   }
 </style>
 <p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto; font-family:'Segoe UI', Arial, sans-serif; line-height:1.5;">INET-READY keeps you safe and healthy on the go with real-time heat alerts, personalized health insights, and secure medical data—all in one easy-to-use platform.</p>
-	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
+  <button class="btn px-5 py-3 cta-button get-started-vibrate" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
 	</div>
   </section>
 
@@ -621,7 +634,7 @@ function toggleAccordion(index) {
 	<div class="container text-center">
 	  <h2 style="color:#dd815e; font-weight:700;">Ready to travel safer?</h2>
 	  <p class="mb-4" style="font-size:1.1rem; color:#555;">Create your free account and get instant access to personalized travel health tools and notifications.</p>
-	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
+  <button class="btn px-5 py-3 cta-button get-started-vibrate" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
 	</div>
   </section>
 
@@ -747,4 +760,21 @@ function toggleAccordion(index) {
 	font-size: 3rem;
 	color: #fff;
 }
-</style>
+  /* Vibrate animation for Get Started buttons */
+  @keyframes vibrate {
+	0% { transform: translateX(0); }
+	10% { transform: translateX(-2px); }
+	20% { transform: translateX(2px); }
+	30% { transform: translateX(-2px); }
+	40% { transform: translateX(2px); }
+	50% { transform: translateX(-2px); }
+	60% { transform: translateX(2px); }
+	70% { transform: translateX(-2px); }
+	80% { transform: translateX(2px); }
+	90% { transform: translateX(-2px); }
+	100% { transform: translateX(0); }
+  }
+  .get-started-vibrate.vibrating {
+	animation: vibrate 0.4s linear;
+  }
+  </style>
