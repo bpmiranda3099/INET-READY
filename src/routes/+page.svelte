@@ -155,6 +155,25 @@
 		showModal = false;
 		document.body.style.overflow = '';
 	}
+	// Scroll-triggered dev card animation
+	import { onMount as onMountDevCard } from 'svelte';
+	onMountDevCard(() => {
+		const cards = document.querySelectorAll('.dev-card');
+		const observer = new window.IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('dev-card--scrolled-in');
+					} else {
+						entry.target.classList.remove('dev-card--scrolled-in');
+					}
+				});
+			},
+			{ threshold: 0.2 }
+		);
+		cards.forEach((card) => observer.observe(card));
+		return () => observer.disconnect();
+	});
 </script>
 
 <main>
@@ -273,94 +292,6 @@
 			</div>
 		</div>
 	</nav>
-	<style>
-		/* Make navbar fixed and add body padding for content below */
-		body {
-			padding-top: 74px !important;
-		}
-		/* Dropdown on hover for desktop */
-		@media (min-width: 992px) {
-			.hover-dropdown:hover > .dropdown-menu {
-				display: block;
-				margin-top: 0;
-			}
-			.hover-dropdown > .dropdown-toggle:active {
-				pointer-events: none;
-			}
-			.navbar-nav .nav-link,
-			.navbar-nav .dropdown-toggle {
-				position: relative;
-				transition: color 0.2s;
-			}
-			.navbar-nav .nav-link:hover,
-			.navbar-nav .dropdown-toggle:hover {
-				text-decoration: none;
-			}
-			.navbar-nav .nav-link::after,
-			.navbar-nav .dropdown-toggle::after {
-				content: '';
-				display: block;
-				width: 0;
-				height: 1.5px; /* Thinner underline for all links */
-				background: transparent;
-				transition:
-					width 0.2s,
-					background 0.2s;
-				position: absolute;
-				left: 0;
-				bottom: 0.2em;
-			}
-			.navbar-nav .nav-link:hover::after,
-			.navbar-nav .dropdown-toggle:hover::after {
-				width: 100%;
-				background: #fff;
-				height: 1.5px; /* Ensure hover underline is also thin */
-			}
-			/* Hide dropdown arrow for Contact and Support */
-			.navbar-nav .dropdown-toggle::after {
-				display: none !important;
-			}
-		}
-		@media (max-width: 991.98px) {
-			.navbar-collapse {
-				background: #dd815e;
-				padding: 1rem 0.5rem 0.5rem;
-			}
-			.navbar-nav .nav-item {
-				border-bottom: none;
-			}
-			.navbar-nav .nav-link,
-			.navbar-nav .dropdown-toggle {
-				color: #fff !important;
-				font-size: 1.1rem;
-				padding: 0.75rem 1.5rem;
-			}
-			.navbar-nav .dropdown-menu {
-				background: #fff;
-				border-radius: 0 0 8px 8px;
-				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-			}
-			.navbar-nav .dropdown-item {
-				color: #dd815e;
-				font-weight: 500;
-			}
-			.navbar-toggler {
-				border: none;
-			}
-		}
-	</style>
-	<style>
-		/* Dropdown on hover for desktop */
-		@media (min-width: 992px) {
-			.hover-dropdown:hover > .dropdown-menu {
-				display: block;
-				margin-top: 0;
-			}
-			.hover-dropdown > .dropdown-toggle:active {
-				pointer-events: none;
-			}
-		}
-	</style>
 
 	<!-- HERO SECTION -->
 	<section
@@ -381,16 +312,6 @@
 				<br /> Your Heat-Health Companion
 			</h1>
 			<!-- safer/smarter text animation styles -->
-			<style>
-				.hero-title-transform .safer-smarter {
-					display: inline-block;
-					transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-				}
-				.hero-title-transform .safer-smarter.fade-out {
-					opacity: 0;
-					transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-				}
-			</style>
 			<p
 				class="subtitle mb-4"
 				style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto; font-family:'Segoe UI', Arial, sans-serif; line-height:1.5;"
@@ -623,209 +544,6 @@
 				</div>
 			</div>
 		</div>
-		<style>
-			.responsive-container-block.outer-container {
-				background: #fff;
-			}
-			.section-head-text {
-				color: #dd815e;
-				font-size: 2.5rem;
-				font-weight: 700;
-			}
-			.section-subhead-text {
-				color: #555;
-				font-size: 1.1rem;
-				margin-bottom: 2.5rem;
-			}
-			.dev-card {
-				width: 100%;
-				min-width: 220px;
-				max-width: 320px;
-				min-height: 0;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: flex-start;
-				background: #dd815e;
-				border-radius: 16px;
-				box-shadow: 0 4px 24px rgba(221, 129, 94, 0.13);
-				margin-bottom: 1.5rem;
-				padding: 0;
-				text-align: center;
-				color: #fff;
-				overflow: hidden;
-				border: none;
-				transition:
-					transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
-					box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-				cursor: pointer;
-			}
-			.dev-card:hover,
-			.dev-card:focus-visible,
-			.dev-card.dev-card--scrolled-in {
-				transform: translateY(-7px) scale(1.035) rotate(-1.5deg);
-				box-shadow:
-					0 8px 32px rgba(221, 129, 94, 0.22),
-					0 2px 8px rgba(0, 0, 0, 0.08);
-				background: #e98d6a;
-				outline: none;
-			}
-			.dev-card:hover .card-content .position,
-			.dev-card:focus-visible .card-content .position,
-			.dev-card.dev-card--scrolled-in .card-content .position {
-				opacity: 0.93;
-				text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-			}
-			.card-content {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				width: 100%;
-				height: auto;
-				padding: 10px 0 10px 0;
-				min-height: 0;
-			}
-			.name {
-				color: #dd815e;
-				font-size: 2.1rem;
-				font-weight: 800;
-				margin: 10px 0 4px 0;
-				text-align: center;
-				line-height: 1.1;
-				letter-spacing: 0.01em;
-			}
-			.position {
-				color: #fff;
-				font-weight: 600;
-				font-size: 1.08rem;
-				margin-bottom: 8px;
-				text-align: center;
-				display: block;
-				transition: opacity 0.2s;
-			}
-
-			.img-wrapper.portrait-header {
-				width: 100%;
-				aspect-ratio: 1.6/1;
-				min-height: 0;
-				height: auto;
-				margin: 0;
-				border-radius: 0;
-				overflow: hidden;
-				background: #f5f5f7;
-				position: relative;
-				display: flex;
-				align-items: flex-end;
-				justify-content: center;
-				box-shadow: none;
-				max-width: 100%;
-			}
-			.img-wrapper.portrait-header img {
-				width: 100%;
-				height: 100%;
-				min-height: 180px;
-				max-height: 260px;
-				object-fit: cover;
-				display: block;
-				position: relative;
-				left: 0;
-				top: 0;
-				z-index: 1;
-				border-radius: 0;
-			}
-			.vignette {
-				position: absolute;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				height: 65%;
-				z-index: 2;
-				background: linear-gradient(
-					to top,
-					rgba(0, 0, 0, 0.68) 0%,
-					rgba(0, 0, 0, 0.38) 40%,
-					rgba(0, 0, 0, 0.1) 85%,
-					rgba(0, 0, 0, 0) 100%
-				);
-				display: flex;
-				align-items: flex-end;
-				justify-content: center;
-				border-radius: 0;
-				pointer-events: none;
-			}
-			.portrait-text {
-				width: 100%;
-				padding: 18px 0 12px 0;
-				text-align: center;
-				color: #fff;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: flex-end;
-				gap: 2px;
-				font-family: inherit;
-				font-weight: 600;
-				font-size: 1.08rem;
-				letter-spacing: 0.01em;
-				pointer-events: none;
-			}
-			.portrait-text .name {
-				font-size: 2.1rem;
-				font-weight: 800;
-				color: #fff;
-				margin-bottom: 2px;
-				text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-				line-height: 1.1;
-				letter-spacing: 0.01em;
-			}
-			.portrait-text .position {
-				font-size: 1.01rem;
-				font-weight: 500;
-				color: #fff;
-				opacity: 0.93;
-				text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-			}
-			@media (max-width: 1200px) {
-				.dev-card {
-					width: 90vw;
-					min-width: 260px;
-					max-width: 340px;
-				}
-			}
-			@media (max-width: 500px) {
-				.outer-container {
-					padding: 2rem;
-				}
-				.dev-card {
-					width: 100%;
-					min-width: 220px;
-					max-width: 100%;
-				}
-			}
-		</style>
-
-		<script>
-			// Scroll-triggered dev card animation
-			import { onMount as onMountDevCard } from 'svelte';
-			onMountDevCard(() => {
-				const cards = document.querySelectorAll('.dev-card');
-				const observer = new window.IntersectionObserver(
-					(entries) => {
-						entries.forEach((entry) => {
-							if (entry.isIntersecting) {
-								entry.target.classList.add('dev-card--scrolled-in');
-							} else {
-								entry.target.classList.remove('dev-card--scrolled-in');
-							}
-						});
-					},
-					{ threshold: 0.2 }
-				);
-				cards.forEach((card) => observer.observe(card));
-				return () => observer.disconnect();
-			});
-		</script>
 	</section>
 
 	<!-- ABOUT SECTION -->
@@ -979,6 +697,14 @@
 {/if}
 
 <style>
+	.hero-title-transform .safer-smarter {
+		display: inline-block;
+		transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	.hero-title-transform .safer-smarter.fade-out {
+		opacity: 0;
+		transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
 	.modal-overlay {
 		animation: fadeInModal 0.2s;
 	}
@@ -1122,5 +848,268 @@
 	}
 	.get-started-vibrate.vibrating {
 		animation: vibrate 0.4s linear;
+	}
+	/* Make navbar fixed and add body padding for content below */
+	body {
+		padding-top: 74px !important;
+	}
+	/* Dropdown on hover for desktop */
+	@media (min-width: 992px) {
+		.hover-dropdown:hover > .dropdown-menu {
+			display: block;
+			margin-top: 0;
+		}
+		.hover-dropdown > .dropdown-toggle:active {
+			pointer-events: none;
+		}
+		.navbar-nav .nav-link,
+		.navbar-nav .dropdown-toggle {
+			position: relative;
+			transition: color 0.2s;
+		}
+		.navbar-nav .nav-link:hover,
+		.navbar-nav .dropdown-toggle:hover {
+			text-decoration: none;
+		}
+		.navbar-nav .nav-link::after,
+		.navbar-nav .dropdown-toggle::after {
+			content: '';
+			display: block;
+			width: 0;
+			height: 1.5px; /* Thinner underline for all links */
+			background: transparent;
+			transition:
+				width 0.2s,
+				background 0.2s;
+			position: absolute;
+			left: 0;
+			bottom: 0.2em;
+		}
+		.navbar-nav .nav-link:hover::after,
+		.navbar-nav .dropdown-toggle:hover::after {
+			width: 100%;
+			background: #fff;
+			height: 1.5px; /* Ensure hover underline is also thin */
+		}
+		/* Hide dropdown arrow for Contact and Support */
+		.navbar-nav .dropdown-toggle::after {
+			display: none !important;
+		}
+	}
+	@media (max-width: 991.98px) {
+		.navbar-collapse {
+			background: #dd815e;
+			padding: 1rem 0.5rem 0.5rem;
+		}
+		.navbar-nav .nav-item {
+			border-bottom: none;
+		}
+		.navbar-nav .nav-link,
+		.navbar-nav .dropdown-toggle {
+			color: #fff !important;
+			font-size: 1.1rem;
+			padding: 0.75rem 1.5rem;
+		}
+		.navbar-nav .dropdown-menu {
+			background: #fff;
+			border-radius: 0 0 8px 8px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		}
+		.navbar-nav .dropdown-item {
+			color: #dd815e;
+			font-weight: 500;
+		}
+		.navbar-toggler {
+			border: none;
+		}
+	}
+	/* Dropdown on hover for desktop */
+	@media (min-width: 992px) {
+		.hover-dropdown:hover > .dropdown-menu {
+			display: block;
+			margin-top: 0;
+		}
+		.hover-dropdown > .dropdown-toggle:active {
+			pointer-events: none;
+		}
+	}
+	.responsive-container-block.outer-container {
+		background: #fff;
+	}
+	.section-head-text {
+		color: #dd815e;
+		font-size: 2.5rem;
+		font-weight: 700;
+	}
+	.section-subhead-text {
+		color: #555;
+		font-size: 1.1rem;
+		margin-bottom: 2.5rem;
+	}
+	.dev-card {
+		width: 100%;
+		min-width: 220px;
+		max-width: 320px;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		background: #dd815e;
+		border-radius: 16px;
+		box-shadow: 0 4px 24px rgba(221, 129, 94, 0.13);
+		margin-bottom: 1.5rem;
+		padding: 0;
+		text-align: center;
+		color: #fff;
+		overflow: hidden;
+		border: none;
+		transition:
+			transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+			box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+		cursor: pointer;
+	}
+	.dev-card:hover,
+	.dev-card:focus-visible,
+	.dev-card.dev-card--scrolled-in {
+		transform: translateY(-7px) scale(1.035) rotate(-1.5deg);
+		box-shadow:
+			0 8px 32px rgba(221, 129, 94, 0.22),
+			0 2px 8px rgba(0, 0, 0, 0.08);
+		background: #e98d6a;
+		outline: none;
+	}
+	.dev-card:hover .card-content .position,
+	.dev-card:focus-visible .card-content .position,
+	.dev-card.dev-card--scrolled-in .card-content .position {
+		opacity: 0.93;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+	.card-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: auto;
+		padding: 10px 0 10px 0;
+		min-height: 0;
+	}
+	.name {
+		color: #dd815e;
+		font-size: 2.1rem;
+		font-weight: 800;
+		margin: 10px 0 4px 0;
+		text-align: center;
+		line-height: 1.1;
+		letter-spacing: 0.01em;
+	}
+	.position {
+		color: #fff;
+		font-weight: 600;
+		font-size: 1.08rem;
+		margin-bottom: 8px;
+		text-align: center;
+		display: block;
+		transition: opacity 0.2s;
+	}
+
+	.img-wrapper.portrait-header {
+		width: 100%;
+		aspect-ratio: 1.6/1;
+		min-height: 0;
+		height: auto;
+		margin: 0;
+		border-radius: 0;
+		overflow: hidden;
+		background: #f5f5f7;
+		position: relative;
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+		box-shadow: none;
+		max-width: 100%;
+	}
+	.img-wrapper.portrait-header img {
+		width: 100%;
+		height: 100%;
+		min-height: 180px;
+		max-height: 260px;
+		object-fit: cover;
+		display: block;
+		position: relative;
+		left: 0;
+		top: 0;
+		z-index: 1;
+		border-radius: 0;
+	}
+	.vignette {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 65%;
+		z-index: 2;
+		background: linear-gradient(
+			to top,
+			rgba(0, 0, 0, 0.68) 0%,
+			rgba(0, 0, 0, 0.38) 40%,
+			rgba(0, 0, 0, 0.1) 85%,
+			rgba(0, 0, 0, 0) 100%
+		);
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+		border-radius: 0;
+		pointer-events: none;
+	}
+	.portrait-text {
+		width: 100%;
+		padding: 18px 0 12px 0;
+		text-align: center;
+		color: #fff;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 2px;
+		font-family: inherit;
+		font-weight: 600;
+		font-size: 1.08rem;
+		letter-spacing: 0.01em;
+		pointer-events: none;
+	}
+	.portrait-text .name {
+		font-size: 2.1rem;
+		font-weight: 800;
+		color: #fff;
+		margin-bottom: 2px;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+		line-height: 1.1;
+		letter-spacing: 0.01em;
+	}
+	.portrait-text .position {
+		font-size: 1.01rem;
+		font-weight: 500;
+		color: #fff;
+		opacity: 0.93;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+	}
+	@media (max-width: 1200px) {
+		.dev-card {
+			width: 90vw;
+			min-width: 260px;
+			max-width: 340px;
+		}
+	}
+	@media (max-width: 500px) {
+		.outer-container {
+			padding: 2rem;
+		}
+		.dev-card {
+			width: 100%;
+			min-width: 220px;
+			max-width: 100%;
+		}
 	}
 </style>
