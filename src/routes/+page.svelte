@@ -360,12 +360,69 @@ function toggleNavbar() {
 	  .responsive-container-block.outer-container { background: #fff; }
 	  .section-head-text { color: #dd815e; font-size: 2.5rem; font-weight: 700; }
 	  .section-subhead-text { color: #555; font-size: 1.1rem; margin-bottom: 2.5rem; }
-	  .dev-card { width: 320px; min-width: 320px; max-width: 320px; min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(221,129,94,0.13); margin-bottom: 1.5rem; padding: 30px 25px 40px 25px; }
-	  .name { color: #dd815e; font-size: 1.2rem; font-weight: 700; }
-	  .position { color: #dd815e; font-weight: 600; }
-	  .testimonial { color: #555; font-size: 1rem; }
-	  .img-wrapper { width: 120px; height: 120px; margin: 0 auto 18px auto; border-radius: 50%; overflow: hidden; background: #f5f5f7; display: flex; align-items: center; justify-content: center; }
-	  .img-wrapper svg { width: 100%; height: 100%; display: block; }
+  .dev-card {
+	width: 320px;
+	min-width: 320px;
+	max-width: 320px;
+	min-height: 420px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 4px 24px rgba(221,129,94,0.13);
+	margin-bottom: 1.5rem;
+	padding: 30px 25px 40px 25px;
+	text-align: center;
+  }
+  .card-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	width: 100%;
+	height: 100%;
+  }
+  .name {
+	color: #dd815e;
+	font-size: 1.3rem;
+	font-weight: 700;
+	margin: 10px 0 4px 0;
+	text-align: center;
+  }
+  .position {
+	color: #dd815e;
+	font-weight: 600;
+	font-size: 1.08rem;
+	margin-bottom: 8px;
+	text-align: center;
+  }
+  .testimonial {
+	color: #555;
+	font-size: 1.04rem;
+	text-align: center;
+	margin-bottom: 0;
+  }
+  .img-wrapper {
+	width: 148px;
+	height: 148px;
+	margin: 0 auto 22px auto;
+	border-radius: 50%;
+	overflow: hidden;
+	background: #f5f5f7;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 2px 8px rgba(221,129,94,0.10);
+  }
+  .img-wrapper img, .img-wrapper svg {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+  }
 	  @media (max-width: 1200px) { .dev-card { width: 300px; min-width: 300px; max-width: 300px; } }
 	  @media (max-width: 1024px) { .dev-card { width: 90vw; min-width: 260px; max-width: 340px; } }
 	  @media (max-width: 500px) { .outer-container { padding: 0 10px; } .dev-card { width: 100%; min-width: 220px; max-width: 100%; } }
