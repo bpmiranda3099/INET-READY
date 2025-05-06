@@ -1,5 +1,22 @@
 <script>
-  // No JS needed for static instructions
+  import { onMount } from 'svelte';
+  
+  // Check if the user came from privacy or terms page
+  let referrer = '';
+  
+  onMount(() => {
+    // Check and store the referrer if coming from privacy or terms
+    if (document.referrer.includes('/privacy')) {
+      referrer = '/privacy';
+    } else if (document.referrer.includes('/terms')) {
+      referrer = '/terms';
+    }
+    
+    // If coming from privacy or terms, redirect with hash
+    if (referrer) {
+      window.location.href = `${referrer}#data-deletion`;
+    }
+  });
 </script>
 
 <svelte:head>
@@ -24,6 +41,10 @@
   </p>
   <h2>Questions?</h2>
   <p>If you have any questions, contact us at <a href="mailto:support@inet-ready.com">support@inet-ready.com</a>.</p>
+  
+  <div class="navigation-links">
+    <a href="/privacy">View Privacy Policy</a> | <a href="/terms">View Terms of Service</a>
+  </div>
 </div>
 
 <style>
@@ -50,5 +71,12 @@
 .policy-container a {
   color: #dd815e;
   text-decoration: underline;
+}
+.navigation-links {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  text-align: center;
+  font-size: 0.9rem;
 }
 </style>
