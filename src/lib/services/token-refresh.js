@@ -130,12 +130,12 @@ async function updateTokenInFirestore(token, uid = null) {
     }
 
     // Update the user document with the new token and required fields
-    await updateDoc(doc(db, 'users', uid), {
+    await setDoc(doc(db, 'users', uid), {
       fcmToken: token,
       tokenUpdatedAt: new Date(),
       notification_enabled: true,
       ...(homeCity ? { location: { city: homeCity } } : {})
-    });
+    }, { merge: true });
 
     // Also add to a separate tokens collection for easy querying
     await setDoc(doc(db, 'fcm_tokens', token), {
