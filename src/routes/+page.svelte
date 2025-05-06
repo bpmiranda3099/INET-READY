@@ -312,10 +312,7 @@ function toggleNavbar() {
 		  <!-- Alyssa Mae Abac -->
 		  <div class="card dev-card">
 			<div class="img-wrapper">
-			  <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="60" cy="60" r="60" fill="#f5f5f7"/>
-				<text x="50%" y="54%" text-anchor="middle" fill="#bbb" font-size="38" font-family="Arial, sans-serif" dy=".3em">AM</text>
-			  </svg>
+			  <img src="https://scontent.fmnl9-4.fna.fbcdn.net/v/t39.30808-1/495262217_3787895071428231_6510113284719315269_n.jpg?stp=cp6_dst-jpg_s200x200_tt6&_nc_cat=105&ccb=1-7&_nc_sid=1d2534&_nc_eui2=AeG8Km6yYzmTR-eYef0uKi_NwpI2en4CDivCkjZ6fgIOK90THDhrfB1cqcQgLxlxLd5W1BNj3sNFkYLKT-H3nbx8&_nc_ohc=ewMcjaW4PcoQ7kNvwHqSDjG&_nc_oc=AdnxAoZbNA6-Gx0bBL4YfKecD9Bo3UHWAKeN779qCiDUyazM1EOLptFenG7AGqdkds0&_nc_zt=24&_nc_ht=scontent.fmnl9-4.fna&_nc_gid=14i2lCz7n3wr0SheVfVz5Q&oh=00_AfLsbQ8ZrLrDilE-WP4EGNloBGSwph9NGOVzlkfj9k30AQ&oe=681FEA1B" alt="Alyssa Mae Abac" style="width:100%;height:100%;object-fit:cover;" />
 			</div>
 			<div class="card-content">
 			  <p class="text-blk name" style="color:#dd815e;">Alyssa Mae Abac</p>
@@ -326,10 +323,7 @@ function toggleNavbar() {
 		  <!-- Nicole Wyne Fernandez -->
 		  <div class="card dev-card">
 			<div class="img-wrapper">
-			  <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="60" cy="60" r="60" fill="#f5f5f7"/>
-				<text x="50%" y="54%" text-anchor="middle" fill="#bbb" font-size="38" font-family="Arial, sans-serif" dy=".3em">NF</text>
-			  </svg>
+			  <img src="https://scontent.fmnl9-4.fna.fbcdn.net/v/t39.30808-1/343387404_534020152265878_7710459416092706346_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=105&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeGHReVsdDpVrzDuEALqsl3GDmtPlx8QAJMOa0-XHxAAk5ptVLRH1IJSzZl7L90-X8CpbimKEwgnga5o3WDmtAsX&_nc_ohc=eSoLWwaD-cEQ7kNvwF4Uqpz&_nc_oc=AdnGa6AlUfNxtxtBodPpW5LgXhPvdNVptUjF6MzdDXxGGwE_A97jMZ860T2_lREp_XM&_nc_zt=24&_nc_ht=scontent.fmnl9-4.fna&_nc_gid=Ox-UkQkT3nckhc85WaOaig&oh=00_AfKvBAV6Z-mqVKeyPy1OMKcIzqqFzCbhEXXEAM-TZ8KbSw&oe=68200EA2" alt="Nicole Wyne Fernandez" style="width:100%;height:100%;object-fit:cover;" />
 			</div>
 			<div class="card-content">
 			  <p class="text-blk name" style="color:#dd815e;">Nicole Wyne Fernandez</p>
@@ -340,10 +334,7 @@ function toggleNavbar() {
 		  <!-- Brandon Miranda -->
 		  <div class="card dev-card">
 			<div class="img-wrapper">
-			  <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="60" cy="60" r="60" fill="#f5f5f7"/>
-				<text x="50%" y="54%" text-anchor="middle" fill="#bbb" font-size="38" font-family="Arial, sans-serif" dy=".3em">BM</text>
-			  </svg>
+			  <img src="https://scontent.fmnl9-2.fna.fbcdn.net/v/t39.30808-6/316940975_6344569778905754_4439269053930394859_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeG6qP_3LvpoeIoYqIP4EVasalvDEyl0enRqW8MTKXR6dJjX2pD9M320EZlcSminQeVGK1R1MoysNVrUNRU-eFSq&_nc_ohc=1CQxN8M3wMoQ7kNvwGkEVyb&_nc_oc=Adm_vwz2RbsGISielkR3eMaKbDEWw-CDlHI9P3Xx12jzHxHUl1IhDb-pUiz9recTSjs&_nc_zt=23&_nc_ht=scontent.fmnl9-2.fna&_nc_gid=7ClNm47ZT_PpzEgB2iXAdA&oh=00_AfLdpyxMYErRuIzqIa6dDHJzp8vObfhAKLlqKlbjl5dltQ&oe=682004B8" alt="Brandon Miranda" style="width:100%;height:100%;object-fit:cover;" />
 			</div>
 			<div class="card-content">
 			  <p class="text-blk name" style="color:#dd815e;">Brandon Miranda</p>
@@ -354,10 +345,7 @@ function toggleNavbar() {
 		  <!-- Alexander Asinas -->
 		  <div class="card dev-card">
 			<div class="img-wrapper">
-			  <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="60" cy="60" r="60" fill="#f5f5f7"/>
-				<text x="50%" y="54%" text-anchor="middle" fill="#bbb" font-size="38" font-family="Arial, sans-serif" dy=".3em">AA</text>
-			  </svg>
+			  <img src="https://scontent.fmnl9-6.fna.fbcdn.net/v/t39.30808-6/349663129_1607290049762067_877432076550208488_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeHzWneW3mDNJWjQM6Ehjp2efgywZQhDLah-DLBlCEMtqB6fvWBJVzwRR4BfTXbU-f7kbnUOoZnnEXqTXxuvHC7A&_nc_ohc=n3Try9-fbokQ7kNvwHFbxGk&_nc_oc=AdlKdPRhwW66n6jT5ZJ2nmHyJYMzqoRCs0pjLUi8ky3Fa0cjwckWYGzPgV2yopcb5Mk&_nc_zt=23&_nc_ht=scontent.fmnl9-6.fna&_nc_gid=fIPMYiL-XtJuzPJaOynQoQ&oh=00_AfKoJuyJKwn5lxaPbbG9Nm42WOU7EzeCZVJdg38PxAwuGw&oe=68200068" alt="Alexander Asinas" style="width:100%;height:100%;object-fit:cover;" />
 			</div>
 			<div class="card-content">
 			  <p class="text-blk name" style="color:#dd815e;">Alexander Asinas</p>
