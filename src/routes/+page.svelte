@@ -308,104 +308,79 @@ function toggleNavbar() {
 	  <div class="responsive-container-block inner-container">
 		<p class="text-blk section-head-text" style="color:#dd815e;">Meet Our Developers</p>
 		<p class="text-blk section-subhead-text">The INET-READY team brings together expertise in project management, frontend, backend, QA, and research to deliver a safer travel experience.</p>
-		<div class="responsive-container-block">
-		  <div class="swiper team-swiper">
-			<div class="swiper-wrapper">
-			  <!-- Alyssa Mae Abac -->
-			  <div class="swiper-slide">
-				<div class="card">
-				  <div class="img-wrapper">
-					<img src="/app-icon.png" alt="Alyssa Mae Abac">
-				  </div>
-				  <div class="card-content">
-					<p class="text-blk name" style="color:#dd815e;">Alyssa Mae Abac</p>
-					<p class="text-blk position" style="color:#dd815e;">Project Management, Public Relations, Documentation</p>
-					<p class="text-blk testimonial">Leads the project, manages communication, and keeps documentation organized.</p>
-				  </div>
-				</div>
-			  </div>
-			  <!-- Nicole Wyne Fernandez -->
-			  <div class="swiper-slide">
-				<div class="card">
-				  <div class="img-wrapper">
-					<img src="/app-icon.png" alt="Nicole Wyne Fernandez">
-				  </div>
-				  <div class="card-content">
-					<p class="text-blk name" style="color:#dd815e;">Nicole Wyne Fernandez</p>
-					<p class="text-blk position" style="color:#dd815e;">Frontend Development</p>
-					<p class="text-blk testimonial">Designs and builds user-friendly interfaces with intuitive navigation.</p>
-				  </div>
-				</div>
-			  </div>
-			  <!-- Brandon Miranda -->
-			  <div class="swiper-slide">
-				<div class="card">
-				  <div class="img-wrapper">
-					<img src="/app-icon.png" alt="Brandon Miranda">
-				  </div>
-				  <div class="card-content">
-					<p class="text-blk name" style="color:#dd815e;">Brandon Miranda</p>
-					<p class="text-blk position" style="color:#dd815e;">Backend Development</p>
-					<p class="text-blk testimonial">Develops and optimizes backend systems, APIs, and databases.</p>
-				  </div>
-				</div>
-			  </div>
-			  <!-- Alexander Asinas -->
-			  <div class="swiper-slide">
-				<div class="card">
-				  <div class="img-wrapper">
-					<img src="/app-icon.png" alt="Alexander Asinas">
-				  </div>
-				  <div class="card-content">
-					<p class="text-blk name" style="color:#dd815e;">Alexander Asinas</p>
-					<p class="text-blk position" style="color:#dd815e;">QA/QC, Research, System Analyst</p>
-					<p class="text-blk testimonial">Ensures quality, researches, and bridges business and technical needs.</p>
-				  </div>
-				</div>
-			  </div>
+		<div class="responsive-container-block" style="justify-content:center; gap:2rem; flex-wrap:wrap;">
+		  <!-- Alyssa Mae Abac -->
+		  <div class="card dev-card">
+			<div class="img-wrapper">
+			  <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="60" cy="60" r="60" fill="#f5f5f7"/>
+				<text x="50%" y="54%" text-anchor="middle" fill="#bbb" font-size="38" font-family="Arial, sans-serif" dy=".3em">AM</text>
+			  </svg>
 			</div>
-			<div class="swiper-pagination container-block"></div>
+			<div class="card-content">
+			  <p class="text-blk name" style="color:#dd815e;">Alyssa Mae Abac</p>
+			  <p class="text-blk position" style="color:#dd815e;">Project Management, Public Relations, Documentation</p>
+			  <p class="text-blk testimonial">Leads the project, manages communication, and keeps documentation organized.</p>
+			</div>
+		  </div>
+		  <!-- Nicole Wyne Fernandez -->
+		  <div class="card dev-card">
+			<div class="img-wrapper">
+			  <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="60" cy="60" r="60" fill="#f5f5f7"/>
+				<text x="50%" y="54%" text-anchor="middle" fill="#bbb" font-size="38" font-family="Arial, sans-serif" dy=".3em">NF</text>
+			  </svg>
+			</div>
+			<div class="card-content">
+			  <p class="text-blk name" style="color:#dd815e;">Nicole Wyne Fernandez</p>
+			  <p class="text-blk position" style="color:#dd815e;">Frontend Development</p>
+			  <p class="text-blk testimonial">Designs and builds user-friendly interfaces with intuitive navigation.</p>
+			</div>
+		  </div>
+		  <!-- Brandon Miranda -->
+		  <div class="card dev-card">
+			<div class="img-wrapper">
+			  <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="60" cy="60" r="60" fill="#f5f5f7"/>
+				<text x="50%" y="54%" text-anchor="middle" fill="#bbb" font-size="38" font-family="Arial, sans-serif" dy=".3em">BM</text>
+			  </svg>
+			</div>
+			<div class="card-content">
+			  <p class="text-blk name" style="color:#dd815e;">Brandon Miranda</p>
+			  <p class="text-blk position" style="color:#dd815e;">Backend Development</p>
+			  <p class="text-blk testimonial">Develops and optimizes backend systems, APIs, and databases.</p>
+			</div>
+		  </div>
+		  <!-- Alexander Asinas -->
+		  <div class="card dev-card">
+			<div class="img-wrapper">
+			  <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="60" cy="60" r="60" fill="#f5f5f7"/>
+				<text x="50%" y="54%" text-anchor="middle" fill="#bbb" font-size="38" font-family="Arial, sans-serif" dy=".3em">AA</text>
+			  </svg>
+			</div>
+			<div class="card-content">
+			  <p class="text-blk name" style="color:#dd815e;">Alexander Asinas</p>
+			  <p class="text-blk position" style="color:#dd815e;">QA/QC, Research, System Analyst</p>
+			  <p class="text-blk testimonial">Ensures quality, researches, and bridges business and technical needs.</p>
+			</div>
 		  </div>
 		</div>
 	  </div>
 	</div>
-	<!-- Swiper.js CDN -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-	<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-	<script>
-	  if (typeof window !== 'undefined') {
-		setTimeout(() => {
-		  if (window.Swiper) {
-			new window.Swiper('.team-swiper', {
-			  slidesPerView: 3,
-			  spaceBetween: 30,
-			  pagination: {
-				el: '.swiper-pagination',
-				clickable: true,
-			  },
-			  breakpoints: {
-				200: { slidesPerView: 1, spaceBetween: 20 },
-				750: { slidesPerView: 2, spaceBetween: 30 },
-				1024: { slidesPerView: 2.5, spaceBetween: 30 },
-				1100: { slidesPerView: 3, spaceBetween: 30 },
-			  },
-			});
-		  }
-		}, 500);
-	  }
-	</script>
 	<style>
 	  .responsive-container-block.outer-container { background: #fff; }
 	  .section-head-text { color: #dd815e; font-size: 2.5rem; font-weight: 700; }
 	  .section-subhead-text { color: #555; font-size: 1.1rem; margin-bottom: 2.5rem; }
-	  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(221,129,94,0.10); }
+	  .dev-card { width: 320px; min-width: 320px; max-width: 320px; min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(221,129,94,0.13); margin-bottom: 1.5rem; padding: 30px 25px 40px 25px; }
 	  .name { color: #dd815e; font-size: 1.2rem; font-weight: 700; }
 	  .position { color: #dd815e; font-weight: 600; }
 	  .testimonial { color: #555; font-size: 1rem; }
-	  .img-wrapper { width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; overflow: hidden; background: #f5f5f7; display: flex; align-items: center; justify-content: center; }
-	  .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-	  @media (max-width: 1024px) { .swiper-slide { justify-content: center; } }
-	  @media (max-width: 500px) { .outer-container { padding: 0 20px; } }
+	  .img-wrapper { width: 120px; height: 120px; margin: 0 auto 18px auto; border-radius: 50%; overflow: hidden; background: #f5f5f7; display: flex; align-items: center; justify-content: center; }
+	  .img-wrapper svg { width: 100%; height: 100%; display: block; }
+	  @media (max-width: 1200px) { .dev-card { width: 300px; min-width: 300px; max-width: 300px; } }
+	  @media (max-width: 1024px) { .dev-card { width: 90vw; min-width: 260px; max-width: 340px; } }
+	  @media (max-width: 500px) { .outer-container { padding: 0 10px; } .dev-card { width: 100%; min-width: 220px; max-width: 100%; } }
 	</style>
   </section>
 
