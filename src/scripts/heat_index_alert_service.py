@@ -631,7 +631,7 @@ def main():
     start_time = time.time()
     
     # Add a delay to ensure the hourly data update is complete
-    delay_seconds = int(os.environ.get('ALERT_DELAY_SECONDS', 60))
+    delay_seconds = int(os.environ.get('ALERT_DELAY_SECONDS', 5))
     logger.info(f"Waiting {delay_seconds} seconds to ensure data update is complete...")
     time.sleep(delay_seconds)
     
