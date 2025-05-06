@@ -1087,7 +1087,7 @@
         padding-left: 30px; /* Space for the checkbox */
         cursor: pointer;
         font-size: 0.9rem;
-        font-weight: bold; /* Added bold font weight */
+        font-weight: 500; /* Added bold font weight */
     }
 
     .checkbox-container input {
@@ -1140,7 +1140,7 @@
         cursor: pointer;
         padding: 0.25rem;
         font-size: 0.9rem; /* Match checkbox-container font size */
-        font-weight: bold; /* Added bold font weight */
+        font-weight: 500; /* Added bold font weight */
     }
 
     .forgot-password:hover {
