@@ -17,6 +17,10 @@
     import MedicalForm from '../../components/medicalform.svelte';
     import VerificationStatusComponent from '../../components/verification-status.svelte';
     import WelcomeModal from '../../components/welcome-modal.svelte';
+    
+    // Import Terms and Privacy content
+    import TermsContent from '../terms/+page.svelte';
+    import PrivacyContent from '../privacy/+page.svelte';
 
     let user = null;
     let showRegister = false;
@@ -24,6 +28,10 @@
     let checkingMedicalRecord = false;
     let isVerified = false;
     let justVerified = false;
+    
+    // Variables to control Terms and Privacy display
+    let showTerms = false;
+    let showPrivacy = false;
 
     // Login variables
     let email = '';
@@ -401,6 +409,11 @@
         needsMedicalForm = false;
         justVerified = false;
     }
+    
+    function goBackToForm() {
+        showTerms = false;
+        showPrivacy = false;
+    }
 
     // Logo rotation animation variables
     let logoRotating = false;
@@ -470,10 +483,30 @@
 
         <div class="content-area">
             <div class="section-container">                <div class="section-header">
-                    <h3>{showRegister ? 'Create Your Account' : 'Sign In To Your Account'}</h3>
-                </div>
-                <div class="section-body">
-                    {#if showRegister}
+                    <h3>
+                        {#if showTerms}
+                            Terms of Service
+                        {:else if showPrivacy}
+                            Privacy Policy
+                        {:else}
+                            {showRegister ? 'Create Your Account' : 'Sign In To Your Account'}
+                        {/if}
+                    </h3>
+                    {#if showTerms || showPrivacy}
+                        <button class="back-button" on:click={goBackToForm}>
+                            <i class="bi bi-arrow-left"></i> Back
+                        </button>
+                    {/if}
+                </div>                <div class="section-body">
+                    {#if showTerms}
+                        <div class="terms-privacy-content">
+                            <svelte:component this={TermsContent} />
+                        </div>
+                    {:else if showPrivacy}
+                        <div class="terms-privacy-content">
+                            <svelte:component this={PrivacyContent} />
+                        </div>
+                    {:else if showRegister}
                         {#if registrationSuccess}
                             <div class="success-container">
                                 <h2>Verification Email Sent</h2>
@@ -591,11 +624,10 @@
                                     {/if}
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label class="checkbox-container terms-checkbox">
+                                <div class="form-group">                                    <label class="checkbox-container terms-checkbox">
                                         <input type="checkbox" bind:checked={agreedToTerms}>
                                         <span class="checkmark"></span>
-                                        I agree to the <a href="/terms" target="_blank">&nbsp;Terms of Service&nbsp;</a> and <a href="/privacy" target="_blank">&nbsp;Privacy Policy</a>
+                                        I agree to the <a href="#" on:click|preventDefault={() => showTerms = true}>&nbsp;Terms of Service&nbsp;</a> and <a href="#" on:click|preventDefault={() => showPrivacy = true}>&nbsp;Privacy Policy</a>
                                     </label>
                                 </div>
                                 
@@ -757,14 +789,21 @@
                                 disabled={loading}
                             >
                                 <i class="bi bi-facebook" style="font-size: 1.2rem;"></i>
-                                <span>Sign in with Facebook</span>
-                            </button>
+                                <span>Sign in with Facebook</span>                            </button>
                         </form>
                     {/if}
                 </div>
             </div>
         </div>
     </div>
+{/if}
+
+{#if showTerms}
+    <TermsContent on:close={() => showTerms = false} />
+{/if}
+
+{#if showPrivacy}
+    <PrivacyContent on:close={() => showPrivacy = false} />
 {/if}
 
 <style>    
@@ -775,6 +814,41 @@
         padding-bottom: 60px; /* Space for bottom nav */
         padding-top: 60px; /* Space for app bar */
         position: relative;
+    }
+
+    .terms-privacy-content :global(.policy-container) {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .terms-privacy-content :global(h1) {
+        font-size: 1.5rem;
+        margin-top: 0;
+    }
+
+    .terms-privacy-content :global(h2) {
+        font-size: 1.1rem;
+    }
+
+    .back-button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: background 0.2s;
+    }
+
+    .back-button:hover {
+        background: rgba(255, 255, 255, 0.3);
     }
 
     .app-bar {
@@ -1000,20 +1074,10 @@
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
-    }
-
-    .onboarding-container {
+    }    .onboarding-container {
         max-width: 600px;
         margin: 2rem auto;
         padding: 1rem;
-    }
-
-    .onboarding-message {
-        text-align: center;
-        margin-bottom: 2rem;
-        font-size: 1.1rem;
-        color: #333;
-        line-height: 1.5;
     }
 
     .form-group {
