@@ -49,10 +49,13 @@ export async function setupTokenRefreshService() {
             if (currentToken) {
               updateTokenInFirestore(currentToken, user.uid);
               
-              // Subscribe to the daily_weather_insights topic
-              subscribeToTopic(currentToken, 'daily_weather_insights')
-                .then(() => console.log('Subscribed to daily_weather_insights topic'))
-                .catch(error => console.error('Failed to subscribe to topic:', error));
+              // Subscribe to the daily_weather_insights and heat_index_alert topics
+              Promise.all([
+                subscribeToTopic(currentToken, 'daily_weather_insights'),
+                subscribeToTopic(currentToken, 'heat_index_alert')
+              ])
+                .then(() => console.log('Subscribed to daily_weather_insights and heat_index_alert topics'))
+                .catch(error => console.error('Failed to subscribe to one or more topics:', error));
             }
           })
           .catch(console.error);
@@ -147,7 +150,7 @@ async function updateTokenInFirestore(token, uid = null) {
       lastValidated: new Date(),
       isValid: true,
       platform: 'web',
-      subscribedTopics: ['daily_weather_insights'] // Default subscription
+      subscribedTopics: ['daily_weather_insights', 'heat_index_alert'] // Added heat_index_alert subscription
     };
     console.log('[updateTokenInFirestore] Writing to fcm_tokens:', token, tokenData);
     await setDoc(doc(db, 'fcm_tokens', token), tokenData);
