@@ -1475,7 +1475,6 @@ fieldset.condition-group legend {
 .onboarding-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: var(--spacing-xl);
 }
 
 .onboarding-container h1 {
