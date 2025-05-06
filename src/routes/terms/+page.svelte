@@ -127,7 +127,7 @@
   .breadcrumbs {
     max-width: 700px;
     width: 100%;
-    margin: 2rem auto 1.5rem;
+    margin: .5rem;
     font-size: 0.9rem;
     color: #666;
   }
