@@ -98,7 +98,7 @@
 
 <div class="verification-icon">
     <dotlottie-player
-      src="https://lottie.host/3e64cd3b-6042-414e-90a4-e537463c5c0b/umyVYbfdSh.lottie"
+      src="https://lottie.host/968cbead-20d7-4607-9854-3ebc3f044716/MmY1zA0krS.lottie"
       background="transparent"
       speed="1"
       style="width: 200px; height: 200px"
