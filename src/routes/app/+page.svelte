@@ -21,7 +21,6 @@
     // Import Terms and Privacy content
     import TermsContent from '../terms/+page.svelte';
     import PrivacyContent from '../privacy/+page.svelte';
-    import DataDeletionContent from '../data-deletion/+page.svelte';
 
     let user = null;
     let showRegister = false;
@@ -33,8 +32,6 @@
     // Variables to control Terms and Privacy display
     let showTerms = false;
     let showPrivacy = false;
-    let showDataDeletion = false;
-    let previousPage = null; // Track which page to go back to
 
     // Login variables
     let email = '';
@@ -416,7 +413,6 @@
     function goBackToForm() {
         showTerms = false;
         showPrivacy = false;
-        showDataDeletion = false;
     }
 
     // Logo rotation animation variables
@@ -453,7 +449,7 @@
     <div class="auth-page">        <!-- App Bar -->        <div class="app-bar">
             <div class="app-bar-content">
                 <div class="app-bar-main">
-                    {#if showTerms || showPrivacy || showDataDeletion}
+                    {#if showTerms || showPrivacy}
                         <img src="/app-icon.png" alt="INET-READY" 
                             class="app-logo {logoRotating ? 'rotating' : ''}" 
                             on:animationend={() => logoRotating = false} />
@@ -476,7 +472,7 @@
                 </div>
             </div>
         </div><!-- Bottom Navigation -->
-        {#if !showTerms && !showPrivacy && !showDataDeletion}
+        {#if !showTerms && !showPrivacy}
             <div class="bottom-nav">
                 <button 
                     class="nav-item" 
@@ -497,7 +493,7 @@
             </div>
         {/if}        <div class="content-area">
             <div class="section-container">
-                {#if showTerms || showPrivacy || showDataDeletion}
+                {#if showTerms || showPrivacy}
                     <!-- No header for Terms/Privacy view -->
                 {:else}
                     <div class="section-header">
@@ -513,10 +509,6 @@
                     {:else if showPrivacy}
                         <div class="terms-privacy-content">
                             <svelte:component this={PrivacyContent} />
-                        </div>
-                    {:else if showDataDeletion}
-                        <div class="terms-privacy-content">
-                            <svelte:component this={DataDeletionContent} />
                         </div>
                     {:else if showRegister}
                         {#if registrationSuccess}
@@ -818,7 +810,9 @@
         padding-bottom: 60px; /* Space for bottom nav */
         padding-top: 60px; /* Space for app bar */
         position: relative;
-    }    .terms-privacy-content {
+    }
+
+    .terms-privacy-content {
         padding: 1.5rem 1rem;
     }
 
@@ -828,24 +822,6 @@
         padding: 0;
         box-shadow: none;
         background: transparent;
-    }
-
-    .data-deletion-link {
-        margin-top: 1.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(221,129,94,0.2);
-        text-align: center;
-    }
-
-    .data-deletion-link a {
-        color: #dd815e;
-        text-decoration: underline;
-        font-weight: 500;
-        transition: opacity 0.2s;
-    }
-
-    .data-deletion-link a:hover {
-        opacity: 0.8;
     }
 
     .terms-privacy-content :global(.policy-container h1) {

@@ -30,7 +30,8 @@
     <li>INET-READY provides information for general guidance only. It is not a substitute for professional medical advice.</li>
     <li>Always consult a qualified healthcare provider for medical concerns.</li>
     <li>We do not guarantee the accuracy or completeness of travel or health information.</li>
-  </ul>  <h2>4. Account Termination</h2>
+  </ul>
+  <h2>4. Account Termination</h2>
   <ul>
     <li>You may delete your account at any time. See our <a href="/data-deletion">Data Deletion Instructions</a>.</li>
     <li>We may suspend or terminate accounts that violate these terms or applicable laws.</li>
