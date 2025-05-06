@@ -6,6 +6,10 @@ on:
     - cron: '0 4 * * *'
   workflow_dispatch: # Allow manual triggering
 
+concurrency:
+  group: heat-index-forecast
+  cancel-in-progress: false
+
 jobs:
   generate-forecast:
     runs-on: ubuntu-latest
@@ -46,15 +50,38 @@ jobs:
       - name: Configure Git
         run: |
           git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-      # Step 6: Run the forecast generation script
+          git config --global user.email "actions@github.com"      # Step 6: Run the forecast generation script
       - name: Generate Heat Index Forecast
+        id: generate_forecast
         env:
           FIREBASE_SERVICE_ACCOUNT: ./firebase_service_account.json
         run: |
           cd src/scripts
-          python heat_index_forecast_api.py --regenerate --firebase
+          # First attempt
+          if python heat_index_forecast_api.py --regenerate --firebase; then
+            echo "::set-output name=status::success"
+            exit 0
+          else
+            echo "First attempt failed, trying again..."
+            sleep 30
+            # Second attempt
+            if python heat_index_forecast_api.py --regenerate --firebase; then
+              echo "::set-output name=status::success"
+              exit 0
+            else
+              echo "Second attempt failed, trying again..."
+              sleep 60
+              # Third attempt
+              if python heat_index_forecast_api.py --regenerate --firebase; then
+                echo "::set-output name=status::success"
+                exit 0
+              else
+                echo "All three attempts failed."
+                echo "::set-output name=status::failure"
+                exit 1
+              fi
+            fi
+          fi
 
       # Step 7: Upload forecast as artifact
       - name: Upload forecast as artifact
@@ -95,10 +122,14 @@ jobs:
         if: always()
         run: |
           rm -f ./firebase_service_account.json
-          rm -f .env
-
-      # Step 9: Log completion
+          rm -f .env      # Step 9: Log completion
       - name: Log completion
         run: |
           echo "Heat index forecast completed at $(date)"
           echo "Process completed with status: ${{ job.status }}"
+          echo "Forecast generation status: ${{ steps.generate_forecast.outputs.status }}"
+          if [ "${{ steps.generate_forecast.outputs.status }}" = "success" ]; then
+            echo "Forecast generation successful"
+          else
+            echo "::warning::Forecast generation failed after multiple retry attempts"
+          fi

@@ -680,24 +680,6 @@
                                 <div class="error">{error}</div>
                             {/if}
                             
-                            {#if unverifiedUser}
-                                <div class="verification-required">
-                                    <p>Your email address has not been verified.</p>
-                                    <button 
-                                        type="button" 
-                                        class="resend-btn" 
-                                        on:click={handleResendVerification}
-                                        disabled={loading || resendCooldown > 0}
-                                    >
-                                        {#if resendCooldown > 0}
-                                            Resend in {resendCooldown}s
-                                        {:else}
-                                            Resend Verification Email
-                                        {/if}
-                                    </button>
-                                </div>
-                            {/if}
-                            
                             <div class="form-group">
                                 <label for="email">Email Address</label>
                                 <input 
