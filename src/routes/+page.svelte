@@ -323,14 +323,8 @@ function toggleNavbar() {
 		  </div>
 		</div>
 	  </div>
-  <div class="card-content"
-	on:mouseenter={() => cardContentHover = true}
-	on:mouseleave={() => cardContentHover = false}
-	on:touchstart|preventDefault={() => cardContentHover = true}
-	on:touchend|preventDefault={() => cardContentHover = false}
-	class:show-desc={cardContentHover}>
+  <div class="card-content">
 	<span class="position">Project Management, Public Relations, Documentation</span>
-	<p class="text-blk testimonial">Leads the project, manages communication, and keeps documentation organized.</p>
   </div>
 		  </div>
 		  <!-- Nicole Wyne Fernandez -->
@@ -343,14 +337,8 @@ function toggleNavbar() {
 		  </div>
 		</div>
 	  </div>
-  <div class="card-content"
-	on:mouseenter={() => cardContentHover2 = true}
-	on:mouseleave={() => cardContentHover2 = false}
-	on:touchstart|preventDefault={() => cardContentHover2 = true}
-	on:touchend|preventDefault={() => cardContentHover2 = false}
-	class:show-desc={cardContentHover2}>
+  <div class="card-content">
 	<span class="position">Frontend Development</span>
-	<p class="text-blk testimonial">Designs and builds user-friendly interfaces with intuitive navigation.</p>
   </div>
 		  </div>
 		  <!-- Brandon Miranda -->
@@ -363,14 +351,8 @@ function toggleNavbar() {
 		  </div>
 		</div>
 	  </div>
-  <div class="card-content"
-	on:mouseenter={() => cardContentHover3 = true}
-	on:mouseleave={() => cardContentHover3 = false}
-	on:touchstart|preventDefault={() => cardContentHover3 = true}
-	on:touchend|preventDefault={() => cardContentHover3 = false}
-	class:show-desc={cardContentHover3}>
+  <div class="card-content">
 	<span class="position">Backend Development</span>
-	<p class="text-blk testimonial">Develops and optimizes backend systems, APIs, and databases.</p>
   </div>
 		  </div>
 		  <!-- Alexander Asinas -->
@@ -383,14 +365,8 @@ function toggleNavbar() {
 		  </div>
 		</div>
 	  </div>
-  <div class="card-content"
-	on:mouseenter={() => cardContentHover4 = true}
-	on:mouseleave={() => cardContentHover4 = false}
-	on:touchstart|preventDefault={() => cardContentHover4 = true}
-	on:touchend|preventDefault={() => cardContentHover4 = false}
-	class:show-desc={cardContentHover4}>
+  <div class="card-content">
 	<span class="position">QA/QC, Research, System Analyst</span>
-	<p class="text-blk testimonial">Ensures quality, researches, and bridges business and technical needs.</p>
   </div>
 		  </div>
 		</div>
@@ -402,15 +378,15 @@ function toggleNavbar() {
 	  .section-subhead-text { color: #555; font-size: 1.1rem; margin-bottom: 2.5rem; }
   .dev-card {
 	width: 100%;
-	min-width: 300px;
-	max-width: 400px;
-	min-height: 320px;
+	min-width: 220px;
+	max-width: 320px;
+	min-height: 0;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
 	background: #dd815e;
-	border-radius: 0;
+	border-radius: 16px;
 	box-shadow: 0 4px 24px rgba(221,129,94,0.13);
 	margin-bottom: 1.5rem;
 	padding: 0;
@@ -423,11 +399,11 @@ function toggleNavbar() {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: flex-start;
-	flex: 1;
+	justify-content: center;
 	width: 100%;
 	height: auto;
-	padding: 18px 0 18px 0;
+	padding: 10px 0 10px 0;
+	min-height: 0;
   }
   .name {
 	color: #dd815e;
@@ -447,32 +423,7 @@ function toggleNavbar() {
 	display: block;
 	transition: opacity 0.2s;
   }
-  .card-content .testimonial {
-	display: none;
-	opacity: 0;
-	transition: opacity 0.2s;
-  }
-  .card-content.show-desc .position {
-	opacity: 0;
-	pointer-events: none;
-  }
-  .card-content.show-desc .testimonial {
-	display: block;
-	opacity: 1;
-	pointer-events: auto;
-	animation: fadeIn 0.2s;
-  }
-  @keyframes fadeIn {
-	from { opacity: 0; }
-	to { opacity: 1; }
-  }
-  .testimonial {
-	color: #fff;
-	font-size: 0.93rem;
-	text-align: center;
-	margin-bottom: 0;
-	transition: opacity 0.2s;
-  }
+
   .img-wrapper.portrait-header {
 	width: 100%;
 	aspect-ratio: 1.6/1;
@@ -555,7 +506,7 @@ function toggleNavbar() {
 	text-shadow: 0 2px 8px rgba(0,0,0,0.18);
   }
 	@media (max-width: 1200px) { .dev-card { width: 90vw; min-width: 260px; max-width: 340px; } }
-	@media (max-width: 500px) { .outer-container { padding: 0 10px; } .dev-card { width: 100%; min-width: 220px; max-width: 100%; } }
+	@media (max-width: 500px) { .outer-container { padding: 2rem; } .dev-card { width: 100%; min-width: 220px; max-width: 100%; } }
 	</style>
   </section>
 
