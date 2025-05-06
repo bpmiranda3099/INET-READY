@@ -1134,39 +1134,36 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                {/if}
+                    </div>                {/if}
             </div>
         </div>
         
-        <div>
-            <!-- Powered by attribution -->
-            <div class="powered-by-container">
-                <span class="powered-by-text">Powered by:</span>
-                <img 
-                    src="https://framerusercontent.com/images/DuHKZUEtnSMoEul4G8SxQPj2RaM.png" 
-                    alt="Aptible EHR" 
-                    class="powered-by-logo"
-                />
-            </div>
+        <!-- Powered by attribution -->
+        <div class="powered-by-container">
+            <span class="powered-by-text">Powered by:</span>
+            <img 
+                src="https://framerusercontent.com/images/DuHKZUEtnSMoEul4G8SxQPj2RaM.png" 
+                alt="Aptible EHR" 
+                class="powered-by-logo"
+            />
+        </div>
 
-            <!-- Form Actions -->
-            <div class="form-actions">
-                {#if isEditing}
-                    <button type="button" class="cancel-btn" on:click={handleCancel} disabled={loading}>
-                        Cancel
-                    </button>
-                {/if}
-                
-                <button type="submit" class="submit-btn" disabled={loading}>
-                    {#if loading}
-                        <span class="spinner"></span>
-                        <span>{isEditing ? 'Updating...' : 'Saving...'}</span>
-                    {:else}
-                        <span>{isEditing ? 'Update Profile' : 'Save Profile'}</span>
-                    {/if}
+        <!-- Form Actions -->
+        <div class="form-actions">
+            {#if isEditing}
+                <button type="button" class="cancel-btn" on:click={handleCancel} disabled={loading}>
+                    Cancel
                 </button>
-            </div>
+            {/if}
+            
+            <button type="submit" class="submit-btn" disabled={loading}>
+                {#if loading}
+                    <span class="spinner"></span>
+                    <span>{isEditing ? 'Updating...' : 'Saving...'}</span>
+                {:else}
+                    <span>{isEditing ? 'Update Profile' : 'Save Profile'}</span>
+                {/if}
+            </button>
         </div>
         
     </form>
