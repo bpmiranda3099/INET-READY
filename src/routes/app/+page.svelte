@@ -455,7 +455,7 @@
                 class:active={!showRegister}
                 on:click={() => showRegister = false}
             >
-                <i class="bi bi-box-arrow-in-right"></i>
+                <i class="bi {!showRegister ? 'bi-door-open-fill' : 'bi-door-open'}"></i>
                 <span class:hide-label={!showRegister}>Login</span>
             </button>
             <button 
@@ -463,7 +463,7 @@
                 class:active={showRegister}
                 on:click={() => showRegister = true}
             >
-                <i class="bi bi-person-plus"></i>
+                <i class="bi {showRegister ? 'bi-person-plus-fill' : 'bi-person-plus'}"></i>
                 <span class:hide-label={showRegister}>Register</span>
             </button>
         </div>
