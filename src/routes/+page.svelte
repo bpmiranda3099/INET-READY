@@ -226,61 +226,144 @@
 					<li class="nav-item">
 						<a class="nav-link" href="#about" style="color:#fff;">About</a>
 					</li>
-					<!-- Contact Dropdown -->
-					<li class="nav-item dropdown hover-dropdown">
-						<a
-							class="nav-link dropdown-toggle"
-							role="button"
-							data-bs-toggle="dropdown"
-							aria-expanded="false"
-							style="color:#fff;"
-							tabindex="0"
-						>
-							Contact
-						</a>
-						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarContactDropdown">
-							<li>
-								<a
-									class="dropdown-item d-flex align-items-center gap-2"
-									href="https://github.com/bpmiranda3099/inet-ready-v2"
-									target="_blank"
-									rel="noopener"><i class="bi bi-github"></i> GitHub</a
-								>
-							</li>
-							<li>
-								<a
-									class="dropdown-item d-flex align-items-center gap-2"
-									href="mailto:info@inet-ready.com"><i class="bi bi-envelope-fill"></i> Email</a
-								>
-							</li>
-							<li>
-								<a
-									class="dropdown-item d-flex align-items-center gap-2"
-									href="https://inet-ready-v2.vercel.app"
-									target="_blank"
-									rel="noopener"><i class="bi bi-phone"></i> App</a
-								>
-							</li>
-						</ul>
-					</li>
-					<!-- Support Dropdown -->
-					<li class="nav-item dropdown hover-dropdown">
-						<a
-							class="nav-link dropdown-toggle"
-							role="button"
-							data-bs-toggle="dropdown"
-							aria-expanded="false"
-							style="color:#fff;"
-							tabindex="0"
-						>
-							Support
-						</a>
-						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarSupportDropdown">
-							<li><a class="dropdown-item" href="/terms">Terms of Service</a></li>
-							<li><a class="dropdown-item" href="/privacy">Privacy Policy</a></li>
-							<li><a class="dropdown-item" href="/data-deletion">Data Deletion</a></li>
-						</ul>
-					</li>
+					<!-- Responsive: Show Contact/Support as flat links in collapsed navbar -->
+					{#if navbarCollapse && navbarCollapse.classList.contains('show')}
+						<li class="nav-item">
+							<a
+								class="nav-link d-flex align-items-center gap-2"
+								href="https://github.com/bpmiranda3099/inet-ready-v2"
+								target="_blank"
+								rel="noopener"
+								style="color:#fff;"
+							>
+								<i class="bi bi-github"></i> GitHub
+							</a>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link d-flex align-items-center gap-2"
+								href="mailto:info@inet-ready.com"
+								style="color:#fff;"
+							>
+								<i class="bi bi-envelope-fill"></i> Email
+							</a>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link d-flex align-items-center gap-2"
+								href="https://inet-ready-v2.vercel.app"
+								target="_blank"
+								rel="noopener"
+								style="color:#fff;"
+							>
+								<i class="bi bi-phone"></i> App
+							</a>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link"
+								href="#"
+								style="color:#fff;"
+								on:click|preventDefault={() => openModal('terms')}>Terms</a
+							>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link"
+								href="#"
+								style="color:#fff;"
+								on:click|preventDefault={() => openModal('privacy')}>Privacy</a
+							>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link"
+								href="#"
+								style="color:#fff;"
+								on:click|preventDefault={() => openModal('data-deletion')}>Data Deletion</a
+							>
+						</li>
+					{:else}
+						<!-- Contact Dropdown -->
+						<li class="nav-item dropdown hover-dropdown">
+							<a
+								class="nav-link dropdown-toggle"
+								role="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false"
+								style="color:#fff;"
+								tabindex="0"
+							>
+								Contact
+							</a>
+							<ul
+								class="dropdown-menu dropdown-menu-end custom-orange-dropdown"
+								aria-labelledby="navbarContactDropdown"
+							>
+								<li>
+									<a
+										class="dropdown-item d-flex align-items-center gap-2"
+										href="https://github.com/bpmiranda3099/inet-ready-v2"
+										target="_blank"
+										rel="noopener"><i class="bi bi-github"></i> GitHub</a
+									>
+								</li>
+								<li>
+									<a
+										class="dropdown-item d-flex align-items-center gap-2"
+										href="mailto:info@inet-ready.com"><i class="bi bi-envelope-fill"></i> Email</a
+									>
+								</li>
+								<li>
+									<a
+										class="dropdown-item d-flex align-items-center gap-2"
+										href="https://inet-ready-v2.vercel.app"
+										target="_blank"
+										rel="noopener"><i class="bi bi-phone"></i> App</a
+									>
+								</li>
+							</ul>
+						</li>
+						<!-- Support Dropdown -->
+						<li class="nav-item dropdown hover-dropdown">
+							<a
+								class="nav-link dropdown-toggle"
+								role="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false"
+								style="color:#fff;"
+								tabindex="0"
+							>
+								Support
+							</a>
+							<ul
+								class="dropdown-menu dropdown-menu-end custom-orange-dropdown"
+								aria-labelledby="navbarSupportDropdown"
+							>
+								<li>
+									<a
+										class="dropdown-item"
+										href="#"
+										on:click|preventDefault={() => openModal('terms')}>Terms of Service</a
+									>
+								</li>
+								<li>
+									<a
+										class="dropdown-item"
+										href="#"
+										on:click|preventDefault={() => openModal('privacy')}>Privacy Policy</a
+									>
+								</li>
+								<li>
+									<a
+										class="dropdown-item"
+										href="#"
+										on:click|preventDefault={() => openModal('data-deletion')}>Data Deletion</a
+									>
+								</li>
+							</ul>
+						</li>
+					{/if}
 					<li class="nav-item">
 						<button
 							class="btn ms-2 px-4 get-started-vibrate"
@@ -665,9 +748,7 @@
 					>
 				</div>
 			</div>
-			<!-- Close .row.gy-4 -->
 		</div>
-		<!-- Close .container -->
 	</footer>
 </main>
 {#if showModal}
@@ -1122,5 +1203,27 @@
 			min-width: 220px;
 			max-width: 100%;
 		}
+	}
+	/* Custom orange dropdown for navbar */
+	.custom-orange-dropdown {
+		background: #dd815e !important;
+		color: #fff !important;
+		border: none !important;
+		border-radius: 0 0 8px 8px !important;
+		box-shadow: 0 2px 8px rgba(221, 129, 94, 0.13);
+		min-width: 180px;
+	}
+	.custom-orange-dropdown .dropdown-item {
+		background: transparent !important;
+		color: #fff !important;
+		border: none !important;
+		border-radius: 6px !important;
+		font-weight: 500;
+		transition: background 0.15s;
+	}
+	.custom-orange-dropdown .dropdown-item:hover,
+	.custom-orange-dropdown .dropdown-item:focus {
+		background: #e98d6a !important;
+		color: #fff !important;
 	}
 </style>
