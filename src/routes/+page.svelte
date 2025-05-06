@@ -599,32 +599,6 @@ function toggleNavbar() {
 		  <a href="/privacy" class="text-decoration-none mb-1 footer-uniform-text" style="color:#fff;">Privacy</a>
 		  <a href="/data-deletion" class="text-decoration-none mb-1 footer-uniform-text" style="color:#fff;">Data Deletion</a>
 		</div>
-	<!-- Powered By Column -->
-	  <div class="col-12 col-md-3 text-center text-md-start mb-3 mb-md-0 d-flex flex-column align-items-center align-items-md-start footer-col-uniform">
-  <div class="mb-2 fw-bold footer-uniform-text powered-by-label" style="color:#fff; letter-spacing:1px;">Powered by</div>
-  <div class="footer-poweredby-row d-flex flex-column align-items-start gap-2 gap-md-0 flex-md-row justify-content-md-between w-100">
-	<div class="d-flex align-items-center footer-uniform-text poweredby-col" style="gap:0.5rem;">
-	  <img src="/open-meteo-icon.png" alt="OpenMeteo" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
-	  <span class="poweredby-label" style="color:#fff;">OpenMeteo</span>
-	</div>
-	<div class="d-flex align-items-center footer-uniform-text poweredby-col" style="gap:0.5rem;">
-	  <img src="/mapbox-icon.png" alt="Mapbox" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
-	  <span class="poweredby-label" style="color:#fff;">Mapbox</span>
-	</div>
-	<div class="d-flex align-items-center footer-uniform-text poweredby-col" style="gap:0.5rem;">
-	  <img src="/svelte-icon.png" alt="Svelte" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
-	  <span class="poweredby-label" style="color:#fff;">SvelteKit</span>
-	</div>
-	<div class="d-flex align-items-center footer-uniform-text poweredby-col" style="gap:0.5rem;">
-	  <img src="/firebase-icon.png" alt="Firebase" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
-	  <span class="poweredby-label" style="color:#fff;">Firebase</span>
-	</div>
-	<div class="d-flex align-items-center footer-uniform-text poweredby-col" style="gap:0.5rem;">
-	  <img src="/aptible-icon.png" alt="Aptible" class="tech-logo white-logo" style="border-radius:12px; background:transparent; width:24px; height:24px; object-fit:contain;" />
-	  <span class="poweredby-label" style="color:#fff;">Aptible</span>
-	</div>
-  </div>
-	  </div>
 	  </div>
   <hr style="border-color:rgba(255,255,255,0.2); margin:2rem 0 1rem 0;" />
   <div class="text-center small footer-copyright" style="color:#fff; font-size:0.98rem;">© 2025 INET-READY. All rights reserved.</div>
