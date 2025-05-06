@@ -160,7 +160,6 @@
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
-    padding: 0 1rem;
   }
   
   h2 {
