@@ -466,10 +466,10 @@ class HeatIndexAlertService:
                 # Prepare notification based on change type
                 if change['change_type'] == 'spike':
                     title = f"Heat Index Alert for {city}"
-                    body = f"Heat index has increased by {change['percent_change']}% to {change['current_heat_index']}°C (INET Level: {change['inet_level']}). Stay indoors and always hydrate!"
+                    body = f"Heat index has increased by {change['percent_change']}% to {change['current_heat_index']:.1f}°C (INET Level: {change['inet_level']}). Stay indoors and always hydrate!"
                 else:  # drop
                     title = f"Heat Index Update for {city}"
-                    body = f"Heat index has decreased by {abs(change['percent_change'])}% to {change['current_heat_index']}°C (INET Level: {change['inet_level']})."
+                    body = f"Heat index has decreased by {abs(change['percent_change'])}% to {change['current_heat_index']:.1f}°C (INET Level: {change['inet_level']})."
                 
                 # Additional data for the notification
                 data = {

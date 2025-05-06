@@ -527,19 +527,27 @@ def generate_and_notify_city_insights(db, fcm, forecast_data):
             title=f"Weather Insight for {city_name}",
             body=city_insight[:MAX_NOTIFICATION_LENGTH] + ("..." if len(city_insight) > MAX_NOTIFICATION_LENGTH else "")
         )
-        message = messaging.MulticastMessage(
-            notification=notification,
-            data={
-                'city': city_name,
-                'type': 'city_weather_insight',
-                'insight': city_insight, 
-                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                'tag': f"city-weather-{city_name}-{datetime.now().strftime('%Y%m%d')}"
-            },
-            tokens=tokens
-        )
-        response = fcm.send_multicast(message)
-        print(f"Sent {response.success_count} notifications to {city_name} users ({response.failure_count} failures)")
+        success_count = 0
+        failure_count = 0
+        for token in tokens:
+            message = messaging.Message(
+                notification=notification,
+                data={
+                    'city': city_name,
+                    'type': 'city_weather_insight',
+                    'insight': city_insight, 
+                    'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'tag': f"city-weather-{city_name}-{datetime.now().strftime('%Y%m%d')}"
+                },
+                token=token
+            )
+            try:
+                fcm.send(message)
+                success_count += 1
+            except Exception as e:
+                print(f"Failed to send notification to {token}: {e}")
+                failure_count += 1
+        print(f"Sent {success_count} notifications to {city_name} users ({failure_count} failures)")
 
         # Add a delay to avoid hitting Gemini API rate limits (10/sec)
         time.sleep(0.15)  # 150ms pause between requests (max ~6-7/sec)
