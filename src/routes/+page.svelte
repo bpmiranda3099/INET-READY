@@ -452,6 +452,19 @@ function toggleAccordion(index) {
 	color: #fff;
 	overflow: hidden;
 	border: none;
+	transition: transform 0.18s cubic-bezier(0.4,0,0.2,1), box-shadow 0.18s cubic-bezier(0.4,0,0.2,1);
+	cursor: pointer;
+  }
+  .dev-card:hover, .dev-card:focus-visible {
+	transform: translateY(-7px) scale(1.035) rotate(-1.5deg);
+	box-shadow: 0 8px 32px rgba(221,129,94,0.22), 0 2px 8px rgba(0,0,0,0.08);
+	background: #e98d6a;
+	outline: none;
+  }
+  .dev-card:hover .card-content .position,
+  .dev-card:focus-visible .card-content .position {
+	opacity: 0.93;
+	text-shadow: 0 2px 8px rgba(0,0,0,0.10);
   }
   .card-content {
 	display: flex;
