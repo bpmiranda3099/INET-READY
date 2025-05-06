@@ -101,14 +101,17 @@ jobs:
           if [ "$CSV_FILES" -gt 0 ]; then
             echo "Found $CSV_FILES new CSV files to commit"
             
-            # Pull latest changes from the remote repository first
-            git pull --rebase origin ${GITHUB_REF##*/}
-            
-            # Add the files
+            # Stage the CSV files first
             git add public/data/predicted_heat_index/*.csv
             
             # Commit with date in message
             git commit -m "Update heat index forecast data - $TODAY [automated]"
+            
+            # Fetch latest changes
+            git fetch origin ${GITHUB_REF##*/}
+            
+            # Merge using the ours strategy to keep our changes
+            git merge -X ours --no-edit origin/${GITHUB_REF##*/} || true
             
             # Push changes
             git push origin ${GITHUB_REF##*/}
