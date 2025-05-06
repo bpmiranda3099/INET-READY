@@ -1,6 +1,5 @@
-<script>
-    import { sendVerificationEmail, logoutUser } from '$lib/firebase';
-    import { onDestroy } from 'svelte';
+<script>    import { sendVerificationEmail, logoutUser } from '$lib/firebase';
+    import { onDestroy, onMount } from 'svelte';
     
     export let user;
     
@@ -13,6 +12,7 @@
     
     // Check if user has already requested a resend recently
     const COOLDOWN_PERIOD = 60; // seconds
+    
     
     function startCooldownTimer() {
         lastResendTime = Date.now();
@@ -82,8 +82,7 @@
     async function handleLogout() {
         await logoutUser();
     }
-    
-    // Clean up timer on component destruction
+      // Clean up timer on component destruction
     onDestroy(() => {
         if (resendTimer) {
             clearInterval(resendTimer);
@@ -91,66 +90,74 @@
     });
 </script>
 
-<div class="verification-container">
-    <h2>Email Verification Required</h2>
+<svelte:head>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+</svelte:head>
+
+<h2>Email Verification Required</h2>
+
+<div class="verification-icon">
+    <dotlottie-player
+      src="https://lottie.host/3e64cd3b-6042-414e-90a4-e537463c5c0b/umyVYbfdSh.lottie"
+      background="transparent"
+      speed="1"
+      style="width: 200px; height: 200px"
+      loop
+      autoplay
+    ></dotlottie-player>
+</div>
+
+<p class="verification-message">
+    We've sent a verification email to <strong>{user.email}</strong>. 
+    Please check your inbox and click the verification link to activate your account.
+</p>
+
+{#if error}
+    <div class="error">{error}</div>
+{/if}
+
+{#if success}
+    <div class="success">{success}</div>
+{/if}
+
+<div class="verification-actions">
+    <button 
+        class="resend-btn" 
+        on:click={handleResendVerification} 
+        disabled={loading || resendCooldown > 0}
+    >
+        {#if resendCooldown > 0}
+            Resend Verification ({resendCooldown}s)
+        {:else}
+            Resend Verification Email
+        {/if}
+    </button>
     
-    <div class="verification-card">
-        <div class="verification-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-        </div>
-        
-        <p class="verification-message">
-            We've sent a verification email to <strong>{user.email}</strong>. 
-            Please check your inbox and click the verification link to activate your account.
-        </p>
-        
-        {#if error}
-            <div class="error">{error}</div>
-        {/if}
-        
-        {#if success}
-            <div class="success">{success}</div>
-        {/if}
-        
-        <div class="verification-actions">
-            <button 
-                class="resend-btn" 
-                on:click={handleResendVerification} 
-                disabled={loading || resendCooldown > 0}
-            >
-                {#if resendCooldown > 0}
-                    Resend Verification ({resendCooldown}s)
-                {:else}
-                    Resend Verification Email
-                {/if}
-            </button>
-            
-            <button class="logout-btn" on:click={handleLogout}>
-                Back to Login
-            </button>
-        </div>
-        
-        <div class="verification-tips">
-            <h4>Can't find the email?</h4>
-            <ul>
-                <li>Check your spam or junk folder</li>
-                <li>Make sure your email address is correct</li>
-                <li>Try adding noreply@firebase.com to your contacts</li>
-            </ul>
-        </div>
-    </div>
+    <button class="logout-btn" on:click={handleLogout}>
+        Back to Login
+    </button>
+</div>
+
+<div class="verification-tips">
+    <h4>Can't find the email?</h4>
+    <ul>
+        <li>Check your spam or junk folder</li>
+        <li>Make sure your email address is correct</li>
+        <li>Try adding noreply@firebase.com to your contacts</li>
+    </ul>
 </div>
 
 <style>
-  .verification-container {
+  :global(body) {
     display: flex;
     flex-direction: column;
     align-items: center;
     color: #1a1a1a;
     font-size: 1.08rem;
+    background-color: #f9f9f9;
+  }
+  
+  h2, h4, p, ul, div {
     max-width: 700px;
     width: 100%;
     margin-left: auto;
@@ -162,7 +169,6 @@
     font-size: 2.1rem;
     margin-bottom: 0.7rem;
     margin-top: 0.7rem;
-    width: 100%;
     text-align: center;
   }
   
@@ -172,20 +178,10 @@
     margin-top: 1.5rem;
     margin-bottom: 0.7rem;
   }
-  
-  .verification-card {
-    background-color: #f9f9f9;
-    padding: 1.5rem;
-    border-radius: 8px;
-    width: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-  
-  .verification-icon {
+    .verification-icon {
     display: flex;
     justify-content: center;
     margin-bottom: 1.5rem;
-    color: #dd815e;
   }
   
   .verification-message {
@@ -207,6 +203,7 @@
     cursor: pointer;
     transition: background-color 0.3s;
     border: none;
+    width: 100%;
   }
   
   .resend-btn {
