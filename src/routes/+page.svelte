@@ -296,7 +296,7 @@
 	<!-- HERO SECTION -->
 	<section
 		class="hero d-flex align-items-center justify-content-center text-center px-3"
-		style="background:#fff; min-height:70vh;"
+		style="background:#fff; min-height:70vh; margin-top:74px;"
 	>
 		<div class="hero-content w-100">
 			<video
@@ -852,6 +852,9 @@
 	/* Make navbar fixed and add body padding for content below */
 	body {
 		padding-top: 74px !important;
+	}
+	.hero {
+		margin-top: 74px;
 	}
 	/* Dropdown on hover for desktop */
 	@media (min-width: 992px) {
