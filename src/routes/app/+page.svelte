@@ -450,20 +450,28 @@
             <div class="app-bar-content">
                 <div class="app-bar-main">
                     {#if showTerms || showPrivacy}
-                        <button class="back-button" on:click={goBackToForm}>
-                            <i class="bi bi-arrow-left"></i> Back
+                        <img src="/app-icon.png" alt="INET-READY" 
+                            class="app-logo {logoRotating ? 'rotating' : ''}" 
+                            on:animationend={() => logoRotating = false} />
+                        <div class="app-titles">
+                            <h2 class="section-title">INET-READY</h2>
+                            <small class="app-title">LEGAL AGREEMENT</small>
+                        </div>
+                        <button class="back-button" on:click={goBackToForm} aria-label="Back">
+                            <i class="bi bi-arrow-left"></i>
                         </button>
+                    {:else}
+                        <img src="/app-icon.png" alt="INET-READY" 
+                            class="app-logo {logoRotating ? 'rotating' : ''}" 
+                            on:animationend={() => logoRotating = false} />
+                        <div class="app-titles">
+                            <h2 class="section-title">INET-READY</h2>
+                            <small class="app-title">Your Heat Check for Safe and Informed Travel</small>
+                        </div>
                     {/if}
-                    <img src="/app-icon.png" alt="INET-READY" 
-                        class="app-logo {logoRotating ? 'rotating' : ''}" 
-                        on:animationend={() => logoRotating = false} />
-                    <div class="app-titles">
-                        <h2 class="section-title">INET-READY</h2>
-                        <small class="app-title">{showTerms || showPrivacy ? 'LEGAL AGREEMENT' : 'Your Heat Check for Safe and Informed Travel'}</small>
-                    </div>
                 </div>
             </div>
-        </div>        <!-- Bottom Navigation -->
+        </div><!-- Bottom Navigation -->
         {#if !showTerms && !showPrivacy}
             <div class="bottom-nav">
                 <button 
@@ -793,14 +801,6 @@
     </div>
 {/if}
 
-{#if showTerms}
-    <TermsContent on:close={() => showTerms = false} />
-{/if}
-
-{#if showPrivacy}
-    <PrivacyContent on:close={() => showPrivacy = false} />
-{/if}
-
 <style>    
 .auth-page {
         display: flex;
@@ -809,9 +809,7 @@
         padding-bottom: 60px; /* Space for bottom nav */
         padding-top: 60px; /* Space for app bar */
         position: relative;
-    }
-
-    .terms-privacy-content :global(.policy-container) {
+    }    .terms-privacy-content :global(.policy-container) {
         max-width: none;
         margin: 0;
         padding: 0;
@@ -821,33 +819,32 @@
 
     .terms-privacy-content :global(h1) {
         display: none;
-    }
-
-    .terms-privacy-content :global(h2) {
+    }.terms-privacy-content :global(h2) {
         font-size: 1.1rem;
     }
 
     .back-button {
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
+        background: transparent;
         color: white;
-        border-radius: 4px;
-        padding: 6px 12px;
-        font-size: 0.9rem;
-        cursor: pointer;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
-        gap: 8px;
-        margin-right: 12px;
-        transition: background 0.2s;
+        justify-content: center;
+        cursor: pointer;
+        margin-left: auto;
+        transition: background-color 0.2s, transform 0.2s;
     }
 
     .back-button:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: transparent;
+        transform: scale(1.05);
     }
 
     .back-button i {
-        font-size: 1rem;
+        font-size: 1.8rem;
     }
 
     .app-bar {
