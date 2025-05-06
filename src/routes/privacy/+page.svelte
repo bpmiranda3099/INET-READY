@@ -33,8 +33,7 @@
     <li>We may disclose information if required by law or to protect our rights.</li>
   </ul>
   <h2>Data Security</h2>
-  <p>Your data is protected using industry-standard security measures. However, no method of transmission or storage is 100% secure.</p>
-  <h2>Your Rights & Choices</h2>
+  <p>Your data is protected using industry-standard security measures. However, no method of transmission or storage is 100% secure.</p>  <h2>Your Rights & Choices</h2>
   <ul>
     <li>You can access, update, or delete your account information at any time from your profile settings.</li>
     <li>To request deletion of your data, please see our <a href="/data-deletion">Data Deletion Instructions</a>.</li>

@@ -34,7 +34,7 @@
     let showTerms = false;
     let showPrivacy = false;
     let showDataDeletion = false;
-    let previousView = null; // To track where user came from for back button
+    let previousPage = null; // Track which page to go back to
 
     // Login variables
     let email = '';
@@ -414,38 +414,9 @@
     }
     
     function goBackToForm() {
-        if (showDataDeletion && previousView) {
-            // Go back to the previous Terms or Privacy view
-            if (previousView === 'terms') {
-                showTerms = true;
-                showPrivacy = false;
-                showDataDeletion = false;
-            } else if (previousView === 'privacy') {
-                showPrivacy = true;
-                showTerms = false;
-                showDataDeletion = false;
-            }
-            previousView = null;
-        } else {
-            // Return to the form
-            showTerms = false;
-            showPrivacy = false;
-            showDataDeletion = false;
-        }
-    }
-    
-    function showDataDeletionFromTerms() {
-        previousView = 'terms';
         showTerms = false;
         showPrivacy = false;
-        showDataDeletion = true;
-    }
-    
-    function showDataDeletionFromPrivacy() {
-        previousView = 'privacy';
-        showTerms = false;
-        showPrivacy = false;
-        showDataDeletion = true;
+        showDataDeletion = false;
     }
 
     // Logo rotation animation variables
@@ -847,9 +818,7 @@
         padding-bottom: 60px; /* Space for bottom nav */
         padding-top: 60px; /* Space for app bar */
         position: relative;
-    }
-
-    .terms-privacy-content {
+    }    .terms-privacy-content {
         padding: 1.5rem 1rem;
     }
 
@@ -861,6 +830,24 @@
         background: transparent;
     }
 
+    .data-deletion-link {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(221,129,94,0.2);
+        text-align: center;
+    }
+
+    .data-deletion-link a {
+        color: #dd815e;
+        text-decoration: underline;
+        font-weight: 500;
+        transition: opacity 0.2s;
+    }
+
+    .data-deletion-link a:hover {
+        opacity: 0.8;
+    }
+
     .terms-privacy-content :global(.policy-container h1) {
         display: block;
         font-size: 1.7rem;
@@ -868,25 +855,10 @@
         margin-bottom: 1rem;
         color: #dd815e;
         font-weight: 600;
-    }    .terms-privacy-content :global(h2) {
+    }
+
+    .terms-privacy-content :global(h2) {
         font-size: 1.1rem;
-    }
-    
-    :global(.data-deletion-link) {
-        margin-top: 1.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(221,129,94,0.2);
-        text-align: center;
-    }
-    
-    :global(.data-deletion-link a) {
-        color: #dd815e;
-        text-decoration: underline;
-        font-weight: 500;
-    }
-    
-    :global(.data-deletion-link a:hover) {
-        color: #c26744;
     }
 
     .back-button {
