@@ -316,11 +316,11 @@ function toggleNavbar() {
 		<div class="vignette">
 		  <div class="portrait-text">
 			<span class="name">Alyssa Mae Abac</span>
-			<span class="position">Project Management, Public Relations, Documentation</span>
 		  </div>
 		</div>
 	  </div>
 	  <div class="card-content">
+		<span class="position">Project Management, Public Relations, Documentation</span>
 		<p class="text-blk testimonial">Leads the project, manages communication, and keeps documentation organized.</p>
 	  </div>
 		  </div>
@@ -331,11 +331,11 @@ function toggleNavbar() {
 		<div class="vignette">
 		  <div class="portrait-text">
 			<span class="name">Nicole Wyne Fernandez</span>
-			<span class="position">Frontend Development</span>
 		  </div>
 		</div>
 	  </div>
 	  <div class="card-content">
+		<span class="position">Frontend Development</span>
 		<p class="text-blk testimonial">Designs and builds user-friendly interfaces with intuitive navigation.</p>
 	  </div>
 		  </div>
@@ -346,11 +346,11 @@ function toggleNavbar() {
 		<div class="vignette">
 		  <div class="portrait-text">
 			<span class="name">Brandon Miranda</span>
-			<span class="position">Backend Development</span>
 		  </div>
 		</div>
 	  </div>
 	  <div class="card-content">
+		<span class="position">Backend Development</span>
 		<p class="text-blk testimonial">Develops and optimizes backend systems, APIs, and databases.</p>
 	  </div>
 		  </div>
@@ -361,11 +361,11 @@ function toggleNavbar() {
 		<div class="vignette">
 		  <div class="portrait-text">
 			<span class="name">Alexander Asinas</span>
-			<span class="position">QA/QC, Research, System Analyst</span>
 		  </div>
 		</div>
 	  </div>
 	  <div class="card-content">
+		<span class="position">QA/QC, Research, System Analyst</span>
 		<p class="text-blk testimonial">Ensures quality, researches, and bridges business and technical needs.</p>
 	  </div>
 		  </div>
@@ -385,12 +385,13 @@ function toggleNavbar() {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	background: #fff;
+	background: #dd815e;
 	border-radius: 12px;
 	box-shadow: 0 4px 24px rgba(221,129,94,0.13);
 	margin-bottom: 1.5rem;
 	padding: 30px 25px 40px 25px;
 	text-align: center;
+	color: #fff;
   }
   .card-content {
 	display: flex;
@@ -409,14 +410,15 @@ function toggleNavbar() {
 	text-align: center;
   }
   .position {
-	color: #dd815e;
+	color: #fff;
 	font-weight: 600;
 	font-size: 1.08rem;
 	margin-bottom: 8px;
 	text-align: center;
+	display: block;
   }
   .testimonial {
-	color: #555;
+	color: #fff;
 	font-size: 1.04rem;
 	text-align: center;
 	margin-bottom: 0;
