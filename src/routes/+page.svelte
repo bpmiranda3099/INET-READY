@@ -302,59 +302,111 @@ function toggleNavbar() {
   </div>
   </section>
 
-  <!-- MEET OUR DEVELOPERS SECTION -->
+  <!-- MEET OUR DEVELOPERS SECTION (Swiper Format) -->
   <section class="py-5" style="background:#fff;">
-	<div class="container">
-	  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">Meet Our Developers</h2>
-	  <div class="row justify-content-center g-4">
-		<!-- Alyssa Mae Abac -->
-		<div class="col-12 col-md-6 col-lg-3">
-		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
-			<h5 class="fw-bold mb-2" style="color:#dd815e;">Alyssa Mae Abac</h5>
-			<div class="mb-2" style="font-weight:600; color:#555;">Project Management<br>Public Relations<br>Documentation</div>
-			<ul class="text-start small mb-0" style="color:#555; list-style: disc inside;">
-			  <li>Leads the project and team coordination.</li>
-			  <li>Handles communication and promotes the project.</li>
-			  <li>Keeps documentation organized and up-to-date.</li>
-			</ul>
-		  </div>
-		</div>
-		<!-- Nicole Wyne Fernandez -->
-		<div class="col-12 col-md-6 col-lg-3">
-		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
-			<h5 class="fw-bold mb-2" style="color:#dd815e;">Nicole Wyne Fernandez</h5>
-			<div class="mb-2" style="font-weight:600; color:#555;">Frontend Development</div>
-			<ul class="text-start small mb-0" style="color:#555; list-style: disc inside;">
-			  <li>Designs and builds user-friendly interfaces.</li>
-			  <li>Ensures intuitive navigation and accessibility.</li>
-			</ul>
-		  </div>
-		</div>
-		<!-- Brandon Miranda -->
-		<div class="col-12 col-md-6 col-lg-3">
-		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
-			<h5 class="fw-bold mb-2" style="color:#dd815e;">Brandon Miranda</h5>
-			<div class="mb-2" style="font-weight:600; color:#555;">Backend Development</div>
-			<ul class="text-start small mb-0" style="color:#555; list-style: disc inside;">
-			  <li>Develops and optimizes backend systems and APIs.</li>
-			  <li>Handles server-side programming and databases.</li>
-			</ul>
-		  </div>
-		</div>
-		<!-- Alexander Asinas -->
-		<div class="col-12 col-md-6 col-lg-3">
-		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
-			<h5 class="fw-bold mb-2" style="color:#dd815e;">Alexander Asinas</h5>
-			<div class="mb-2" style="font-weight:600; color:#555;">Quality Assurance/Quality Control<br>Research<br>System Analyst</div>
-			<ul class="text-start small mb-0" style="color:#555; list-style: disc inside;">
-			  <li>Tests for bugs and ensures quality standards.</li>
-			  <li>Researches and analyzes information for development.</li>
-			  <li>Designs system structure and bridges business and technical needs.</li>
-			</ul>
+	<div class="responsive-container-block outer-container" style="background:#fff;">
+	  <div class="responsive-container-block inner-container">
+		<p class="text-blk section-head-text" style="color:#dd815e;">Meet Our Developers</p>
+		<p class="text-blk section-subhead-text">The INET-READY team brings together expertise in project management, frontend, backend, QA, and research to deliver a safer travel experience.</p>
+		<div class="responsive-container-block">
+		  <div class="swiper team-swiper">
+			<div class="swiper-wrapper">
+			  <!-- Alyssa Mae Abac -->
+			  <div class="swiper-slide">
+				<div class="card">
+				  <div class="img-wrapper">
+					<img src="/app-icon.png" alt="Alyssa Mae Abac">
+				  </div>
+				  <div class="card-content">
+					<p class="text-blk name" style="color:#dd815e;">Alyssa Mae Abac</p>
+					<p class="text-blk position" style="color:#dd815e;">Project Management, Public Relations, Documentation</p>
+					<p class="text-blk testimonial">Leads the project, manages communication, and keeps documentation organized.</p>
+				  </div>
+				</div>
+			  </div>
+			  <!-- Nicole Wyne Fernandez -->
+			  <div class="swiper-slide">
+				<div class="card">
+				  <div class="img-wrapper">
+					<img src="/app-icon.png" alt="Nicole Wyne Fernandez">
+				  </div>
+				  <div class="card-content">
+					<p class="text-blk name" style="color:#dd815e;">Nicole Wyne Fernandez</p>
+					<p class="text-blk position" style="color:#dd815e;">Frontend Development</p>
+					<p class="text-blk testimonial">Designs and builds user-friendly interfaces with intuitive navigation.</p>
+				  </div>
+				</div>
+			  </div>
+			  <!-- Brandon Miranda -->
+			  <div class="swiper-slide">
+				<div class="card">
+				  <div class="img-wrapper">
+					<img src="/app-icon.png" alt="Brandon Miranda">
+				  </div>
+				  <div class="card-content">
+					<p class="text-blk name" style="color:#dd815e;">Brandon Miranda</p>
+					<p class="text-blk position" style="color:#dd815e;">Backend Development</p>
+					<p class="text-blk testimonial">Develops and optimizes backend systems, APIs, and databases.</p>
+				  </div>
+				</div>
+			  </div>
+			  <!-- Alexander Asinas -->
+			  <div class="swiper-slide">
+				<div class="card">
+				  <div class="img-wrapper">
+					<img src="/app-icon.png" alt="Alexander Asinas">
+				  </div>
+				  <div class="card-content">
+					<p class="text-blk name" style="color:#dd815e;">Alexander Asinas</p>
+					<p class="text-blk position" style="color:#dd815e;">QA/QC, Research, System Analyst</p>
+					<p class="text-blk testimonial">Ensures quality, researches, and bridges business and technical needs.</p>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<div class="swiper-pagination container-block"></div>
 		  </div>
 		</div>
 	  </div>
 	</div>
+	<!-- Swiper.js CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+	<script>
+	  if (typeof window !== 'undefined') {
+		setTimeout(() => {
+		  if (window.Swiper) {
+			new window.Swiper('.team-swiper', {
+			  slidesPerView: 3,
+			  spaceBetween: 30,
+			  pagination: {
+				el: '.swiper-pagination',
+				clickable: true,
+			  },
+			  breakpoints: {
+				200: { slidesPerView: 1, spaceBetween: 20 },
+				750: { slidesPerView: 2, spaceBetween: 30 },
+				1024: { slidesPerView: 2.5, spaceBetween: 30 },
+				1100: { slidesPerView: 3, spaceBetween: 30 },
+			  },
+			});
+		  }
+		}, 500);
+	  }
+	</script>
+	<style>
+	  .responsive-container-block.outer-container { background: #fff; }
+	  .section-head-text { color: #dd815e; font-size: 2.5rem; font-weight: 700; }
+	  .section-subhead-text { color: #555; font-size: 1.1rem; margin-bottom: 2.5rem; }
+	  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(221,129,94,0.10); }
+	  .name { color: #dd815e; font-size: 1.2rem; font-weight: 700; }
+	  .position { color: #dd815e; font-weight: 600; }
+	  .testimonial { color: #555; font-size: 1rem; }
+	  .img-wrapper { width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; overflow: hidden; background: #f5f5f7; display: flex; align-items: center; justify-content: center; }
+	  .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+	  @media (max-width: 1024px) { .swiper-slide { justify-content: center; } }
+	  @media (max-width: 500px) { .outer-container { padding: 0 20px; } }
+	</style>
   </section>
 
   <!-- ABOUT SECTION -->
