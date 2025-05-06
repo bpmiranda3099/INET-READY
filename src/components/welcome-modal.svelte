@@ -258,11 +258,16 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
-    /* Bootstrap overrides */
+      /* Bootstrap overrides */
     :global(.carousel-item.active),
     :global(.carousel-item-next),
     :global(.carousel-item-prev) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    :global(.carousel-item) {
         display: flex;
         justify-content: center;
     }
@@ -392,12 +397,12 @@
         flex-direction: column;
         align-items: center;
     }
-    
-    .carousel {
+      .carousel {
         width: 100%;
         max-width: 300px;
         border-radius: 16px;
         overflow: hidden;
+        margin: 0 auto;
     }
     
     .carousel-inner {
@@ -405,18 +410,21 @@
     }    .feature-card {
         background-color: #dd815e;
         border-radius: 16px;
-        padding: 1.5rem;
+        padding: 1.5rem 1rem;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.8rem;
+        gap: 0.5rem;
         transition: all 0.3s;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        height: 230px;
+        height: 280px;
         justify-content: center;
         color: white;
         position: relative;
         overflow: hidden;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
     }
       /* Custom styling for Bootstrap carousel controls */
     .carousel-control-prev,
@@ -446,14 +454,13 @@
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
     }
-    
-    .lottie-container {
-        width: 1.5in;
-        height: 1.5in;
+      .lottie-container {
+        width: 1.25in;
+        height: 1.25in;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
     }
     
     .lottie-container dotlottie-player {
@@ -462,16 +469,16 @@
         background: transparent;
         border: none;
         outline: none;
-    }.feature-text {
-        font-size: 1.2rem;
+    }    .feature-text {
+        font-size: 1.1rem;
         font-weight: 600;
         color: white;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
         max-width: 100%;
         text-wrap: balance;
-    }
-      .feature-description {
-        font-size: 0.95rem;
+        text-align: center;
+    }    .feature-description {
+        font-size: 0.9rem;
         color: white;
         text-align: center;
         line-height: 1.5;
@@ -479,7 +486,7 @@
         word-wrap: break-word;
         hyphens: auto;
         max-width: 100%;
-        max-height: 100px;
+        max-height: 80px;
         overflow-y: auto;
         margin: 0 auto;
         padding: 0 5px;
