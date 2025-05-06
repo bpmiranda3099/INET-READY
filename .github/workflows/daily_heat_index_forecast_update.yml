@@ -89,9 +89,7 @@ jobs:
         with:
           name: heat-index-forecast
           path: public/data/predicted_heat_index/*_heat_index_forecast.json
-          retention-days: 7
-
-      # Step 9: Commit and push CSV updates
+          retention-days: 7 # Step 9: Commit and push CSV updates
       - name: Commit and push CSV updates
         run: |
           # Get today's date for commit message
@@ -102,6 +100,9 @@ jobs:
 
           if [ "$CSV_FILES" -gt 0 ]; then
             echo "Found $CSV_FILES new CSV files to commit"
+            
+            # Pull latest changes from the remote repository first
+            git pull --rebase origin ${GITHUB_REF##*/}
             
             # Add the files
             git add public/data/predicted_heat_index/*.csv

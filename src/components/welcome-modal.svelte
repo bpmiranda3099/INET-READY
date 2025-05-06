@@ -8,9 +8,36 @@
     // Set initial value based on localStorage
     let showWelcome = !(localStorage.getItem('inet-ready-hide-welcome') === 'true') || showAlways;
     let doNotShowAgain = false;
-
+    
+    // Carousel state
+    let currentSlide = 0;
+    let totalSlides = 3;
+    
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+    }
+    
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    }
+    
+    function goToSlide(index) {
+        currentSlide = index;
+    }
+    
+    // Auto advance carousel
+    let carouselInterval;
+    
     onMount(() => {
-        // No need to set showWelcome here anymore
+        // Start auto-advancing the carousel
+        carouselInterval = setInterval(() => {
+            nextSlide();
+        }, 5000); // Change slide every 5 seconds
+        
+        return () => {
+            // Clear interval when component is destroyed
+            clearInterval(carouselInterval);
+        };
     });
 
     function closeWelcome() {
@@ -37,20 +64,42 @@
                 <div class="welcome-message">
                     <h3>Your Travel Health Companion</h3>
                     <p>INET-READY provides you with personalized insights and recommendations for safer, healthier travels.</p>
-                </div>
-                
-                <div class="feature-cards">
-                    <div class="feature-card">
-                        <div class="feature-icon">🌡️</div>
-                        <div class="feature-text">Heat Index Alerts</div>
+                </div>                <div class="feature-carousel">
+                    <div class="carousel-container">
+                        <div class="carousel-track" style="transform: translateX(-${currentSlide * 100}%)">
+                            <div class="feature-card">
+                                <div class="feature-icon">🧳</div>
+                                <div class="feature-text">Travel Health Cards</div>
+                                <div class="feature-description">Dynamic cards showing weather, heat index, health status, nearby hospitals, and personalized travel advice.</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">🔔</div>
+                                <div class="feature-text">Real-time Notifications</div>
+                                <div class="feature-description">Push alerts, notification history, and smart permission management for critical health updates.</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">🤖</div>
+                                <div class="feature-text">SafeTrip AI Chatbot</div>
+                                <div class="feature-description">AI-powered assistant for travel and health questions with context-aware responses optimized for mobile.</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💊</div>
-                        <div class="feature-text">Medication Reminders</div>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🩺</div>
-                        <div class="feature-text">Health Recommendations</div>
+                    <div class="carousel-controls">
+                        <button class="carousel-btn prev" on:click={prevSlide} aria-label="Previous feature">
+                            ←
+                        </button>
+                        <div class="carousel-indicators">
+                            {#each Array(3) as _, i}
+                                <button 
+                                    class="carousel-indicator {i === currentSlide ? 'active' : ''}" 
+                                    on:click={() => goToSlide(i)}
+                                    aria-label="Go to slide {i+1}"
+                                ></button>
+                            {/each}
+                        </div>
+                        <button class="carousel-btn next" on:click={nextSlide} aria-label="Next feature">
+                            →
+                        </button>
                     </div>
                 </div>
                 
@@ -275,43 +324,110 @@
         line-height: 1.5;
         font-size: 1rem;
     }
-    
-    /* Feature cards styling */
-    .feature-cards {
-        display: flex;
-        gap: 1rem;
+      /* Feature carousel styling */
+    .feature-carousel {
         width: 100%;
-        margin: 0.5rem 0;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    .feature-card {
-        background-color: #f9f9f9;
-        border-radius: 12px;
-        padding: 1rem;
-        width: 120px;
+        margin: 1rem 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.7rem;
-        transition: all 0.3s;
+        gap: 1rem;
     }
     
-    .feature-card:hover {
-        transform: translateY(-5px);
-        background-color: #f0f0f0;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    .carousel-container {
+        width: 100%;
+        max-width: 300px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s ease;
+        width: 300%;
+    }
+    
+    .feature-card {
+        flex: 0 0 100%;
+        background-color: #f9f9f9;
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        height: 220px;
+        justify-content: center;
+    }
+    
+    .carousel-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+    
+    .carousel-btn {
+        background-color: rgba(221, 129, 94, 0.1);
+        color: #dd815e;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+    
+    .carousel-btn:hover {
+        background-color: rgba(221, 129, 94, 0.2);
+        transform: scale(1.1);
+    }
+    
+    .carousel-indicators {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .carousel-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #ddd;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .carousel-indicator.active {
+        background-color: #dd815e;
+        transform: scale(1.2);
     }
     
     .feature-icon {
-        font-size: 1.8rem;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
     }
     
     .feature-text {
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: #555;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 0.5rem;
+    }
+    
+    .feature-description {
+        font-size: 0.95rem;
+        color: #666;
+        text-align: center;
+        line-height: 1.5;
     }
     
     /* Buttons container styling */
