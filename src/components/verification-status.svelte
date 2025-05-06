@@ -175,7 +175,7 @@
   h4 {
     color: #c26744;
     font-size: 1.2rem;
-    margin-top: 1.5rem;
+    margin-top: 0.7rem;
     margin-bottom: 0.7rem;
   }
     .verification-icon {
