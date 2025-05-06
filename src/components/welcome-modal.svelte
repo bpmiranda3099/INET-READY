@@ -158,7 +158,6 @@
                 
                 <div class="buttons-container">
                     <button class="get-started-button" on:click={closeWelcome}>
-                        <span class="button-icon">⚡</span>
                         <span>Get Started</span>
                     </button>
                     
