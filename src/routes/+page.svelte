@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { requestFCMToken, testFirestoreConnection } from '$lib/firebase';
+	// @ts-ignore
 	import { goto } from '$app/navigation';
 
 	let fcmError = false;
@@ -300,30 +301,56 @@ function toggleNavbar() {
 	</div>
   </div>
   </section>
-  <!-- SOCIAL PROOF SECTION -->
+
+  <!-- MEET OUR DEVELOPERS SECTION -->
   <section class="py-5" style="background:#fff;">
 	<div class="container">
-	  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">What Our Users Say</h2>
+	  <h2 class="mb-4 text-center" style="color:#dd815e; font-weight:700;">Meet Our Developers</h2>
 	  <div class="row justify-content-center g-4">
-		<div class="col-12 col-md-4">
+		<!-- Alyssa Mae Abac -->
+		<div class="col-12 col-md-6 col-lg-3">
 		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
-			<div class="mb-3"><i class="bi bi-chat-quote" style="font-size:2rem; color:#4285F4;"></i></div>
-			<blockquote class="blockquote mb-2" style="font-size:1.1rem;">“INET-READY gave me peace of mind on my trip. The heat alerts and health tips were spot on!”</blockquote>
-			<footer class="blockquote-footer">Anna, Frequent Traveler</footer>
+			<h5 class="fw-bold mb-2" style="color:#dd815e;">Alyssa Mae Abac</h5>
+			<div class="mb-2" style="font-weight:600; color:#555;">Project Management<br>Public Relations<br>Documentation</div>
+			<ul class="text-start small mb-0" style="color:#555; list-style: disc inside;">
+			  <li>Leads the project and team coordination.</li>
+			  <li>Handles communication and promotes the project.</li>
+			  <li>Keeps documentation organized and up-to-date.</li>
+			</ul>
 		  </div>
 		</div>
-		<div class="col-12 col-md-4">
+		<!-- Nicole Wyne Fernandez -->
+		<div class="col-12 col-md-6 col-lg-3">
 		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
-			<div class="mb-3"><i class="bi bi-chat-quote" style="font-size:2rem; color:#dd815e;"></i></div>
-			<blockquote class="blockquote mb-2" style="font-size:1.1rem;">“I love how easy it is to keep my medical info safe and get travel advice for my family.”</blockquote>
-			<footer class="blockquote-footer">Miguel, Parent</footer>
+			<h5 class="fw-bold mb-2" style="color:#dd815e;">Nicole Wyne Fernandez</h5>
+			<div class="mb-2" style="font-weight:600; color:#555;">Frontend Development</div>
+			<ul class="text-start small mb-0" style="color:#555; list-style: disc inside;">
+			  <li>Designs and builds user-friendly interfaces.</li>
+			  <li>Ensures intuitive navigation and accessibility.</li>
+			</ul>
 		  </div>
 		</div>
-		<div class="col-12 col-md-4">
+		<!-- Brandon Miranda -->
+		<div class="col-12 col-md-6 col-lg-3">
 		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
-			<div class="mb-3"><i class="bi bi-chat-quote" style="font-size:2rem; color:#ff6933;"></i></div>
-			<blockquote class="blockquote mb-2" style="font-size:1.1rem;">“The notifications are super helpful. I feel safer traveling for work now.”</blockquote>
-			<footer class="blockquote-footer">Sarah, Business Traveler</footer>
+			<h5 class="fw-bold mb-2" style="color:#dd815e;">Brandon Miranda</h5>
+			<div class="mb-2" style="font-weight:600; color:#555;">Backend Development</div>
+			<ul class="text-start small mb-0" style="color:#555; list-style: disc inside;">
+			  <li>Develops and optimizes backend systems and APIs.</li>
+			  <li>Handles server-side programming and databases.</li>
+			</ul>
+		  </div>
+		</div>
+		<!-- Alexander Asinas -->
+		<div class="col-12 col-md-6 col-lg-3">
+		  <div class="bg-white rounded shadow-sm p-4 h-100 text-center">
+			<h5 class="fw-bold mb-2" style="color:#dd815e;">Alexander Asinas</h5>
+			<div class="mb-2" style="font-weight:600; color:#555;">Quality Assurance/Quality Control<br>Research<br>System Analyst</div>
+			<ul class="text-start small mb-0" style="color:#555; list-style: disc inside;">
+			  <li>Tests for bugs and ensures quality standards.</li>
+			  <li>Researches and analyzes information for development.</li>
+			  <li>Designs system structure and bridges business and technical needs.</li>
+			</ul>
 		  </div>
 		</div>
 	  </div>
@@ -337,11 +364,6 @@ function toggleNavbar() {
 		<div class="col-md-6 text-center text-md-start">
 		  <h3 style="color:#dd815e; font-weight:700;">About INET-READY</h3>
 		  <p style="font-size:1.1rem; color:#555;">INET-READY is a modern, privacy-focused platform for travelers. We combine real-time weather, health risk insights, and secure data management to help you travel smarter and safer—whether for business or leisure.</p>
-		  <ul class="list-unstyled mt-3" style="color:#4285F4;">
-			<li><i class="bi bi-check-circle-fill me-2"></i> Trusted by travelers and families</li>
-			<li><i class="bi bi-check-circle-fill me-2"></i> Powered by SvelteKit, Firebase, Mapbox, and OpenMeteo</li>
-			<li><i class="bi bi-check-circle-fill me-2"></i> No technical skills required—just sign up and go!</li>
-		  </ul>
 		</div>
 		<div class="col-md-6 mb-4 mb-md-0 text-center">
 <img src="/app-icon.png" alt="INET-READY Logo" class="img-fluid rounded" style="max-width:180px; background:transparent; border:none;" />
