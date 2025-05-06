@@ -491,16 +491,17 @@
                     <span class:hide-label={showRegister}>Register</span>
                 </button>
             </div>
-        {/if}
-
-        <div class="content-area">
-            <div class="section-container">                <div class="section-header">
-                    <h3>
-                        {#if !showTerms && !showPrivacy}
+        {/if}        <div class="content-area">
+            <div class="section-container">
+                {#if showTerms || showPrivacy}
+                    <!-- No header for Terms/Privacy view -->
+                {:else}
+                    <div class="section-header">
+                        <h3>
                             {showRegister ? 'Create Your Account' : 'Sign In To Your Account'}
-                        {/if}
-                    </h3>
-                </div>                <div class="section-body">
+                        </h3>
+                    </div>
+                {/if}<div class="section-body">
                     {#if showTerms}
                         <div class="terms-privacy-content">
                             <svelte:component this={TermsContent} />
@@ -809,7 +810,13 @@
         padding-bottom: 60px; /* Space for bottom nav */
         padding-top: 60px; /* Space for app bar */
         position: relative;
-    }    .terms-privacy-content :global(.policy-container) {
+    }
+
+    .terms-privacy-content {
+        padding: 1.5rem 1rem;
+    }
+
+    .terms-privacy-content :global(.policy-container) {
         max-width: none;
         margin: 0;
         padding: 0;
@@ -817,9 +824,16 @@
         background: transparent;
     }
 
-    .terms-privacy-content :global(h1) {
-        display: none;
-    }.terms-privacy-content :global(h2) {
+    .terms-privacy-content :global(.policy-container h1) {
+        display: block;
+        font-size: 1.7rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        color: #dd815e;
+        font-weight: 600;
+    }
+
+    .terms-privacy-content :global(h2) {
         font-size: 1.1rem;
     }
 
