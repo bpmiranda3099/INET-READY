@@ -1145,7 +1145,7 @@
                 <span class="powered-by-text">Powered by:</span>
                 <img 
                     src="https://framerusercontent.com/images/DuHKZUEtnSMoEul4G8SxQPj2RaM.png" 
-                    alt="AI Health Intelligence Provider" 
+                    alt="Aptible EHR" 
                     class="powered-by-logo"
                 />
             </div>
@@ -1653,6 +1653,7 @@
         margin-bottom: 1rem;
         margin-left: 1rem;
         margin-right: 1rem;
+        background-color: #1A1A1A;
     }
     
     .cancel-btn, .submit-btn {
@@ -1744,6 +1745,7 @@
         justify-content: center;
         margin: 2rem 0 1.5rem;
         opacity: 0.8;
+        background-color: #1A1A1A;
     }
     
     .powered-by-text {
