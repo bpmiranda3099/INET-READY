@@ -401,6 +401,17 @@
         needsMedicalForm = false;
         justVerified = false;
     }
+
+    // Logo rotation animation variables
+    let logoRotating = false;
+    let previousTab = showRegister ? 'register' : 'login';
+
+    // Watch for tab changes to trigger logo rotation
+    $: if ((showRegister ? 'register' : 'login') !== previousTab) {
+        previousTab = showRegister ? 'register' : 'login';
+        logoRotating = true;
+        setTimeout(() => logoRotating = false, 600); // match animation duration
+    }
 </script>
 
 {#if user}
@@ -423,11 +434,12 @@
     {/if}
 {:else}
     <div class="auth-page">
-        <!-- App Bar -->
-        <div class="app-bar">
+        <!-- App Bar -->        <div class="app-bar">
             <div class="app-bar-content">
                 <div class="app-bar-main">
-                    <img src="/app-icon.png" alt="INET-READY" class="app-logo" />
+                    <img src="/app-icon.png" alt="INET-READY" 
+                        class="app-logo {logoRotating ? 'rotating' : ''}" 
+                        on:animationend={() => logoRotating = false} />
                     <div class="app-titles">
                         <h2 class="section-title">INET-READY</h2>
                         <small class="app-title">Your Heat Check for Safe and Informed Travel</small>
@@ -444,7 +456,7 @@
                 on:click={() => showRegister = false}
             >
                 <i class="bi bi-box-arrow-in-right"></i>
-                <span>Login</span>
+                <span class:hide-label={!showRegister}>Login</span>
             </button>
             <button 
                 class="nav-item" 
@@ -452,7 +464,7 @@
                 on:click={() => showRegister = true}
             >
                 <i class="bi bi-person-plus"></i>
-                <span>Register</span>
+                <span class:hide-label={showRegister}>Register</span>
             </button>
         </div>
 
@@ -791,12 +803,21 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-    }
-
-    .app-logo {
+    }    .app-logo {
         width: 35px;
         height: 35px;
         object-fit: contain;
+        transition: transform 0.2s;
+    }
+    
+    .app-logo.rotating {
+        animation: rotate-logo 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+    
+    @keyframes rotate-logo {
+        0% { transform: rotate(0deg);}
+        80% { transform: rotate(360deg);}
+        100% { transform: rotate(360deg);}
     }
 
     .app-titles {
@@ -878,9 +899,7 @@
         align-items: center;
         justify-content: space-around;
         z-index: 1000;
-    }
-
-    .nav-item {
+    }    .nav-item {
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -892,22 +911,75 @@
         color: #666;
         font-size: 0.75rem;
         cursor: pointer;
-        transition: color 0.2s;
+        position: relative;
+        transition: background 0.2s, color 0.2s;
     }
 
     .nav-item i {
         font-size: 1.25rem;
         margin-bottom: 0.25rem;
+        transition: font-size 0.3s cubic-bezier(0.4,0,0.2,1), color 0.2s;
     }
 
     .nav-item.active {
         color: white;
-        background-color: #dd815e;
+        background-color: #dd815e; /* Orange main color */
+        border-radius: 16px;
+    }
+    
+    .nav-item.active i {
+        font-size: 2.4rem;
+        color: white;
+        transition: font-size 0.35s cubic-bezier(0.4,0,0.2,1), color 0.2s;
+        position: relative;
+    }
+
+    .nav-item i::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%) scaleX(0);
+        transform-origin: left;
+        bottom: -6px;
+        width: 32px;
+        height: 4px;
+        background: white;
+        border-radius: 2px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+        transition: transform 0.7s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .nav-item.active i::after {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 1;
     }
 
     .nav-item:not(.active):hover {
-        color: #dd815e;
-    }    .loading-container {
+        color: #dd815e; /* Orange hover color */
+    }
+    
+    .nav-item span {
+        display: inline-block;
+        transition: 
+            opacity 0.25s cubic-bezier(0.4,0,0.2,1),
+            max-width 0.25s cubic-bezier(0.4,0,0.2,1),
+            margin-left 0.25s cubic-bezier(0.4,0,0.2,1);
+        opacity: 1;
+        max-width: 100px;
+        margin-left: 0;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    
+    .nav-item .hide-label {
+        opacity: 0;
+        max-width: 0;
+        margin-left: 0;
+        pointer-events: none;
+    }.loading-container {
         display: flex;
         flex-direction: column;
         align-items: center;
