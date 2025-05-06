@@ -147,8 +147,7 @@
     </ul>
 </div>
 
-<style>
-  :global(body) {
+<style>  :global(body) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -162,6 +161,7 @@
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 1rem;
   }
   
   h2 {
