@@ -964,7 +964,7 @@
     }
 
     .section-body {
-        padding: 1rem;
+        padding: 1.5rem;
     }
 
     .bottom-nav {
