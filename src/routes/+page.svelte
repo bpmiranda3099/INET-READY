@@ -307,7 +307,7 @@ function toggleNavbar() {
   </section>
 
   <!-- MEET OUR DEVELOPERS SECTION (Swiper Format) -->
-  <section class="py-5" style="background:#fff;">
+  <section style="background:#fff;">
 	<div class="responsive-container-block outer-container" style="background:#fff;">
 	  <div class="responsive-container-block inner-container">
 		<p class="text-blk section-head-text" style="color:#dd815e;">Meet Our Developers</p>
