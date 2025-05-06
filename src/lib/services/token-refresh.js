@@ -1,5 +1,5 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { getFirestore, doc, updateDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, setDoc, getDoc} from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import auth from '../firebase/auth';
 import app from '../firebase/app';
@@ -109,20 +109,34 @@ async function subscribeToTopic(token, topic) {
 async function updateTokenInFirestore(token, uid = null) {
   try {
     const db = getFirestore();
-    
+
     // If no UID provided, use current user
     if (!uid) {
       const currentUser = auth.currentUser;
       if (!currentUser) return;
       uid = currentUser.uid;
     }
-    
-    // Update the user document with the new token
+
+    // Try to get the user's home city from preferences (userPreferences collection)
+    let homeCity = null;
+    try {
+      const userPrefsRef = doc(db, 'userPreferences', uid);
+      const userPrefsSnap = await getDoc(userPrefsRef);
+      if (userPrefsSnap.exists() && userPrefsSnap.data().cityPreferences?.homeCity) {
+        homeCity = userPrefsSnap.data().cityPreferences.homeCity;
+      }
+    } catch {
+      // Ignore, fallback to null
+    }
+
+    // Update the user document with the new token and required fields
     await updateDoc(doc(db, 'users', uid), {
       fcmToken: token,
-      tokenUpdatedAt: new Date()
+      tokenUpdatedAt: new Date(),
+      notification_enabled: true,
+      ...(homeCity ? { location: { city: homeCity } } : {})
     });
-    
+
     // Also add to a separate tokens collection for easy querying
     await setDoc(doc(db, 'fcm_tokens', token), {
       token,
@@ -133,7 +147,7 @@ async function updateTokenInFirestore(token, uid = null) {
       platform: 'web',
       subscribedTopics: ['daily_weather_insights'] // Default subscription
     });
-    
+
   } catch (error) {
     console.error('Error updating token in Firestore:', error);
   }
