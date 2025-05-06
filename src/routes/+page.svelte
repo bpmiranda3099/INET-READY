@@ -226,8 +226,8 @@
 					<li class="nav-item">
 						<a class="nav-link" href="#about" style="color:#fff;">About</a>
 					</li>
-					<!-- Responsive: Show Contact/Support as flat links in collapsed navbar -->
 					{#if navbarCollapse && navbarCollapse.classList.contains('show')}
+						<!-- Mobile/collapsed: flat links only -->
 						<li class="nav-item">
 							<a
 								class="nav-link d-flex align-items-center gap-2"
@@ -284,7 +284,7 @@
 							>
 						</li>
 					{:else}
-						<!-- Contact Dropdown -->
+						<!-- Desktop: show dropdowns only -->
 						<li class="nav-item dropdown hover-dropdown">
 							<a
 								class="nav-link dropdown-toggle"
@@ -324,7 +324,6 @@
 								</li>
 							</ul>
 						</li>
-						<!-- Support Dropdown -->
 						<li class="nav-item dropdown hover-dropdown">
 							<a
 								class="nav-link dropdown-toggle"
