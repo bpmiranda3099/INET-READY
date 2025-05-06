@@ -446,57 +446,52 @@
         <WelcomeModal {user} showAlways={false} />
     {/if}
 {:else}
-    <div class="auth-page">
-        <!-- App Bar -->        <div class="app-bar">
+    <div class="auth-page">        <!-- App Bar -->        <div class="app-bar">
             <div class="app-bar-content">
                 <div class="app-bar-main">
-                    <img src="/app-icon.png" alt="INET-READY" 
-                        class="app-logo {logoRotating ? 'rotating' : ''}" 
-                        on:animationend={() => logoRotating = false} />
-                    <div class="app-titles">
-                        <h2 class="section-title">INET-READY</h2>
-                        <small class="app-title">Your Heat Check for Safe and Informed Travel</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Navigation -->
-        <div class="bottom-nav">
-            <button 
-                class="nav-item" 
-                class:active={!showRegister}
-                on:click={() => showRegister = false}
-            >
-                <i class="bi {!showRegister ? 'bi-door-open-fill' : 'bi-door-open'}"></i>
-                <span class:hide-label={!showRegister}>Login</span>
-            </button>
-            <button 
-                class="nav-item" 
-                class:active={showRegister}
-                on:click={() => showRegister = true}
-            >
-                <i class="bi {showRegister ? 'bi-person-plus-fill' : 'bi-person-plus'}"></i>
-                <span class:hide-label={showRegister}>Register</span>
-            </button>
-        </div>
-
-        <div class="content-area">
-            <div class="section-container">                <div class="section-header">
-                    <h3>
-                        {#if showTerms}
-                            Terms of Service
-                        {:else if showPrivacy}
-                            Privacy Policy
-                        {:else}
-                            {showRegister ? 'Create Your Account' : 'Sign In To Your Account'}
-                        {/if}
-                    </h3>
                     {#if showTerms || showPrivacy}
                         <button class="back-button" on:click={goBackToForm}>
                             <i class="bi bi-arrow-left"></i> Back
                         </button>
                     {/if}
+                    <img src="/app-icon.png" alt="INET-READY" 
+                        class="app-logo {logoRotating ? 'rotating' : ''}" 
+                        on:animationend={() => logoRotating = false} />
+                    <div class="app-titles">
+                        <h2 class="section-title">INET-READY</h2>
+                        <small class="app-title">{showTerms || showPrivacy ? 'LEGAL AGREEMENT' : 'Your Heat Check for Safe and Informed Travel'}</small>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Bottom Navigation -->
+        {#if !showTerms && !showPrivacy}
+            <div class="bottom-nav">
+                <button 
+                    class="nav-item" 
+                    class:active={!showRegister}
+                    on:click={() => showRegister = false}
+                >
+                    <i class="bi {!showRegister ? 'bi-door-open-fill' : 'bi-door-open'}"></i>
+                    <span class:hide-label={!showRegister}>Login</span>
+                </button>
+                <button 
+                    class="nav-item" 
+                    class:active={showRegister}
+                    on:click={() => showRegister = true}
+                >
+                    <i class="bi {showRegister ? 'bi-person-plus-fill' : 'bi-person-plus'}"></i>
+                    <span class:hide-label={showRegister}>Register</span>
+                </button>
+            </div>
+        {/if}
+
+        <div class="content-area">
+            <div class="section-container">                <div class="section-header">
+                    <h3>
+                        {#if !showTerms && !showPrivacy}
+                            {showRegister ? 'Create Your Account' : 'Sign In To Your Account'}
+                        {/if}
+                    </h3>
                 </div>                <div class="section-body">
                     {#if showTerms}
                         <div class="terms-privacy-content">
@@ -825,8 +820,7 @@
     }
 
     .terms-privacy-content :global(h1) {
-        font-size: 1.5rem;
-        margin-top: 0;
+        display: none;
     }
 
     .terms-privacy-content :global(h2) {
@@ -838,17 +832,22 @@
         border: none;
         color: white;
         border-radius: 4px;
-        padding: 5px 10px;
+        padding: 6px 12px;
         font-size: 0.9rem;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 8px;
+        margin-right: 12px;
         transition: background 0.2s;
     }
 
     .back-button:hover {
         background: rgba(255, 255, 255, 0.3);
+    }
+
+    .back-button i {
+        font-size: 1rem;
     }
 
     .app-bar {
