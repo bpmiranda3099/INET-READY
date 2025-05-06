@@ -1087,6 +1087,7 @@
         padding-left: 30px; /* Space for the checkbox */
         cursor: pointer;
         font-size: 0.9rem;
+        font-weight: bold; /* Added bold font weight */
     }
 
     .checkbox-container input {
@@ -1138,11 +1139,15 @@
         color: #dd815e;
         cursor: pointer;
         padding: 0.25rem;
+        font-size: 0.9rem; /* Match checkbox-container font size */
+        font-weight: bold; /* Added bold font weight */
     }
 
     .forgot-password:hover {
         text-decoration: underline;
-    }    .submit-btn {
+    }    
+    
+    .submit-btn {
         width: 100%;
         border: none;
         border-radius: 8px;
