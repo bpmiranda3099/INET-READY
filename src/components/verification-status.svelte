@@ -158,7 +158,6 @@
   
   h2, h4, p, ul, div {
     max-width: 700px;
-    width: 100%;
     margin-left: auto;
     margin-right: auto;
     padding: 0 1rem;
@@ -168,7 +167,7 @@
     color: #dd815e;
     font-size: 2.1rem;
     margin-bottom: 0.7rem;
-    margin-top: 0.7rem;
+    margin-top: 2rem;
     text-align: center;
   }
   
@@ -187,6 +186,8 @@
   .verification-message {
     margin-bottom: 1.5rem;
     text-align: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
   }
   
   .verification-actions {
@@ -235,6 +236,7 @@
     margin-top: 2rem;
     padding-top: 1rem;
     border-top: 1px solid #eee;
+    padding-bottom: 1rem;
   }
   
   .verification-tips ul {
