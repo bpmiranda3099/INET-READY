@@ -192,9 +192,9 @@ function toggleNavbar() {
 	  background: #dd815e;
 	  padding: 1rem 0.5rem 0.5rem;
 	}
-	.navbar-nav .nav-item {
-	  border-bottom: 1px solid rgba(255,255,255,0.08);
-	}
+  .navbar-nav .nav-item {
+	border-bottom: none;
+  }
 	.navbar-nav .nav-link, .navbar-nav .dropdown-toggle {
 	  color: #fff !important;
 	  font-size: 1.1rem;
@@ -256,12 +256,11 @@ function toggleNavbar() {
 let lastScrollY = 0;
 let appIconRotation = 0;
 onMount(() => {
-  const appIcon = document.getElementById('navbar-appicon');
   function handleScroll() {
+	const appIcon = document.getElementById('navbar-appicon');
 	if (!appIcon) return;
 	const currentY = window.scrollY;
 	const delta = currentY - lastScrollY;
-	// Each scroll pixel rotates 0.6deg, direction based on scroll
 	appIconRotation += delta * 0.6;
 	appIcon.style.transform = `rotate(${appIconRotation}deg)`;
 	lastScrollY = currentY;
