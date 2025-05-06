@@ -4,6 +4,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin import messaging
+from firebase_admin import exceptions as firebase_exceptions
 from datetime import datetime, timedelta
 from loguru import logger
 import json
@@ -26,7 +27,6 @@ class HeatIndexAlertService:
         
         # No longer using comparison window hours since we're comparing with previous entry
         # self.comparison_window_hours = 24  # Compare with data from 24 hours ago if available
-    
     def initialize_firebase(self):
         """Initialize Firebase connection"""
         try:
@@ -47,10 +47,24 @@ class HeatIndexAlertService:
             self.db = firestore.client()
             logger.info("Firebase initialized successfully")
             
+        except firebase_exceptions.UnauthenticatedError as e:
+            logger.error(f"Firebase authentication error: {e}")
+            logger.error("Please check your service account credentials")
+            raise
+        except firebase_exceptions.PermissionDeniedError as e:
+            logger.error(f"Firebase permission denied: {e}")
+            logger.error("Please check that your service account has necessary permissions")
+            raise
+        except firebase_exceptions.NotFoundError as e:
+            logger.error(f"Firebase resource not found: {e}")
+            logger.error("Please check that the Firebase project exists")
+            raise
+        except firebase_exceptions.FirebaseError as e:
+            logger.error(f"Firebase error ({e.code}): {e}")
+            raise
         except Exception as e:
             logger.error(f"Firebase initialization error: {e}")
             raise
-    
     def get_latest_data(self):
         """Get the most recent heat index data for all cities"""
         try:
@@ -96,10 +110,21 @@ class HeatIndexAlertService:
             
             return latest_data
             
+        except firebase_exceptions.NotFoundError as e:
+            logger.error(f"Firebase document not found: {e}")
+            return {}
+        except firebase_exceptions.PermissionDeniedError as e:
+            logger.error(f"Permission denied accessing Firestore data: {e}")
+            return {}
+        except firebase_exceptions.UnavailableError as e:
+            logger.error(f"Firebase service unavailable: {e}")
+            return {}
+        except firebase_exceptions.FirebaseError as e:
+            logger.error(f"Firebase error ({e.code}) getting latest data: {e}")
+            return {}
         except Exception as e:
             logger.error(f"Error getting latest data: {e}")
             return {}
-    
     def get_comparison_data(self):
         """
         Get the immediately previous heat index data entry for comparison
@@ -179,6 +204,18 @@ class HeatIndexAlertService:
             logger.info(f"Loaded comparison data from {prev_date} {prev_time} for {len(comparison_data)} cities")
             return comparison_data
             
+        except firebase_exceptions.NotFoundError as e:
+            logger.error(f"Firebase document not found in comparison data: {e}")
+            return {}
+        except firebase_exceptions.PermissionDeniedError as e:
+            logger.error(f"Permission denied accessing Firestore comparison data: {e}")
+            return {}
+        except firebase_exceptions.UnavailableError as e:
+            logger.error(f"Firebase service unavailable for comparison data: {e}")
+            return {}
+        except firebase_exceptions.FirebaseError as e:
+            logger.error(f"Firebase error ({e.code}) getting comparison data: {e}")
+            return {}
         except Exception as e:
             logger.error(f"Error getting comparison data: {e}")
             return {}
@@ -225,7 +262,6 @@ class HeatIndexAlertService:
             return sorted_times[left]
         else:
             return sorted_times[right]
-    
     def detect_significant_changes(self, latest_data, comparison_data):
         """Detect significant changes in heat index"""
         significant_changes = []
@@ -245,11 +281,15 @@ class HeatIndexAlertService:
             previous_heat_index = float(previous['heat_index'])
             
             # Skip if previous heat index is zero (to avoid division by zero)
+
             if previous_heat_index == 0:
                 continue
                 
             # Calculate percentage change
             percent_change = ((current_heat_index - previous_heat_index) / previous_heat_index) * 100
+            
+            # Log all heat index comparisons, regardless of significance
+            logger.info(f"Heat Index Comparison - {city}: {previous_heat_index} → {current_heat_index} ({percent_change:.1f}%)")
             
             change_type = None
             if percent_change >= self.spike_threshold_percent:
@@ -272,7 +312,6 @@ class HeatIndexAlertService:
                 logger.info(f"Detected {change_type} in {city}: {previous_heat_index} → {current_heat_index} ({percent_change:.1f}%)")
         
         return significant_changes
-    
     def get_users_in_cities(self, city_names):
         """Get users in the specified cities who have enabled notifications"""
         try:
@@ -304,10 +343,21 @@ class HeatIndexAlertService:
                 
             return city_user_tokens
             
+        except firebase_exceptions.NotFoundError as e:
+            logger.error(f"Firebase users collection not found: {e}")
+            return {}
+        except firebase_exceptions.PermissionDeniedError as e:
+            logger.error(f"Permission denied accessing users data: {e}")
+            return {}
+        except firebase_exceptions.UnavailableError as e:
+            logger.error(f"Firebase service unavailable when fetching users: {e}")
+            return {}
+        except firebase_exceptions.FirebaseError as e:
+            logger.error(f"Firebase error ({e.code}) getting users in cities: {e}")
+            return {}
         except Exception as e:
             logger.error(f"Error getting users in cities: {e}")
             return {}
-    
     def send_notifications(self, significant_changes, city_user_tokens):
         """Send notifications to users in affected cities"""
         if not significant_changes:
@@ -391,10 +441,24 @@ class HeatIndexAlertService:
             
             return results
             
+        except firebase_exceptions.InvalidArgumentError as e:
+            logger.error(f"Invalid notification data: {e}")
+            return {'success': False, 'error': str(e)}
+        except firebase_exceptions.UnauthenticatedError as e:
+            logger.error(f"Firebase authentication error while sending notifications: {e}")
+            return {'success': False, 'error': str(e)}
+        except firebase_exceptions.UnavailableError as e:
+            logger.error(f"Firebase messaging service unavailable: {e}")
+            return {'success': False, 'error': str(e)}
+        except firebase_exceptions.InternalError as e:
+            logger.error(f"Firebase internal error while sending notifications: {e}")
+            return {'success': False, 'error': str(e)}
+        except firebase_exceptions.FirebaseError as e:
+            logger.error(f"Firebase error ({e.code}) sending notifications: {e}")
+            return {'success': False, 'error': str(e)}
         except Exception as e:
             logger.error(f"Error sending notifications: {e}")
             return {'success': False, 'error': str(e)}
-    
     def _record_notification_history(self, changes, results):
         """Record notification history in Firestore"""
         try:
@@ -411,9 +475,16 @@ class HeatIndexAlertService:
             
             logger.info("Recorded notification history in Firestore")
             
+        except firebase_exceptions.PermissionDeniedError as e:
+            logger.error(f"Permission denied recording notification history: {e}")
+        except firebase_exceptions.UnavailableError as e:
+            logger.error(f"Firebase service unavailable while recording history: {e}")
+        except firebase_exceptions.DeadlineExceededError as e:
+            logger.error(f"Deadline exceeded when recording notification history: {e}")
+        except firebase_exceptions.FirebaseError as e:
+            logger.error(f"Firebase error ({e.code}) recording notification history: {e}")
         except Exception as e:
             logger.error(f"Error recording notification history: {e}")
-    
     def run(self):
         """Run the heat index alert service"""
         try:
@@ -451,6 +522,12 @@ class HeatIndexAlertService:
                 logger.info("No significant heat index changes detected")
                 return True
                 
+        except firebase_exceptions.UnavailableError as e:
+            logger.error(f"Firebase service unavailable during service run: {e}")
+            return False
+        except firebase_exceptions.FirebaseError as e:
+            logger.error(f"Firebase error ({e.code}) running heat index alert service: {e}")
+            return False
         except Exception as e:
             logger.error(f"Error running heat index alert service: {e}")
             return False
@@ -460,6 +537,8 @@ class HeatIndexAlertService:
                 if firebase_admin._apps:
                     firebase_admin.delete_app(firebase_admin.get_app())
                     logger.info("Firebase connection closed")
+            except firebase_exceptions.FirebaseError as e:
+                logger.error(f"Firebase error ({e.code}) closing Firebase connection: {e}")
             except Exception as e:
                 logger.error(f"Error closing Firebase connection: {e}")
 
