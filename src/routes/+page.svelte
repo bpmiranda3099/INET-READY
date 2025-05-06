@@ -676,7 +676,7 @@
 		style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:2000;display:flex;align-items:center;justify-content:center;"
 	>
 		<div
-			class="modal-content"
+			class="modal-content hide-scrollbar"
 			style="background:#fff;max-width:760px;width:95vw;max-height:90vh;overflow-y:auto;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);position:relative;padding:2.2rem 1.5rem 1.5rem 1.5rem;"
 		>
 			<button
@@ -697,6 +697,14 @@
 {/if}
 
 <style>
+	/* Hide scrollbar for modal content */
+	.hide-scrollbar {
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* IE 10+ */
+	}
+	.hide-scrollbar::-webkit-scrollbar {
+		display: none; /* Chrome, Safari, Opera */
+	}
 	.hero-title-transform .safer-smarter {
 		display: inline-block;
 		transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
