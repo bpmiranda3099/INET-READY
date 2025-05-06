@@ -372,10 +372,8 @@
     
     .carousel-inner {
         border-radius: 16px;
-    }
-    
-    .feature-card {
-        background-color: #f9f9f9;
+    }    .feature-card {
+        background-color: #dd815e;
         border-radius: 16px;
         padding: 1.5rem;
         display: flex;
@@ -384,43 +382,20 @@
         gap: 0.8rem;
         transition: all 0.3s;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        height: 220px;
+        height: 230px;
         justify-content: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
     }
-    
-    /* Custom styling for Bootstrap carousel controls */
+      /* Custom styling for Bootstrap carousel controls */
     .carousel-control-prev,
     .carousel-control-next {
-        width: 44px;
-        height: 44px;
-        background-color: rgba(221, 129, 94, 0.1);
-        border-radius: 50%;
-        top: 50%;
-        transform: translateY(-50%);
-        opacity: 1;
-    }
-    
-    .carousel-control-prev {
-        left: -5px;
-    }
-    
-    .carousel-control-next {
-        right: -5px;
-    }
-    
-    .carousel-control-prev:hover,
-    .carousel-control-next:hover {
-        background-color: rgba(221, 129, 94, 0.2);
-    }
-    
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-        width: 1.5rem;
-        height: 1.5rem;
+        display: none;
     }
     
     .carousel-indicators {
-        margin-bottom: -1rem;
+        display: none;
     }
     
     .carousel-indicators [data-bs-target] {
@@ -441,20 +416,27 @@
     .feature-icon {
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
-    }
-    
-    .feature-text {
+    }    .feature-text {
         font-size: 1.2rem;
         font-weight: 600;
-        color: #444;
+        color: white;
         margin-bottom: 0.5rem;
+        max-width: 100%;
+        text-wrap: balance;
     }
-    
-    .feature-description {
+      .feature-description {
         font-size: 0.95rem;
-        color: #666;
+        color: white;
         text-align: center;
         line-height: 1.5;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
+        max-width: 100%;
+        max-height: 100px;
+        overflow-y: auto;
+        margin: 0 auto;
+        padding: 0 5px;
     }
     
     /* Buttons container styling */
