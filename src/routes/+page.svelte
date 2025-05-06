@@ -311,47 +311,63 @@ function toggleNavbar() {
 		<div class="responsive-container-block" style="justify-content:center; gap:2rem; flex-wrap:wrap;">
 		  <!-- Alyssa Mae Abac -->
 		  <div class="card dev-card">
-			<div class="img-wrapper">
-			  <img src="https://scontent.fmnl9-4.fna.fbcdn.net/v/t39.30808-1/495262217_3787895071428231_6510113284719315269_n.jpg?stp=cp6_dst-jpg_s200x200_tt6&_nc_cat=105&ccb=1-7&_nc_sid=1d2534&_nc_eui2=AeG8Km6yYzmTR-eYef0uKi_NwpI2en4CDivCkjZ6fgIOK90THDhrfB1cqcQgLxlxLd5W1BNj3sNFkYLKT-H3nbx8&_nc_ohc=ewMcjaW4PcoQ7kNvwHqSDjG&_nc_oc=AdnxAoZbNA6-Gx0bBL4YfKecD9Bo3UHWAKeN779qCiDUyazM1EOLptFenG7AGqdkds0&_nc_zt=24&_nc_ht=scontent.fmnl9-4.fna&_nc_gid=14i2lCz7n3wr0SheVfVz5Q&oh=00_AfLsbQ8ZrLrDilE-WP4EGNloBGSwph9NGOVzlkfj9k30AQ&oe=681FEA1B" alt="Alyssa Mae Abac" style="width:100%;height:100%;object-fit:cover;" />
-			</div>
-			<div class="card-content">
-			  <p class="text-blk name" style="color:#dd815e;">Alyssa Mae Abac</p>
-			  <p class="text-blk position" style="color:#dd815e;">Project Management, Public Relations, Documentation</p>
-			  <p class="text-blk testimonial">Leads the project, manages communication, and keeps documentation organized.</p>
-			</div>
+	  <div class="img-wrapper portrait-header">
+		<img src="https://scontent.fmnl9-4.fna.fbcdn.net/v/t39.30808-1/495262217_3787895071428231_6510113284719315269_n.jpg?stp=cp6_dst-jpg_s200x200_tt6&_nc_cat=105&ccb=1-7&_nc_sid=1d2534&_nc_eui2=AeG8Km6yYzmTR-eYef0uKi_NwpI2en4CDivCkjZ6fgIOK90THDhrfB1cqcQgLxlxLd5W1BNj3sNFkYLKT-H3nbx8&_nc_ohc=ewMcjaW4PcoQ7kNvwHqSDjG&_nc_oc=AdnxAoZbNA6-Gx0bBL4YfKecD9Bo3UHWAKeN779qCiDUyazM1EOLptFenG7AGqdkds0&_nc_zt=24&_nc_ht=scontent.fmnl9-4.fna&_nc_gid=14i2lCz7n3wr0SheVfVz5Q&oh=00_AfLsbQ8ZrLrDilE-WP4EGNloBGSwph9NGOVzlkfj9k30AQ&oe=681FEA1B" alt="Alyssa Mae Abac" />
+		<div class="vignette">
+		  <div class="portrait-text">
+			<span class="name">Alyssa Mae Abac</span>
+			<span class="position">Project Management, Public Relations, Documentation</span>
+		  </div>
+		</div>
+	  </div>
+	  <div class="card-content">
+		<p class="text-blk testimonial">Leads the project, manages communication, and keeps documentation organized.</p>
+	  </div>
 		  </div>
 		  <!-- Nicole Wyne Fernandez -->
 		  <div class="card dev-card">
-			<div class="img-wrapper">
-			  <img src="https://scontent.fmnl9-4.fna.fbcdn.net/v/t39.30808-1/343387404_534020152265878_7710459416092706346_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=105&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeGHReVsdDpVrzDuEALqsl3GDmtPlx8QAJMOa0-XHxAAk5ptVLRH1IJSzZl7L90-X8CpbimKEwgnga5o3WDmtAsX&_nc_ohc=eSoLWwaD-cEQ7kNvwF4Uqpz&_nc_oc=AdnGa6AlUfNxtxtBodPpW5LgXhPvdNVptUjF6MzdDXxGGwE_A97jMZ860T2_lREp_XM&_nc_zt=24&_nc_ht=scontent.fmnl9-4.fna&_nc_gid=Ox-UkQkT3nckhc85WaOaig&oh=00_AfKvBAV6Z-mqVKeyPy1OMKcIzqqFzCbhEXXEAM-TZ8KbSw&oe=68200EA2" alt="Nicole Wyne Fernandez" style="width:100%;height:100%;object-fit:cover;" />
-			</div>
-			<div class="card-content">
-			  <p class="text-blk name" style="color:#dd815e;">Nicole Wyne Fernandez</p>
-			  <p class="text-blk position" style="color:#dd815e;">Frontend Development</p>
-			  <p class="text-blk testimonial">Designs and builds user-friendly interfaces with intuitive navigation.</p>
-			</div>
+	  <div class="img-wrapper portrait-header">
+		<img src="https://scontent.fmnl9-4.fna.fbcdn.net/v/t39.30808-1/343387404_534020152265878_7710459416092706346_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=105&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeGHReVsdDpVrzDuEALqsl3GDmtPlx8QAJMOa0-XHxAAk5ptVLRH1IJSzZl7L90-X8CpbimKEwgnga5o3WDmtAsX&_nc_ohc=eSoLWwaD-cEQ7kNvwF4Uqpz&_nc_oc=AdnGa6AlUfNxtxtBodPpW5LgXhPvdNVptUjF6MzdDXxGGwE_A97jMZ860T2_lREp_XM&_nc_zt=24&_nc_ht=scontent.fmnl9-4.fna&_nc_gid=Ox-UkQkT3nckhc85WaOaig&oh=00_AfKvBAV6Z-mqVKeyPy1OMKcIzqqFzCbhEXXEAM-TZ8KbSw&oe=68200EA2" alt="Nicole Wyne Fernandez" />
+		<div class="vignette">
+		  <div class="portrait-text">
+			<span class="name">Nicole Wyne Fernandez</span>
+			<span class="position">Frontend Development</span>
+		  </div>
+		</div>
+	  </div>
+	  <div class="card-content">
+		<p class="text-blk testimonial">Designs and builds user-friendly interfaces with intuitive navigation.</p>
+	  </div>
 		  </div>
 		  <!-- Brandon Miranda -->
 		  <div class="card dev-card">
-			<div class="img-wrapper">
-			  <img src="https://scontent.fmnl9-2.fna.fbcdn.net/v/t39.30808-6/316940975_6344569778905754_4439269053930394859_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeG6qP_3LvpoeIoYqIP4EVasalvDEyl0enRqW8MTKXR6dJjX2pD9M320EZlcSminQeVGK1R1MoysNVrUNRU-eFSq&_nc_ohc=1CQxN8M3wMoQ7kNvwGkEVyb&_nc_oc=Adm_vwz2RbsGISielkR3eMaKbDEWw-CDlHI9P3Xx12jzHxHUl1IhDb-pUiz9recTSjs&_nc_zt=23&_nc_ht=scontent.fmnl9-2.fna&_nc_gid=7ClNm47ZT_PpzEgB2iXAdA&oh=00_AfLdpyxMYErRuIzqIa6dDHJzp8vObfhAKLlqKlbjl5dltQ&oe=682004B8" alt="Brandon Miranda" style="width:100%;height:100%;object-fit:cover;" />
-			</div>
-			<div class="card-content">
-			  <p class="text-blk name" style="color:#dd815e;">Brandon Miranda</p>
-			  <p class="text-blk position" style="color:#dd815e;">Backend Development</p>
-			  <p class="text-blk testimonial">Develops and optimizes backend systems, APIs, and databases.</p>
-			</div>
+	  <div class="img-wrapper portrait-header">
+		<img src="https://scontent.fmnl9-2.fna.fbcdn.net/v/t39.30808-6/316940975_6344569778905754_4439269053930394859_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeG6qP_3LvpoeIoYqIP4EVasalvDEyl0enRqW8MTKXR6dJjX2pD9M320EZlcSminQeVGK1R1MoysNVrUNRU-eFSq&_nc_ohc=1CQxN8M3wMoQ7kNvwGkEVyb&_nc_oc=Adm_vwz2RbsGISielkR3eMaKbDEWw-CDlHI9P3Xx12jzHxHUl1IhDb-pUiz9recTSjs&_nc_zt=23&_nc_ht=scontent.fmnl9-2.fna&_nc_gid=7ClNm47ZT_PpzEgB2iXAdA&oh=00_AfLdpyxMYErRuIzqIa6dDHJzp8vObfhAKLlqKlbjl5dltQ&oe=682004B8" alt="Brandon Miranda" />
+		<div class="vignette">
+		  <div class="portrait-text">
+			<span class="name">Brandon Miranda</span>
+			<span class="position">Backend Development</span>
+		  </div>
+		</div>
+	  </div>
+	  <div class="card-content">
+		<p class="text-blk testimonial">Develops and optimizes backend systems, APIs, and databases.</p>
+	  </div>
 		  </div>
 		  <!-- Alexander Asinas -->
 		  <div class="card dev-card">
-			<div class="img-wrapper">
-			  <img src="https://scontent.fmnl9-6.fna.fbcdn.net/v/t39.30808-6/349663129_1607290049762067_877432076550208488_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeHzWneW3mDNJWjQM6Ehjp2efgywZQhDLah-DLBlCEMtqB6fvWBJVzwRR4BfTXbU-f7kbnUOoZnnEXqTXxuvHC7A&_nc_ohc=n3Try9-fbokQ7kNvwHFbxGk&_nc_oc=AdlKdPRhwW66n6jT5ZJ2nmHyJYMzqoRCs0pjLUi8ky3Fa0cjwckWYGzPgV2yopcb5Mk&_nc_zt=23&_nc_ht=scontent.fmnl9-6.fna&_nc_gid=fIPMYiL-XtJuzPJaOynQoQ&oh=00_AfKoJuyJKwn5lxaPbbG9Nm42WOU7EzeCZVJdg38PxAwuGw&oe=68200068" alt="Alexander Asinas" style="width:100%;height:100%;object-fit:cover;" />
-			</div>
-			<div class="card-content">
-			  <p class="text-blk name" style="color:#dd815e;">Alexander Asinas</p>
-			  <p class="text-blk position" style="color:#dd815e;">QA/QC, Research, System Analyst</p>
-			  <p class="text-blk testimonial">Ensures quality, researches, and bridges business and technical needs.</p>
-			</div>
+	  <div class="img-wrapper portrait-header">
+		<img src="https://scontent.fmnl9-6.fna.fbcdn.net/v/t39.30808-6/349663129_1607290049762067_877432076550208488_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeHzWneW3mDNJWjQM6Ehjp2efgywZQhDLah-DLBlCEMtqB6fvWBJVzwRR4BfTXbU-f7kbnUOoZnnEXqTXxuvHC7A&_nc_ohc=n3Try9-fbokQ7kNvwHFbxGk&_nc_oc=AdlKdPRhwW66n6jT5ZJ2nmHyJYMzqoRCs0pjLUi8ky3Fa0cjwckWYGzPgV2yopcb5Mk&_nc_zt=23&_nc_ht=scontent.fmnl9-6.fna&_nc_gid=fIPMYiL-XtJuzPJaOynQoQ&oh=00_AfKoJuyJKwn5lxaPbbG9Nm42WOU7EzeCZVJdg38PxAwuGw&oe=68200068" alt="Alexander Asinas" />
+		<div class="vignette">
+		  <div class="portrait-text">
+			<span class="name">Alexander Asinas</span>
+			<span class="position">QA/QC, Research, System Analyst</span>
+		  </div>
+		</div>
+	  </div>
+	  <div class="card-content">
+		<p class="text-blk testimonial">Ensures quality, researches, and bridges business and technical needs.</p>
+	  </div>
 		  </div>
 		</div>
 	  </div>
@@ -405,23 +421,74 @@ function toggleNavbar() {
 	text-align: center;
 	margin-bottom: 0;
   }
-  .img-wrapper {
-	width: 148px;
-	height: 148px;
-	margin: 0 auto 22px auto;
-	border-radius: 50%;
+  .img-wrapper.portrait-header {
+	width: 100%;
+	height: 220px;
+	min-height: 220px;
+	max-height: 220px;
+	margin: 0 0 22px 0;
+	border-radius: 18px 18px 0 0;
 	overflow: hidden;
 	background: #f5f5f7;
+	position: relative;
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 	justify-content: center;
 	box-shadow: 0 2px 8px rgba(221,129,94,0.10);
   }
-  .img-wrapper img, .img-wrapper svg {
+  .img-wrapper.portrait-header img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1;
+  }
+  .vignette {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 60%;
+	z-index: 2;
+	background: linear-gradient(to top, rgba(0,0,0,0.62) 70%, rgba(0,0,0,0.18) 100%, rgba(0,0,0,0.01) 100%);
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	border-radius: 0 0 18px 18px;
+	pointer-events: none;
+  }
+  .portrait-text {
+	width: 100%;
+	padding: 18px 0 12px 0;
+	text-align: center;
+	color: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 2px;
+	font-family: inherit;
+	font-weight: 600;
+	font-size: 1.08rem;
+	letter-spacing: 0.01em;
+	pointer-events: none;
+  }
+  .portrait-text .name {
+	font-size: 1.18rem;
+	font-weight: 700;
+	color: #fff;
+	margin-bottom: 2px;
+	text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  .portrait-text .position {
+	font-size: 1.01rem;
+	font-weight: 500;
+	color: #fff;
+	opacity: 0.93;
+	text-shadow: 0 2px 8px rgba(0,0,0,0.18);
   }
 	  @media (max-width: 1200px) { .dev-card { width: 300px; min-width: 300px; max-width: 300px; } }
 	  @media (max-width: 1024px) { .dev-card { width: 90vw; min-width: 260px; max-width: 340px; } }
