@@ -455,14 +455,15 @@ function toggleAccordion(index) {
 	transition: transform 0.18s cubic-bezier(0.4,0,0.2,1), box-shadow 0.18s cubic-bezier(0.4,0,0.2,1);
 	cursor: pointer;
   }
-  .dev-card:hover, .dev-card:focus-visible {
+  .dev-card:hover, .dev-card:focus-visible, .dev-card.dev-card--scrolled-in {
 	transform: translateY(-7px) scale(1.035) rotate(-1.5deg);
 	box-shadow: 0 8px 32px rgba(221,129,94,0.22), 0 2px 8px rgba(0,0,0,0.08);
 	background: #e98d6a;
 	outline: none;
   }
   .dev-card:hover .card-content .position,
-  .dev-card:focus-visible .card-content .position {
+  .dev-card:focus-visible .card-content .position,
+  .dev-card.dev-card--scrolled-in .card-content .position {
 	opacity: 0.93;
 	text-shadow: 0 2px 8px rgba(0,0,0,0.10);
   }
@@ -578,7 +579,26 @@ function toggleAccordion(index) {
   }
 	@media (max-width: 1200px) { .dev-card { width: 90vw; min-width: 260px; max-width: 340px; } }
 	@media (max-width: 500px) { .outer-container { padding: 2rem; } .dev-card { width: 100%; min-width: 220px; max-width: 100%; } }
-	</style>
+  </style>
+
+<script>
+  // Scroll-triggered dev card animation
+  import { onMount as onMountDevCard } from 'svelte';
+  onMountDevCard(() => {
+	const cards = document.querySelectorAll('.dev-card');
+	const observer = new window.IntersectionObserver((entries) => {
+	  entries.forEach(entry => {
+		if (entry.isIntersecting) {
+		  entry.target.classList.add('dev-card--scrolled-in');
+		} else {
+		  entry.target.classList.remove('dev-card--scrolled-in');
+		}
+	  });
+	}, { threshold: 0.2 });
+	cards.forEach(card => observer.observe(card));
+	return () => observer.disconnect();
+  });
+</script>
   </section>
 
   <!-- ABOUT SECTION -->
