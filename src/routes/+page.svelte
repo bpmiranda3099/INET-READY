@@ -3,14 +3,14 @@ let cardContentHover = false;
 let cardContentHover2 = false;
 let cardContentHover3 = false;
 let cardContentHover4 = false;
-	import { onMount } from 'svelte';
-	import { requestFCMToken, testFirestoreConnection } from '$lib/firebase';
-	// @ts-ignore
-	import { goto } from '$app/navigation';
+import { onMount } from 'svelte';
+import { requestFCMToken, testFirestoreConnection } from '$lib/firebase';
+// @ts-ignore
+import { goto } from '$app/navigation';
 
-	let fcmError = false;
-	let firestoreConnected = false;
-	let activeAccordion = null;
+let fcmError = false;
+let firestoreConnected = false;
+let activeAccordion = null;
 
 // For navbar collapse toggle
 let navbarCollapse;
@@ -34,65 +34,105 @@ function toggleNavbar() {
   }
 }
 
-	onMount(async () => {
-		// Register service worker
-		if ('serviceWorker' in navigator) {
-			try {
-				const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js'); // Ensure correct path
-				console.log('Service Worker Registered:', reg);
-			} catch (err) {
-				console.error('Service Worker Registration Failed:', err);
-			}
-		}
+// --- HERO safer/smarter text alternation and app icon scroll animation ---
+let intervalId;
+let showingSmarter = false;
+let appIcon;
+let lastScrollY = 0;
+let appIconRotation = 0;
 
-		// Request FCM token (with error handling)
-		try {
-			const token = await requestFCMToken();
-			fcmError = !token;
-		} catch (error) {
-			console.error("FCM token request failed:", error);
-			fcmError = true;
-		}
-		
-		// Test Firestore connection
-		try {
-			firestoreConnected = await testFirestoreConnection();
-		} catch (error) {
-			console.error("Firestore connection test failed:", error);
-		}
-
-		// Load Bootstrap from CDN
-		loadBootstrap();
-	});
-
-	function navigateToApp() {
-		goto('/app');
+onMount(() => {
+  // Async setup for service worker, FCM, Firestore
+  (async () => {
+	// Register service worker
+	if ('serviceWorker' in navigator) {
+	  try {
+		const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+		console.log('Service Worker Registered:', reg);
+	  } catch (err) {
+		console.error('Service Worker Registration Failed:', err);
+	  }
 	}
 
-	function loadBootstrap() {
-		// Add Bootstrap CSS
-		const bootstrapCSS = document.createElement('link');
-		bootstrapCSS.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css';
-		bootstrapCSS.rel = 'stylesheet';
-		bootstrapCSS.integrity = 'sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65';
-		bootstrapCSS.crossOrigin = 'anonymous';
-		document.head.appendChild(bootstrapCSS);
-
-		// Add Bootstrap JS
-		const bootstrapJS = document.createElement('script');
-		bootstrapJS.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js';
-		bootstrapJS.integrity = 'sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4';
-		bootstrapJS.crossOrigin = 'anonymous';
-		document.body.appendChild(bootstrapJS);
+	// Request FCM token (with error handling)
+	try {
+	  const token = await requestFCMToken();
+	  fcmError = !token;
+	} catch (error) {
+	  console.error("FCM token request failed:", error);
+	  fcmError = true;
 	}
 
-	function toggleAccordion(index) {
-		if (activeAccordion === index) {
-			activeAccordion = null;
-		} else {
-			activeAccordion = index;
-		}
+	// Test Firestore connection
+	try {
+	  firestoreConnected = await testFirestoreConnection();
+	} catch (error) {
+	  console.error("Firestore connection test failed:", error);
 	}
+  })();
+
+  // Load Bootstrap from CDN
+  loadBootstrap();
+
+  // Safer/Smarter text alternation
+  const el = document.getElementById('safer-smarter');
+  if (el) {
+	intervalId = setInterval(() => {
+	  showingSmarter = !showingSmarter;
+	  el.classList.add('fade-out');
+	  setTimeout(() => {
+		el.textContent = showingSmarter ? 'Smarter.' : 'Safer.';
+		el.classList.remove('fade-out');
+	  }, 400);
+	}, 2200);
+  }
+
+  // App icon scroll animation
+  function handleScroll() {
+	if (!appIcon) return;
+	const currentY = window.scrollY;
+	const delta = currentY - lastScrollY;
+	appIconRotation += delta * 0.6;
+	appIcon.style.transform = `rotate(${appIconRotation}deg)`;
+	lastScrollY = currentY;
+  }
+  window.addEventListener('scroll', handleScroll);
+
+  // Clean up
+  return () => {
+	if (intervalId) clearInterval(intervalId);
+	window.removeEventListener('scroll', handleScroll);
+  };
+});
+
+function navigateToApp() {
+  goto('/app');
+}
+
+function loadBootstrap() {
+  // Add Bootstrap CSS
+  const bootstrapCSS = document.createElement('link');
+  bootstrapCSS.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css';
+  bootstrapCSS.rel = 'stylesheet';
+  bootstrapCSS.integrity = 'sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65';
+  bootstrapCSS.crossOrigin = 'anonymous';
+  document.head.appendChild(bootstrapCSS);
+
+  // Add Bootstrap JS
+  const bootstrapJS = document.createElement('script');
+  bootstrapJS.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js';
+  bootstrapJS.integrity = 'sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4';
+  bootstrapJS.crossOrigin = 'anonymous';
+  document.body.appendChild(bootstrapJS);
+}
+
+function toggleAccordion(index) {
+  if (activeAccordion === index) {
+	activeAccordion = null;
+  } else {
+	activeAccordion = index;
+  }
+}
 </script>
 
 <main>
@@ -101,7 +141,7 @@ function toggleNavbar() {
   <nav class="navbar navbar-expand-lg shadow-sm py-3 fixed-top" style="background:#dd815e; z-index:1050;">
 	<div class="container-fluid">
 	<a class="navbar-brand d-flex align-items-center gap-2" href="/" style="color:#fff;">
-	  <img id="navbar-appicon" src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);" />
+  <img id="navbar-appicon" src="/app-icon.png" alt="INET-READY" width="36" height="36" style="border-radius:8px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);" bind:this={appIcon} />
 	  <span class="fw-bold align-items-center d-flex" style="color:#fff; height:45px; line-height:36px; font-size:1.6rem;">INET-READY</span>
 	  <span class="d-none d-md-inline align-items-center d-flex" style="color:#fff; height:36px; line-height:36px;"> Your Heat Check for Safe and Informed Travel</span>
 	</a>
@@ -235,52 +275,7 @@ function toggleNavbar() {
   Travel <span id="safer-smarter" class="safer-smarter">Safer.</span>
   <br> Your Heat-Health Companion
 </h1>
-<script>
-  import { onMount } from 'svelte';
-  let intervalId;
-  let showingSmarter = false;
-  onMount(() => {
-	const el = document.getElementById('safer-smarter');
-	if (!el) return;
-	intervalId = setInterval(() => {
-	  showingSmarter = !showingSmarter;
-	  el.classList.add('fade-out');
-	  setTimeout(() => {
-		el.textContent = showingSmarter ? 'Smarter.' : 'Safer.';
-		el.classList.remove('fade-out');
-	  }, 400);
-	}, 2200);
-	return () => clearInterval(intervalId);
-  });
-// App icon scroll animation: clockwise on scroll down, counterclockwise on scroll up
-let lastScrollY = 0;
-let appIconRotation = 0;
-onMount(() => {
-  // Wait for DOM to be ready to ensure the app icon is present
-  let rafId;
-  function setupScrollHandler() {
-	const appIcon = document.getElementById('navbar-appicon');
-	if (!appIcon) {
-	  rafId = requestAnimationFrame(setupScrollHandler);
-	  return;
-	}
-	function handleScroll() {
-	  const currentY = window.scrollY;
-	  const delta = currentY - lastScrollY;
-	  appIconRotation += delta * 0.6;
-	  appIcon.style.transform = `rotate(${appIconRotation}deg)`;
-	  lastScrollY = currentY;
-	}
-	window.addEventListener('scroll', handleScroll);
-	// Clean up
-	return () => {
-	  window.removeEventListener('scroll', handleScroll);
-	  if (rafId) cancelAnimationFrame(rafId);
-	};
-  }
-  return setupScrollHandler();
-});
-</script>
+<!-- safer/smarter text animation styles -->
 <style>
   .hero-title-transform .safer-smarter {
 	display: inline-block;
