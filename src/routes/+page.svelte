@@ -227,7 +227,38 @@ function toggleNavbar() {
   <section class="hero d-flex align-items-center justify-content-center text-center px-3" style="background:#fff; min-height:70vh;">
 	<div class="hero-content w-100">
 <video src="https://cdnl.iconscout.com/lottie/premium/thumb/avoid-direct-sun-animation-download-in-lottie-json-gif-static-svg-file-formats--cooling-air-herself-fan-waving-heat-stroke-danger-pack-people-animations-9123129.mp4" autoplay loop muted playsinline style="max-width:600px; width:100%; height:auto; border:none; background:transparent; box-shadow:none;"></video>
-	  <h1 style="color:#dd815e; font-size:2.7rem; font-weight:700;">Travel Safer. Travel Smarter. <br> Your Heat-Health Companion</h1>
+<h1 class="hero-title-transform" style="color:#dd815e; font-size:2.7rem; font-weight:700;">
+  Travel <span id="safer-smarter" class="safer-smarter">Safer.</span>
+  <br> Your Heat-Health Companion
+</h1>
+<script>
+  import { onMount } from 'svelte';
+  let intervalId;
+  onMount(() => {
+	const el = document.getElementById('safer-smarter');
+	if (!el) return;
+	let showingSmarter = false;
+	intervalId = setInterval(() => {
+	  showingSmarter = !showingSmarter;
+	  el.classList.add('fade-out');
+	  setTimeout(() => {
+		el.textContent = showingSmarter ? 'Smarter.' : 'Safer.';
+		el.classList.remove('fade-out');
+	  }, 400);
+	}, 2200);
+	return () => clearInterval(intervalId);
+  });
+</script>
+<style>
+  .hero-title-transform .safer-smarter {
+	display: inline-block;
+	transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .hero-title-transform .safer-smarter.fade-out {
+	opacity: 0;
+	transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+</style>
 <p class="subtitle mb-4" style="font-size:1.25rem; color:#555; max-width:600px; margin:0 auto; font-family:'Segoe UI', Arial, sans-serif; line-height:1.5;">INET-READY keeps you safe and healthy on the go with real-time heat alerts, personalized health insights, and secure medical data—all in one easy-to-use platform.</p>
 	  <button class="btn px-5 py-3 cta-button" style="background:#dd815e; color:#fff; border-radius:50px; font-weight:700; font-size:1.2rem;" on:click={navigateToApp}>Get Started</button>
 	</div>
