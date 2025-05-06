@@ -484,33 +484,39 @@ class HeatIndexAlertService:
                 }
                 
                 # Create and send the message
-                message = messaging.MulticastMessage(
-                    notification=messaging.Notification(
-                        title=title,
-                        body=body
-                    ),
-                    data=data,
-                    tokens=tokens
-                )
-                
-                # Send the message
-                response = messaging.send_multicast(message)
-                
-                # Record results
+                success_count = 0
+                failure_count = 0
+
+                for token in tokens:
+                    message = messaging.Message(
+                        notification=messaging.Notification(
+                            title=title,
+                            body=body
+                        ),
+                        data=data,
+                        token=token
+                    )
+                    try:
+                        messaging.send(message)
+                        success_count += 1
+                    except Exception as e:
+                        logger.error(f"Failed to send notification to {token}: {e}")
+                        failure_count += 1
+
                 city_result = {
-                    'success_count': response.success_count,
-                    'failure_count': response.failure_count,
+                    'success_count': success_count,
+                    'failure_count': failure_count,
                     'tokens_count': len(tokens),
                     'notification_title': title,
                     'notification_body': body
                 }
-                
-                results['notifications_sent'] += response.success_count
-                results['failures'] += response.failure_count
+
+                results['notifications_sent'] += success_count
+                results['failures'] += failure_count
                 results['cities'][city] = city_result
+
+                logger.info(f"Sent {success_count} notifications to users in {city} ({failure_count} failures)")
                 
-                logger.info(f"Sent {response.success_count} notifications to users in {city} ({response.failure_count} failures)")
-            
             # Log a summary
             logger.info(f"Notification summary: {results['notifications_sent']} sent, {results['failures']} failed")
             
