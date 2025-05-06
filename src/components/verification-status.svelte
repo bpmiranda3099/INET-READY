@@ -143,3 +143,130 @@
         </div>
     </div>
 </div>
+
+<style>
+  .verification-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #1a1a1a;
+    font-size: 1.08rem;
+    max-width: 700px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  h2 {
+    color: #dd815e;
+    font-size: 2.1rem;
+    margin-bottom: 0.7rem;
+    margin-top: 0.7rem;
+    width: 100%;
+    text-align: center;
+  }
+  
+  h4 {
+    color: #c26744;
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.7rem;
+  }
+  
+  .verification-card {
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .verification-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: #dd815e;
+  }
+  
+  .verification-message {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .verification-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+  
+  button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+  }
+  
+  .resend-btn {
+    background-color: #dd815e;
+    color: white;
+  }
+  
+  .resend-btn:hover:not(:disabled) {
+    background-color: #c26744;
+  }
+  
+  .resend-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  .logout-btn {
+    background-color: transparent;
+    color: #dd815e;
+    border: 1px solid #dd815e;
+  }
+  
+  .logout-btn:hover {
+    background-color: rgba(221, 129, 94, 0.1);
+  }
+  
+  .verification-tips {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+  
+  .verification-tips ul {
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .verification-tips li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .error {
+    color: #e74c3c;
+    background-color: #fdecea;
+    padding: 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .success {
+    color: #27ae60;
+    background-color: #e8f8f0;
+    padding: 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  a {
+    color: #dd815e;
+    text-decoration: underline;
+  }
+</style>
