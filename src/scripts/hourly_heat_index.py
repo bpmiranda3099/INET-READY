@@ -2,25 +2,46 @@ from loguru import logger
 import os
 import csv
 import requests
+
 from functools import lru_cache
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functions.calculate_heat_index import calculate_heat_index  # Import the function
 from datetime import datetime
 import time
+from dotenv import load_dotenv
+
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 csv_path = os.path.join(script_dir, '..', '..', 'public', 'data', 'city_coords.csv')
 
+# Load environment variables from .env
+load_dotenv(os.path.join(script_dir, '..', '..', '.env'))
+OPENWEATHERMAP_API_KEY = os.getenv('OPENWEATHERMAP_API_KEY')
+if not OPENWEATHERMAP_API_KEY:
+    raise RuntimeError('OPENWEATHERMAP_API_KEY not set in .env')
+
 @lru_cache
 def fetch_weather(latitude, longitude):
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,relative_humidity_2m"
-    resp = requests.get(url).json()
-    if "hourly" not in resp:
-        logger.error(f"API response missing 'hourly' for lat={latitude}, lon={longitude}: {resp}")
-        time.sleep(1)  # Wait 1 second before raising error or retrying
-        raise KeyError("hourly")
-    celsius = resp["hourly"]["temperature_2m"][0]
-    humidity = resp["hourly"]["relative_humidity_2m"][0]
+    url = (
+        f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}"
+        f"&appid={OPENWEATHERMAP_API_KEY}&units=metric"
+    )
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as e:
+        logger.error(f"OpenWeatherMap API error for lat={latitude}, lon={longitude}: {e}")
+        time.sleep(1)
+        raise
+
+    if "main" not in data or "temp" not in data["main"] or "humidity" not in data["main"]:
+        logger.error(f"API response missing 'main.temp' or 'main.humidity' for lat={latitude}, lon={longitude}: {data}")
+        time.sleep(1)
+        raise KeyError("main.temp or main.humidity")
+
+    celsius = data["main"]["temp"]
+    humidity = data["main"]["humidity"]
     return celsius, humidity
 
 def inet_level(heat_index):
