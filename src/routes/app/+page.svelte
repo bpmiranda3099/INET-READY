@@ -812,10 +812,6 @@
         position: relative;
     }
 
-    .terms-privacy-content {
-        padding: 1.5rem 1rem;
-    }
-
     .terms-privacy-content :global(.policy-container) {
         max-width: none;
         margin: 0;
@@ -968,7 +964,7 @@
     }
 
     .section-body {
-        padding: 2rem;
+        padding: 1rem;
     }
 
     .bottom-nav {

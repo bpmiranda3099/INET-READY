@@ -61,12 +61,11 @@
     margin-left: auto;
     margin-right: auto;
   }
-  
-  h1 {
+    h1 {
     color: #dd815e;
     font-size: 2.1rem;
     margin-bottom: 0.7rem;
-    margin-top: 2.5rem;
+    margin-top: 0;
   }
   
   h2 {
