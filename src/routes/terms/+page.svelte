@@ -110,7 +110,7 @@
     color: #dd815e;
     font-size: 2.1rem;
     margin-bottom: 0.7rem;
-    margin-top: 0;
+    margin-top: 0.7rem;
   }
   
   h2 {
@@ -127,7 +127,8 @@
   .breadcrumbs {
     max-width: 700px;
     width: 100%;
-    margin: 0rem .5rem;
+    margin-bottom: .5rem;
+    margin-top: .5rem;
     font-size: 0.9rem;
     color: #666;
   }

@@ -65,7 +65,7 @@
     color: #dd815e;
     font-size: 2.1rem;
     margin-bottom: 0.7rem;
-    margin-top: 0;
+    margin-top: 0.7rem;
   }
   
   h2 {
