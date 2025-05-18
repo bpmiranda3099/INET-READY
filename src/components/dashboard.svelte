@@ -702,12 +702,6 @@
 	{#if showAds}
 		<div class="ad-container">
 			<div class="ad-content">
-				<script
-					async
-					src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5128336241212748"
-					crossorigin="anonymous"
-				>
-				</script>
 				<ins
 					class="adsbygoogle"
 					style="display:block; width:100%; height:80px; overflow:hidden;"
