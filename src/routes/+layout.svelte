@@ -1994,14 +1994,15 @@
 				}
 			);
 		})();
-	</script><script
+	</script
 		src="//madurird.com/tag.min.js"
 		data-zone="9346659"
 		data-cfasync="false"
 		async
 		onerror="_hdypxbpo()"
 		onload="_isaju()"
-	></script>
+	>
+	</script>
 </svelte:head>
 
 <main>
