@@ -701,23 +701,25 @@
 	<!-- AdSense Banner -->
 	{#if showAds}
 		<div class="ad-container">
-			<script
-				async
-				src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5128336241212748"
-				crossorigin="anonymous"
-			>
-			</script>
-			<ins
-				class="adsbygoogle"
-				style="display:block"
-				data-ad-format="autorelaxed"
-				data-ad-client="ca-pub-5128336241212748"
-				data-ad-slot="7178650811"
-			>
-			</ins>
-			<script>
-				(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>
+			<div class="ad-content">
+				<script
+					async
+					src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5128336241212748"
+					crossorigin="anonymous"
+				>
+				</script>
+				<ins
+					class="adsbygoogle"
+					style="display:block; width:100%; height:80px; overflow:hidden;"
+					data-ad-format="horizontal"
+					data-ad-client="ca-pub-5128336241212748"
+					data-ad-slot="7178650811"
+				>
+				</ins>
+				<script>
+					(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
+			</div>
 		</div>
 	{/if}
 	<!-- App Bar -->
@@ -1393,10 +1395,9 @@
 		flex-direction: column;
 		min-height: 100vh;
 		padding-bottom: 70px; /* Space for bottom nav */
-		padding-top: 80px; /* Space for app bar */
 		position: relative;
-	}
-	/* Ad container styles */
+		transition: padding-top 0.3s ease;
+	} /* Ad container styles */
 	.ad-container {
 		position: fixed;
 		top: 0;
@@ -1407,12 +1408,35 @@
 		text-align: center;
 		z-index: 1001; /* Higher than app bar */
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		height: 90px; /* Fixed height for ad container */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.ad-content {
+		width: 100%;
+		max-width: 730px;
+		height: 90px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+	}
+
+	.ad-content {
+		width: 100%;
+		max-width: 730px;
+		height: 90px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
 	}
 
 	/* App bar styles */
 	.app-bar {
 		position: fixed;
-		top: 0;
 		left: 0;
 		right: 0;
 		height: 80px;
@@ -1423,16 +1447,22 @@
 		align-items: center;
 		padding: 0 16px;
 		z-index: 1000;
+		top: 90px; /* Default position below ads */
+		transition: top 0.3s ease;
 	}
 
-	/* Adjust app bar position when ads are shown */
-	:global(.dashboard.show-ads .app-bar) {
-		top: 90px; /* Adjusted top position */
+	/* Adjust app bar position when ads are hidden */
+	:global(.dashboard:not(.show-ads) .app-bar) {
+		top: 0;
 	}
 
-	/* Adjust content area padding when ads are shown */
+	/* Adjust content area padding based on ads visibility */
 	:global(.dashboard.show-ads) {
 		padding-top: 170px; /* 80px (app bar) + 90px (ad container) */
+	}
+
+	:global(.dashboard:not(.show-ads)) {
+		padding-top: 80px; /* Only app bar height */
 	}
 
 	/* Edit icon button in app bar */
