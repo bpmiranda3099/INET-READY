@@ -18,6 +18,7 @@
 		name="viewport"
 		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 	/>
+	<meta name="google-adsense-account" content="ca-pub-5128336241212748" />
 	<link
 		rel="stylesheet"
 		href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
