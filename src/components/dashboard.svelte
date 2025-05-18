@@ -1404,7 +1404,6 @@
 		left: 0;
 		right: 0;
 		background-color: #f8f9fa;
-		padding: 8px 0;
 		text-align: center;
 		z-index: 1001; /* Higher than app bar */
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -1447,7 +1446,7 @@
 		align-items: center;
 		padding: 0 16px;
 		z-index: 1000;
-		top: 90px; /* Default position below ads */
+		top: 100px; /* Default position below ads */
 		transition: top 0.3s ease;
 	}
 
