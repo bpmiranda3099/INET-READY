@@ -2668,7 +2668,7 @@
 		margin-bottom: 0.3rem;
 	}
 	.hhvi-title {
-		font-size: 2rem;
+		font-size: 1.2rem;
 		font-weight: 700;
 		color: white;
 	}
@@ -2810,7 +2810,7 @@
 		}
 
 		.hhvi-title {
-			font-size: 1rem;
+			font-size: 1.2rem;
 		}
 
 		.hhvi-score {
