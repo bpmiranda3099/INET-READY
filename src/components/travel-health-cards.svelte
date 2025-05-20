@@ -2668,7 +2668,7 @@
 		margin-bottom: 0.3rem;
 	}
 	.hhvi-title {
-		font-size: 1.1rem;
+		font-size: 2rem;
 		font-weight: 700;
 		color: white;
 	}
