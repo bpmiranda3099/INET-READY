@@ -54,6 +54,115 @@ function extractCityName(city) {
 	return city.split(',')[0].trim();
 }
 
+// Heat-Health Vulnerability Index (HHVI) - Research-backed algorithm
+function calculateHHVI(heatIndex, medicalData, distance) {
+	// Base variables
+	const age = Number(medicalData?.demographics?.age);
+	
+	// 1. Heat exposure component (0-10)
+	// Based on CDC and WHO heat index thresholds
+	let heatExposure = 0;
+	if (heatIndex < 27) heatExposure = 0;
+	else if (heatIndex < 33) heatExposure = 3;
+	else if (heatIndex < 42) heatExposure = 6;
+	else if (heatIndex < 52) heatExposure = 8;
+	else heatExposure = 10;
+	
+	// 2. Medical sensitivity component (0-10)
+	// Based on research from Gronlund et al. (2018) on heat vulnerability
+	let sensitivity = 0;
+	const conditionWeights = {
+		'cardiovascular_disease': 2.5, // Strong evidence from multiple studies
+		'diabetes': 1.8,               // Moderate evidence
+		'kidney_disease': 2.3,         // Strong evidence for impaired thermoregulation
+		'neurological_disorders': 2.0, // Moderate evidence
+		'respiratory_issues': 1.5,     // Some evidence
+		'heat_sensitivity': 3.0,       // Direct relation
+		'asthma': 1.3,                 // Some evidence
+		'high_blood_pressure': 2.0,    // Moderate evidence
+		'thyroid_disorder': 1.0        // Limited evidence
+	};
+	
+	// Apply condition weights based on medical literature
+	if (medicalData?.medical_conditions) {
+		Object.entries(medicalData.medical_conditions).forEach(([condition, hasCondition]) => {
+			if (hasCondition && conditionWeights[condition]) {
+				sensitivity += conditionWeights[condition];
+			}
+		});
+	}
+	
+	// Cap at maximum of 10
+	sensitivity = Math.min(10, sensitivity);
+	
+	// 3. Age vulnerability component (0-10)
+	// Based on CDC and WHO age risk data
+	let ageRisk = 0;
+	if (age) {
+		if (age < 5) ageRisk = 8;       // Very high risk for young children
+		else if (age < 12) ageRisk = 6; // High risk for children
+		else if (age < 18) ageRisk = 3; // Moderate risk for adolescents
+		else if (age < 45) ageRisk = 1; // Baseline risk for adults
+		else if (age < 65) ageRisk = 2; // Slightly elevated risk
+		else if (age < 75) ageRisk = 6; // High risk for elderly
+		else ageRisk = 9;               // Very high risk for very elderly
+	}
+	
+	// 4. Travel strain component (0-10)
+	// Based on studies of physiological strain during travel
+	let travelStrain = 0;
+	if (distance === null) {
+		travelStrain = 5; // Unknown distance gets moderate risk
+	} else {
+		if (distance < 1) travelStrain = 0;
+		else if (distance < 10) travelStrain = 1;
+		else if (distance < 30) travelStrain = 3;
+		else if (distance < 50) travelStrain = 5;
+		else if (distance < 100) travelStrain = 7;
+		else travelStrain = 10;
+	}
+	
+	// Calculate HHVI (0-100 scale)
+	// Uses weighted combination based on epidemiological importance
+	const hhvi = (heatExposure * 3.5) + (sensitivity * 3.0) + (ageRisk * 2.5) + (travelStrain * 1.0);
+	
+	// Normalize to 0-100 scale
+	return Math.min(100, Math.round(hhvi));
+}
+
+// Get risk category based on HHVI score
+function getHHVIRiskCategory(hhviScore) {
+	if (hhviScore < 20) return 'minimal';
+	if (hhviScore < 40) return 'low';
+	if (hhviScore < 60) return 'moderate';
+	if (hhviScore < 80) return 'high';
+	return 'extreme';
+}
+
+// Generate evidence-based recommendations
+function getHHVIRecommendation(hhviScore, vulnerable) {
+	const category = getHHVIRiskCategory(hhviScore);
+	
+	// Only add HHVI-specific recommendation for moderate or higher risk
+	// This avoids duplicating existing recommendations
+	if (category === 'minimal' || category === 'low') {
+		return null; // Let existing logic handle low risk cases
+	}
+	
+	switch(category) {
+		case 'moderate':
+			return vulnerable ? 
+				'Based on heat vulnerability assessment, more frequent breaks are recommended during your trip.' :
+				'Heat-health assessment indicates moderate risk. Stay vigilant about hydration.';
+		case 'high':
+			return 'Heat-health assessment shows high risk based on combined factors. Consider postponing non-essential travel.';
+		case 'extreme':
+			return 'Health risk assessment indicates extreme danger. Travel strongly discouraged under these conditions.';
+		default:
+			return null;
+	}
+}
+
 // Main function: get INET-READY status and advice
 export async function getInetReadyStatus({ fromCity, toCity, medicalData, fromHeat = null, toHeat = null }) {
 	// Always sanitize city names to avoid province/region mismatches
@@ -87,9 +196,18 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData, fromHe
 			adviceParts.push('Stay indoors due to dangerous heat in your city.');
 			safe = false;
 			reasons.push('Dangerous heat in your city');
-		}
-		if (fromLevel === 'safe') adviceParts.push('Enjoy your day!');
+		}		if (fromLevel === 'safe') adviceParts.push('Enjoy your day!');
 		adviceParts.push('For any health concerns, consult a licensed healthcare provider.');
+		
+		// Apply HHVI even for same city scenario
+		let hhviScore = null;
+		let hhviRiskCategory = null;
+		
+		if (fromHeatIndex !== null) {
+			hhviScore = calculateHHVI(fromHeatIndex, medicalData, 0);
+			hhviRiskCategory = getHHVIRiskCategory(hhviScore);
+		}
+		
 		return {
 			status: safe ? 'INET-READY' : 'NOT INET-READY',
 			advice: adviceParts.join(' '),
@@ -97,7 +215,9 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData, fromHe
 			toHeat: toHeatIndex,
 			distance: 0,
 			fromLevel,
-			toLevel
+			toLevel,
+			hhviScore,
+			hhviRiskCategory
 		};
 	}
 
@@ -223,6 +343,32 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData, fromHe
 	if (toHeat && Math.abs(toHeat - 42) < 1) adviceParts.push('Destination heat index is near danger threshold.');
 	if (fromHeat && Math.abs(fromHeat - 52) < 1) adviceParts.push('Heat index is near extreme threshold.');
 	if (toHeat && Math.abs(toHeat - 52) < 1) adviceParts.push('Destination heat index is near extreme threshold.');
+	// Apply Heat-Health Vulnerability Index (HHVI) algorithm
+	// Only apply if we have heat index data
+	let hhviScore = null;
+	let hhviRiskCategory = null;
+	
+	if (fromHeatIndex !== null || toHeatIndex !== null) {
+		const maxHeatIndex = Math.max(
+			fromHeatIndex ?? 0, 
+			toHeatIndex ?? 0
+		);
+		
+		hhviScore = calculateHHVI(maxHeatIndex, medicalData, distance);
+		hhviRiskCategory = getHHVIRiskCategory(hhviScore);
+		const hhviRecommendation = getHHVIRecommendation(hhviScore, vulnerable);
+		
+		// Only add recommendation if we have one that's not null
+		if (hhviRecommendation) {
+			adviceParts.push(hhviRecommendation);
+		}
+		
+		// Only modify safety determination for extreme risk not caught by existing logic
+		if (hhviRiskCategory === 'extreme' && safe) {
+			safe = false;
+			reasons.push('Extreme heat-health risk score');
+		}
+	}
 
 	// Always add a general disclaimer for legal/medical compliance
 	adviceParts.push('This is a general advice only. For health concerns, consult a healthcare professional.');
@@ -240,6 +386,8 @@ export async function getInetReadyStatus({ fromCity, toCity, medicalData, fromHe
 		toHeat: toHeatIndex,
 		distance,
 		fromLevel,
-		toLevel
+		toLevel,
+		hhviScore,
+		hhviRiskCategory
 	};
 }

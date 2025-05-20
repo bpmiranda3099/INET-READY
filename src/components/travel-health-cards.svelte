@@ -337,16 +337,14 @@
 				for (const f of features) {
 					const props = f.properties || {};
 					const phone = props.metadata?.phone || props.phone || null;
-					const categories = [
-						...(props.poi_category_ids || []),
-						...(props.poi_category || [])
-					].map((x) => x.toLowerCase());
+					const categories = [...(props.poi_category_ids || []), ...(props.poi_category || [])].map(
+						(x) => x.toLowerCase()
+					);
 					const name = (props.name || '').toLowerCase();
 
 					// Strict: Must have "hospital" in name or category
 					const hasHospitalKeyword =
-						name.includes('hospital') ||
-						categories.some((cat) => cat.includes('hospital'));
+						name.includes('hospital') || categories.some((cat) => cat.includes('hospital'));
 
 					// Exclude if any unwanted keyword is present in name or category
 					const isExcluded =
@@ -477,11 +475,14 @@
 		try {
 			predictions = await getHeatIndexPredictions();
 		} catch (e) {
-			console.error('Failed to fetch heat index predictions:', e);
+			console.error('Error fetching predictions:', e);
 		}
 
-		await Promise.all(
-			cards.map(async (card) => {
+		// Initialize HHVI loading states
+		hhviLoading = Array(cards.length).fill(false);
+
+		const cardPromises = cards.map(async (card, index) => {
+			try {
 				const cityData = await getCityData(card.toCity);
 				if (!cityData) {
 					console.warn(`No data found for city: ${card.toCity}`);
@@ -525,8 +526,23 @@
 				});
 
 				card.rowOne.inetReady = inetResult;
-			})
-		);
+
+				// If card has HHVI data, trigger the loading animation
+				if (
+					card.rowOne.inetReady?.hhviScore !== undefined &&
+					card.rowOne.inetReady?.hhviScore !== null
+				) {
+					// Set a timeout to start the loading animation after a brief delay
+					setTimeout(() => {
+						startHhviLoadingAnimation(index);
+					}, 1000); // Start 1 second after card loads
+				}
+			} catch (err) {
+				console.error(`Error updating card for ${card.toCity}:`, err);
+			}
+		});
+
+		await Promise.all(cardPromises);
 	}
 
 	// Helper: split advice into lines for display (handles periods and newlines)
@@ -782,6 +798,72 @@
 		if (!coords) return [120.9842, 14.5995]; // fallback
 		return [coords.lng, coords.lat];
 	}
+
+	// HHVI Loading Animation
+	let hhviLoading = [];
+	let hhviLoadingStep = 0;
+	const hhviSteps = [
+		'Analyzing heat exposure factors',
+		'Evaluating medical sensitivity',
+		'Calculating age-related risk',
+		'Assessing travel strain',
+		'Generating HHVI score'
+	];
+
+	// Helper: Get color for HHVI risk category
+	function getHhviCategoryColor(category, isLabel = false) {
+		// Base colors for banners
+		if (!category) return '#6c757d'; // Default gray for unknown
+
+		const alphaValue = isLabel ? '1' : '0.25'; // More transparent for banner background
+
+		switch (category.toLowerCase()) {
+			case 'minimal':
+				return `rgba(76, 175, 80, ${alphaValue})`; // Green
+			case 'low':
+				return `rgba(255, 193, 7, ${alphaValue})`; // Yellow
+			case 'moderate':
+				return `rgba(255, 152, 0, ${alphaValue})`; // Orange
+			case 'high':
+				return `rgba(244, 67, 54, ${alphaValue})`; // Red
+			case 'extreme':
+				return `rgba(156, 39, 176, ${alphaValue})`; // Purple
+			default:
+				return `rgba(108, 117, 125, ${alphaValue})`; // Gray
+		}
+	}
+
+	// Show HHVI info modal
+	function showHhviInfo(cardIndex) {
+		// In a real app, this would show a modal with detailed info about HHVI
+		alert(
+			'Heat-Health Vulnerability Index (HHVI) combines heat exposure, medical conditions, age, and travel distance to provide a personalized health risk assessment.'
+		);
+	}
+
+	// Simulate HHVI loading animation
+	function startHhviLoadingAnimation(cardIndex) {
+		// Set loading state for this card
+		hhviLoading[cardIndex] = true;
+		hhviLoadingStep = 0;
+
+		// Step through each process with a delay
+		const stepInterval = setInterval(() => {
+			hhviLoadingStep++;
+
+			// When all steps complete, show the final HHVI display
+			if (hhviLoadingStep >= hhviSteps.length) {
+				clearInterval(stepInterval);
+
+				// Short delay before showing final result
+				setTimeout(() => {
+					hhviLoading[cardIndex] = false;
+				}, 500);
+			}
+		}, 1000); // 1 second per step
+
+		return stepInterval;
+	}
 </script>
 
 <MapBackground
@@ -941,6 +1023,78 @@
 							{#if card.rowOne.inetReady && card.rowOne.inetReady.advice}
 								{@const grouped = groupAdviceLines(card.rowOne.inetReady.advice)}
 								<div class="advice-scrollable" bind:this={adviceScrollableRef}>
+									<!-- HHVI Banner - Show if score is available -->
+									{#if card.rowOne.inetReady?.hhviScore !== undefined && card.rowOne.inetReady?.hhviScore !== null}
+										{#if hhviLoading[i]}
+											<div
+												class="hhvi-loading-banner"
+												style="background-color: {getHhviCategoryColor(
+													card.rowOne.inetReady.hhviRiskCategory
+												)};"
+											>
+												<div class="hhvi-loading-title">
+													<i class="bi bi-heart-pulse-fill hhvi-loading-icon"></i>
+													<span>Calculating Heat-Health Vulnerability Index</span>
+												</div>
+												<div class="hhvi-loading-steps">
+													{#each hhviSteps as step, stepIndex}
+														<div
+															class="hhvi-loading-step"
+															class:active={hhviLoadingStep >= stepIndex}
+														>
+															<div class="hhvi-step-icon">
+																{#if hhviLoadingStep > stepIndex}
+																	<i class="bi bi-check-circle-fill"></i>
+																{:else if hhviLoadingStep === stepIndex}
+																	<i class="bi bi-arrow-repeat hhvi-spin"></i>
+																{:else}
+																	<i class="bi bi-circle"></i>
+																{/if}
+															</div>
+															<div class="hhvi-step-text">{step}</div>
+														</div>
+													{/each}
+												</div>
+											</div>
+										{:else}
+											<div
+												class="hhvi-info-banner"
+												style="background-color: {getHhviCategoryColor(
+													card.rowOne.inetReady.hhviRiskCategory
+												)};"
+											>
+												<i class="bi bi-clipboard-pulse hhvi-icon"></i>
+												<div class="hhvi-data">
+													<div class="hhvi-header">
+														<span class="hhvi-title">Heat-Health Vulnerability Index</span>
+														<button
+															class="hhvi-info-button"
+															on:click={() => showHhviInfo(i)}
+															aria-label="HHVI Information"
+														>
+															<i class="bi bi-info-circle"></i>
+														</button>
+													</div>
+													<div class="hhvi-score-display">
+														<div class="hhvi-score-container">
+															<span class="hhvi-score">{card.rowOne.inetReady.hhviScore}</span>
+															<span class="hhvi-max">/100</span>
+														</div>
+														<div
+															class="hhvi-category"
+															style="background-color: {getHhviCategoryColor(
+																card.rowOne.inetReady.hhviRiskCategory,
+																true
+															)};"
+														>
+															{card.rowOne.inetReady.hhviRiskCategory}
+														</div>
+													</div>
+												</div>
+											</div>
+										{/if}
+									{/if}
+
 									<div class="advice-list">
 										{#each grouped.warning as adviceLine (adviceLine)}
 											<div class="advice-item">
@@ -1082,11 +1236,11 @@
 					<div class="card-footer">
 						{#if card.timestamp}
 							<div class="update-time">
-								Weather data by 
-								<a 
-									href="https://open-meteo.com/" 
-									target="_blank" 
-									rel="noopener noreferrer" 
+								Weather data by
+								<a
+									href="https://open-meteo.com/"
+									target="_blank"
+									rel="noopener noreferrer"
 									class="open-meteo-link"
 									style="color: orange; text-decoration: underline;"
 								>
@@ -1199,10 +1353,9 @@
 	.cards-wrapper {
 		position: relative;
 		width: 100%;
-		margin: 1rem 0;
-		padding-bottom: 2rem; /* Space for navigation dots */
-		overflow: hidden; /* Hide horizontal overflow */
-		max-width: 100vw; /* Ensure it doesn't exceed viewport width */
+		max-width: 500px;
+		margin: 0 auto;
+		padding-bottom: 3rem;
 	}
 
 	.cards-container {
@@ -1917,6 +2070,7 @@
 		height: 100vh;
 		background: rgba(0, 0, 0, 0.25);
 		z-index: 2000;
+
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -2482,6 +2636,175 @@
 		.poi-tile-purple {
 			min-height: 70px;
 			padding: 0.4rem 0.4rem 0.4rem 0.4rem;
+		}
+	}
+
+	/* HHVI Styles */
+	.hhvi-info-banner {
+		display: flex;
+		align-items: center;
+		border-radius: 8px;
+		padding: 0.8rem;
+		margin-bottom: 0.8rem;
+		width: 100%;
+	}
+
+	.hhvi-icon {
+		font-size: 1.5rem;
+		margin-right: 0.8rem;
+		flex-shrink: 0;
+	}
+
+	.hhvi-data {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+	}
+
+	.hhvi-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 0.3rem;
+	}
+
+	.hhvi-title {
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+
+	.hhvi-info-button {
+		background: transparent;
+		border: none;
+		color: white;
+		padding: 0;
+		width: 24px;
+		height: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0.8;
+	}
+
+	.hhvi-info-button:hover {
+		opacity: 1;
+	}
+
+	.hhvi-score-display {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.hhvi-score-container {
+		display: flex;
+		align-items: baseline;
+	}
+
+	.hhvi-score {
+		font-size: 1.8rem;
+		font-weight: 700;
+	}
+
+	.hhvi-max {
+		font-size: 0.9rem;
+		opacity: 0.8;
+		margin-left: 0.1rem;
+	}
+
+	.hhvi-category {
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		font-weight: 600;
+		padding: 0.2rem 0.5rem;
+		border-radius: 4px;
+		letter-spacing: 0.5px;
+	}
+
+	/* HHVI Loading Animation */
+	.hhvi-loading-banner {
+		display: flex;
+		flex-direction: column;
+		border-radius: 8px;
+		padding: 0.8rem;
+		margin-bottom: 0.8rem;
+		width: 100%;
+	}
+
+	.hhvi-loading-title {
+		display: flex;
+		align-items: center;
+		margin-bottom: 0.8rem;
+		font-weight: 600;
+	}
+
+	.hhvi-loading-icon {
+		margin-right: 0.5rem;
+	}
+
+	.hhvi-loading-steps {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.hhvi-loading-step {
+		display: flex;
+		align-items: center;
+		opacity: 0.5;
+		transition: opacity 0.3s ease;
+	}
+
+	.hhvi-loading-step.active {
+		opacity: 1;
+	}
+
+	.hhvi-step-icon {
+		margin-right: 0.5rem;
+		width: 20px;
+		display: flex;
+		justify-content: center;
+	}
+
+	.hhvi-step-text {
+		font-size: 0.85rem;
+	}
+
+	.hhvi-spin {
+		animation: hhvi-spin 1s linear infinite;
+	}
+
+	@keyframes hhvi-spin {
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	@media (max-width: 600px) {
+		.hhvi-info-banner,
+		.hhvi-loading-banner {
+			padding: 0.5rem;
+		}
+
+		.hhvi-icon {
+			font-size: 1.2rem;
+		}
+
+		.hhvi-title {
+			font-size: 0.75rem;
+		}
+
+		.hhvi-score {
+			font-size: 1.5rem;
+		}
+
+		.hhvi-category {
+			font-size: 0.7rem;
+			padding: 0.15rem 0.4rem;
+		}
+
+		.hhvi-step-text {
+			font-size: 0.75rem;
 		}
 	}
 </style>
