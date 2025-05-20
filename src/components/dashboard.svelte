@@ -34,6 +34,7 @@
 	} from '$lib/services/dashboard-cache';
 	import { signInWithGoogle, signInWithFacebook } from '$lib/firebase/auth';
 	import { setupTokenRefreshService } from '$lib/services/token-refresh.js';
+	import { showPropellerAds, togglePropellerAds } from '$lib/services/ads-service';
 
 	onMount(() => {
 		setupTokenRefreshService();
@@ -55,11 +56,12 @@
 	let medicalData = null; // Add state variable for medical data
 	let loadingMedicalData = false; // Track loading state for medical data
 	let activeTab = 'dashboard'; // Changed default to dashboard
-	let showWelcomeMessage = true; // Control whether to show welcome message on startup
-	let showAds = false; // Control whether to show ads
+	let showWelcomeMessage = true; // Control whether to show welcome message on startup	let showAds = false; // Control whether to show ads
+	let showPropAds = true; // Control whether to show PropellerAds
 	let unreadNotifications = 0;
 	let deletingMedicalData = false;
 	let deleteError = null;
+	let showAds = false;
 	let showDeleteConfirm = false;
 	let deleteSuccess = false;
 	let dashboardRefreshKey = 0;
@@ -91,7 +93,6 @@
 	let swSupported;
 	let swRegistered;
 	let swError;
-
 	// Subscribe to service worker states
 	const unsubscribeSW1 = serviceWorkerSupported.subscribe((value) => (swSupported = value));
 	const unsubscribeSW2 = serviceWorkerRegistered.subscribe((value) => (swRegistered = value));
@@ -104,6 +105,11 @@
 			// Get the location name when coordinates change
 			getLocationNameFromCoordinates(value.latitude, value.longitude);
 		}
+	});
+
+	// Subscribe to propeller ads store
+	const unsubscribePropAds = showPropellerAds.subscribe((value) => {
+		showPropAds = value;
 	});
 
 	// Subscribe to location name updates
@@ -258,6 +264,7 @@
 			unsubscribeLocationName();
 			unsubscribeGeocodingLoading();
 			unsubscribeGeocodingError();
+			unsubscribePropAds();
 		};
 	});
 	// Save dashboard cache whenever relevant data changes
@@ -490,11 +497,15 @@
 		showWelcomeMessage = !showWelcomeMessage;
 		localStorage.setItem('inet-ready-hide-welcome', showWelcomeMessage ? 'false' : 'true');
 	}
-
 	// Function to toggle ads visibility preference
 	function toggleAdsVisibility() {
 		showAds = !showAds;
 		localStorage.setItem('inet-ready-hide-ads', showAds ? 'false' : 'true');
+	}
+
+	// Function to toggle PropellerAds visibility preference
+	function handleTogglePropellerAds() {
+		togglePropellerAds(); // This will update the store
 	}
 
 	// Function to refresh the city list data
@@ -1301,6 +1312,26 @@
 								<div class="setting-action">
 									<label class="switch">
 										<input type="checkbox" checked={showAds} on:change={toggleAdsVisibility} />
+										<span class="slider round"></span>
+									</label>
+								</div>
+							</div>
+							<hr class="preference-divider" />
+							<div class="preference-header">
+								<div class="preference-icon">
+									<i class="bi bi-p-circle"></i>
+								</div>
+								<div class="preference-title">
+									<span class="setting-label">Show PropellerAds</span>
+									<span class="setting-description">Display PropellerAds in the application</span>
+								</div>
+								<div class="setting-action">
+									<label class="switch">
+										<input
+											type="checkbox"
+											bind:checked={$showPropellerAds}
+											on:change={handleTogglePropellerAds}
+										/>
 										<span class="slider round"></span>
 									</label>
 								</div>

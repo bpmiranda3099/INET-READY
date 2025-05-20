@@ -803,31 +803,30 @@
 	let hhviLoading = [];
 	let hhviLoadingStep = 0;
 	const hhviSteps = [
-		'Analyzing heat exposure factors',
-		'Evaluating medical sensitivity',
-		'Calculating age-related risk',
-		'Assessing travel strain',
-		'Generating HHVI score'
+		'Evaluating personal exposure to heat conditions',
+		'Assessing vulnerability based on medical history',
+		'Factoring in age and demographic heat risk',
+		'Considering stress from changes in location or climate',
+		'Combining all data to create your HHVI risk score'
 	];
-
 	// Helper: Get color for HHVI risk category
 	function getHhviCategoryColor(category, isLabel = false) {
-		// Base colors for banners
+		// Base colors for banners - using more vibrant colors
 		if (!category) return '#6c757d'; // Default gray for unknown
 
-		const alphaValue = isLabel ? '1' : '0.25'; // More transparent for banner background
+		const alphaValue = isLabel ? '1' : '0.35'; // More transparent for banner background
 
 		switch (category.toLowerCase()) {
 			case 'minimal':
-				return `rgba(76, 175, 80, ${alphaValue})`; // Green
+				return `rgba(0, 230, 118, ${alphaValue})`; // Vibrant Green
 			case 'low':
-				return `rgba(255, 193, 7, ${alphaValue})`; // Yellow
+				return `rgba(255, 214, 0, ${alphaValue})`; // Vibrant Yellow
 			case 'moderate':
-				return `rgba(255, 152, 0, ${alphaValue})`; // Orange
+				return `rgba(255, 145, 0, ${alphaValue})`; // Vibrant Orange
 			case 'high':
-				return `rgba(244, 67, 54, ${alphaValue})`; // Red
+				return `rgba(255, 23, 68, ${alphaValue})`; // Vibrant Red
 			case 'extreme':
-				return `rgba(156, 39, 176, ${alphaValue})`; // Purple
+				return `rgba(213, 0, 249, ${alphaValue})`; // Vibrant Purple
 			default:
 				return `rgba(108, 117, 125, ${alphaValue})`; // Gray
 		}
@@ -840,14 +839,13 @@
 			'Heat-Health Vulnerability Index (HHVI) combines heat exposure, medical conditions, age, and travel distance to provide a personalized health risk assessment.'
 		);
 	}
-
 	// Simulate HHVI loading animation
 	function startHhviLoadingAnimation(cardIndex) {
 		// Set loading state for this card
 		hhviLoading[cardIndex] = true;
 		hhviLoadingStep = 0;
 
-		// Step through each process with a delay
+		// Step through each process with a delay - slowed down to 4 seconds per step
 		const stepInterval = setInterval(() => {
 			hhviLoadingStep++;
 
@@ -855,12 +853,12 @@
 			if (hhviLoadingStep >= hhviSteps.length) {
 				clearInterval(stepInterval);
 
-				// Short delay before showing final result
+				// Longer delay before showing final result
 				setTimeout(() => {
 					hhviLoading[cardIndex] = false;
-				}, 500);
+				}, 1000);
 			}
-		}, 1000); // 1 second per step
+		}, 4000); // 4 seconds per step for dramatic effect
 
 		return stepInterval;
 	}
@@ -2765,18 +2763,37 @@
 		display: flex;
 		justify-content: center;
 	}
-
 	.hhvi-step-text {
 		font-size: 0.85rem;
+		font-weight: 500;
+		text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
 	}
 
 	.hhvi-spin {
-		animation: hhvi-spin 1s linear infinite;
+		animation: hhvi-spin 1.5s linear infinite;
+		color: rgba(255, 255, 255, 0.9);
+	}
+
+	.hhvi-loading-step.active .hhvi-step-text {
+		animation: hhvi-pulse 2s ease-in-out infinite;
+		font-weight: 600;
 	}
 
 	@keyframes hhvi-spin {
 		100% {
 			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes hhvi-pulse {
+		0% {
+			opacity: 0.7;
+		}
+		50% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0.7;
 		}
 	}
 
