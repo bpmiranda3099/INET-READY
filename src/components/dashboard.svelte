@@ -1300,6 +1300,7 @@
 									</label>
 								</div>
 							</div>
+							<!--
 							<hr class="preference-divider" />
 							<div class="preference-header">
 								<div class="preference-icon">
@@ -1336,6 +1337,7 @@
 									</label>
 								</div>
 							</div>
+							-->
 						</div>
 					</div>
 				</div>
