@@ -492,7 +492,7 @@
 		margin-top: 0.7em;
 		background: rgba(255, 221, 51, 0.55);
 		color: #fff;
-		font-size: 0.2em;
+		font-size: 0.7rem !important; /* Using rem to override inheritance and fixed size */
 		border-radius: 10px;
 		padding: 0.5em 1em;
 		font-weight: 500;
