@@ -2299,6 +2299,7 @@
 		align-items: stretch;
 		justify-content: stretch;
 		background: skyblue;
+		min-height: calc(var(--base-tile-height) + 4rem); /* Increased height by 4rem */
 		color: #fff;
 		width: 100%;
 		min-height: 140px;
@@ -2645,6 +2646,7 @@
 		padding: 0.8rem;
 		margin-bottom: 0.8rem;
 		width: 100%;
+		background-color: rgba(220, 53, 69, 0.85) !important; /* Red background */
 	}
 
 	.hhvi-icon {
@@ -2665,10 +2667,10 @@
 		align-items: center;
 		margin-bottom: 0.3rem;
 	}
-
 	.hhvi-title {
-		font-size: 0.85rem;
-		font-weight: 600;
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: white;
 	}
 
 	.hhvi-info-button {
