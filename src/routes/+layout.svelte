@@ -40,7 +40,7 @@
 		src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5128336241212748"
 		crossorigin="anonymous"
 	></script>
-	<!--
+	
 	{#if showPropAds}
 		<script
 			src="https://fpyf8.com/88/tag.min.js"
@@ -49,7 +49,7 @@
 			data-cfasync="false"
 		></script>
 	{/if}
-	-->
+	
 </svelte:head>
 
 <main>
