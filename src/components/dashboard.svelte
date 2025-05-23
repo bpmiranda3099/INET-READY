@@ -57,7 +57,7 @@
 	let loadingMedicalData = false; // Track loading state for medical data
 	let activeTab = 'dashboard'; // Changed default to dashboard
 	let showWelcomeMessage = true; // Control whether to show welcome message on startup	let showAds = false; // Control whether to show ads
-	let showPropAds = false; // Control whether to show PropellerAds
+	let showPropAds = true; // Control whether to show PropellerAds
 	let unreadNotifications = 0;
 	let deletingMedicalData = false;
 	let deleteError = null;
